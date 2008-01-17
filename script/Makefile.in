@@ -1,0 +1,222 @@
+# makefile for Haru Free PDFLibrary II (Libharu)
+# Copyright (C) 1999-2006 Takeshi Kanno
+# For conditions of distribution and use, see copyright notice in hpdf.h
+#
+# To compile, type:
+#   ._SEP_configure; make
+# If you wish to build zlib as a shared library, use: ./configure -s
+# To install /usr/local/lib/libhpdf.* and /usr/local/include/hpdf.h, type:
+#    make install
+# To install in $HOME instead of /usr/local, use:
+#    make install prefix=$HOME
+
+CC=cc
+PREFIX=
+
+LIBNAME=
+SONAME=
+SOVER1=
+SOVER2=
+LIBTARGET=
+CFLAGS=
+CFLAGS_DEMO=
+CFLAGS_EXE=
+LDFLAGS=
+LDFLAGS_DEMO1=
+LDFLAGS_DEMO2=
+DEFNAME=
+RESNAME=
+
+OBJS = \
+	src_SEP_hpdf_utils_OBJ_EXT \
+	src_SEP_hpdf_error_OBJ_EXT \
+	src_SEP_hpdf_mmgr_OBJ_EXT \
+	src_SEP_hpdf_list_OBJ_EXT \
+	src_SEP_hpdf_streams_OBJ_EXT \
+	src_SEP_hpdf_objects_OBJ_EXT \
+	src_SEP_hpdf_null_OBJ_EXT \
+	src_SEP_hpdf_boolean_OBJ_EXT \
+	src_SEP_hpdf_number_OBJ_EXT \
+	src_SEP_hpdf_real_OBJ_EXT \
+	src_SEP_hpdf_name_OBJ_EXT \
+	src_SEP_hpdf_array_OBJ_EXT \
+	src_SEP_hpdf_dict_OBJ_EXT \
+	src_SEP_hpdf_xref_OBJ_EXT \
+	src_SEP_hpdf_encoder_OBJ_EXT \
+	src_SEP_hpdf_string_OBJ_EXT \
+	src_SEP_hpdf_binary_OBJ_EXT \
+	src_SEP_hpdf_encrypt_OBJ_EXT \
+	src_SEP_hpdf_encryptdict_OBJ_EXT \
+	src_SEP_hpdf_fontdef_OBJ_EXT \
+	src_SEP_hpdf_fontdef_tt_OBJ_EXT \
+	src_SEP_hpdf_fontdef_type1_OBJ_EXT \
+	src_SEP_hpdf_fontdef_base14_OBJ_EXT \
+	src_SEP_hpdf_fontdef_cid_OBJ_EXT \
+	src_SEP_hpdf_font_OBJ_EXT \
+	src_SEP_hpdf_font_type1_OBJ_EXT \
+	src_SEP_hpdf_font_tt_OBJ_EXT \
+	src_SEP_hpdf_font_cid_OBJ_EXT \
+	src_SEP_hpdf_doc_OBJ_EXT \
+	src_SEP_hpdf_info_OBJ_EXT \
+	src_SEP_hpdf_catalog_OBJ_EXT \
+	src_SEP_hpdf_page_label_OBJ_EXT\
+	src_SEP_hpdf_gstate_OBJ_EXT \
+	src_SEP_hpdf_pages_OBJ_EXT \
+	src_SEP_hpdf_page_operator_OBJ_EXT \
+	src_SEP_hpdf_destination_OBJ_EXT \
+	src_SEP_hpdf_annotation_OBJ_EXT \
+	src_SEP_hpdf_outline_OBJ_EXT \
+	src_SEP_hpdf_image_OBJ_EXT \
+	src_SEP_hpdf_encoder_jp_OBJ_EXT \
+	src_SEP_hpdf_encoder_kr_OBJ_EXT \
+	src_SEP_hpdf_encoder_cns_OBJ_EXT \
+	src_SEP_hpdf_encoder_cnt_OBJ_EXT \
+	src_SEP_hpdf_fontdef_jp_OBJ_EXT \
+	src_SEP_hpdf_fontdef_kr_OBJ_EXT \
+	src_SEP_hpdf_fontdef_cns_OBJ_EXT \
+	src_SEP_hpdf_fontdef_cnt_OBJ_EXT \
+	src_SEP_hpdf_image_png_OBJ_EXT \
+	src_SEP_hpdf_doc_png_OBJ_EXT \
+	src_SEP_hpdf_ext_gstate_OBJ_EXT \
+
+PROGRAMS = \
+	demo_SEP_encoding_list_EXE_EXT \
+	demo_SEP_font_demo_EXE_EXT \
+	demo_SEP_text_demo_EXE_EXT \
+	demo_SEP_text_demo2_EXE_EXT \
+	demo_SEP_image_demo_EXE_EXT \
+	demo_SEP_jpeg_demo_EXE_EXT \
+	demo_SEP_jpfont_demo_EXE_EXT \
+	demo_SEP_line_demo_EXE_EXT \
+	demo_SEP_link_annotation_EXE_EXT \
+	demo_SEP_outline_demo_EXE_EXT \
+	demo_SEP_png_demo_EXE_EXT \
+	demo_SEP_text_annotation_EXE_EXT \
+	demo_SEP_ttfont_demo_EXE_EXT \
+	demo_SEP_character_map_EXE_EXT \
+	demo_SEP_grid_sheet_EXE_EXT \
+	demo_SEP_arc_demo_EXE_EXT \
+	demo_SEP_raw_image_demo_EXE_EXT \
+	demo_SEP_encryption_EXE_EXT \
+	demo_SEP_permission_EXE_EXT \
+	demo_SEP_slide_show_demo_EXE_EXT \
+	demo_SEP_ext_gstate_demo_EXE_EXT \
+
+.SUFFIXES:  .c _OBJ_EXT
+
+all: $(LIBTARGET)
+
+$(LIBNAME): $(OBJS)
+	_LIB_CMD1
+	_LIB_CMD2
+
+$(SONAME): $(OBJS)
+	_SHARED_CMD1
+	_SHARED_CMD2
+	_SHARED_CMD3
+	_SHARED_CMD4
+	_SHARED_CMD5
+
+demo: $(LIBTARGET) $(PROGRAMS)
+
+clean:
+	_DELETE_ALL
+
+install: all installfiles
+
+installfiles:
+	_INSTALL_CMD0
+	_INSTALL_CMD1
+	_INSTALL_CMD2
+	_INSTALL_CMD3
+	_INSTALL_CMD4
+	_INSTALL_CMD5
+	_INSTALL_CMD6
+
+.c_OBJ_EXT:
+	$(CC) _CFLAGS_ADD $(CFLAGS) -c $*.c
+
+demo_SEP_encoding_list_EXE_EXT : demo_SEP_encoding_list.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_encoding_list.c  $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_encoding_list_EXE_EXT _EXEC2_
+
+demo_SEP_font_demo_EXE_EXT : demo_SEP_font_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_font_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_font_demo_EXE_EXT _EXEC2_
+
+demo_SEP_text_demo_EXE_EXT : demo_SEP_text_demo.c demo_SEP_grid_sheet.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_text_demo.c demo_SEP_grid_sheet.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_text_demo_EXE_EXT _EXEC2_
+
+demo_SEP_text_demo2_EXE_EXT : demo_SEP_text_demo2.c demo_SEP_grid_sheet.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_text_demo2.c demo_SEP_grid_sheet.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_text_demo2_EXE_EXT _EXEC2_
+
+demo_SEP_image_demo_EXE_EXT : demo_SEP_image_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_image_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_image_demo_EXE_EXT _EXEC2_
+
+demo_SEP_jpeg_demo_EXE_EXT : demo_SEP_jpeg_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_jpeg_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_jpeg_demo_EXE_EXT _EXEC2_
+
+demo_SEP_jpfont_demo_EXE_EXT : demo_SEP_jpfont_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_jpfont_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_jpfont_demo_EXE_EXT _EXEC2_
+
+demo_SEP_line_demo_EXE_EXT : demo_SEP_line_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_line_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_line_demo_EXE_EXT _EXEC2_
+
+demo_SEP_link_annotation_EXE_EXT : demo_SEP_link_annotation.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_link_annotation.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_link_annotation_EXE_EXT _EXEC2_
+
+demo_SEP_outline_demo_EXE_EXT : demo_SEP_outline_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_outline_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_outline_demo_EXE_EXT _EXEC2_
+
+demo_SEP_png_demo_EXE_EXT : demo_SEP_png_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_png_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_png_demo_EXE_EXT _EXEC2_
+
+demo_SEP_text_annotation_EXE_EXT : demo_SEP_text_annotation.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_text_annotation.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_text_annotation_EXE_EXT _EXEC2_
+
+demo_SEP_encryption_EXE_EXT : demo_SEP_encryption.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_encryption.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_encryption_EXE_EXT _EXEC2_
+
+demo_SEP_permission_EXE_EXT : demo_SEP_permission.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_permission.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_permission_EXE_EXT _EXEC2_
+
+demo_SEP_ttfont_demo_EXE_EXT : demo_SEP_ttfont_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_ttfont_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_ttfont_demo_EXE_EXT ttfont_SEP_PenguinAttack.ttf -E _EXEC2_
+
+demo_SEP_character_map_EXE_EXT : demo_SEP_character_map.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_character_map.c $(LDFLAGS_DEMO2)
+
+demo_SEP_raw_image_demo_EXE_EXT : demo_SEP_raw_image_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_grid_sheet.c demo_SEP_raw_image_demo.c $(LDFLAGS_DEMO2)
+	_EXEC1_._SEP_raw_image_demo_EXE_EXT _EXEC2_
+
+demo_SEP_arc_demo_EXE_EXT : demo_SEP_arc_demo.c demo_SEP_grid_sheet.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_grid_sheet.c demo_SEP_arc_demo.c $(LDFLAGS_DEMO2) 
+	_EXEC1_._SEP_arc_demo_EXE_EXT _EXEC2_
+
+demo_SEP_grid_sheet_EXE_EXT : demo_SEP_grid_sheet.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) -DSTAND_ALONE $(LDFLAGS_DEMO1) demo_SEP_grid_sheet.c $(LDFLAGS_DEMO2) 
+	_EXEC1_._SEP_grid_sheet_EXE_EXT _EXEC2_
+
+demo_SEP_slide_show_demo_EXE_EXT : demo_SEP_slide_show_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_slide_show_demo.c $(LDFLAGS_DEMO2) 
+	_EXEC1_._SEP_slide_show_demo_EXE_EXT _EXEC2_
+
+demo_SEP_ext_gstate_demo_EXE_EXT : demo_SEP_ext_gstate_demo.c $(LIBTARGET)
+	$(CC) $(CFLAGS_EXE)$@ $(CFLAGS_DEMO) $(LDFLAGS_DEMO1) demo_SEP_ext_gstate_demo.c $(LDFLAGS_DEMO2) 
+	_EXEC1_._SEP_ext_gstate_demo_EXE_EXT _EXEC2_
+
+

@@ -1,0 +1,118 @@
+#
+#  Haru Free PDF Library Version 2.0.5 - Sep 15, 2006
+#  
+#  Copyright 2000-2006 c Takeshi Kanno
+#
+
+*
+* Which package should I use?
+*
+
+There are four types of packages.
+
+1. libharu_2_X_X.tgz
+   Is a Source package for LINUX platforms (and similar systems)
+   This package includes all source code, documents and sample-files.
+   If you want to build Haru with using Mingw or build a dll on cygwin, use 
+   libharu_2_x_x_win32.zip/tgz.
+
+2. libharu_2_x_x_win32.zip/tgz
+   Is a Source package for Windows platforms 
+   In addition to all files of libharu_2_X_X.tgz, makefiles and static library 
+   files of zlib/pnglib for MSVC, BCC32 and MinGW are included.
+
+3. libharu_2_x_x_dll_win32.zip
+   Is a binary package of DLL version for Windows platforms
+   This package includes libhpdf.dll, header files, example programs and 
+   interface files for C/C++, delphi/FPC, ruby and C#.
+
+4. libharu_2_x_x_ruby_win32.zip
+   Is a binary package of interface module for Ruby on windows.
+   This package includes hpdf.so (a module file for ruby) and sample programs.
+
+
+*
+* Installing Haru Free PDF Library
+*
+
+1. Build from source on linux platform
+
+   1) Unpack the libharu package.
+
+      tar -xvzf libharu_2.X.X.tgz
+      cd libharu-2.X.X
+
+   2) Run configure script
+
+      ./configure [--prefix=$HOME] [--shared]
+
+   3) Build library and install
+
+      make clean
+      make
+      make install
+
+   4) Type "make demo" to test library. If it succeeds, some PDF files are 
+      madein the demo directory.
+
+   Or you can use one of the custom-built makefiles in the "script" 
+   directory.
+
+
+2. Build from source on Windows platform
+
+   1) Unpack the libharu package. 
+
+      unzip -xvzf libharu_2.X.X_win32.zip
+
+   2) Open command prompt and change current directory to "libharu-2.X.X". 
+      cd libharu-X.X.X
+
+   3) Build library with using appropriate Makefile in "script" directory.
+
+      nmake -f script\Makefile.msvc  (Microsoft VC++ compiler)
+      make -f script\Makefile.bcc32  (Borland C++ compiler)
+      make -f script/Makefile.mingw  (MinGW on MSYS, MinGW on cygwin)
+      
+      If you want to create DLL, use Makefile.msvc_dll, Makefile.bcc32_dll,
+      Makefile.mingw_dll instead.
+
+   4) Type "make demo" to test library. If it succeeds, some PDF files are 
+      madein the demo directory.
+
+   An install command is not provided on Windows platform.
+
+   
+3. Use a binary package of DLL on Windows.
+
+   Unpack libharu_2_x_x_dll_win32.zip and copy libhpdf.dll to an 
+   arbitrary directory.
+    
+   The dll file is compiled by MSVC++ (The calling convention is stdcall 
+   and symbols exported without @NN suffix).
+
+
+4. Installing a Ruby module (Build from source on linux platform).   
+
+   1) Build Haru as a static library.
+
+      NOTE:
+      When you build haru for creating ruby extension library on linux 
+      platforms, run configure script with following command. 
+
+      ./configure --cflags=-fPIC
+
+   2) Change directory to "libharu-2.X.X/if/ruby" and run extconf.rb.
+
+      ruby extconf.rb
+
+   3) Then invoke "make install" command.
+
+      make install
+
+5. Installing a Ruby module (Windows platform)
+
+   Unpack libharu_x_x_x_ruby_win32.zip and copy hpdf.so to 
+   "site_ruby/X.X/i386-msvcrt" directory manually.
+
+

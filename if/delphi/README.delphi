@@ -1,0 +1,26 @@
+To use this interface, built Haru as a shared-library (DLL) or use binary 
+package for win32(libharu_x_x_x_dll_win32.zip).
+
+There are some example programs in this directory. The steps to run the 
+demonstration programs is as follows. 
+
+1. Build libharu as a shared library and copy libhpdf.dll to "if\delphi"
+   directory. (Or expand binary package for win32(libharu_x_x_x_dll_win32.zip) 
+   and copy libhpdf.dll to "if\delphi" directory.)
+
+2. Compile and run demo programs. 
+
+   a)Delphi
+     Open XXXX.dpr and run it.
+
+   b)Free Pascal
+     Compile demo programs using '-Mdelphi' option as follows.
+
+     fpc -Mdelphi LineDemo.dpr
+     LineDemo.exe
+
+
+NOTE:
+libhpdf.dll is required to run the program which uses delphi/fpc interface for 
+libharu.
+

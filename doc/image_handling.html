@@ -1,0 +1,505 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="api.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Image Functions<br>
+</h2>
+<h3><a name="HPDF_Image_GetSize_"></a>HPDF_Image_GetSize<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_Point<br>
+HPDF_Image_GetSize (HPDF_Image&nbsp; image);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Image_GetSize() gets the size of the image of an image object.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">image</span>
+<div class="bodytext5">The handle of an image object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Image_GetSize() succeed, it returns a HPDF_Point struct which
+includes the size of the image. Otherwise, it returns a HPDF_Point
+struct whose value is (0, 0).<br>
+</div>
+<br>
+<h3><a name="HPDF_Image_GetWidth_"></a>HPDF_Image_GetWidth<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_UINT<br>
+HPDF_Image_GetWidth (HPDF_Image&nbsp; image);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Image_GetWidth() gets the width of the image of an image object.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">image</span>
+<div class="bodytext5">The handle of an image object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Image_GetWidth() succeed, it returns the width of the image.
+Otherwise, it returns 0.<br>
+</div>
+<br>
+<h3><a name="HPDF_Image_GetHeight_"></a>HPDF_Image_GetHeight<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_UINT<br>
+HPDF_Image_GetHeight (HPDF_Image&nbsp; image);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Image_GetHeight() gets the height of the image of an image object.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">image</span>
+<div class="bodytext5">The handle of an image object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Image_GetHeight() succeed, it returns the height of the
+image. Otherwise, it returns 0.<br>
+</div>
+<br>
+<h3><a name="HPDF_Image_GetBitsPerComponent_"></a>HPDF_Image_GetBitsPerComponent<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_UINT<br>
+HPDF_Image_GetBitsPerComponent (HPDF_Image&nbsp; image);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Image_GetBitsPerComponent() gets the number of bits used to
+describe each color component.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">image</span>
+<div class="bodytext5">The handle of an image object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Image_GetHeight() succeed, it returns the number of bits.
+Otherwise, it returns 0.<br>
+</div>
+<br>
+<h3><a name="HPDF_Image_GetColorSpace_"></a>HPDF_Image_GetColorSpace<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+<span style="font-weight: bold;">const </span>char*<br>
+HPDF_Image_GetColorSpace(HPDF_Image&nbsp; image);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Image_GetColorSpace() gets the name of the image's color space.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">image</span>
+<div class="bodytext5">The handle of an image object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Image_GetColorSpace() succeed, it returns the following
+values. Otherwise, it returns NULL.
+<ul>
+  <li>"DeviceGray"</li>
+  <li>"DeviceRGB"</li>
+  <li>"DeviceCMYK"</li>
+  <li>"Indexed"<br>
+  </li>
+</ul>
+</div>
+<br>
+<h3><a name="HPDF_Image_SetColorMask_"></a>HPDF_Image_SetColorMask<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Image_SetColorMask (HPDF_Image&nbsp;&nbsp; image,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp; rmin,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp; rmax,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp; gmin,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp; gmax,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp; bmin,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp; bmax);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Image_SetColorMask() sets the transparent color of the image by
+the RGB range values.<br>
+The color within the range is displayed as a transparent color.<br>
+The Image must be RGB color space. <br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">image</span>
+<div class="bodytext5">Specify the handle of an image object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">rmin</span>
+<div class="bodytext5">The lower limit of Red. It must be between 0 and
+255.<br>
+<br>
+</div>
+<span style="font-weight: bold;">rmax</span><br>
+<div class="bodytext5">The upper limit of Red. It must be between 0 and
+255.<br>
+<br>
+</div>
+<span style="font-weight: bold;">gmin</span><br>
+<div class="bodytext5">The lower limit of Green. It must be between 0
+and 255.<br>
+<br>
+</div>
+<span style="font-weight: bold;">gmax</span><br>
+<div class="bodytext5">The upper limit of Green. It must be between 0
+and 255.<br>
+<br>
+</div>
+<span style="font-weight: bold;">bmin</span><br>
+<div class="bodytext5">The lower limit of Blue. It must be between 0
+and 255.<br>
+<br>
+</div>
+<span style="font-weight: bold;">bmax</span><br>
+<div class="bodytext5">The upper limit of Blue. It must be between 0
+and 255.<br>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Image_SetColorMask() succeed, it returns HPDF_OK.
+Otherwise it returns error code and an error-handler will be invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_IMAGE</span>
+<div class="bodytext5">An invalid image handle was set.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_COLOR_SPACE</span><br>
+<div class="bodytext5">An image other than RGB color was specified. <br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_FAILD_TO_ALLOC_MEM</span><br>
+<div class="bodytext5">Memory Allocation Failed.<br>
+<br>
+</div>
+<span style="font-weight: bold;">APDF_INVALID_PARAMETER </span><br>
+<div class="bodytext5">An invalid value is specified.<br>
+<br>
+</div>
+<br>
+</div>
+<h3><a name="HPDF_Image_SetMaskImage_"></a>HPDF_Image_SetMaskImage<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Image_SetMaskImage&nbsp; (HPDF_Image&nbsp;&nbsp; image,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_Image&nbsp;&nbsp; mask_image);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Image_SetMaskImage() sets the mask image. <br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">image</span>
+<div class="bodytext5">Specify the handle of an image object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">mask_image</span><br>
+<div class="bodytext5">Specify the handle of an image object which is
+used as image-mask. This image must be 1bit gray-scale color image. <br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Image_SetMaskImage() succeed, it returns HPDF_OK.
+Otherwise it returns error code and an error-handler will be invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_IMAGE</span>
+<div class="bodytext5">An invalid image handle was set.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_BIT_PER_COMPONENT</span><br>
+<div class="bodytext5">An invalid bit-per-component. <br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_FAILD_TO_ALLOC_MEM</span><br>
+<div class="bodytext5">Memory Allocation Failed.<br>
+<br>
+</div>
+<br>
+</div>
+<br>
+<br>
+<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar">
+<ul>
+</ul>
+<ul>
+  <li><a href="#HPDF_Image_GetSize_">HPDF_Image_GetSize</a></li>
+  <li><a href="#HPDF_Image_GetWidth_">HPDF_Image_GetWidth</a></li>
+  <li><a href="#HPDF_Image_GetHeight_">HPDF_Image_GetHeight</a></li>
+  <li><a href="#HPDF_Image_GetBitsPerComponent_">HPDF_Image_GetBitsPerComponent</a></li>
+  <li><a href="#HPDF_Image_GetColorSpace_">HPDF_Image_GetColorSpace</a></li>
+  <li><a href="#HPDF_Image_SetColorMask_">HPDF_Image_SetColorMask</a></li>
+  <li><a href="#HPDF_Image_SetMaskImage_">HPDF_Image_SetMaskImage</a></li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>

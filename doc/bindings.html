@@ -1,0 +1,242 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="default.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Bindings for other programing languages<br>
+</h2>
+<h3><a name="Introduction_"></a>Introduction<br>
+</h3>
+<div class="bodytext1">So far, libharu provides bindings for Ruby,
+Delphi/Free Pascal and C#(Microsoft .NET platform). <br>
+<br>
+If you wrote bindings for other programing languages, please notice me.<br>
+<br>
+</div>
+<h3><a name="Ruby_1.8_or_later_"></a>Ruby (1.8 or later)<br>
+</h3>
+<div class="bodytext1">On UNIX platform, exconf.rb is available. The
+installation process is as follows.<br>
+&nbsp;<br>
+1. Build libharu as a static library. (See the chapter of "<a
+ href="install.html">Install</a>")<br>
+<br>
+<div class="bodynote">
+NOTE:<br>
+In linux platform, adding -fPIC option on cflags is recommended for the
+performance improvement. </div>
+<br>
+2. Change directory to "libharu-X.X.X/if/ruby" and run extconf.rb.<br>
+<br>
+<div class="bodycode">ruby extconf.rb<br>
+</div>
+<br>
+3. Then invoke "make install" command.<br>
+<br>
+<div class="bodycode">make install<br>
+</div>
+<br>
+<br>
+If you want to use "Ruby binding for Haru" on windows platforms,
+download binary package (libharu_x_x_x_ruby_win32.zip) and copy hpdf.so
+to "site_ruby/X.X/i386-msvcrt" directory manually. (This package is for
+ruby1.8 built by MSVC)<br>
+&nbsp;<br>
+exconf_msvc.rb is also available. but it is not tested well.<br>
+<br>
+</div>
+<h3><a name="DelphiFree_Pascal_"></a>Delphi/Free Pascal<br>
+</h3>
+<div class="bodytext1">The interface files for Delhp/Free Pascal are in
+"if/delphi" directory.<br>
+To use this interface, <a href="install.html">build Haru as a
+shared-library</a> (DLL) or use
+binary package for win32(libharu_x_x_x_dll_win32.zip).<br>
+<br>
+</div>
+<br>
+<h3><a name="C_"></a>C#<br>
+</h3>
+<div class="bodytext1">The interface files for C# are in
+"if/c#" directory.<br>
+To use this interface, <a href="install.html">build Haru as a
+shared-library</a> (DLL) or use
+binary package for win32(libharu_x_x_x_dll_win32.zip).<br>
+<br>
+There are some example programs in demo directory. The steps to run the
+demonstration programs is as follows. <br>
+<br>
+1. Build libharu as a shared library and copy libhpdf.dll to
+"if\c#\demo" directory.<br>
+&nbsp;&nbsp; (Or expand binary package for
+win32(libharu_x_x_x_dll_win32.zip) and copy libhpdf.dll to "if\c#\demo"
+directory.)<br>
+<br>
+2. Compile and run demo programs. (Don't forget to compile hpdf.cs
+together.)<br>
+<br>
+<div class="bodycode">csc /out:FontDemo.exe FontDemo.cs ..\hpdf.cs <br>
+FontDemo.exe<br>
+<br>
+csc /out:ImageDemo.exe ImageDemo.cs ..\hpdf.cs <br>
+ImageDemo.exe<br>
+<br>
+csc /out:JPFontDemo.exe JPFontDemo.cs ..\hpdf.cs<br>
+JPFontDemo.exe<br>
+<br>
+csc /out:LineDemo.exe LineDemo.cs ..\hpdf.cs<br>
+LineDemo.exe<br>
+<br>
+csc /out:OutlineDemo.exe OutlineDemo.cs ..\hpdf.cs<br>
+OutlineDemo.exe<br>
+<br>
+csc /out:Encryption.exe Encryption.cs ..\hpdf.cs<br>
+Encryption.exe<br>
+<br>
+csc /out:Permission.exe Permission.cs ..\hpdf.cs<br>
+Permission.exe<br>
+<br>
+csc /out:RawImageDemo.exe RawImageDemo.cs ..\hpdf.cs<br>
+RawImageDemo.exe<br>
+<br>
+csc /out:TextDemo.exe TextDemo.cs ..\hpdf.cs<br>
+TextDemo.exe<br>
+&nbsp;<br>
+</div>
+<br>
+Because I do not know the Visual studio well, I do not explain usage on
+Visual Studio here. &nbsp;<br>
+<br>
+<div class="bodynote">NOTE:<br>
+libhpdf.dll is required to run the program which uses C# interface for
+libharu.<br>
+I tested this interface only in Microsoft .NET Framework SDK 1.1. <br>
+</div>
+<br>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar">
+<ul>
+</ul>
+<ul>
+  <li> <a href="#Introduction_">Introduction</a> </li>
+  <li><a href="#Ruby_1.8_or_later_">Ruby</a><br>
+  </li>
+  <li><a href="#DelphiFree_Pascal_">Delphi/Free Pascal</a></li>
+  <li><a href="#C_">C#</a><br>
+  </li>
+</ul>
+<ul>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>

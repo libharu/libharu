@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="default.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation </a>| <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Install</h2>
+<h3><a name="Linux_platform"></a>GCC on UNIX platforms (and
+similar systems)<br>
+</h3>
+<div class="bodytext1">Unpack the libharu package.<br>
+<br>
+<div class="bodycode">tar -xvzf libharu_X.X.X.tgz<br>
+cd libharu-X.X.X
+</div>
+<p>Run configure script. (If the configure script does not work well,
+use custom-built makefiles in the "script"&nbsp; directory.)<br>
+</p>
+<div class="bodycode">./configure [--prefix=$HOME] [--shared]
+[--cflags=ADDITIONAL_CFLAGS]<br>
+</div>
+<br>
+<div class="bodynote">NOTE:<br>
+When you build haru for creating ruby extension library on linux
+platforms, run configure script with following command.&nbsp; <br>
+./configure --cflags=-fPIC<br>
+</div>
+<br>
+<p>Build library and install. <br>
+</p>
+<div class="bodycode">make clean<br>
+make<br>
+make install
+</div>
+<p>Type "make demo" to test library. If it succeeds, some PDF files are
+made in the demo directory.<br>
+</p>
+<div class="bodycode">
+make demo</div>
+<br>
+</div>
+<h3><a name="Windows_platforms"></a>Windows platforms (except
+cygwin/MinGW)<br>
+</h3>
+<div class="bodytext1">Unpack the libharu package on command prompt.<br>
+<br>
+<div class="bodycode">unzip -xvzf libharu_X.X.X_win32.zip<br>
+cd libharu-X.X.X
+</div>
+<p>
+There are several kinds of Makefile for every compilers in script
+directory.<br>
+Build library with an appropriate Makefile.</p>
+<p>
+1) Microsoft VC++ Compiler<br>
+</p>
+<div class="bodycode">nmake -f script/Makefile.msvc</div>
+<p>
+2) Bor land C++ </p>
+<div class="bodycode">make -f script/Makefile.bcc</div>
+<br>
+<div class="bodynote">Note:<br>
+If you want to create DLL, use Makefile.msvc_dll
+(or
+Makafile.bcc32_dll) instead.</div>
+<p>Type following commands to test library. If it succeeds, some PDF
+files are
+made in the demo directory.<br>
+In Windows environment, Install command is not prepared.<br>
+</p>
+<p>1) Microsoft VC++ Compiler</p>
+<div class="bodycode">
+nmake -f script/Makefile.msvc[_dll] demo</div>
+<p>2) Bor land C++ </p>
+<div class="bodycode">
+make -f script/Makefile.bcc[_dll] demo</div>
+<br>
+If you use "Visual Studio .NET", use "Visual Studio .NET Command
+Prompt" to build Haru. But some warnings about optimizing may occur
+because of&nbsp; the compiler included in "Visual Studio .NET" does not
+have an optimizing feature.<br>
+We can also use "Microsoft Visual C++ Toolkit 2003" and "Microsoft
+Platform SDK" instead. The compiler of "Microsoft Visual C++ Toolkit
+2003" supports optimizing feature.&nbsp;&nbsp; <br>
+</div>
+</div>
+<h3><a name="Cygwin_with_MinGW_"></a>Cygwin/MinGW<br>
+</h3>
+<div class="bodytext1">Unpack the libharu package.<br>
+<br>
+<div class="bodycode">tar -xvzf libharu_X.X.X.tgz<br>
+cd libharu-X.X.X
+</div>
+<p>Run configure script. If you want to make libharu using MinGW on
+cygwin, add
+"--nocygwin" as argument.<br>
+"--nocygwin" options is not required in MinGW on MSYS.<br>
+</p>
+<div class="bodycode">./configure [--prefix=$HOME] [--shared]
+[--nocygwin]<br>
+</div>
+<p>Build library and install. The default install path is
+/usr/local/include and /usr/local/lib.<br>
+</p>
+<div class="bodycode">make install
+</div>
+<p>Type "make demo" to test library. If it succeeds, some PDF files are
+made in the demo directory.<br>
+</p>
+<div class="bodycode">
+make demo</div>
+</div>
+<br>
+<h3><a name="Cygwin_with_MinGW_"></a>Other Platforms<br>
+</h3>
+<div class="bodytext1">There are several custom make files in script
+directory. I think that you can build library by adding some changes to
+these files.<br>
+If you succeed at making Haru on other platforms, please send me your
+make-files.<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar"><br>
+<ul>
+  <li> <a href="#Linux_platform">Linux
+platform (and similar systems)<br>
+    </a> </li>
+  <li> <a href="#Windows_platforms">Windows
+platforms (except&nbsp; cygwin/MinGW)</a> </li>
+  <li> <a href="#Cygwin_with_MinGW_">Cygwin/MinGW</a> </li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+</div>
+</body>
+</html>

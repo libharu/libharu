@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="api.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>ExtGState<br>
+</h2>
+<h3><a name="HPDF_ExtGState_SetAlphaStroke_"></a>HPDF_ExtGState_SetAlphaStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_ExtGState_SetAlphaStroke&nbsp; (HPDF_ExtGState&nbsp;&nbsp;
+ext_gstate,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_ExtGState_SetAlphaStroke() defined the transparency for stroking.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">ext_gstate</span>
+<div class="bodytext5">The handle of an extended graphics state object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value</span>
+<div class="bodytext5">The alpha constant for stroking. It must be
+between 0 to 1.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_ExtGState_SetAlphaStroke() succeeds, it returns HPDF_OK.
+Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_OBJECT</span>
+<div class="bodytext5">An invalid ExtGState handle was set.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_EXT_GSTATE_READ_ONLY</span><br>
+<div class="bodytext5">The ExtGState object is read only.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_EXT_GSTATE_OUT_OF_RANGE
+</span>
+<div class="bodytext5">An invalid value was set at value parameter.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_FAILD_TO_ALLOC_MEM</span><br>
+<div class="bodytext5">Memory Allocation Failed.<br>
+</div>
+</div>
+<br>
+<h3><a name="HPDF_ExtGState_SetAlphaFill_"></a>HPDF_ExtGState_SetAlphaFill<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_ExtGState_SetAlphaFill&nbsp; (HPDF_ExtGState&nbsp;&nbsp;
+ext_gstate,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_ExtGState_SetAlphaFill() defined the transparency for filling.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">ext_gstate</span>
+<div class="bodytext5">The handle of an extended graphics state object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value</span>
+<div class="bodytext5">The alpha constant for filling. It must be
+between 0 to 1.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_ExtGState_SetAlphaFill() succeeds, it returns HPDF_OK.
+Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_OBJECT</span>
+<div class="bodytext5">An invalid ExtGState handle was set.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_EXT_GSTATE_READ_ONLY</span><br>
+<div class="bodytext5">The ExtGState object is read only.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_EXT_GSTATE_OUT_OF_RANGE
+</span>
+<div class="bodytext5">An invalid value was set at value parameter.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_FAILD_TO_ALLOC_MEM</span><br>
+<div class="bodytext5">Memory Allocation Failed.<br>
+</div>
+</div>
+<br>
+<h3><a name="HPDF_ExtGState_SetBlendMode_"></a>HPDF_ExtGState_SetBlendMode<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_ExtGState_SetBlendMode&nbsp; (HPDF_ExtGState&nbsp;&nbsp;
+ext_gstate,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_BlendMode&nbsp;&nbsp; bmode);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_ExtGState_SetBlendMode() defined the method of blending.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">ext_gstate</span>
+<div class="bodytext5">The handle of an extended graphics state object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">bmode</span><br>
+<div class="bodytext5">The following values are available.<br>
+<ul>
+  <li>HPDF_BM_NORMAL</li>
+  <li>HPDF_BM_MULTIPLY</li>
+  <li>HPDF_BM_SCREEN</li>
+  <li>HPDF_BM_OVERLAY</li>
+  <li>HPDF_BM_DARKEN</li>
+  <li>HPDF_BM_LIGHTEN</li>
+  <li>HPDF_BM_COLOR_DODGE</li>
+  <li>HPDF_BM_COLOR_BUM</li>
+  <li>HPDF_BM_HARD_LIGHT</li>
+  <li>HPDF_BM_SOFT_LIGHT</li>
+  <li>HPDF_BM_DIFFERENCE</li>
+  <li>HPDF_BM_EXCLUSHON</li>
+</ul>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_ExtGState_SetBlendMode() succeeds, it returns HPDF_OK.
+Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_OBJECT</span>
+<div class="bodytext5">An invalid ExtGState handle was set.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_EXT_GSTATE_READ_ONLY</span><br>
+<div class="bodytext5">The ExtGState object is read only.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_EXT_GSTATE_OUT_OF_RANGE
+</span>
+<div class="bodytext5">An invalid blend mode was set.<br>
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_FAILD_TO_ALLOC_MEM</span><br>
+<div class="bodytext5">Memory Allocation Failed.<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar">
+<ul>
+</ul>
+<ul>
+  <li><a href="#HPDF_ExtGState_SetAlphaStroke_">HPDF_ExtGState_SetAlphaStroke</a></li>
+  <li><a href="#HPDF_ExtGState_SetAlphaFill_">HPDF_ExtGState_SetAlphaFill</a></li>
+  <li><a href="#HPDF_ExtGState_SetBlendMode_">HPDF_ExtGState_SetBlendMode</a></li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>

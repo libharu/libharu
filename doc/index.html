@@ -1,0 +1,305 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="default.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Introduction</h2>
+<h3><a name="What_is_Haru_Free_PDF_Library_"></a>What is Haru Free PDF
+Library?<br>
+</h3>
+<div class="bodytext1">
+HARU is a free, cross platform, open-sourced software library for
+generating PDF. It supports the following features.<br>
+<ol>
+  <li>Generating PDF files with lines, text, images.</li>
+  <li>Outline, text annotation, link annotation.</li>
+  <li>Compressing document with deflate-decode.</li>
+  <li>Embedding PNG, Jpeg images.</li>
+  <li>Embedding Type1 font and TrueType font.</li>
+  <li>Creating encrypted PDF files.</li>
+  <li>Using various character set (ISO8859-1~16, MSCP1250~8, KOI-8R).</li>
+  <li>Supporting CJK fonts and encodings.</li>
+</ol>
+<p>You can add the feature of PDF creation by using HARU without
+understanding complicated internal structure of PDF. <br>
+</p>
+</div>
+<h3><a name="Supporting_platforms_"></a>Supporting platforms<br>
+</h3>
+<div class="bodytext1">HARU is written in ANSI-C and should compile
+easily with any compliant C compiler.<br>
+I tested HARU in the following environment and make files for these
+environments are included in a package.<br>
+<ol>
+  <li>Cygwin + GCC (Microsoft Windows)</li>
+  <li>Cygwin + MinGW (Microsoft Windows)</li>
+  <li>Microsoft VC++ (Microsoft Windows)</li>
+  <li>Borland C++ (Microsoft Windows)</li>
+  <li>GCC (Linux, FreeBSD, NetBSD...)</li>
+</ol>
+Also on platforms except the above, it is easy to build HARU. If you
+success
+to build HARU on other platforms, please send makefile to me.<br>
+In addition, <a href="http://www.zlib.net/">ZLIB</a> and <a
+ href="http://www.libpng.org/">PNGLIB</a> are required when you want to
+use the
+features of compression and embedding PNG images. (In the case of
+Windows, static library files for several compilers are included in the
+package for WIndows.&nbsp; In the case of&nbsp; most of UNIX, these
+libraries are usually installed.)<br>
+</div>
+<h3><a name="Available_development_environment_"></a>Available
+development environment
+</h3>
+<div class="bodytext1">HARU can work as both static-library (.a, .lib)
+and shared-library (.so, .dll). <br>
+When you use it as static-library, It can be used by C and a C++.<br>
+But when you use it as shared-library, it can be used by many
+development languages which support shared library.<br>
+libharu provides <a href="bindings.html">bindings</a> for Ruby and
+Delphi/Free Pascal and C#(Microsoft .NET platform).<br>
+</div>
+<h3><a name="Runtime_environment_of_programs_using"></a>Runtime
+environment of programs using Haru
+</h3>
+<div class="bodytext1">
+1. static-library<br>
+</div>
+<div class="bodytext3">
+No runtime files are required.<br>
+<br>
+</div>
+<div class="bodytext1">
+2. shared-library<br>
+</div>
+<div class="bodytext3">
+In Windows, you have to distribute libhpdf.dll with a program. In UNIX
+you have to distribute libhpdf.so* with a program.
+</div>
+<br>
+<div class="bodytext2">
+NOTE:
+<br>
+In the UNIX environment, there are the cases that libz.so, libpng.so.x
+are necessary. About this, please refer to the documentation of PNGLIB
+and ZLIB.
+</div>
+<h3><a name="License_"></a>License
+</h3>
+<div class="bodytext1">HARU is distributed under the <a
+ href="http://www.opensource.org/licenses/zlib-license.php">ZLIB/LIBPNG
+License</a>.
+Because ZLIB/LIBPNG License is one of the freest licenses, You can
+use Haru for various purposes.
+<br>
+The license of HARU is as follows.<br>
+<br>
+</div>
+<div class="bodytext2"> Copyright (C) 1999-2006 Takeshi Kanno <takeshi_kanno
+ @est.hi-ho.ne.jp="">
+<br>
+This software is provided 'as-is', without any express or implied
+warranty. <br>
+<br>
+In no event will the authors be held liable for any damages arising
+from the use of this software.
+<br>
+<br>
+Permission is granted to anyone to use this software for any
+purpose,including commercial applications, and to alter it and
+redistribute it freely, subject to the following restrictions:
+<br>
+</takeshi_kanno>
+<ol>
+  <li>The origin of this software must not be misrepresented; you must
+not claim that you wrote the original software. If you use this
+software in a product, an acknowledgment in the product documentation
+would be appreciated but is not required.</li>
+  <li>Altered source versions must be plainly marked as such, and must
+not be
+misrepresented as being the original software.</li>
+  <li>This notice may not be removed or altered from any source
+distribution. </li>
+</ol>
+</div>
+<h3><a name="Acknowledgment_"></a>Acknowledgment
+</h3>
+<div class="bodytext1">
+<ul>
+  <li><span style="font-weight: bold;"><a
+ href="http://www.ipa.go.jp/index-e.html">Information-technology
+Promotion Agency(IPA)</a></span></li>
+</ul>
+<div class="bodytext5">The development of HARU has been supported by <a
+ href="http://www.ipa.go.jp/english/humandev/third.html">Exploratory
+Software Project</a> of Information-technology Promotion Agency(IPA),
+Japan.<br>
+</div>
+<ul>
+  <li><span style="font-weight: bold;">All users of libharu</span></li>
+</ul>
+<div class="bodytext5">We wish to thank all users of HARU.<br>
+In
+particular, we thank Thomas Nimstad, LeslieM, Par Hogberg,
+adenelson, Riccardo Cohen, sea_sbs, Andrew. They gave me very useful
+advices.<br>
+</div>
+<ul>
+  <li><a href="http://sourceforge.net/"><span style="font-weight: bold;">Sourceforge.net</span></a></li>
+</ul>
+<div class="bodytext5">We thank to sourceForge.net for project hosting.<br>
+</div>
+<ul>
+  <li><a href="http://www.adobe.com/"><span style="font-weight: bold;">Adobe
+Systems Inc.</span></a><br>
+  </li>
+</ul>
+<div class="bodytext5">We thank Adobe Systems Inc. for publishing PDF
+specification.<br>
+</div>
+</div>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar"><br>
+<ul>
+  <li>
+    <h3 style="text-align: left;"><a
+ href="#What_is_Haru_Free_PDF_Library_">What is Haru Free PDF Library?</a>
+    </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"><a href="#Supporting_platforms_">Supporting
+platforms</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"><a
+ href="#Available_development_environment_">Available development
+environment</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"><a
+ href="#Runtime_environment_of_programs_using">Runtime environment of
+programs using HARU</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"> <a href="#License_">License</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"> <a href="#Acknowledgment_">Acknowledgment</a>
+    </h3>
+  </li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+</div>
+</body>
+</html>

@@ -1,0 +1,978 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="default.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Fonts and Encodings<br>
+</h2>
+<h3><a name="The_type_of_fonts_"></a>The type of fonts<br>
+</h3>
+<div class="bodytext1">There are three kind of fonts that is available
+in Haru.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; width: 20px; text-align: right; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 100px;"><span
+ style="font-weight: bold;">Type of Font</span><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+ style="font-weight: bold;">Description</span><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20px; text-align: right;">1<br>
+      </td>
+      <td style="vertical-align: top; width: 100px;">Base14 Font<br>
+      </td>
+      <td style="vertical-align: top;">It is buildin font of PDF. This
+font can be used for all viewer applications.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20px; text-align: right;">2<br>
+      </td>
+      <td style="vertical-align: top; width: 100px;">Type1 Font<br>
+      </td>
+      <td style="vertical-align: top;">One of font formats used by
+PostScript.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20px; text-align: right;">3</td>
+      <td style="vertical-align: top; width: 100px;">TrueType Font<br>
+      </td>
+      <td style="vertical-align: top;">Outline font fotmat widely used.
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">4<br>
+      </td>
+      <td style="vertical-align: top; width: 100px;">CID Font<br>
+      </td>
+      <td style="vertical-align: top;">Font format for multi byte
+character developed by Adobe. </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+The application invokes <a href="document_handling.html#HPDF_GetFont">HPDF_GetFont()
+</a>to get font-hangle. Except
+base14-fonts, an application have <br>
+to invoke the following functions to load font before invoking <a
+ href="document_handling.html#HPDF_GetFont">HPDF_GetFont() </a>.<br>
+<br>
+<span style="font-weight: bold;">The font loading functions</span>
+<ul>
+  <li><a href="document_handling.html#HPDF_LoadType1FontFromFile">HPDF_LoadType1FontFromFile()</a></li>
+  <li><a href="document_handling.html#HPDF_LoadTTFontFromFile">HPDF_LoadTTFontFromFile()</a></li>
+  <li><a href="document_handling.html#HPDF_LoadTTFontFromFile2">HPDF_LoadTTFontFromFile2()</a></li>
+  <li><a href="document_handling.html#HPDF_UseCNSFonts">HPDF_UseCNSFonts()</a></li>
+  <li><a href="document_handling.html#HPDF_UseCNTFonts">HPDF_UseCNTFonts()</a></li>
+  <li><a href="document_handling.html#HPDF_UseJPFonts">HPDF_UseJPFonts()</a></li>
+  <li><a href="document_handling.html#HPDF_UseKRFonts">HPDF_UseKRFonts()</a><br>
+  </li>
+</ul>
+&nbsp;<br>
+</div>
+<h3><a name="Base14_Font_"></a>Base14 Font<br>
+</h3>
+<div class="bodytext1">Base14 fonts are built-in font of PDF, and all
+the Viewer applications can display these fonts. An application can get
+a font-handle of a base14 font any time by invoking <a
+ href="document_handling.html#HPDF_GetFont">HPDF_GetFont() </a>. <br>
+The size of pdf files which use base14 fonts become smaller than those
+which use other type of fonts. Moreover, a processing that creates the
+PDF file is fast because of that there is no overhead that loads the
+font.<br>
+However, base14 fonts are only available to display latin1 character
+set. To use other character set, an application have to use other type
+of font.<br>
+<br>
+<span style="font-weight: bold;">The Base14 Fonts</span>
+<ul>
+  <li>Courie</li>
+  <li>Courier-Bold</li>
+  <li>Courier-Oblique</li>
+  <li>Courier-BoldOblique</li>
+  <li>Helvetica</li>
+  <li>Helvetica-Bold</li>
+  <li>Helvetica-Oblique</li>
+  <li>Helvetica-BoldOblique</li>
+  <li>Times-Roman</li>
+  <li>Times-Bold</li>
+  <li>Times-Italic</li>
+  <li>Times-BoldItalic</li>
+  <li>Symbol</li>
+  <li>ZapfDingbats<br>
+  </li>
+</ul>
+</div>
+<h3><a name="Type1_Font_"></a>Type1 Font<br>
+</h3>
+<div class="bodytext1">Type1 font is a fotmat of outline fonts
+developed by Adobe. An AFM file is necessary to use an external type1
+font on Haru.<br>
+When an application uses an external type1 font, an application has to
+invoke <a href="document_handling.html#HPDF_LoadType1FontFromFile">HPDF_LoadType1FontFromFile()</a>
+before
+invoking <a href="document_handling.html#HPDF_GetFont">HPDF_GetFont() </a>.<br>
+The return value of HPDF_LoadType1FontFromFile() is used as font-name
+parameter of <a href="document_handling.html#HPDF_GetFont">HPDF_GetFont()
+</a>.<br>
+If a PFA/PFB file is specified at invoking <a
+ href="document_handling.html#HPDF_LoadType1FontFromFile">HPDF_LoadType1FontFromFile()</a>,
+the glyf data of the font is embedded to
+the PDF file. Otherwise, only metrics data in AFM file is embedded.<br>
+<br>
+<div class="bodycode"><br>
+&nbsp;font_name = HPDF_LoadType1FontFromFile (pdf, "a010013l.afm",
+"a010013l.pfb");<br>
+&nbsp;hfont = HPDF_GetFont (pdf, font_name, "CP1250");<br>
+<br>
+&nbsp;HPDF_Page_SetFontAndSize (page, hfont, 10.5);<br>
+<br>
+</div>
+</div>
+<br>
+<h3><a name="TrueType_Font_"></a>TrueType Font<br>
+</h3>
+<div class="bodytext1">Haru can use TrueType font. There are two types
+of format of truetype font.<br>
+The first format whose extension is ".ttf" includes only one font-data
+in the file. The function <a
+ href="document_handling.html#HPDF_LoadTTFontFromFile">HPDF_LoadTTFontFromFile()</a>
+is available to
+load this type of font.<br>
+The second format whose extension is ".ttc" includes&nbsp; multiple
+font-data
+in the file. The function HPDF_LoadTTFontFromFile2() is available to
+load this type of font. <a
+ href="document_handling.html#HPDF_LoadTTFontFromFile2">HPDF_LoadTTFontFromFile2()</a>
+has a parameter which
+is used to specify the index of the font to load.<br>
+<br>
+If the parameter "embedding" is set to HPDF_TRUE when invoking <a
+ href="document_handling.html#HPDF_LoadTTFontFromFile">HPDF_LoadTTFontFromFile()</a>
+or <a href="document_handling.html#HPDF_LoadTTFontFromFile2">HPDF_LoadTTFontFromFile2()</a>,
+the subset of
+a font is embeded into a PDF file. If not, only the marix data is
+stored into a PDF file. In this case a viewer application may use an
+alternative font if it cannot find font.<br>
+<br>
+<div class="bodycode"><br>
+&nbsp;font_name = HPDF_LoadTTFontFromFile (pdf,
+&#8221;/usr/local/fonts/arial.ttf&#8221;, HPDF_TRUE);<br>
+&nbsp;hfont = HPDF_GetFont (pdf, font_name, "CP1250");<br>
+<br>
+&nbsp;HPDF_Page_SetFontAndSize (page, hfont, 10.5);<br>
+<br>
+</div>
+</div>
+<br>
+<div class="bodytext2">NOTE:
+<br>
+Haru can use only TrueType fonts which has cmap of unicode and
+following tables.<br>
+<br>
+"OS/2", "cmap", "cvt ", "fpgm", "glyf", "head", "hhea", "hmtx", "loca",
+"maxp", "name", "post", "prep"<br>
+<br>
+</div>
+<br>
+<h3>CID Font<br>
+</h3>
+<div class="bodytext1">The CIDFont is a font for multi byte character
+developed by Adobe.<br>
+Two simplified Chinese fonts, one traditional Chinese fonts, four
+Japanese fonts, and four Korean fonts are available on Haru.<br>
+An application have to invoke the following functions once before using
+CID fonts.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; width: 24px; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 140px; font-weight: bold;">Function
+Name</td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;"><a
+ href="document_handling.html#HPDF_UseCNSFonts">HPDF_UseCNSFonts()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes simplified Chinese
+fonts(SimSun,SimHei) to available.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;"><a
+ href="document_handling.html#HPDF_UseCNTFonts">HPDF_UseCNTFonts()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes traditional Chinese
+fonts(MingLiU) to available.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;"><a
+ href="document_handling.html#HPDF_UseJPFonts">HPDF_UseJPFonts()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes Japanese
+fonts(MS-Mincyo,MS-Gothic,MS-PMincyo,MS-PGothic) to available.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">4<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;"><a
+ href="document_handling.html#HPDF_UseKRFonts">HPDF_UseKRFonts()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes Korean fonts
+(Batang,Dotum,BatangChe,DotumChe) to available.</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<div class="bodycode"><br>
+&nbsp;HPDF_UseJPFonts (pdf);<br>
+&nbsp;HPDF_UseJPEncodings (pdf);<br>
+<br>
+&nbsp;hfont = HPDF_GetFont (pdf, "MS-Mincyo", "90ms-RKSJ-H");<br>
+<br>
+&nbsp;HPDF_Page_SetFontAndSize (page, hfont, 10.5);<br>
+<br>
+</div>
+</div>
+<br>
+<h3><a name="The_type_of_encodings_"></a>The encodings for single-byte
+character set
+</h3>
+<div class="bodytext1">In HPDF, the following character sets for
+single-byte character set are
+available.<br>
+An application can get an encoding handle by using <a
+ href="document_handling.html#HPDF_GetEncoder">HPDF_GetEncoder()</a>;<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; width: 20px; text-align: right; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 140px; font-weight: bold;">Type
+of Font<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);"><span
+ style="font-weight: bold;">Description</span><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20px; text-align: right;">1<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">StandardEncoding<br>
+      </td>
+      <td style="vertical-align: top;">It is the default encoding of PDF<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20px; text-align: right;">2<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">MacRomanEncoding<br>
+      </td>
+      <td style="vertical-align: top;">The standard encoding of Mac OS<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20px; text-align: right;">3</td>
+      <td style="vertical-align: top; width: 140px;">WinAnsiEncoding<br>
+      </td>
+      <td style="vertical-align: top;">The standerd encoding of Windwos.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">4<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">FontSpecific<br>
+      </td>
+      <td style="vertical-align: top;">Use the built-in encoding of a
+font.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">5<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-2<br>
+      </td>
+      <td style="vertical-align: top;">Latin Alphabet No.2<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">6<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-3</td>
+      <td style="vertical-align: top;">Latin Alphabet No.3<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">7<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-4</td>
+      <td style="vertical-align: top;">Latin Alphabet No.4<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">8<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-5</td>
+      <td style="vertical-align: top;">Latin Cyrillic Alphabet<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">9<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-6</td>
+      <td style="vertical-align: top;">Latin Arabic Alphabet<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">10<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-7</td>
+      <td style="vertical-align: top;">Latin Greek Alphabet<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">11<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-8</td>
+      <td style="vertical-align: top;">Latin Hebrew Alphabet<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">12<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-9</td>
+      <td style="vertical-align: top;">Latin Alphabet No. 5<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">13<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-10</td>
+      <td style="vertical-align: top;">Latin Alphabet No. 6<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">14<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-11</td>
+      <td style="vertical-align: top;">Thai, TIS 620-2569 character set<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">15<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-13</td>
+      <td style="vertical-align: top;">Latin Alphabet No. 7<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">16<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-14</td>
+      <td style="vertical-align: top;">Latin Alphabet No. 8<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">17<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-15</td>
+      <td style="vertical-align: top;">Latin Alphabet No. 9<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">18<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">ISO8859-16</td>
+      <td style="vertical-align: top;">Latin Alphabet No. 10<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">19<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1250<br>
+      </td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1250
+(EE)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">20<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1251</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1251
+(Cyrl)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">21<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1252</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1252
+(ANSI)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">22<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1253</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1253
+(Greek)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">23<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1254</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1254
+(Turk)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">24<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1255</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1255
+(Hebr)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">25<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1256</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1256
+(Arab<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">26<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1257</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1257
+(BaltRim)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">27<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">CP1258</td>
+      <td style="vertical-align: top;">Microsoft Windows Codepage 1258
+(Viet)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">28<br>
+      </td>
+      <td style="vertical-align: top; width: 140px;">KOI8-R<br>
+      </td>
+      <td style="vertical-align: top;">Russian Net Character Set<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+</div>
+<h3><a name="The_encodings_for_multi-byte_character"></a>The encodings
+for multi-byte
+character set
+</h3>
+<div class="bodytext1">
+In HPDF, the following character sets for multi-byte character set are
+available.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; width: 20px; text-align: right; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 150px; font-weight: bold;">Type
+of Encodingss<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">1<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">GB-EUC-H<br>
+      </td>
+      <td style="vertical-align: top;">EUC-CN encoding<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">2<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">GB-EUC-V<br>
+      </td>
+      <td style="vertical-align: top;">Vertical writing virsion of
+GB-EUC-H<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">3<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">GBK-EUC-H<br>
+      </td>
+      <td style="vertical-align: top;">Microsoft Code Page 936
+(lfCharSet 0x86) GBK encoding<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">4<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">GBK-EUC-V<br>
+      </td>
+      <td style="vertical-align: top;">Vertical writing virsion of
+GBK-EUC-H<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">5<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">ETen-B5-H<br>
+      </td>
+      <td style="vertical-align: top;">Microsoft Code Page 950
+(lfCharSet 0x88) Big Five character set with ETen extensions<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">6<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">ETen-B5-V<br>
+      </td>
+      <td style="vertical-align: top;">Vertical writing virsion of
+ETen-B5-H<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">7<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">90ms-RKSJ-H<br>
+      </td>
+      <td style="vertical-align: top;">Microsoft Code Page 932, JIS X
+0208 character<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">8<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">90ms-RKSJ-V<br>
+      </td>
+      <td style="vertical-align: top;">Vertical writing virsion of
+90ms-RKSJ-V</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">9<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">90msp-RKSJ-H<br>
+      </td>
+      <td style="vertical-align: top;">Microsoft Code Page 932, JIS X
+0208 character (proportional)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">10<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">EUC-H<br>
+      </td>
+      <td style="vertical-align: top;">JIS X 0208 character set, EUC-JP
+encoding<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">11<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">EUC-V<br>
+      </td>
+      <td style="vertical-align: top;">Vertical writing virsion of EUC-H</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">12<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">KSC-EUC-H<br>
+      </td>
+      <td style="vertical-align: top;">KS X 1001:1992 character set,
+EUC-KR encoding<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">13<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">KSC-EUC-V<br>
+      </td>
+      <td style="vertical-align: top;">Vertical writing virsion of
+KSC-EUC-V</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">14<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">KSCms-UHC-H<br>
+      </td>
+      <td style="vertical-align: top;">Microsoft Code Page 949
+(lfCharSet 0x81), KS X 1001:1992 character set plus 8822 additional
+hangul, Unified Hangul Code (UHC) encoding (proportional)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">15<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">KSCms-UHC-HW-H<br>
+      </td>
+      <td style="vertical-align: top;">Microsoft Code Page 949
+(lfCharSet 0x81), KS X 1001:1992 character set plus 8822 additional
+hangul, Unified Hangul Code (UHC) encoding (fixed width)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">16<br>
+      </td>
+      <td style="vertical-align: top; width: 150px;">KSCms-UHC-HW-V<br>
+      </td>
+      <td style="vertical-align: top;">Vertical writing virsion of
+KSCms-UHC-HW-H</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+An application have to invoke the following functions once before using
+encodings for multi-byte character set.<br>
+<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; width: 24px; background-color: rgb(204, 204, 204);"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 180px; font-weight: bold;">Function
+Name</td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); font-weight: bold;">Description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top; width: 180px;"><a
+ href="document_handling.html#HPDF_UseCNSEncodings">HPDF_UseCNSEncodings()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes simplified Chinese
+Encodings(GB-EUC-H, GB-EUC-V, GBK-EUC-H, GBK-EUC-V) to available.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top; width: 180px;"><a
+ href="document_handling.html#HPDF_UseCNTEncodings">HPDF_UseCNTEncodings()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes traditional Chinese
+Encodings(ETen-B5-H, ETen-B5-V) to available.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top; width: 180px;"><a
+ href="document_handling.html#HPDF_UseJPEncodings">HPDF_UseJPEncodings()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes Japanese
+Encodings(90ms-RKSJ-H, 90ms-RKSJ-V, 90msp-RKSJ-H, EUC-H, EUC-V) to
+available.</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">4<br>
+      </td>
+      <td style="vertical-align: top; width: 180px;"><a
+ href="document_handling.html#HPDF_UseKREncodings">HPDF_UseKREncodings()</a><br>
+      </td>
+      <td style="vertical-align: top;">It makes Korean Encodings
+(KSC-EUC-H, KSC-EUC-V, KSCms-UHC-H, KSCms-UHC-HW-H, KSCms-UHC-HW-V) to
+available.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar">
+<ul>
+</ul>
+<ul>
+  <li> <a href="#The_type_of_fonts_">The type of functions</a></li>
+  <li><a href="#Base14_Font_">Base14 Font</a></li>
+  <li><a href="#Type1_Font_">Type1 Font</a></li>
+  <li><a href="#TrueType_Font_">TrueType Font</a></li>
+  <li><a href="#TrueType_Font_">CID Font</a></li>
+  <li><a href="#The_type_of_encodings_">The encodings for single-byte
+character set</a></li>
+  <li><a href="#The_encodings_for_multi-byte_character">The encodings
+for multi-byte character set<br>
+    </a></li>
+</ul>
+<ul>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>

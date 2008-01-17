@@ -1,0 +1,428 @@
+#!/bin/sh
+
+SHARED=0
+PREFIX=/usr/local
+
+PNGLIB_FLG="-lpng"
+ZLIB_FLG="-lz"
+
+APPNAME="libhpdf"
+RESNAME=
+DEFNAME=
+SOVER1='.1'
+SOVER2='.0.0'
+SHARED_EXT='.so'
+LIB_EXT='.a'
+OBJ_EXT='.o'
+DEF_EXT='.def'
+EXE_EXT=
+
+CC=gcc
+CFLAGS_DEMO="-Iinclude -O2 -Wall"
+CFLAGS="-Iinclude -O2 -Wall" 
+CFLAGS_ADD='-o $@'
+CFLAGS_EXE='-o '
+CFLAGS_USER=
+
+LDFLAGS='-L.'
+LDFLAGS_DEMO='-L.'
+LDFLAGS_ADD=''
+
+NOZLIB=no
+NOPNGLIB=no
+
+WIN32=no
+NOCYGWIN=no
+BCC32=no
+
+LIB_CMD1=''
+LIB_CMD2=''
+SHARED_CMD1=''
+SHARED_CMD2=''
+SHARED_CMD3=''
+SHARED_CMD4=''
+SHARED_CMD5=''
+INSTALL_CMD1=''
+INSTALL_CMD2=''
+INSTALL_CMD3=''
+INSTALL_CMD4=''
+INSTALL_CMD5=''
+INSTALL_CMD6=''
+
+COPY="cp -p"
+DELETE="rm -f"
+DELETE_ALL="rm -f src/*.o src/*.obj ./*.a ./*.so* ./*.lib demo/*.exe"
+
+_SEP_='/'
+_EXEC1_=''
+_EXEC2_=''
+
+while test $# -ge 1; do
+case "$1" in
+	-h* | --h*)
+		echo 'usage: '
+		echo './configure [--shared] [--prefix=PREFIX]'
+		echo '  [--nozlib] [--nopnglib]'
+		echo '  [--nocygwin (MinGW on cygwin only)]'
+		exit 0;;
+	-system-name=* | --system-name=*)
+		SYSTEM_NAME=`echo $1 | sed 's/[-a-z_]*=//'`; shift;;
+	-system-name | --system-name)
+		SYSTEM_NAME="$2"; shift; shift;;
+	-s* | --s*) SHARED=yes; shift;;
+	-prefix=* | --prefix=*)
+		PREFIX=`echo $1 | sed 's/[-a-z_]*=//'`; shift;;
+	-prefix | --prefix)
+		PREFIX="$2"; shift; shift;;
+	-nozlib | --nozlib)
+		NOZLIB=yes;shift;;
+	-nopnglib | --nopnglib)
+		NOPNGLIB=yes;shift;;
+	-nocygwin | --nocygwin)
+		NOCYGWIN=yes;shift;;
+	-cflags=* | --cflags=*)
+		CFLAGS_USER=`echo $1 | sed 's/[-a-z_]*=//'`; shift;;
+	-cflags | --cflags)
+		CFLAGS_USER="$2"; shift; shift;;
+	*)
+		echo "ERROR: unknown option $1."
+		exit 1;;
+esac
+done
+
+if test ${SYSTEM_NAME}; then
+	echo "SYSTEM_NAME=${SYSTEM_NAME}"
+else
+	SYSTEM_NAME=`uname -s 2>/dev/null || echo unknown`
+	echo "SYSTEM_NAME=${SYSTEM_NAME}"
+fi
+
+STDCALL=no
+
+case "${SYSTEM_NAME}" in
+	CYGWIN*)
+		#
+		# options for gcc
+		#
+		# -Wall : All of the above -W options combined
+		# --kill-at : strip the stdcall suffixes from symbols.
+		#
+		SHARED_CMD1='$(CC) -Wall -shared -o $(SONAME) $(OBJS) $(DEFNAME) $(RESNAME) -Wl,--kill-at,--enable-stdcall-fixup $(LDFLAGS)'
+		SHARED_CMD2='dlltool -k -d $(DEFNAME) -l $(LIBNAME)'
+		SHARED_CMD3='strip $(SONAME)'
+		SHARED_CMD4='cp -p $(SONAME) demo'
+		SOVER1=''
+		SOVER2=''
+		_EXEC1_='cd demo/ ; '
+
+		SHARED_EXT='.dll'
+		if test ${NOCYGWIN} = yes; then
+			CFLAGS="${CFLAGS} -Iwin32/include -mno-cygwin"
+			CFLAGS_DEMO="${CFLAGS_DEMO} -mno-cygwin" 
+			if test ${SHARED} = yes; then
+				LDFLAGS="-Lwin32/mingw ${LDFLAGS}"
+				SHARED_CMD1="${SHARED_CMD1} -mno-cygwin"
+			else
+				LDFLAGS_DEMO="-Lwin32/mingw ${LDFLAGS_DEMO}"
+			fi
+			DEFNAME=win32/mingw/libhpdf.def
+			RESNAME=win32/mingw/libhpdf_mingw.res
+			STDCALL=yes
+		else
+			DEFNAME=win32/mingw/libhpdf_cdecl.def
+			RESNAME=win32/mingw/libhpdf_cygwin.res
+		fi
+		;;	
+	MINGW*)
+		SHARED_CMD1='$(CC) -Wall -shared -o $(SONAME) $(OBJS) $(DEFNAME) $(RESNAME) -Wl,--kill-at,--enable-stdcall-fixup $(LDFLAGS)'
+		SHARED_CMD2='dlltool -k -d $(DEFNAME) -l $(LIBNAME)'
+		SHARED_CMD3='strip $(SONAME)'
+		SHARED_CMD4='cp -p $(SONAME) demo'
+		_EXEC1_='cd demo/ ; '
+		
+		CFLAGS="${CFLAGS} -Iwin32/include -mno-cygwin"
+		CFLAGS_DEMO="${CFLAGS_DEMO} -mno-cygwin" 
+		if test ${SHARED} = yes; then
+			LDFLAGS="-Lwin32/mingw ${LDFLAGS}"
+			SHARED_CMD1="${SHARED_CMD1} -mno-cygwin"
+		else
+			LDFLAGS_DEMO="-Lwin32/mingw ${LDFLAGS_DEMO}"
+		fi
+
+		SHARED_EXT='.dll'
+		EXE_EXT='.exe'
+		STDCALL=yes
+		DEFNAME=win32/mingw/libhpdf.def
+		RESNAME=win32/mingw/libhpdf_mingw.res
+		;;	
+	MSVC*)
+		#
+		# options for msvc++
+		#
+		# /LD : Create .DLL
+		# /MD : link with MSVCRT.LIB
+		# /MT : link with LIBCMT.LIB
+		# /nologo : suppress copyright message
+		# /O2 : maximize speed
+		# /Fe : name executable file
+		#
+		CFLAGS='-MT -nologo -O2 -Iinclude -Iwin32\\include'
+		CFLAGS_DEMO=${CFLAGS}
+		LDFLAGS='/LIBPATH:win32\\msvc' 
+		LDFLAGS_DEMO='/link /LIBPATH:. /LIBPATH:win32\\msvc' 
+		WIN32=yes
+		CC=cl
+		CFLAGS_ADD='-Fo$@'
+		CFLAGS_EXE="-Fe"
+		LIB_CMD1='if exist *.lib del *.lib'
+		LIB_CMD2='lib -out:$@ $(OBJS)'
+		RESNAME=win32/msvc/libhpdf.res
+		DEFNAME=win32/msvc/libhpdf.def
+		SHARED_CMD1='-@if exist $(SONAME) del $(SONAME)'
+		SHARED_CMD2='-@if exist $(LIBAME) del $(LIBNAME)'
+		SHARED_CMD3='link /DLL /OUT:$(SONAME) $(OBJS) $(RESNAME) $(LDFLAGS) /DEF:$(DEFNAME)'
+		SHARED_CMD4='rename '${APPNAME}.lib' $(LIBNAME)'
+		SHARED_CMD5='copy $(SONAME) demo'
+		SHARED_EXT='.dll'
+		STDCALL=yes
+		;;
+	BCC*)
+		#
+		# bcc32 options
+		#
+		# -d : Merge duplicate strings
+		# -Ox : Optimizations
+		# -wxxx : Warning control
+		# -VM : maintain compatibility with MS VC++
+		#
+		# implib options
+		#
+		# -f : use name for import.
+		#
+		CFLAGS='-WM -O2 -d -q -w-8057 -w-8012 -Iinclude -Iwin32\\include -nsrc'
+		CFLAGS_DEMO='-WM -O2 -d -q -w-8057 -w-8012 -Iinclude -Iwin32\\include'
+		LDFLAGS='/Lwin32\\bcc32' 
+		LDFLAGS_DEMO='/L. /Lwin32\\bcc32'
+		WIN32=yes
+		CC=bcc32
+		CFLAGS_ADD=''
+		CFLAGS_EXE='-e'
+		LIB_CMD1='if exist *.lib del *.lib'
+		LIB_CMD2='tlib \/a $@ +$(OBJS),$@.txt'
+		SHARED_CMD1='-@if exist libhpdf* del libhpdf*'
+		SHARED_CMD2='$(CC) -O2 -WD -e$(SONAME) -DHPDF_DLL_MAKE $(LDFLAGS) $(OBJS)'
+		SHARED_CMD3='implib -f $(LIBNAME) $(SONAME)'
+		SHARED_CMD4='copy $(SONAME) demo'
+		SHARED_EXT='.dll'
+		STDCALL=yes
+		RESNAME=win32/bcc32/libhpdf.res
+		BCC32=yes
+		;;
+	*)
+		#
+		# options for generic gcc
+		# -fPIC : emit position-independent code
+		#
+		echo 'using generic-gcc template'
+		
+		# commands to make shared-library #
+		if test $SHARED = yes; then
+			CFLAGS="${CFLAGS} -fPIC"
+			SHARED_CMD1='$(CC) -Wall -shared -o $(SONAME)$(SOVER1)$(SOVER2) $(OBJS) $(LDFLAGS) -Wl,-soname,$(SONAME)$(SOVER1)'
+			SHARED_CMD2='ln -sf $(SONAME)$(SOVER1)$(SOVER2) $(SONAME)$(SOVER1)'
+			SHARED_CMD3='ln -sf $(SONAME)$(SOVER1) $(SONAME)'
+			_EXEC1_='export LD_LIBRARY_PATH=.. ; cd demo/ ; '
+		else
+			_EXEC1_='cd demo/ ; '
+		fi
+		LDFLAGS_DEMO="${LDFLAGS_DEMO}"
+		LDFLAGS="${LDFLAGS}"
+		LDFLAGS_ADD='-lm'
+
+		;;
+esac
+
+if test $WIN32 = yes; then
+	if test $SHARED = yes; then
+		 LIBNAME="${APPNAME}_dll"
+	fi
+	SHARED_EXT='.dll'
+	LIB_EXT='.lib'
+	OBJ_EXT='.obj'
+	EXE_EXT='.exe'
+	PNGLIB_FLG="libpng.lib"
+	ZLIB_FLG="zlib.lib"
+	CFLAGS_DEMO="${CFLAGS_DEMO} -D__WIN32__"
+	LIBHPDF_FLG="${APPNAME}${LIB_EXT}"
+	COPY=copy
+	DELETE="del"
+#DELETE_ALL='del src\\*.o src\\*.obj .\\*.a .\\*.so* .\\*.dll demo\\*.exe'
+	DELETE_ALL='if exist src\\*.obj del src\\*.obj \n\tif exist src\\*.o del src\\*.o \n\tif exist *.lib del *.lib \n\tif exist *.dll del *.dll \n\tif exist demo\\*.exe del demo\\*.exe \n\tif exist demo\\*.tds del demo\\*.tds \n\tif exist *.obj del *.obj'
+	_SEP_='\\'
+	_EXEC1_='cd demo \n\t'
+	_EXEC2_='\n\tcd ..'
+
+	INSTALL_CMD0='echo target "install" is not supported on windows platforms.'
+else
+	LIB_CMD1='ar rc $(LIBNAME) $(OBJS)'
+	LIB_CMD2='ranlib $(LIBNAME)'
+	LIBHPDF_FLG="-l`echo ${APPNAME} | sed 's/lib//'`"
+
+	# commands to install #
+	echo "INCDIR=${PREFIX}/include"
+	echo "LIBDIR=${PREFIX}/lib"
+	INSTALL_CMD0='if [ ! -d $(PREFIX) ]; then mkdir -p $(PREFIX); fi'
+	INSTALL_CMD1='if [ ! -d $(PREFIX)/include ]; then mkdir -p $(PREFIX)/include; fi'
+	INSTALL_CMD2='if [ ! -d $(PREFIX)/lib ]; then mkdir -p $(PREFIX)/lib; fi'
+	if test $SHARED = yes; then
+		INSTALL_CMD3='cp include/hpdf.h include/hpdf_consts.h include/hpdf_types.h $(PREFIX)/include/; chmod 644 $(PREFIX)/include/hpdf*.h'
+		INSTALL_CMD4='cp -p $(SONAME)$(SOVER1)$(SOVER2) $(PREFIX)/lib/'
+		if test $SHARED_EXT != '.dll'; then
+			INSTALL_CMD5='ln -sf $(SONAME)$(SOVER1)$(SOVER2) $(PREFIX)/lib/$(SONAME)$(SOVER1)'
+			INSTALL_CMD6='ln -sf $(SONAME)$(SOVER1) $(PREFIX)/lib/$(SONAME)'
+		else
+			INSTALL_CMD5='cp -p $(LIBNAME) $(PREFIX)/lib/'
+		fi
+	else
+		INSTALL_CMD3='cp include/hpdf*.h $(PREFIX)/include/; chmod 644 $(PREFIX)/include/hpdf*.h'
+		INSTALL_CMD4='cp -p $(LIBNAME) $(PREFIX)/lib/'
+	fi	
+fi
+
+LDFLAGS_DEMO="$LDFLAGS_DEMO $LIBHPDF_FLG"
+
+# PNGLIB #
+if test $NOPNGLIB != yes; then
+	if test $NOZLIB = yes; then
+		echo "ERROR: cannot use pnglib without zlib"
+		exit 1
+	fi
+	LDFLAGS="$LDFLAGS $PNGLIB_FLG"
+	if test $SHARED != yes; then
+		LDFLAGS_DEMO="$LDFLAGS_DEMO $PNGLIB_FLG"
+	fi
+#	fi
+else
+	CFLAGS="${CFLAGS} -DHPDF_NOPNGLIB"
+	CFLAGS_DEMO="${CFLAGS_DEMO} -DHPDF_NOPNGLIB"
+fi
+
+# ZLIB #
+if test $NOZLIB != yes; then
+	LDFLAGS="$LDFLAGS $ZLIB_FLG"
+	if test $SHARED != yes; then
+		LDFLAGS_DEMO="$LDFLAGS_DEMO $ZLIB_FLG"
+	fi
+#	fi
+else
+	CFLAGS="${CFLAGS} -DHPDF_NOZLIB"
+	CFLAGS_DEMO="${CFLAGS_DEMO} -DHPDF_NOZLIB"
+fi
+
+# create extconf.rb
+if test $WIN32 != yes; then
+    if test $NOPNGLIB = yes; then
+        if test $NOZLIB = yes; then
+            cp if/ruby/extconf.rb.nozlib if/ruby/extconf.rb
+        else
+            cp if/ruby/extconf.rb.nopnglib if/ruby/extconf.rb
+        fi
+    else
+        cp if/ruby/extconf.rb.all if/ruby/extconf.rb
+    fi
+fi
+
+# shared library "
+if test $SHARED = yes; then
+	if test $SHARED_EXT = '.dll'; then
+		if test $STDCALL = 'yes'; then
+			CFLAGS="$CFLAGS -DHPDF_DLL_MAKE"
+			CFLAGS_DEMO="$CFLAGS_DEMO -DHPDF_DLL"
+		else
+			CFLAGS="$CFLAGS -DHPDF_DLL_MAKE_CDECL"
+			CFLAGS_DEMO="$CFLAGS_DEMO -DHPDF_DLL_CDECL"
+		fi
+	else
+		CFLAGS="$CFLAGS -DHPDF_SHARED_MAKE"
+		CFLAGS_DEMO="$CFLAGS_DEMO -DHPDF_SHARED"
+	fi
+	LIBTARGET=${APPNAME}${SHARED_EXT}
+else
+	LIBTARGET=${APPNAME}${LIB_EXT}
+fi
+
+LDFLAGS_DEMO="$LDFLAGS_DEMO $LDFLAGS_ADD"
+LDFLAGS="$LDFLAGS $LDFLAGS_ADD"
+
+if test $BCC32 = yes; then
+	LDFLAGS_DEMO1=$LDFLAGS_DEMO
+	LDFLAGS_DEMO2=''
+else
+	LDFLAGS_DEMO1=''
+	LDFLAGS_DEMO2=$LDFLAGS_DEMO
+fi
+
+CFLAGS="$CFLAGS $CFLAGS_USER"
+
+echo "CC=${CC}"
+echo "PREFIX=${PREFIX}"
+echo "LIBNAME=${APPNAME}${LIB_EXT}"
+echo "SONAME=${APPNAME}${SHARED_EXT}"
+echo "DEFNAME=${DEFNAME}"
+echo "LIBTARGET=${LIBTARGET}"
+echo "CFLAGS=${CFLAGS}"
+echo "CFLAGS_DEMO=${CFLAGS_DEMO}"
+echo "LDFLAGS=${LDFLAGS}"
+echo "LDFLAGS_DEMO=${LDFLAGS_DEMO}"
+
+echo "creating Makefile"
+
+cat "script/Makefile.in" | sed "
+/^CC *=/s%=.*%=${CC}%
+/^PREFIX *=/s%=.*%=${PREFIX}%
+/^LIBNAME *=/s%=.*%=${APPNAME}${LIB_EXT}%
+/^SOVER1 *=/s%=.*%=${SOVER1}%
+/^SOVER2 *=/s%=.*%=${SOVER2}%
+/^SONAME *=/s%=.*%=${APPNAME}${SHARED_EXT}%
+/^DEFNAME *=/s%=.*%=${DEFNAME}%
+/^RESNAME *=/s%=.*%=${RESNAME}%
+/^LIBTARGET *=/s%=.*%=${LIBTARGET}%
+/^CFLAGS *=/s%=.*%=${CFLAGS}%
+/^CFLAGS_DEMO *=/s%=.*%=${CFLAGS_DEMO}%
+/^CFLAGS_EXE *=/s%=.*%=${CFLAGS_EXE}%
+/^LDFLAGS *=/s%=.*%=${LDFLAGS}%
+/^LDFLAGS_DEMO1 *=/s%=.*%=${LDFLAGS_DEMO1}%
+/^LDFLAGS_DEMO2 *=/s%=.*%=${LDFLAGS_DEMO2}%
+" > Makefile.tmp
+
+cat Makefile.tmp | sed "
+s%_CFLAGS_ADD%${CFLAGS_ADD}%g;
+s%_OBJ_EXT%${OBJ_EXT}%g;
+s%_EXE_EXT%${EXE_EXT}%g;
+s%_COPY%${COPY}%g;
+s%_DELETE_ALL%${DELETE_ALL}%g;
+s%_DELETE%${DELETE}%g;
+s%_SHARED_CMD1%${SHARED_CMD1}%g;
+s%_SHARED_CMD2%${SHARED_CMD2}%g;
+s%_SHARED_CMD3%${SHARED_CMD3}%g;
+s%_SHARED_CMD4%${SHARED_CMD4}%g;
+s%_SHARED_CMD5%${SHARED_CMD5}%g;
+s%_INSTALL_CMD0%${INSTALL_CMD0}%g;
+s%_INSTALL_CMD1%${INSTALL_CMD1}%g;
+s%_INSTALL_CMD2%${INSTALL_CMD2}%g;
+s%_INSTALL_CMD3%${INSTALL_CMD3}%g;
+s%_INSTALL_CMD4%${INSTALL_CMD4}%g;
+s%_INSTALL_CMD5%${INSTALL_CMD5}%g;
+s%_INSTALL_CMD6%${INSTALL_CMD6}%g;
+s%_LIB_CMD1%${LIB_CMD1}%g;
+s%_LIB_CMD2%${LIB_CMD2}%g;
+s%_SEP_%${_SEP_}%g;
+s%_EXEC1_%${_EXEC1_}%g;
+s%_EXEC2_%${_EXEC2_}%g;
+s%_SEP_%${_SEP_}%g;
+" > Makefile
+
+echo "done."
+
+exit 0
+

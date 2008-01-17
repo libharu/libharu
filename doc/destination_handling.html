@@ -1,0 +1,620 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="api.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Destination<br>
+</h2>
+<h3><a name="HPDF_Destination_SetXYZ_"></a>HPDF_Destination_SetXYZ<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetXYZ&nbsp; (HPDF_Destination&nbsp; dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; left,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; top,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; zoom);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_SetXYZ() defines the appearance of a page with three
+parameters which are left, top and zoom.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">dst</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<span style="font-weight: bold;">left</span>
+<div class="bodytext5">The left coordinates of the pege.<br>
+</div>
+<br>
+<span style="font-weight: bold;">top</span><br>
+<div class="bodytext5">The top coordinates of the pege.
+</div>
+<br>
+<span style="font-weight: bold;">zoom</span><br>
+<div class="bodytext5">The page magnified factor. The value must be
+between 0.08(8%) to 32(%).<br>
+</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetXYZ() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_PARAMETER</span><br>
+<div class="bodytext5">An invalid value was set at either left, top or
+zoom parameter.<br>
+<br>
+</div>
+</div>
+<br>
+<h3><a name="HPDF_Destination_SetFit_"></a>HPDF_Destination_SetFit<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetFit&nbsp; (HPDF_Destination&nbsp; dst);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_Fit() sets the appearance of the page to displaying
+entire page within the window. <br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetFit() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+</div>
+</div>
+<br>
+<h3><a name="HPDF_Destination_SetFitH_"></a>HPDF_Destination_SetFitH<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetFitH&nbsp; (HPDF_Destination&nbsp; dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; top);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_SetFitH() defines the appearance of a page to
+magnifying to fit the width of the page within the window and setting
+the top position of the page to the value of the "top" parameter.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">dst</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<span style="font-weight: bold;">top</span><br>
+<div class="bodytext5">The top coordinates of the pege.
+</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetFitH() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_PARAMETER</span><br>
+<div class="bodytext5">An invalid value was set at either left, top or
+zoom parameter.<br>
+<br>
+</div>
+</div>
+<br>
+<h3><a name="HPDF_Destination_SetFitV_"></a>HPDF_Destination_SetFitV<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetFitV&nbsp; (HPDF_Destination&nbsp; dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; left);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_SetFitV() defines the appearance of a page to
+magnifying to fit the height of the page within the window and setting
+the left position of the page to the value of the "top" parameter.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">dst</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<span style="font-weight: bold;">left</span><br>
+<div class="bodytext5">The left coordinates of the pege.
+</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetFitV() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_PARAMETER</span><br>
+<div class="bodytext5">An invalid value was set at either left, top or
+zoom parameter.<br>
+</div>
+</div>
+<br>
+<h3><a name="HPDF_Destination_SetFitR_"></a>HPDF_Destination_SetFitR<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetFitR&nbsp; (HPDF_Destination&nbsp; dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; left,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bottom,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; right,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; top);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_SetFitR() defines the appearance of a page to
+magnifying the page to fit a rectangle specified by left, bottom, right
+and top.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">dst</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<span style="font-weight: bold;">left</span>
+<div class="bodytext5">The left coordinates of the pege.<br>
+</div>
+<br>
+<span style="font-weight: bold;">bottom</span><br>
+<div class="bodytext5">The bottom coordinates of the pege.
+</div>
+<br>
+<span style="font-weight: bold;">right</span><br>
+<div class="bodytext5">The right coordinates of the pege.<br>
+<br>
+</div>
+<span style="font-weight: bold;">top </span><br>
+<div class="bodytext5">The top coordinates of the pege.</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetR() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_PARAMETER</span><br>
+<div class="bodytext5">An invalid value was set at either left, top or
+zoom parameter.<br>
+<br>
+</div>
+</div>
+<br>
+<h3><a name="HPDF_Destination_SetFitB_"></a>HPDF_Destination_SetFitB<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetFitB&nbsp; (HPDF_Destination&nbsp; dst);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_FitB() sets the appearance of the page to
+magnifying to fit&nbsp; the bounding box of the page within the window.
+<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">dst</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetFitB() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+<br>
+</div>
+</div>
+<h3><a name="HPDF_Destination_SetFitBH_"></a>HPDF_Destination_SetFitBH<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetFitBH&nbsp; (HPDF_Destination&nbsp; dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; top);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_SetFitBH() defines the appearance of a page to
+magnifying to fit the width of the bounding box of the page within the
+window and setting
+the top position of the page to the value of the "top" parameter.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">dst</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<span style="font-weight: bold;">top</span><br>
+<div class="bodytext5">The top coordinates of the pege.
+</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetFitBH() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_PARAMETER</span><br>
+<div class="bodytext5">An invalid value was set at either left, top or
+zoom parameter.<br>
+<br>
+<br>
+</div>
+</div>
+<h3><a name="HPDF_Destination_SetFitBV_"></a>HPDF_Destination_SetFitBV<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Destination_SetFitBV&nbsp; (HPDF_Destination&nbsp; dst,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; top);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Destination_SetFitBV() defines the appearance of a page to
+magnifying to fit the height of the bounding box of the page within the
+window and setting
+the top position of the page to the value of the "top" parameter.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">dst</span>
+<div class="bodytext5">The handle of a destination object.<br>
+</div>
+<br>
+<span style="font-weight: bold;">left</span><br>
+<div class="bodytext5">The left coordinates of the pege.
+</div>
+<br>
+<h4>Returns</h4>
+When
+HPDF_Destination_SetFitBV() succeeds, it returns HPDF_OK. Otherwise, it
+returns error-code and error-handler is invoked.<br>
+<br>
+<h4>Error</h4>
+<span style="font-weight: bold;">HPDF_INVALID_DESTINATION</span>
+<div class="bodytext5">An invalid destination handle was set.<br>
+&nbsp;
+<br>
+</div>
+<span style="font-weight: bold;">HPDF_INVALID_PARAMETER</span><br>
+<div class="bodytext5">An invalid value was set at either left, top or
+zoom parameter.<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar">
+<ul>
+</ul>
+<ul>
+  <li><a href="#HPDF_Destination_SetXYZ_">HPDF_Destination_SetXYZ</a></li>
+  <li><a href="#HPDF_Destination_SetFit_">HPDF_Destination_SetFit</a></li>
+  <li><a href="#HPDF_Destination_SetFitH_">HPDF_Destination_SetFitH</a></li>
+  <li><a href="#HPDF_Destination_SetFitV_">HPDF_Destination_SetFitV</a></li>
+  <li><a href="#HPDF_Destination_SetFitR_">HPDF_Destination_SetFitR</a></li>
+  <li><a href="#HPDF_Destination_SetFitB_">HPDF_Destination_SetFitB</a></li>
+  <li><a href="#HPDF_Destination_SetFitBH_">HPDF_Destination_SetFitBH</a></li>
+  <li><a href="#HPDF_Destination_SetFitBV_">HPDF_Destination_SetFitBV</a><br>
+  </li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>

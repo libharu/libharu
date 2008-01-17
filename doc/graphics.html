@@ -1,0 +1,1210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="default.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Graphics<br>
+</h2>
+<h3><a name="Coordination_system_"></a>Coordination system
+</h3>
+<div class="bodytext1">In the default coordinate system of PDF,&nbsp;
+the lower-left corner is at coordinates (0, 0), and the upper-right
+corner is at coordinates (width, height). The default resolution is
+72dpi.<br>
+<br>
+<img alt="default user space" title="default user space"
+ src="image/figure3.png" style="width: 290px; height: 270px;"><br>
+<br>
+An application can change coordinate system with invoking
+HPDF_Page_Concat(). <br>
+For example, if an application invokes HPDF_Page_Concat (page, 0.5, 0,
+0, 0.5, 100, 100) in the default state, the coodinate shown above is
+transformed to new coordinates shown in the figure below.<br>
+<br>
+<img alt="figure4" title="fugure4" src="image/figure4.png"
+ style="width: 260px; height: 280px;"><br>
+<br>
+<br>
+</div>
+<h3><a name="Graphics_mode_"></a>Graphics mode<br>
+</h3>
+<div class="bodytext1">In Haru, each page-objects maintain the flags
+named
+graphics mode. The graphics mode corresponds to the graphics-object of
+the specification of PDF. <br>
+The graphics mode is changed by invoking particular function, and the
+functions that can be invoked are decided by the value of the graphics
+mode.<br>
+<br>
+&nbsp;The following figures show the relation of the graphics mode. <br>
+<br>
+<img alt="figure6" title="figure6" src="image/figure6.png"
+ style="width: 660px; height: 480px;"><br>
+<br>
+<br>
+</div>
+<h3><a name="Path_Painting_"></a>Path Painting<br>
+</h3>
+<div class="bodytext1">A path is composed of straight and curved line
+segments, and Paths define shapes and regions.<br>
+Vector graphics is drawn by the following steps.
+<ol>
+  <li>Set grahics states(such as line-width, dash-pattern, color...)
+with using "Graphics State Operators" or "Color Operators".</li>
+  <li>Start to create new path with using HPDF_Page_MoveTo() or
+HPDF_Page_Rectangle() or HPDF_Page_Arc() or HPDF_Page_Circle().<br>
+  </li>
+  <li>Append a path with using "Path Construction Operators". <br>
+  </li>
+  <li>Stroke or paint the path with using "Path Painting Operators".</li>
+</ol>
+<br>
+<span style="font-weight: bold;">List of Graphics State Operators</span><br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetLineWidth</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetLineCap</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetLineJoin<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">4<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetMiterLimit<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">5<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetDash<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">6<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetFlat<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">7<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_Concat<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<span style="font-weight: bold;">List of Color Operators</span><br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetGrayFill</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetGrayStroke</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetRGBFill<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">4<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetRGBStroke<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">5<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetCMYKFill<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">6<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetCMYKStroke<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<span style="font-weight: bold;">List of Path Construction Operators<br>
+</span>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_MoveTo</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_LineTo</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_CurveTo<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">4<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_CurveTo2<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">5<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_CurveTo3<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">6<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_Rectangle<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">7<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_Arc<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">8<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_Circle<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<span style="font-weight: bold;">List of Path Painting Operators</span><br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_Stroke</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_ClosePathStroke</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_Fill<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">4<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_Eofill<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">5<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_FillStroke<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">6<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_EofillStroke<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">7<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_ClosePathFillStroke<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">8<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_ClosePathEofillStroke<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">9<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_EndPath<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+<h3><a name="Text_Showing_"></a>Text Showing<br>
+</h3>
+<div class="bodytext1">A text is drawn by the following steps.<br>
+<ol>
+  <li>Start showing text by invoking HPDF_Page_BeginText().</li>
+  <li>Set text states(such as font, filling-color...)
+with using "Text State Operators" or "Color Operators". At least
+HPDF_Page_SetFontAndSize() must be invoked once before invoking "Text
+Showing Operators".<br>
+  </li>
+  <li>Set text positioning by invoking "Text Positioning Operators"<br>
+  </li>
+  <li>Show text by invoking "Text Showing Operators"</li>
+  <li>Repeat the step of 2-4 if necessary. <br>
+  </li>
+  <li>Finish showing text by invoking HPDF_Page_EndText().</li>
+</ol>
+The figure below explains of the positioning of text drawing.<br>
+&nbsp;<br>
+<img alt="figure5" title="figure5" src="image/figure5.png"
+ style="width: 199px; height: 129px;"><br>
+<br>
+<br>
+<br>
+<span style="font-weight: bold;">List of Text State Operator</span>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetCharSpace</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetWordSpace</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetHorizontalScalling<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">4<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetTextLeading<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">5<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetFontAndSize<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">6<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetTextRenderingMode<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">7<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetTextRaise<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<span style="font-weight: bold;">List of Text Positioning Operators</span><br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_MoveTextPos</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_MoveTextPos2</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_SetTextMatrix<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<span style="font-weight: bold;">List of Text Showing Operators</span><br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_ShowText</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_ShowTextNextLine</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">3<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_ShowTextNextLineEx<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">4<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_TextOut<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right;">5<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_TextRect<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+</div>
+<h3><a name="Images_"></a>Images<br>
+</h3>
+<div class="bodytext1">&nbsp;There are two functions to draw image on
+Haru. HPDF_DrawImage() is a simple function that shows image at
+specified position and size. HPDF_DrawXObject is more advanced function.<br>
+&nbsp;<br>
+<span style="font-weight: bold;">List of Image Showing Operators</span><br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; text-align: right; background-color: rgb(204, 204, 204); width: 24px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">function
+name<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">1<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_ExecuteXObject</td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; text-align: right; width: 24px;">2<br>
+      </td>
+      <td style="vertical-align: top;">HPDF_Page_DrawImage</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+<h3><a name="Colors"></a>Colors</h3>
+<div class="bodytext1">&nbsp;Colors are specified using three real
+numbers (ie ones with a decimal
+point) in the form R G B where each number defines the amount of red
+(R), green (G) and blue (B) in a color. The valid numbers are from 0.0
+to 1.0 inclusive.<br>
+<br>
+Below is a table showing 216 example colors and their real notations:<br>
+<table border="0" cellpadding="4" cellspacing="4">
+  <tbody>
+    <tr>
+      <td class="c1" style="background-color: rgb(0, 0, 0);">0.0,&nbsp;0.0,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(0, 0, 51);">0.0,&nbsp;0.0,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(0, 0, 102);">0.0,&nbsp;0.0,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(0, 0, 153);">0.0,&nbsp;0.0,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(0, 0, 204);">0.0,&nbsp;0.0,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(0, 0, 255);">0.0,&nbsp;0.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(0, 51, 0);">0.0,&nbsp;0.2,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(0, 51, 51);">0.0,&nbsp;0.2,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(0, 51, 102);">0.0,&nbsp;0.2,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(0, 51, 153);">0.0,&nbsp;0.2,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(0, 51, 204);">0.0,&nbsp;0.2,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(0, 51, 255);">0.0,&nbsp;0.2,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(0, 102, 0);">0.0,&nbsp;0.4,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(0, 102, 51);">0.0,&nbsp;0.4,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(0, 102, 102);">0.0,&nbsp;0.4,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(0, 102, 153);">0.0,&nbsp;0.4,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(0, 102, 204);">0.0,&nbsp;0.4,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(0, 102, 255);">0.0,&nbsp;0.4,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(0, 153, 0);">0.0,&nbsp;0.6,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(0, 153, 51);">0.0,&nbsp;0.6,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(0, 153, 102);">0.0,&nbsp;0.6,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(0, 153, 153);">0.0,&nbsp;0.6,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(0, 153, 204);">0.0,&nbsp;0.6,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(0, 153, 255);">0.0,&nbsp;0.6,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(0, 204, 0);">0.0,&nbsp;0.8,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(0, 204, 51);">0.0,&nbsp;0.8,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(0, 204, 102);">0.0,&nbsp;0.8,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(0, 204, 153);">0.0,&nbsp;0.8,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(0, 204, 204);">0.0,&nbsp;0.8,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(0, 204, 255);">0.0,&nbsp;0.8,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(0, 255, 0);">0.0,&nbsp;1.0,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(0, 255, 51);">0.0,&nbsp;1.0,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(0, 255, 102);">0.0,&nbsp;1.0,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(0, 255, 153);">0.0,&nbsp;1.0,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(0, 255, 204);">0.0,&nbsp;1.0,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(0, 255, 255);">0.0,&nbsp;1.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(51, 0, 0);">0.2,&nbsp;0.0,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(51, 0, 51);">0.2,&nbsp;0.0,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(51, 0, 102);">0.2,&nbsp;0.0,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(51, 0, 153);">0.2,&nbsp;0.0,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(51, 0, 204);">0.2,&nbsp;0.0,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(51, 0, 255);">0.2,&nbsp;0.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(51, 51, 0);">0.2,&nbsp;0.2,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(51, 51, 51);">0.2,&nbsp;0.2,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(51, 51, 102);">0.2,&nbsp;0.2,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(51, 51, 153);">0.2,&nbsp;0.2,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(51, 51, 204);">0.2,&nbsp;0.2,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(51, 51, 255);">0.2,&nbsp;0.2,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(51, 102, 0);">0.2,&nbsp;0.4,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(51, 102, 51);">0.2,&nbsp;0.4,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(51, 102, 102);">0.2,&nbsp;0.4,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(51, 102, 153);">0.2,&nbsp;0.4,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(51, 102, 204);">0.2,&nbsp;0.4,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(51, 102, 255);">0.2,&nbsp;0.4,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(51, 153, 0);">0.2,&nbsp;0.6,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(51, 153, 51);">0.2,&nbsp;0.6,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(51, 153, 102);">0.2,&nbsp;0.6,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(51, 153, 153);">0.2,&nbsp;0.6,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(51, 153, 204);">0.2,&nbsp;0.6,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(51, 153, 255);">0.2,&nbsp;0.6,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(51, 204, 0);">0.2,&nbsp;0.8,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(51, 204, 51);">0.2,&nbsp;0.8,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(51, 204, 102);">0.2,&nbsp;0.8,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(51, 204, 153);">0.2,&nbsp;0.8,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(51, 204, 204);">0.2,&nbsp;0.8,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(51, 204, 255);">0.2,&nbsp;0.8,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(51, 255, 0);">0.2,&nbsp;1.0,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(51, 255, 51);">0.2,&nbsp;1.0,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(51, 255, 102);">0.2,&nbsp;1.0,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(51, 255, 153);">0.2,&nbsp;1.0,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(51, 255, 204);">0.2,&nbsp;1.0,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(51, 255, 255);">0.2,&nbsp;1.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(102, 0, 0);">0.4,&nbsp;0.0,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(102, 0, 51);">0.4,&nbsp;0.0,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(102, 0, 102);">0.4,&nbsp;0.0,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(102, 0, 153);">0.4,&nbsp;0.0,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(102, 0, 204);">0.4,&nbsp;0.0,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(102, 0, 255);">0.4,&nbsp;0.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(102, 51, 0);">0.4,&nbsp;0.2,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(102, 51, 51);">0.4,&nbsp;0.2,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(102, 51, 102);">0.4,&nbsp;0.2,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(102, 51, 153);">0.4,&nbsp;0.2,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(102, 51, 204);">0.4,&nbsp;0.2,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(102, 51, 255);">0.4,&nbsp;0.2,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(102, 102, 0);">0.4,&nbsp;0.4,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(102, 102, 51);">0.4,&nbsp;0.4,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(102, 102, 102);">0.4,&nbsp;0.4,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(102, 102, 153);">0.4,&nbsp;0.4,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(102, 102, 204);">0.4,&nbsp;0.4,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(102, 102, 255);">0.4,&nbsp;0.4,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(102, 153, 0);">0.4,&nbsp;0.6,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(102, 153, 51);">0.4,&nbsp;0.6,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(102, 153, 102);">0.4,&nbsp;0.6,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(102, 153, 153);">0.4,&nbsp;0.6,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(102, 153, 204);">0.4,&nbsp;0.6,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(102, 153, 255);">0.4,&nbsp;0.6,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(102, 204, 0);">0.4,&nbsp;0.8,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(102, 204, 51);">0.4,&nbsp;0.8,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(102, 204, 102);">0.4,&nbsp;0.8,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(102, 204, 153);">0.4,&nbsp;0.8,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(102, 204, 204);">0.4,&nbsp;0.8,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(102, 204, 255);">0.4,&nbsp;0.8,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(102, 255, 0);">0.4,&nbsp;1.0,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(102, 255, 51);">0.4,&nbsp;1.0,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(102, 255, 102);">0.4,&nbsp;1.0,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(102, 255, 153);">0.4,&nbsp;1.0,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(102, 255, 204);">0.4,&nbsp;1.0,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(102, 255, 255);">0.4,&nbsp;1.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(153, 0, 0);">0.6,&nbsp;0.0,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(153, 0, 51);">0.6,&nbsp;0.0,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(153, 0, 102);">0.6,&nbsp;0.0,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(153, 0, 153);">0.6,&nbsp;0.0,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(153, 0, 204);">0.6,&nbsp;0.0,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(153, 0, 255);">0.6,&nbsp;0.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(153, 51, 0);">0.6,&nbsp;0.2,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(153, 51, 51);">0.6,&nbsp;0.2,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(153, 51, 102);">0.6,&nbsp;0.2,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(153, 51, 153);">0.6,&nbsp;0.2,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(153, 51, 204);">0.6,&nbsp;0.2,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(153, 51, 255);">0.6,&nbsp;0.2,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(153, 102, 0);">0.6,&nbsp;0.4,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(153, 102, 51);">0.6,&nbsp;0.4,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(153, 102, 102);">0.6,&nbsp;0.4,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(153, 102, 153);">0.6,&nbsp;0.4,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(153, 102, 204);">0.6,&nbsp;0.4,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(153, 102, 255);">0.6,&nbsp;0.4,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(153, 153, 0);">0.6,&nbsp;0.6,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(153, 153, 51);">0.6,&nbsp;0.6,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(153, 153, 102);">0.6,&nbsp;0.6,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(153, 153, 153);">0.6,&nbsp;0.6,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(153, 153, 204);">0.6,&nbsp;0.6,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(153, 153, 255);">0.6,&nbsp;0.6,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(153, 204, 0);">0.6,&nbsp;0.8,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(153, 204, 51);">0.6,&nbsp;0.8,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(153, 204, 102);">0.6,&nbsp;0.8,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(153, 204, 153);">0.6,&nbsp;0.8,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(153, 204, 204);">0.6,&nbsp;0.8,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(153, 204, 255);">0.6,&nbsp;0.8,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(153, 255, 0);">0.6,&nbsp;1.0,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(153, 255, 51);">0.6,&nbsp;1.0,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(153, 255, 102);">0.6,&nbsp;1.0,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(153, 255, 153);">0.6,&nbsp;1.0,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(153, 255, 204);">0.6,&nbsp;1.0,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(153, 255, 255);">0.6,&nbsp;1.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(204, 0, 0);">0.8,&nbsp;0.0,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(204, 0, 51);">0.8,&nbsp;0.0,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(204, 0, 102);">0.8,&nbsp;0.0,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(204, 0, 153);">0.8,&nbsp;0.0,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(204, 0, 204);">0.8,&nbsp;0.0,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(204, 0, 255);">0.8,&nbsp;0.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(204, 51, 0);">0.8,&nbsp;0.2,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(204, 51, 51);">0.8,&nbsp;0.2,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(204, 51, 102);">0.8,&nbsp;0.2,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(204, 51, 153);">0.8,&nbsp;0.2,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(204, 51, 204);">0.8,&nbsp;0.2,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(204, 51, 255);">0.8,&nbsp;0.2,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(204, 102, 0);">0.8,&nbsp;0.4,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(204, 102, 51);">0.8,&nbsp;0.4,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(204, 102, 102);">0.8,&nbsp;0.4,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(204, 102, 153);">0.8,&nbsp;0.4,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(204, 102, 204);">0.8,&nbsp;0.4,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(204, 102, 255);">0.8,&nbsp;0.4,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(204, 153, 0);">0.8,&nbsp;0.6,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(204, 153, 51);">0.8,&nbsp;0.6,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(204, 153, 102);">0.8,&nbsp;0.6,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(204, 153, 153);">0.8,&nbsp;0.6,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(204, 153, 204);">0.8,&nbsp;0.6,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(204, 153, 255);">0.8,&nbsp;0.6,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(204, 204, 0);">0.8,&nbsp;0.8,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(204, 204, 51);">0.8,&nbsp;0.8,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(204, 204, 102);">0.8,&nbsp;0.8,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(204, 204, 153);">0.8,&nbsp;0.8,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(204, 204, 204);">0.8,&nbsp;0.8,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(204, 204, 255);">0.8,&nbsp;0.8,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(204, 255, 0);">0.8,&nbsp;1.0,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(204, 255, 51);">0.8,&nbsp;1.0,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(204, 255, 102);">0.8,&nbsp;1.0,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(204, 255, 153);">0.8,&nbsp;1.0,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(204, 255, 204);">0.8,&nbsp;1.0,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(204, 255, 255);">0.8,&nbsp;1.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(255, 0, 0);">1.0,&nbsp;0.0,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(255, 0, 51);">1.0,&nbsp;0.0,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(255, 0, 102);">1.0,&nbsp;0.0,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(255, 0, 153);">1.0,&nbsp;0.0,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(255, 0, 204);">1.0,&nbsp;0.0,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(255, 0, 255);">1.0,&nbsp;0.0,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c1" style="background-color: rgb(255, 51, 0);">1.0,&nbsp;0.2,&nbsp;0.0</td>
+      <td class="c1" style="background-color: rgb(255, 51, 51);">1.0,&nbsp;0.2,&nbsp;0.2</td>
+      <td class="c1" style="background-color: rgb(255, 51, 102);">1.0,&nbsp;0.2,&nbsp;0.4</td>
+      <td class="c1" style="background-color: rgb(255, 51, 153);">1.0,&nbsp;0.2,&nbsp;0.6</td>
+      <td class="c1" style="background-color: rgb(255, 51, 204);">1.0,&nbsp;0.2,&nbsp;0.8</td>
+      <td class="c1" style="background-color: rgb(255, 51, 255);">1.0,&nbsp;0.2,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(255, 102, 0);">1.0,&nbsp;0.4,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(255, 102, 51);">1.0,&nbsp;0.4,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(255, 102, 102);">1.0,&nbsp;0.4,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(255, 102, 153);">1.0,&nbsp;0.4,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(255, 102, 204);">1.0,&nbsp;0.4,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(255, 102, 255);">1.0,&nbsp;0.4,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(255, 153, 0);">1.0,&nbsp;0.6,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(255, 153, 51);">1.0,&nbsp;0.6,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(255, 153, 102);">1.0,&nbsp;0.6,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(255, 153, 153);">1.0,&nbsp;0.6,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(255, 153, 204);">1.0,&nbsp;0.6,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(255, 153, 255);">1.0,&nbsp;0.6,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(255, 204, 0);">1.0,&nbsp;0.8,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(255, 204, 51);">1.0,&nbsp;0.8,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(255, 204, 102);">1.0,&nbsp;0.8,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(255, 204, 153);">1.0,&nbsp;0.8,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(255, 204, 204);">1.0,&nbsp;0.8,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(255, 204, 255);">1.0,&nbsp;0.8,&nbsp;1.0</td>
+    </tr>
+    <tr>
+      <td class="c2" style="background-color: rgb(255, 255, 0);">1.0,&nbsp;1.0,&nbsp;0.0</td>
+      <td class="c2" style="background-color: rgb(255, 255, 51);">1.0,&nbsp;1.0,&nbsp;0.2</td>
+      <td class="c2" style="background-color: rgb(255, 255, 102);">1.0,&nbsp;1.0,&nbsp;0.4</td>
+      <td class="c2" style="background-color: rgb(255, 255, 153);">1.0,&nbsp;1.0,&nbsp;0.6</td>
+      <td class="c2" style="background-color: rgb(255, 255, 204);">1.0,&nbsp;1.0,&nbsp;0.8</td>
+      <td class="c2" style="background-color: rgb(255, 255, 255);">1.0,&nbsp;1.0,&nbsp;1.0</td>
+    </tr>
+  </tbody>
+</table>
+NB The above table contains what is known as the "web safe" color
+palette, it is also known by the following names: browser-safe palette,
+Netscape palette,
+216 color palette, Web palette or 6x6x6 color cube.<br>
+<br>
+Historical note: It's purpose was to provide a consistent palette of
+colors for a wide variety of browsers and operating systems which at
+the time usually had 256 colors (8-bit).<br>
+<br>
+The reason that 216 colors were used out of the possible palette of 256
+colors is that this allowed an even sampling of color throughout the
+color space that can be realised on most displays by dividing it up
+into areas which represent one-sixth of the possible values of all
+color components of red, green and blue - hence we get a cube which has
+6 possible areas of red, 6 of green and 6 of blue which together make
+up 6x6x6 = 216 combinations.<br>
+<br>
+Today most screens are viewed in True color which uses 24-bits and uses
+the full range of 256 possible values for each red, green and blue
+color component which give 256x256x256 = 16777216 colors.<br>
+<br>
+However, this can be quite daunting for non-artists to work with and
+the web safe palette is a useful starting point when considering color
+schemes. <br>
+<br>
+<br>
+<br>
+<br>
+&nbsp; <br>
+<br>
+<br>
+</div>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar">
+<ul>
+</ul>
+<ul>
+  <li><a href="#Coordination_system_">Coordination system</a></li>
+  <li><a href="#Graphics_mode_">Graphics mode</a></li>
+  <li><a href="#Path_Painting_">Path Painting</a></li>
+  <li><a href="#Text_Showing_">Text Showing</a></li>
+  <li><a href="#Images_">Images</a></li>
+  <li><a href="#Colors">Colors</a></li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<ul>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>

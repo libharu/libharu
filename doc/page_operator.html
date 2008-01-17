@@ -1,0 +1,2640 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="api.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>Graphics <br>
+</h2>
+<h3><a name="HPDF_Page_SetLineWidth_"></a>HPDF_Page_SetLineWidth<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetLineWidth&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; line_width);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetLineWidth() sets the width of the line used to stroke a
+path.<br>
+An application can invoke HPDF_Page_SetLineWidth() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">line_width</span><br>
+<div class="bodytext5">The width of line.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetLineWidth() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetLineCap_"></a>HPDF_Page_SetLineCap<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_Page_SetLineCap&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_LineCap&nbsp; line_cap);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetLineCap() sets the shape to be used at the ends of line.<br>
+An application can invoke HPDF_Page_SetLineCap() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">line_cap</span><br>
+<div class="bodytext5">The style of line-cap.<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="2"
+ cellspacing="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">value<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 140px;"><br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">description<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_BUTT_END</td>
+      <td style="vertical-align: top; width: 140px; text-align: center;"><img
+ alt="HPDF_BUTT_END" src="image/figure10.png"
+ style="width: 120px; height: 42px;"><br>
+      </td>
+      <td style="vertical-align: top;">The line is squared off at the
+endpoint of the path.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_ROUND_END</td>
+      <td style="vertical-align: top; width: 140px; text-align: center;"><img
+ alt="HPDF_ROUND_END" src="image/figure11.png"
+ style="width: 120px; height: 42px;"><br>
+      </td>
+      <td style="vertical-align: top;">The end of a line becomes a
+semicircle whose center is the end point of the path.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_PROJECTING_SCUARE_END</td>
+      <td style="vertical-align: top; width: 140px; text-align: center;"><img
+ alt="HPDF_PROJECTING_SCUARE_END" src="image/figure12.png"
+ style="width: 120px; height: 42px;"><br>
+      </td>
+      <td style="vertical-align: top;">The line continues to the point
+that exceeds half of the stroke width the end <br>
+point. <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetLineCap() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetLineJoin_"></a>HPDF_Page_SetLineJoin<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetLineJoin&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_LineJoin&nbsp; line_join);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetLineJoin() Sets the line join style in the page.<br>
+An application can invoke HPDF_Page_SetLineJoin() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">line_join</span><br>
+<div class="bodytext5">The style of line-join.<br>
+<table style="width: 300px; text-align: left;" border="1"
+ cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 140px;">value<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204); width: 140px;">sample<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 140px;">HPDF_MITER_JOIN</td>
+      <td style="vertical-align: top; width: 140px; text-align: center;"><img
+ alt="HPDF_MITER_JOIN" src="image/figure13.png"
+ style="width: 131px; height: 94px;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 140px;">HPDF_ROUND_JOIN</td>
+      <td style="vertical-align: top; width: 140px; text-align: center;"><img
+ alt="HPDF_ROUND_JOIN" src="image/figure14.png"
+ style="width: 131px; height: 94px;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 140px;">HPDF_BEVEL_JOIN</td>
+      <td style="vertical-align: top; width: 140px; text-align: center;"><img
+ alt="HPDF_BEVEL_JOIN" src="image/figure15.png"
+ style="width: 131px; height: 94px;"><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetLineJoin() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetMiterLimit_"></a>HPDF_Page_SetMiterLimit<br>
+</h3>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetDash_"></a>HPDF_Page_SetDash<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetDash&nbsp;
+(HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+const HPDF_UINT16&nbsp; *dash_ptn,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+num_param,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+phase);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetDash() Sets the line dash pattern in the page.<br>
+An application can invoke HPDF_Page_SetDash() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+Sample of the dash pattern.<br>
+<ul>
+  <li>dash_ptn=NULL, num_pattern = 0, phase=0<br>
+    <img alt="" src="image/figure16.png"></li>
+</ul>
+<ul>
+  <li>dash_ptn=[3], num_pattern = 1, phase=1<br>
+    <img alt="" src="image/figure17.png"></li>
+</ul>
+<ul>
+  <li>dash_ptn=[7, 3], num_pattern = 2, phase=2<br>
+    <img alt="" src="image/figure18.png"></li>
+</ul>
+<ul>
+  <li>dash_ptn=[8, 7, 2, 7], num_pattern = 4, phase=0<br>
+    <img alt="" src="image/figure19.png"></li>
+</ul>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">dash_pattern</span><br>
+<div class="bodytext5">An array of HPDF_UINT16 which specify pattern of
+dashes and gaps used to stroke paths.<br>
+<br>
+</div>
+<span style="font-weight: bold;">num_param</span><br>
+<div class="bodytext5">The number of the element of the dash_pattern.
+Admitted ranges are from 0 to 8. <br>
+<br>
+</div>
+<span style="font-weight: bold;">phase</span><br>
+<div class="bodytext5">The phase in which the pattern begins. <br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetDash() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetFlat_"></a>HPDF_Page_<br>
+</h3>
+<br>
+<h3><a name="HPDF_Page_SetExtGState"></a>HPDF_Page_SetExtGState</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetExtGState&nbsp;
+(HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_ExtGState&nbsp;&nbsp; ext_gstate);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetExtGState() applys the graphics state to the page.<br>
+<br>
+An application can invoke HPDF_Page_GSave() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<span style="font-weight: bold;">ext_gstate</span><br>
+<div class="bodytext5">The handle of a extended graphics state object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetExtGState() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_GSave_"></a>HPDF_Page_GSave<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_GSave&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_GSave() saves the page's current graphics parameter to the
+stack. An application can invoke HPDF_Page_GSave() up to 28 and can
+restore the saved parameter by invoking HPDF_Page_GRestore().<br>
+<br>
+The parameters that are saved by HPDF_Page_GSave() is as follows.<br>
+<ul>
+  <li>Transformation Matrix</li>
+  <li>&nbsp;Line Width</li>
+  <li>Line Cap Style</li>
+  <li>Line Join Style</li>
+  <li>Miter Limit</li>
+  <li>Dash Mode</li>
+  <li>Flatness</li>
+  <li>Character Spacing</li>
+  <li>Word Spacing</li>
+  <li>Horizontal Scalling</li>
+  <li>Text Leading</li>
+  <li>Rendering Mode</li>
+  <li>Text Rise</li>
+  <li>Filling Color</li>
+  <li>Stroking Color</li>
+  <li>Font</li>
+  <li>Font Size</li>
+</ul>
+An application can invoke HPDF_Page_GSave() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_GSave() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_GRestore_"></a>HPDF_Page_GRestore<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_GRestore&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_GRestore() restore the graphics state which is saved by
+HPDF_Page_GSave().<br>
+An application can invoke HPDF_Page_GSave() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_GRestore() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_Concat_"></a>HPDF_Page_Concat<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Concat&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; a,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; b,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; c,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; d,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Concat() concatenates the page's current transformation
+matrix and specified matrix.<br>
+For example, if you want to rotate the coordinate system of the page by
+45 degrees, use HPDF_Page_Concat() as follows.<br>
+<br>
+<div class="bodycode">&nbsp; float rad1 = 45 / 180 * 3.141592;<br>
+&nbsp; HPDF_Page_Concat (page, cos(rad1), sin(rad1), -sin(rad1), <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cos(rad1), 220,
+350);
+</div>
+<br>
+Additionally to change the coordinate system of the page to 300dpi, use
+HPDF_Page_Concat() as follows.<br>
+<div class="bodycode">&nbsp; HPDF_Page_Concat (page, 72.0f / 300.0f, 0,
+0, 72.0f / 300.0f, 0, 0);
+</div>
+<br>
+Invoke HPDF_Page_GSave() before HPDF_Page_Concat(). Then the change by
+HPDF_Page_Concat() can be restored by invoking HPDF_Page_GRestore().<br>
+<div class="bodycode">&nbsp; /* save the current graphics states */<br>
+&nbsp; HPDF_Page_GSave (page);<br>
+<br>
+&nbsp; /* concatenate the transformation matrix */<br>
+&nbsp; HPDF_Page_Concat (page, 72.0f / 300.0f, 0, 0, 72.0f / 300.0f, 0,
+0);<br>
+<br>
+&nbsp; /* show text on the translated coordinates */<br>
+&nbsp; HPDF_Page_BeginText (page);<br>
+&nbsp; HPDF_Page_MoveTextPos (page, 50, 100);<br>
+&nbsp; HPDF_Page_ShoeText (page, "Text on the translated coordinates");<br>
+&nbsp; HPDF_Page_EndText (page);<br>
+<br>
+&nbsp; /* restore the graphics states */<br>
+&nbsp; HPDF_Page_GRestore (page);<br>
+</div>
+<br>
+An application can invoke HPDF_Page_GSave() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">a, b, c, d, x, y</span><br>
+<div class="bodytext5">The transformation matrix to concatenate.<br>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Concat() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_MoveTo_"></a>HPDF_Page_MoveTo<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_MoveTo&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; y);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_MoveTo() starts a new subpath and move the current point for
+drawing path,&nbsp;
+HPDF_Page_MoveTo() sets the start point for the path to the point (x,
+y) and changes the graphics mode to
+HPDF_GMODE_PATH_OBJECT.<br>
+An application can invoke HPDF_Page_MoveTo() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x, y</span><br>
+<div class="bodytext5">The start point for drawing path<br>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_MoveTo() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_LineTo_"></a>HPDF_Page_LineTo<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_LineTo&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; y);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_LineTo() appends a path from the current point to the
+specified
+point.<br>
+An application can invoke HPDF_Page_LineTo() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x, y</span><br>
+<div class="bodytext5">The end point of the path<br>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_LineTo() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_CurveTo_"></a>HPDF_Page_CurveTo<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_CurveTo&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y3);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_CurveTo() appends a B&eacute;zier curve to the current path
+using two spesified points.<br>
+The point (x1, y1) and the point (x2, y2) are used as the control
+points for a B&eacute;zier curve and current point is moved to the
+point (x3,
+y3)<br>
+An application can invoke HPDF_Page_CurveTo() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT.<br>
+<img alt="" src="image/figure20.png"
+ style="width: 259px; height: 198px;"><br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x1, y1, x2, y2, x3, y3</span><br>
+<div class="bodytext5">The control points for a B&eacute;zier curve.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_CurveTo() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_CurveTo2_"></a>HPDF_Page_CurveTo2<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_CurveTo2&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y2,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y3);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_CurveTo2() appends a B&eacute;zier curve to the current path
+using two spesified points.<br>
+The current point and the point (x2, y2) are used as the control points
+for a B&eacute;zier curve and current point is moved to the point (x3,
+y3)<br>
+An application can invoke HPDF_Page_CurveTo3() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<img alt="" src="image/figure21.png"
+ style="width: 251px; height: 140px;"><br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x2, y2, x3, y3</span><br>
+<div class="bodytext5">The control points for a B&eacute;zier curve.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_CurveTo3() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_CurveTo3_"></a>HPDF_Page_CurveTo3<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_CurveTo3&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x3,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y3);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_CurveTo3() appends a B&eacute;zier curve to the current path
+using two spesified points.<br>
+The point (x1, y1) and the point (x3, y3) are used as the control
+points
+for a B&eacute;zier curve and current point is moved to the point (x3,
+y3)<br>
+An application can invoke HPDF_Page_CurveTo2() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<img alt="" src="image/figure22.png"
+ style="width: 247px; height: 133px;"><br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x1, y1, x3, y3</span><br>
+<div class="bodytext5">The control points for a B&eacute;zier curve.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_CurveTo3() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_ClosePath_"></a>HPDF_Page_ClosePath<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_ClosePath&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_ClosePath() appends a strait line from the current point to
+the start point of sub path.<br>
+The current point is moved to the start point of sub path. <br>
+An application can invoke HPDF_Page_CurveTo2() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_ClosePath() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_Rectangle_"></a>HPDF_Page_Rectangle<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Rectangle&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; y,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; width,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; height);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Rectangle() appends a rectangle to the current path.<br>
+An application can invoke HPDF_Page_Rectangle() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x, y<br>
+</span>
+<div class="bodytext5">The lower-left point of the rectangle.<br>
+<br>
+</div>
+<span style="font-weight: bold;">width<br>
+</span>
+<div class="bodytext5">The width of the rectangle.<br>
+<br>
+</div>
+<span style="font-weight: bold;">height<br>
+</span>
+<div class="bodytext5">The height of the rectangle.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Rectangle() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_Stroke_"></a>HPDF_Page_Stroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Stroke&nbsp; (HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Stroke() paints the current path.<br>
+An application can invoke HPDF_Page_Stroke() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Stroke() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_ClosePathStroke_"></a>HPDF_Page_ClosePathStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_ClosePathStroke&nbsp; (HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_ClosePathStroke() closes the current path, then it paints the
+path.<br>
+An application can invoke HPDF_Page_ClosePathStroke() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_ClosePathStroke() succeed, it returns HPDF_OK, Otherwise
+it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_Fill_"></a>HPDF_Page_Fill<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Fill(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Fill() fills the current path using the nonzero winding
+number rule.<br>
+An application can invoke HPDF_Page_Fill() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Fill() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_Eofill_"></a>HPDF_Page_Eofill<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Eofill(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Eofill() fills the current path using the even-odd rule.<br>
+An application can invoke HPDF_Page_Eofill() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Eofill() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_FillStroke_"></a>HPDF_Page_FillStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_FillStroke(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_FillStroke() fills the current path using the nonzero winding
+number rule, then it paints the
+path. <br>
+An application can invoke HPDF_Page_FillStroke() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_FillStroke() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_EofillStroke_"></a>HPDF_Page_EofillStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_EofillStroke(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_EofillStroke() fills the current path using the even-odd
+rule, then it paints the
+path. <br>
+An application can invoke HPDF_Page_EofillStroke() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_EofillStroke() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_ClosePathFillStroke_"></a>HPDF_Page_ClosePathFillStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_ClosePathFillStroke(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_ClosePathFillStroke() closes the current path, fills the
+current path using the nonzero winding
+number rule, then it paints the
+path. <br>
+An application can invoke HPDF_Page_ClosePathFillStroke() when the
+graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_ClosePathFillStroke() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+<br>
+</div>
+<h3><a name="HPDF_Page_ClosePathEofillStroke_"></a>HPDF_Page_ClosePathEofillStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_ClosePathEoillStroke(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_ClosePathEofillStroke() closes the current path, fills the
+current path using the even-odd rule, then it paints the
+path. <br>
+An application can invoke HPDF_Page_ClosePathEofillStroke() when the
+graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_ClosePathEofillStroke() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_EndPath_"></a>HPDF_Page_EndPath<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_EndPath(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_EndPath() ends the path object without filling and painting
+operation.<br>
+An application can invoke HPDF_Page_EndPath() when the graphics
+mode of the page is in HPDF_GMODE_PATH_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_EndPath() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_Clip_"></a>HPDF_Page_Clip<br>
+</h3>
+<br>
+<br>
+<br>
+<br>
+<h3><a name="HPDF_Page_Eoclip_"></a>HPDF_Page_Eoclip<br>
+</h3>
+<br>
+<br>
+<h3><a name="HPDF_Page_BeginText_"></a>HPDF_Page_BeginText<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_BeginText(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_BeginText() begins a text object and sets the current text
+position to the point (0, 0).<br>
+An application can invoke HPDF_Page_BeginText() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION. And it changes the
+graphics mode to HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_BeginText() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_EndText_"></a>HPDF_Page_EndText<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_EndText(HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_EndText() ends a text object.<br>
+An application can invoke HPDF_Page_EndText() when the graphics
+mode of the page is in HPDF_GMODE_TEXT_OBJECT. And it changes the
+graphics mode to HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_EndText() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetCharSpace_"></a>HPDF_Page_SetCharSpace<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetCharSpace&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; value);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetCharSpace() sets the character spacing for text showing.<br>
+The initial value of character spacing is 0.<br>
+An application can invoke HPDF_Page_SetCharSpace() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value<br>
+</span>
+<div class="bodytext5">The value of character spacing.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetCharSpace() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetWordSpace_"></a>HPDF_Page_SetWordSpace<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetWordSpace&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; value);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetWordSpace() sets the word spacing for text showing.<br>
+The initial value of word spacing is 0.<br>
+An application can invoke HPDF_Page_SetWordSpace() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value<br>
+</span>
+<div class="bodytext5">The value of word spacing.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetWordSpace() succeed, it returns HPDF_OK, Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetHorizontalScalling_"></a>HPDF_Page_SetHorizontalScalling<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetHorizontalScalling&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; value);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetHorizontalScalling() sets the horizontal scalling for text
+showing.<br>
+The initial value of horizontal scalling is 100.<br>
+An application can invoke HPDF_Page_SetHorizontalScalling() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value
+</span>
+<div class="bodytext5">The value of horizontal scalling.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetHorizontalScalling() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetTextLeading_"></a>HPDF_Page_SetTextLeading<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetTextLeading&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; value);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetTextLeading() sets the text leading (line spacing) for
+text showing.<br>
+The initial value of leading is 0.<br>
+An application can invoke HPDF_Page_SetTextLeading() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value
+</span>
+<div class="bodytext5">The value of text leading.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetTextLeading() succeed, it returns HPDF_OK, Otherwise
+it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetFontAndSize_"></a>HPDF_Page_SetFontAndSize<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetFontAndSize&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_Font&nbsp; font,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; size);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetFontAndSize() sets the type of font and size leading.<br>
+An application can invoke HPDF_Page_SetFontAndSize() when the graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">font</span>
+<div class="bodytext5">The handle of a font object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">size</span><br>
+<div class="bodytext5">The size of a font.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetFontAndSize() succeed, it returns HPDF_OK, Otherwise
+it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetTextRenderingMode_"></a>HPDF_Page_SetTextRenderingMode<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetTextRenderingMode&nbsp;
+(HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_TextRenderingMode&nbsp; mode);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetTextRenderingMode() sets the text rendering mode.<br>
+The initial value of text rendering mode is HPDF_FILL.<br>
+An application can invoke HPDF_Page_SetTextRenderingMode() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">mode</span>
+<div class="bodytext5">The text rendering mode (one of the following
+values)<br>
+<table style="width: 400px; text-align: left;" border="1"
+ cellpadding="1" cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">VALUE<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">SAMPLE<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_FILL<br>
+      </td>
+      <td style="vertical-align: top;"><img alt=""
+ src="image/figure23.png" style="width: 239px; height: 37px;"><br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_STROKE<br>
+      </td>
+      <td style="vertical-align: top;"><img alt=""
+ src="image/figure24.png" style="width: 239px; height: 37px;"></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_FILL_THEN_STROKE<br>
+      </td>
+      <td style="vertical-align: top;"><img alt=""
+ src="image/figure25.png" style="width: 239px; height: 37px;"></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_INVISIBLE<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_FILL_CLIPPING<br>
+      </td>
+      <td style="vertical-align: top;"><img alt=""
+ src="image/figure26.png" style="width: 239px; height: 37px;"></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_STROKE_CLIPPING<br>
+      </td>
+      <td style="vertical-align: top;"><img alt=""
+ src="image/figure27.png" style="width: 239px; height: 37px;"></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_FILL_STROKE_CLIPPING<br>
+      </td>
+      <td style="vertical-align: top;"><img alt=""
+ src="image/figure28.png" style="width: 239px; height: 37px;"></td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 200px;">HPDF_CLIPPING<br>
+      </td>
+      <td style="vertical-align: top;"><br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetTextRenderingMode() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetTextRise_"></a>HPDF_Page_SetTextRise<br>
+</h3>
+<br>
+<br>
+<h3><a name="HPDF_Page_MoveTextPos_"></a>HPDF_Page_MoveTextPos<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_MoveTextPos&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; y);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_MoveTextPos() moves the current text position to the start of
+the next line with using specified offset values. If the start position
+of the current line is (x1, y1), the start of the next line is (x1 + x,
+y1 + y). <br>
+An application can invoke HPDF_MoveTextPos() when the
+graphics
+mode of the page is in HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">xpos, ypos</span><br>
+<div class="bodytext5">The offset of the start of the next line.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to show.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_MoveTextPos() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_MoveTextPos2_"></a>HPDF_Page_MoveTextPos2<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_MoveTextPos2&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; HPDF_REAL&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; HPDF_REAL&nbsp; y);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_MoveTextPos2() moves the current text position to the start
+of the next line with using specified offset values, and sets the
+text-leading to -y. If the
+start position of the current line is (x1, y1), the start of the next
+line is (x1 + x, y1 + y). <br>
+An application can invoke HPDF_MoveTextPos2() when the
+graphics
+mode of the page is in HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">xpos, ypos</span><br>
+<div class="bodytext5">The offset of the start of the next line.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to show.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_MoveTextPos2() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetTextMatrix_"></a>HPDF_Page_SetTextMatrix<br>
+</h3>
+<br>
+<br>
+<h3><a name="HPDF_Page_MoveToNextLine_"></a>HPDF_Page_MoveToNextLine<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_MoveToNextLine&nbsp; (HPDF_Page&nbsp; page);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_MoveTextPos2() moves the current text position to the
+start of the next line. If the
+start position of the current line is (x1, y1), the start of the next
+line is (x1, y1 - <span style="font-style: italic;">text leading</span>).<br>
+An application can invoke HPDF_MoveTextPos2() when the
+graphics
+mode of the page is in HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<div class="bodynote">NOTE:
+<br>
+Since the default value of Text Leading is 0,&nbsp; an application have
+to invoke HPDF_Page_SetTextLeading() before HPDF_Page_MoveTextPos2() to
+set text leading. </div>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">xpos, ypos</span><br>
+<div class="bodytext5">The offset of the start of the next line.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to show.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_MoveTextPos2() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_ShowText_"></a>HPDF_Page_ShowText<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_ShowText&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="font-weight: bold;">const </span>char&nbsp; *text)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_ShowText() prints the text at the current position on the
+page.<br>
+An application can invoke HPDF_Page_ShowText() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to print.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_ShowText() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_ShowTextNextLine_"></a>HPDF_Page_ShowTextNextLine<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_ShowTextNextLine&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="font-weight: bold;">const </span>char&nbsp; *text)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_ShowTextNextLine() moves the current text position to the
+start of the next line, then prints the text at the current position on
+the page.<br>
+An application can invoke HPDF_Page_ShowTextNextLine() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to print.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_ShowTextNextLine() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_ShowTextNextLineEx_"></a>HPDF_Page_ShowTextNextLineEx<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_ShowTextNextLineEx&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; word_space,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; char_space,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="font-weight: bold;">const </span>char&nbsp; *text)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_ShowTextNextLineEx() moves the current text position to
+the start of the next line, then sets the word spacing, character
+spacing and prints the text at the current
+position on the page.<br>
+An application can invoke HPDF_Page_ShowTextNextLine() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to print.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_ShowTextNextLine() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_SetGrayFill_"></a>HPDF_Page_SetGrayFill<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetGrayFill&nbsp; (HPDF_Page&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp; gray);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetGrayFill() sets the filling color.<br>
+An application can invoke HPDF_Page_SetGrayFill() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value</span><br>
+<div class="bodytext5">The value of the gray level between 0 and 1.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetGrayFill() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetGrayStroke_"></a>HPDF_Page_SetGrayStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetGrayStroke&nbsp; (HPDF_Page&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp; gray);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetGrayStroke() sets the stroking color.<br>
+An application can invoke HPDF_Page_SetGrayStroke() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">value</span><br>
+<div class="bodytext5">The value of the gray level between 0 and 1.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetGrayStroke() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetRGBFill_"></a>HPDF_Page_SetRGBFill<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetRGBFill&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; r,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; g,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; b)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetRGBFill() sets the filling color.<br>
+An application can invoke HPDF_Page_SetRGBFill() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">r, g, b</span><br>
+<div class="bodytext5">The level of each color element. They must be
+between 0 and 1. (See "<a href="graphics.html#Colors">Colors</a>")
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetRGBFill() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetRGBStroke_"></a>HPDF_Page_SetRGBStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetRGBStroke&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; HPDF_REAL&nbsp; r,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; HPDF_REAL&nbsp; g,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp; HPDF_REAL&nbsp; b)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetRGBStroke() sets the stroking color.<br>
+An application can invoke HPDF_Page_SetRGBStroke() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">r, g, b</span><br>
+<div class="bodytext5">The level of each color element. They must be
+between 0 and 1. (See "<a href="graphics.html#Colors">Colors</a>")
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetRGBStroke() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetCMYKFill_"></a>HPDF_Page_SetCMYKFill<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetCMYKFill&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; c,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; m,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; y,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp; k)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetCMYKFill() sets the filling color.<br>
+An application can invoke HPDF_Page_SetCMYKFill() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">c, m, y, k</span><br>
+<div class="bodytext5">The level of each color element. They must be
+between 0 and 1.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetCMYKFill() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<h3><a name="HPDF_Page_SetCMYKStroke_"></a>HPDF_Page_SetCMYKStroke<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_SetCMYKStroke&nbsp; (HPDF_Page&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp; HPDF_REAL&nbsp; c,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp; HPDF_REAL&nbsp; m,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp; HPDF_REAL&nbsp; y,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; &nbsp; HPDF_REAL&nbsp; k)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_SetCMYKStroke() sets the stroking color.<br>
+An application can invoke HPDF_Page_SetCMYKStroke() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">c, m, y, k</span><br>
+<div class="bodytext5">The level of each color element. They must be
+between 0 and 1.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_SetCMYKStroke() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_ExecuteXObject_"></a>HPDF_Page_ExecuteXObject<br>
+</h3>
+<br>
+<br>
+<h3><a name="HPDF_Page_DrawImage_"></a>HPDF_Page_DrawImage<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_DrawImage&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_Image&nbsp;&nbsp; image,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; width,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; height)<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_DrawImage() shows an image in one operation.<br>
+An application can invoke HPDF_Page_DrawImage() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">image
+</span>
+<div class="bodytext5">The handle of an image object.<br>
+</div>
+<span style="font-weight: bold;">x, y</span>
+<div class="bodytext5">The lower-left point of the region where image
+is displayed.<br>
+<br>
+</div>
+<span style="font-weight: bold;">width</span>
+<div class="bodytext5">The width of the region where image is displayed.<br>
+<br>
+</div>
+<span style="font-weight: bold;">height
+</span>
+<div class="bodytext5">The width of the region where image is
+displayed.
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_DrawImage() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_Circle_"></a>HPDF_Page_Circle<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Circle&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp; y,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp; ray);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Circle() appends a circle to the current path.<br>
+An application can invoke HPDF_Page_Circle() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x, y</span><br>
+<div class="bodytext5">The center point of the circle.<br>
+<br>
+</div>
+<span style="font-weight: bold;">ray</span><br>
+<div class="bodytext5">The ray of the circle.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Circle() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_Arc_"></a>HPDF_Page_Arc<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Arc&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; y,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; ray,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; ang1,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; ang2);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Arc() appends a circle to the current path.<br>
+An application can invoke HPDF_PageArc() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x, y</span><br>
+<div class="bodytext5">The center point of the circle.<br>
+<br>
+</div>
+<span style="font-weight: bold;">ray</span><br>
+<div class="bodytext5">The ray of the circle.<br>
+<br>
+</div>
+<span style="font-weight: bold;">ang1<br>
+</span>
+<div class="bodytext5">The angle of the begining of the arc.<br>
+<br>
+</div>
+<span style="font-weight: bold;">ang2<br>
+</span>
+<div class="bodytext5">The angle of the end of the arc. It must be
+greater than ang1.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Arc() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3>HPDF_Page_Ellipse<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_Ellipse&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp; x,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp; y,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; &nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp; xray,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp; yray);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_Ellipse() appends an ellipse to the current path.<br>
+An application can invoke HPDF_Page_Ellipse() when the
+graphics
+mode of the page is in HPDF_GMODE_PAGE_DESCRIPTION or
+HPDF_GMODE_PATH_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">x, y</span><br>
+<div class="bodytext5">The center point of the circle.<br>
+<br>
+</div>
+<span style="font-weight: bold;">xray, yray</span><br>
+<div class="bodytext5">The radius in the x and y direction.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_Ellipse() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_TextOut_"></a>HPDF_Page_TextOut<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_STATUS<br>
+HPDF_Page_TextOut&nbsp; (HPDF_Page&nbsp;&nbsp;&nbsp; page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; xpos,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp; ypos,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="font-weight: bold;">const</span> char&nbsp; *text);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_TextOut() prints the text on the specified position.<br>
+An application can invoke HPDF_TextOut() when the
+graphics
+mode of the page is in HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">xpos, ypos</span><br>
+<div class="bodytext5">The point position where the text is displayed.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to show.<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_TextOut() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+<br>
+</div>
+<br>
+<h3><a name="HPDF_Page_TextRect_"></a>HPDF_Page_TextRect<br>
+</h3>
+<div class="bodytext1">
+<div class="bodycode2"><span style="font-weight: bold;">#include</span>
+"apdf.h"<br>
+<br>
+HPDF_Page_TextRect&nbsp;
+(HPDF_Page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+page,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+left,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+top,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+right,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_REAL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+bottom,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="font-weight: bold;">const</span>
+char&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *text,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_TextAlignment&nbsp;&nbsp; align,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+HPDF_UINT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+*len);<br>
+<br>
+</div>
+<h4>Description<br>
+</h4>
+HPDF_Page_TextRext() TextRext() print the text inside the specified
+region. The characters which is not <br>
+An application can invoke HPDF_TextRect() when the
+graphics
+mode of the page is in HPDF_GMODE_TEXT_OBJECT.<br>
+<br>
+<h4>Parameter</h4>
+<span style="font-weight: bold;">page</span>
+<div class="bodytext5">The handle of a page object.<br>
+<br>
+</div>
+<span style="font-weight: bold;">left, top, right, bottom</span><br>
+<div class="bodytext5">Coordinates of corners of the region to output
+text.<br>
+<br>
+</div>
+<span style="font-weight: bold;">text</span><br>
+<div class="bodytext5">The text to show.<br>
+<br>
+</div>
+<span style="font-weight: bold;">align</span><br>
+<div class="bodytext5">The alignment of the text.<br>
+<table style="width: 100%; text-align: left;" border="1" cellpadding="1"
+ cellspacing="1">
+  <tbody>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">VALUE<br>
+      </td>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 204, 204);">DESCRIPTION<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">HPDF_TALIGN_LEFT<br>
+      </td>
+      <td style="vertical-align: top;">The text is aligned to left.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">HPDF_TALIGN_RIGHT<br>
+      </td>
+      <td style="vertical-align: top;">The text is aligned to right.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">HPDF_TALIGN_CENTER<br>
+      </td>
+      <td style="vertical-align: top;">The text is aligned to center.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;">HPDF_TALIGN_JUSTIFY<br>
+      </td>
+      <td style="vertical-align: top;">Add spaces between the words to
+justify both left and right side.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+</div>
+<span style="font-weight: bold;">len</span><br>
+<div class="bodytext5">If this value is not NULL, The number of
+characters which was printed in the area is returned.<br>
+<br>
+</div>
+<br>
+<h4>Returns</h4>
+When HPDF_Page_TextRect() succeed, it returns HPDF_OK,
+Otherwise it
+returns error code and error-handler is invoked.<br>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar">
+<ul>
+</ul>
+<ul>
+  <li><a href="#HPDF_Page_SetLineWidth_">HPDF_Page_SetLineWidth</a></li>
+  <li><a href="#HPDF_Page_SetLineCap_">HPDF_Page_SetLineCap</a></li>
+  <li><a href="#HPDF_Page_SetLineJoin_">HPDF_Page_SetLineJoin</a></li>
+  <li><a href="#HPDF_Page_SetMiterLimit_">HPDF_Page_SetMiterLimit</a></li>
+  <li><a href="#HPDF_Page_SetDash_">HPDF_Page_SetDash</a></li>
+  <li><a href="#HPDF_Page_SetFlat_">HPDF_Page_</a></li>
+  <li><a href="#HPDF_Page_SetExtGState">HPDF_Page_SetExtGState</a><br>
+  </li>
+  <li><a href="#HPDF_Page_GSave_">HPDF_Page_GSave</a></li>
+  <li><a href="#HPDF_Page_GRestore_">HPDF_Page_GRestore</a></li>
+  <li><a href="#HPDF_Page_Concat_">HPDF_Page_Concat</a></li>
+  <li><a href="#HPDF_Page_MoveTo_">HPDF_Page_MoveTo</a></li>
+  <li><a href="#HPDF_Page_LineTo_">HPDF_Page_LineTo</a></li>
+  <li><a href="#HPDF_Page_CurveTo_">HPDF_Page_CurveTo</a></li>
+  <li><a href="#HPDF_Page_CurveTo2_">HPDF_Page_CurveTo2</a></li>
+  <li><a href="#HPDF_Page_CurveTo3_">HPDF_Page_CurveTo3</a></li>
+  <li><a href="#HPDF_Page_ClosePath_">HPDF_Page_ClosePath</a></li>
+  <li><a href="#HPDF_Page_Rectangle_">HPDF_Page_Rectangle</a></li>
+  <li><a href="#HPDF_Page_Stroke_">HPDF_Page_Stroke</a></li>
+  <li><a href="#HPDF_Page_ClosePathStroke_">HPDF_Page_ClosePathStroke</a></li>
+  <li><a href="#HPDF_Page_Fill_">HPDF_Page_Fill</a></li>
+  <li><a href="#HPDF_Page_Eofill_">HPDF_Page_Eofill</a></li>
+  <li><a href="#HPDF_Page_FillStroke_">HPDF_Page_FillStroke</a></li>
+  <li><a href="#HPDF_Page_EofillStroke_">HPDF_Page_EofillStroke</a></li>
+  <li><a href="#HPDF_Page_ClosePathFillStroke_">HPDF_Page_ClosePathFillStroke</a></li>
+  <li><a href="#HPDF_Page_ClosePathEofillStroke_">HPDF_Page_ClosePathEofillStroke</a></li>
+  <li><a href="#HPDF_Page_EndPath_">HPDF_Page_EndPath</a></li>
+  <li><a href="#HPDF_Page_Clip_">HPDF_Page_Clip</a></li>
+  <li><a href="#HPDF_Page_Eoclip_">HPDF_Page_Eoclip</a></li>
+  <li><a href="#HPDF_Page_BeginText_">HPDF_Page_BeginText</a></li>
+  <li><a href="#HPDF_Page_EndText_">HPDF_Page_EndText</a></li>
+  <li><a href="#HPDF_Page_SetCharSpace_">HPDF_Page_SetCharSpace</a></li>
+  <li><a href="#HPDF_Page_SetWordSpace_">HPDF_Page_SetWordSpace</a></li>
+  <li><a href="#HPDF_Page_SetHorizontalScalling_">HPDF_Page_SetHorizontalScalling</a></li>
+  <li><a href="#HPDF_Page_SetTextLeading_">HPDF_Page_SetTextLeading</a></li>
+  <li><a href="#HPDF_Page_SetFontAndSize_">HPDF_Page_SetFontAndSize</a></li>
+  <li><a href="#HPDF_Page_SetTextRenderingMode_">HPDF_Page_SetTextRenderingMode</a></li>
+  <li><a href="#HPDF_Page_SetTextRise_">HPDF_Page_SetTextRise</a></li>
+  <li><a href="#HPDF_Page_MoveTextPos_">HPDF_Page_MoveTextPos</a></li>
+  <li><a href="#HPDF_Page_MoveTextPos2_">HPDF_Page_MoveTextPos2</a></li>
+  <li><a href="#HPDF_Page_SetTextMatrix_">HPDF_Page_SetTextMatrix</a></li>
+  <li><a href="#HPDF_Page_MoveToNextLine_">HPDF_Page_MoveToNextLine</a></li>
+  <li><a href="#HPDF_Page_ShowText_">HPDF_Page_ShowText</a></li>
+  <li><a href="#HPDF_Page_ShowTextNextLine_">HPDF_Page_ShowTextNextLine</a></li>
+  <li><a href="#HPDF_Page_ShowTextNextLineEx_">HPDF_Page_ShowTextNextLineEx</a></li>
+  <li><a href="#HPDF_Page_SetGrayFill_">HPDF_Page_SetGrayFill</a></li>
+  <li><a href="#HPDF_Page_SetGrayStroke_">HPDF_Page_SetGrayStroke</a></li>
+  <li><a href="#HPDF_Page_SetRGBFill_">HPDF_Page_SetRGBFill</a></li>
+  <li><a href="#HPDF_Page_SetRGBStroke_">HPDF_Page_SetRGBStroke</a></li>
+  <li><a href="#HPDF_Page_SetCMYKFill_">HPDF_Page_SetCMYKFill</a></li>
+  <li><a href="#HPDF_Page_SetCMYKStroke_">HPDF_Page_SetCMYKStroke</a></li>
+  <li><a href="#HPDF_Page_ExecuteXObject_">HPDF_Page_ExecuteXObject</a></li>
+  <li><a href="#HPDF_Page_DrawImage_">HPDF_Page_DrawImage</a></li>
+  <li><a href="#HPDF_Page_Circle_">HPDF_Page_Circle</a></li>
+  <li><a href="#HPDF_Page_Arc_">HPDF_Page_Arc</a></li>
+  <li><a href="page_operator.html#HPDF_Page_Circle_">HPDF_Page_Ellipse</a></li>
+  <li><a href="#HPDF_Page_TextOut_">HPDF_Page_TextOut</a></li>
+  <li><a href="#HPDF_Page_TextRect_">HPDF_Page_TextRect</a></li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>

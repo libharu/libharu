@@ -1,0 +1,371 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html lang="en">
+<head>
+  <title>Haru Free PDF Library</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="default.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<div id="headcontainer">
+<div class="head"><img alt="Haru Free PDF Library"
+ src="image/harulogo.png" style="width: 413px; height: 40px;"></div>
+</div>
+<div id="barcontainer">
+<div class="buildbar"><a href="index.html">home</a> | <a
+ href="http://sourceforge.net/project/showfiles.php?group_id=83044">download</a>
+|
+<a href="documentation.html">documentation</a> | <a
+ href="examples.html">examples </a>| <a
+ href="http://sourceforge.net/projects/libharu/">sourceforge</a> |
+<a href="http://sourceforge.net/forum/?group_id=83044">forums</a><br>
+</div>
+</div>
+<div id="container">
+<div id="mainpage">
+<div id="ccol">
+<h2>How to use<br>
+</h2>
+<h3><a name="Overview_"></a>Overview<br>
+</h3>
+<div class="bodytext1">The typical program flow of Haru is as
+follows.<br>
+<br>
+<img alt="figure1" src="image/figure1.png"
+ style="width: 520px; height: 650px;"><br>
+<br>
+</div>
+<h3><a name="Initializing_a_document_object_"></a>Initializing a
+document object<br>
+</h3>
+<div class="bodytext1">First, invoke <a
+ href="document_handling.html#HPDF_New_HPDF_NewEX_">HPDF_New()</a> or <a
+ href="document_handling.html#HPDF_New_HPDF_NewEX_">HPDF_NewEx()</a> to
+create
+an instance of document object.<br>
+You can specify user-defined error function on this step. If you want
+to
+use user-define memory memory management function, use HPDF_NewEx().<br>
+The Handle which is returned from <a
+ href="document_handling.html#HPDF_New_HPDF_NewEX_">HPDF_New()</a> or <a
+ href="document_handling.html#HPDF_New_HPDF_NewEX_">HPDF_NewEx()</a> is
+used in
+the following steps.<br>
+You can call setjmp() for an exception handling after <a
+ href="document_handling.html#HPDF_New_HPDF_NewEX_">HPDF_New()</a>
+succeed. (See the chapter of "<a href="error_handling.html">Error
+Handling</a>")<br>
+<br>
+<div class="bodycode">#include "apdf.h"<br>
+<br>
+&nbsp; HPDF_Doc pdf;<br>
+<br>
+&nbsp; pdf = HPDF_New (error_handler, NULL); <br>
+&nbsp; if (!pdf) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; printf ("ERROR: cannot create pdf
+object.\n");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;<br>
+&nbsp; }<br>
+<br>
+&nbsp; if (setjmp(env)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HPDF_Free (pdf);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;<br>
+&nbsp; }
+</div>
+&nbsp;
+<br>
+</div>
+<h3><a name="Setting_a_document_object_"></a>Setting a document
+object<br>
+</h3>
+<div class="bodytext1">Set attributes of&nbsp; compression, encryption,
+page mode and pages tree if necessary.<br>
+<br>
+<div class="bodycode">&nbsp; /* set compression mode */<br>
+&nbsp; HPDF_SetCompressionMode (pdf, HPDF_COMP_ALL);<br>
+<br>
+&nbsp; /* set page mode to use outlines. */<br>
+&nbsp; HPDF_SetPageMode (pdf, HPDF_PAGE_MODE_USE_OUTLINE);<br>
+<br>
+&nbsp; /* set password */<br>
+&nbsp; HPDF_SetPassword (pdf, "owner", "user");<br>
+<br>
+</div>
+<br>
+</div>
+<h3><a name="Create_a_page_object_"></a>Create a page
+object<br>
+</h3>
+<div class="bodytext1">&nbsp;Call <a
+ href="document_handling.html#HPDF_AddPage">HPDF_AddPage()</a> to add a
+page to the
+document. The page-handle which is returned by <a
+ href="document_handling.html#HPDF_AddPage">HPDF_AddPage()</a> function
+is used to operate a page.<br>
+&nbsp;<br>
+<div class="bodycode">&nbsp; page_1 = HPDF_AddPage (pdf);
+<br>
+</div>
+</div>
+<br>
+<div class="bodytext1">When you want to insert a new page before an
+existing page, call <a href="document_handling.html#HPDF_InsertPage">HPDF_InsertPage()</a>.
+For example, in the case of
+inserting "page_0" before "page_1", the code is as follows.<br>
+<br>
+<div class="bodycode">&nbsp; page_0 = HPDF_InsertPage (pdf, page_1);
+<br>
+</div>
+<br>
+</div>
+<h3><a name="Setting_a_page_object_"></a>Setting a page object<br>
+</h3>
+<div class="bodytext1">Set attributes of the page object if necessary.<br>
+<br>
+<div class="bodycode">&nbsp; HPDF_Page_SetSize (page_1,
+HPDF_PAGE_SIZE_B5, HPDF_PAGE_LANDSCAPE);
+<br>
+</div>
+<br>
+</div>
+<h3><a name="Page_description_processing_"></a>Page description<br>
+</h3>
+<div class="bodytext1">You can perform drawing processing for a page.
+For details, please refer to a chapter of "<a href="graphics.html">Graphics</a>".<br>
+<br>
+</div>
+<h3><a name="Save_a_document_to_file_"></a>Save a document to file or
+memory stream.<br>
+</h3>
+<div class="bodytext1">Call <a
+ href="document_handling.html#HPDF_SaveToFile_">HPDF_SaveToFile()</a>
+to save a document to a
+file.<br>
+<br>
+<div class="bodycode">&nbsp; /* save the document to a file */<br>
+&nbsp; HPDF_SaveToFile (pdf, "test.pdf");<br>
+&nbsp;&nbsp; </div>
+<br>
+If you don't want to save a document to a file, use <a
+ href="document_handling.html#HPDF_SaveToStream_">HPDF_SaveToStream()</a>
+instead. <a href="document_handling.html#HPDF_SaveToStream_">HPDF_SaveToStream()</a>
+saves a document to a temporary stream.<br>
+An application can get the data saved by <a
+ href="document_handling.html#HPDF_SaveToStream_">HPDF_SaveToStream()</a>
+by invoking <a href="document_handling.html#HPDF_ReadFromStream_">HPDF_ReadFromStream()</a>.<br>
+The following codes are examples of outputting the document directly to
+stdout.<br>
+<br>
+<div class="bodycode">&nbsp; <br>
+&nbsp; /* save the document to a stream */<br>
+&nbsp; HPDF_SaveToStream (pdf);<br>
+&nbsp; fprintf (stderr, "the size of data is %d\n",
+HPDF_GetStreamSize(pdf));<br>
+<br>
+&nbsp; /* rewind the stream. */<br>
+&nbsp; HPDF_ResetStream (pdf);<br>
+<br>
+&nbsp; /* get the data from the stream and output it to stdout. */<br>
+&nbsp; for (;;) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HPDF_BYTE buf[4096];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HPDF_UINT32 siz = 4096;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HPDF_STATUS ret = HPDF_ReadFromStream
+(pdf, buf, &amp;siz);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (siz == 0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (fwrite (buf, siz, 1, stdout) != 1) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fprintf (stderr,
+"cannot write to stdout", siz, wsiz);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp; }<br>
+&nbsp; <br>
+</div>
+<br>
+</div>
+<h3><a name="Create_next_document_"></a>Create next document<br>
+</h3>
+<div class="bodytext1">If you want to create next document, call
+<a href="document_handling.html#HPDF_NewDoc_">HPDF_NewDoc()</a>.<br>
+<a href="document_handling.html#HPDF_NewDoc_">HPDF_NewDoc()</a> create
+a new document after revoking a current document.<br>
+&nbsp;<br>
+<div class="bodycode">&nbsp;&nbsp; HPDF_NewDoc (pdf);&nbsp; <br>
+</div>
+<br>
+</div>
+<h3><a name="Finalization_and_cleanup_"></a>Finalization and cleanup<br>
+</h3>
+<div class="bodytext1">After all processes are finished, call
+<a href="document_handling.html#HPDF_Free_">HPDF_Free() </a>to free
+all resources which belong to the document object.<br>
+<br>
+<div class="bodycode">&nbsp;&nbsp; /* cleanup */<br>
+&nbsp;&nbsp; HPDF_Free (pdf);&nbsp; <br>
+</div>
+<br>
+<br>
+</div>
+</div>
+</div>
+<div id="lcol">
+<div class="sidebar"><br>
+<ul>
+  <li>
+    <h3 style="text-align: left;"><a href="#Overview_">Overview</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"><a
+ href="#Initializing_a_document_object_">Initializing a document object</a>
+    </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"><a href="#Setting_a_document_object_">Setting
+a document object</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"><a href="#Create_a_page_object_">Create
+a page object</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"> <a href="#Setting_a_page_object_">Setting
+a page object</a> </h3>
+  </li>
+  <li>
+    <h3 style="text-align: left;"> <a
+ href="#Page_description_processing_">Page description processing</a></h3>
+  </li>
+  <li>
+    <h3><a href="#Save_a_document_to_file_">Save a document to file</a></h3>
+  </li>
+  <li>
+    <h3><a href="#Create_next_document_">Create next document</a></h3>
+  </li>
+  <li>
+    <h3><a href="#Finalization_and_cleanup_">Finalization and cleanup</a></h3>
+  </li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+</div>
+</body>
+</html>
