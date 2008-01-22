@@ -104,11 +104,15 @@ HPDF_MMgr_New  (HPDF_Error       error,
             }
 
 #ifdef HPDF_MEM_DEBUG
-            mmgr->alloc_cnt += 1;
+            if (mmgr) {
+                mmgr->alloc_cnt += 1;
+            }
 #endif
         }
 
-        mmgr->buf_size = buf_size;
+        if (mmgr) {
+            mmgr->buf_size = buf_size;
+        }
     } else
         HPDF_SetError(error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
 
