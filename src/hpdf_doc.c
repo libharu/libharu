@@ -1412,8 +1412,9 @@ LoadType1FontFromStream  (HPDF_Doc      pdf,
             HPDF_FontDef_Free (def);
             return NULL;
         }
+        return def->base_font;
     }
-    return def->base_font;
+    return NULL;
 }
 
 
