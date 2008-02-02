@@ -1417,6 +1417,26 @@ LoadType1FontFromStream  (HPDF_Doc      pdf,
     return NULL;
 }
 
+HPDF_EXPORT(HPDF_FontDef)
+HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
+                           const char   *file_name)
+{
+	HPDF_Stream font_data;
+
+	HPDF_PTRACE ((" HPDF_GetTTFontDefFromFile\n"));
+
+	/* create file stream */
+	font_data = HPDF_FileReader_New (pdf->mmgr, file_name);
+
+	if (HPDF_Stream_Validate (font_data)) {
+		def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, embedding);
+	} else {
+		HPDF_CheckError (&pdf->error);
+		return NULL;
+	}
+
+	return def;
+}
 
 HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile (HPDF_Doc         pdf,
