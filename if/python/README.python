@@ -18,7 +18,7 @@ my home-made one with PNG and zlib feature enabled.
 The function in correct DLL looks like "HPDF_Page_GetTextRaise",
 but NOT "HPDF_Page_GetTextRaise@4".
 
-3) copy haru directory (including all files in it) to a directoy, where is
+3) copy haru directory (including all files in it) to a directory, where is
 in python's sys.path, for example d:\python\lib\site-packages
 
 4) put libhpdf.dll(libhpdf.so) under a directory which is in environment
@@ -26,7 +26,7 @@ variant PATH, or put it in haru\dll\. I prefer to the last solution.
 5) that is all
 
 3. How to use?
-1) Currently, pyharu supplies only the api that is similiar to the C api, so
+1) Currently, pyharu supplies only the api that is similar to the C api, so
 please read the haru document for API details.
 2) All the example programs in haru C src has been ported, and you can find
 them in demo directory. These demonstration programs are helpful too.
