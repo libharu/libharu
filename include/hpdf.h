@@ -251,7 +251,8 @@ HPDF_LoadType1FontFromFile  (HPDF_Doc     pdf,
 
 HPDF_EXPORT(HPDF_FontDef)
 HPDF_GetTTFontDefFromFile (HPDF_Doc     pdf,
-                           const char  *file_name);
+                           const char  *file_name,
+                           HPDF_BOOL    embedding);
 
 HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile (HPDF_Doc     pdf,
