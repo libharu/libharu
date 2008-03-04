@@ -23,4 +23,6 @@ _libs
 *.o
 *.a
 *.tmp
+*.so
+*.so.*
 cscope.out
