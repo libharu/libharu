@@ -1,0 +1,25 @@
+To use this interface, you need to build Haru as a static library (.a) or use 
+the binary package for win32.
+
+There is an example program in this directory. 
+The steps to run the demonstration program are as follows:
+
+1. Build libHaru as a static library and copy libhpdf.a to your source 
+   directory.
+   If you want to build libhpdf on win32 platforms you need either
+   MinGW/MSYS or Cygwin.
+ 
+2. Put the include (.bi) files in your source directory.
+
+3. Compile and run the demo program.
+
+   a) compile with: fbc hpdftest.bas
+   b) run with:     hpdftest.exe (on win32) or ./hpdftest (on linux)
+
+
+For more informations see: http://www.freebasic.net/forum/viewtopic.php?t=9014
+
+
+NOTE:
+libhpdf.a is required to run the program which uses the FreeBasic interface for
+libHaru.
