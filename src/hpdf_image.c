@@ -446,18 +446,30 @@ HPDF_Image_GetBitsPerComponent (HPDF_Image  image)
 HPDF_EXPORT(const char*)
 HPDF_Image_GetColorSpace (HPDF_Image  image)
 {
-    HPDF_Name n;
+	HPDF_Name n;
 
-    HPDF_PTRACE ((" HPDF_Image_GetColorSpace\n"));
+	HPDF_PTRACE ((" HPDF_Image_GetColorSpace\n"));
 
-    n = HPDF_Dict_GetItem (image, "ColorSpace", HPDF_OCLASS_NAME);
+	n = HPDF_Dict_GetItem (image, "ColorSpace", HPDF_OCLASS_NAME);
 
-    if (!n) {
-        HPDF_CheckError (image->error);
-        return NULL;
-    }
+	if (!n) {
+		HPDF_Array a;
 
-    return n->value;
+		HPDF_Error_Reset(image->error);
+
+		a = HPDF_Dict_GetItem (image, "ColorSpace", HPDF_OCLASS_ARRAY);
+
+		if (a) {
+			n = HPDF_Array_GetItem (a, 0, HPDF_OCLASS_NAME);
+		}
+	}
+
+	if (!n) {
+		HPDF_CheckError (image->error);
+		return NULL;
+	}
+
+	return n->value;
 }
 
 HPDF_EXPORT(HPDF_UINT)
