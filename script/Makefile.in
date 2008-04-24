@@ -78,6 +78,7 @@ OBJS = \
 	src_SEP_hpdf_image_png_OBJ_EXT \
 	src_SEP_hpdf_doc_png_OBJ_EXT \
 	src_SEP_hpdf_ext_gstate_OBJ_EXT \
+	src_SEP_hpdf_u3d_OBJ_EXT \
 
 PROGRAMS = \
 	demo_SEP_encoding_list_EXE_EXT \

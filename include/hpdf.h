@@ -420,6 +420,11 @@ HPDF_UseCNTEncodings   (HPDF_Doc   pdf);
 /*----- annotation ---------------------------------------------------------*/
 
 HPDF_EXPORT(HPDF_Annotation)
+HPDF_Page_Create3DAnnot    (HPDF_Page       page,
+							HPDF_Rect       rect,
+							HPDF_U3D        u3d);
+
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateTextAnnot  (HPDF_Page       page,
                             HPDF_Rect       rect,
                             const char     *text,
@@ -478,6 +483,9 @@ HPDF_EXPORT(HPDF_Image)
 HPDF_LoadJpegImageFromFile (HPDF_Doc      pdf,
                             const char    *filename);
 
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadU3DFromFile (HPDF_Doc      pdf,
+                            const char    *filename);
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadRawImageFromFile  (HPDF_Doc           pdf,

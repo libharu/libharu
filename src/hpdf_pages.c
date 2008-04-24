@@ -1395,6 +1395,33 @@ HPDF_Page_CreateDestination  (HPDF_Page   page)
 
 
 HPDF_EXPORT(HPDF_Annotation)
+HPDF_Page_Create3DAnnot    (HPDF_Page       page,
+							HPDF_Rect       rect,
+							HPDF_U3D u3d)
+{
+	HPDF_PageAttr attr;
+	HPDF_Annotation annot;
+
+	HPDF_PTRACE((" HPDF_Page_Create3DAnnot\n"));
+
+	if (!HPDF_Page_Validate (page))
+		return NULL;
+
+	attr = (HPDF_PageAttr)page->attr;
+
+	annot = HPDF_3DAnnot_New (page->mmgr, attr->xref, rect, u3d);
+	if (annot) {
+		if (AddAnnotation (page, annot) != HPDF_OK) {
+			HPDF_CheckError (page->error);
+			annot = NULL;
+		}
+	} else
+		HPDF_CheckError (page->error);
+
+	return annot;
+}
+
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateTextAnnot  (HPDF_Page          page,
                             HPDF_Rect          rect,
                             const char   *text,
