@@ -47,10 +47,10 @@ HPDF_URILinkAnnot_New  (HPDF_MMgr          mmgr,
 
 
 HPDF_Annotation
-HPDF_3DAnnot_New    (HPDF_MMgr        mmgr,
-					 HPDF_Xref        xref,
-					 HPDF_Rect        rect,
-					 HPDF_U3D u3d);
+HPDF_3DAnnot_New  (HPDF_MMgr        mmgr,
+                   HPDF_Xref        xref,
+                   HPDF_Rect        rect,
+                   HPDF_U3D u3d);
 
 HPDF_Annotation
 HPDF_TextAnnot_New  (HPDF_MMgr        mmgr,
