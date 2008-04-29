@@ -129,7 +129,7 @@ installfiles:
 	if [ ! -d $(PREFIX) ]; then mkdir -p $(PREFIX); fi
 	if [ ! -d $(PREFIX)/include ]; then mkdir -p $(PREFIX)/include; fi
 	if [ ! -d $(PREFIX)/lib ]; then mkdir -p $(PREFIX)/lib; fi
-	cp include/hpdf.h include/hpdf_consts.h include/hpdf_types.h $(PREFIX)/include/; chmod 644 $(PREFIX)/include/hpdf*.h
+	cp include/hpdf*.h $(PREFIX)/include/; chmod 644 $(PREFIX)/include/hpdf*.h
 	cp -p $(SONAME)$(SOVER1)$(SOVER2) $(PREFIX)/lib/
 	ln -sf $(SONAME)$(SOVER1)$(SOVER2) $(PREFIX)/lib/$(SONAME)$(SOVER1)
 	ln -sf $(SONAME)$(SOVER1) $(PREFIX)/lib/$(SONAME)
