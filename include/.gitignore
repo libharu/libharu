@@ -1,0 +1,10 @@
+hpdf_config.*
+Makefile.in
+stamp-h1
+Makefile
+*.lo
+*.la
+.deps
+.libs
+*.o
+*.a

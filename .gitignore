@@ -1,4 +1,5 @@
 Makefile
+Makefile.in
 acconfig.h
 aclocal.m4
 autom4te.cache
@@ -26,3 +27,7 @@ _libs
 *.so
 *.so.*
 cscope.out
+config.guess
+config.sub
+configure
+libtool
