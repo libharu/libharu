@@ -5,7 +5,6 @@ AUTOCONF ?= 'autoconf'
 ACLOCAL ?= 'aclocal'
 AUTOHEADER ?= 'autoheader'
 AUTOMAKE ?= 'automake'
-AUTOUPDATE ?= 'autoupdate'
 
 config_h_in = src/hpdf_config.h.in
 targets = $(config_h_in) configure makefiles
@@ -22,7 +21,6 @@ $(config_h_in): configure
 
 configure: aclocal.m4 configure.in
 	@echo rebuilding $@
-	$(AUTOUPDATE)
 	$(AUTOCONF) $(SUPPRESS_WARNINGS)
 
 makefiles: configure Makefile.am src/Makefile.am
