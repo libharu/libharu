@@ -27,7 +27,7 @@ configure: aclocal.m4 configure.in
 
 makefiles: configure Makefile.am src/Makefile.am
 	@echo rebuilding Makefile.in files
-	$(AUTOMAKE) --add-missing --copy
+	$(AUTOMAKE) --add-missing --copy 2>/dev/null
 
 cvsclean:
 	@rm -rf src/*.lo src/*.la src/*.o src/*.a src/.libs src/Makefile src/Makefile.in include/Makefile include/Makefile.in 
