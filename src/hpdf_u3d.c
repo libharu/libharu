@@ -8,26 +8,36 @@ HPDF_U3D_LoadU3D  (HPDF_MMgr        mmgr,
 				   HPDF_Stream      u3d_data,
 				   HPDF_Xref        xref);
 
+static const char u3d[] = "U3D";
+static const char prc[] = "PRC";
 
-static HPDF_STATUS
-LoadU3DHeader  (HPDF_U3D     image,
-				HPDF_Stream  stream)
+static HPDF_STATUS Get3DStreamType (HPDF_Stream  stream, const char **type)
 {
-	HPDF_UINT tag;
+	HPDF_BYTE tag[4];
 	HPDF_UINT len;
 
-	HPDF_PTRACE ((" HPDF_U3D_LoadU3DHeader\n"));
+	HPDF_PTRACE ((" HPDF_U3D_Get3DStreamType\n"));
 
 	len = 4;
-	if (HPDF_Stream_Read (stream, (HPDF_BYTE *)&tag, &len) != HPDF_OK) {
+	if (HPDF_Stream_Read (stream, tag, &len) != HPDF_OK) {
 		return HPDF_Error_GetCode (stream->error);
 	}
 
-	if (tag != 0x00443355) {
-		return HPDF_INVALID_U3D_DATA;
+	if (HPDF_Stream_Seek (stream, 0, HPDF_SEEK_SET) != HPDF_OK) {
+		return HPDF_Error_GetCode (stream->error);
 	}
 
-	return HPDF_OK;
+	if (HPDF_MemCmp(tag, (HPDF_BYTE *)u3d, 4/* yes, \0 is required */) == 0) {
+		*type = u3d;
+		return HPDF_OK;
+	}
+
+	if (HPDF_MemCmp(tag, (HPDF_BYTE *)prc, 3) == 0) {
+		*type = prc;
+		return HPDF_OK;
+	}
+
+	return HPDF_INVALID_U3D_DATA;
 }
 
 
@@ -64,7 +74,7 @@ HPDF_U3D_LoadU3DFromMem	(	HPDF_MMgr          mmgr,
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadU3DFromFile  (HPDF_Doc     pdf,
-					   const char  *filename)
+						const char  *filename)
 {
 	HPDF_Stream imagedata;
 	HPDF_Image image;
@@ -94,12 +104,12 @@ HPDF_LoadU3DFromFile  (HPDF_Doc     pdf,
 }
 
 HPDF_U3D
-HPDF_U3D_LoadU3D  (HPDF_MMgr        mmgr,
-				   HPDF_Stream      u3d_data,
-				   HPDF_Xref        xref)
+HPDF_U3D_LoadU3D   (HPDF_MMgr        mmgr,
+					HPDF_Stream      u3d_data,
+					HPDF_Xref        xref)
 {
 	HPDF_Dict u3d;
-	HPDF_STATUS ret = HPDF_OK;
+	const char *type;
 
 	HPDF_PTRACE ((" HPDF_U3D_LoadU3D\n"));
 
@@ -110,19 +120,18 @@ HPDF_U3D_LoadU3D  (HPDF_MMgr        mmgr,
 
 	u3d->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
 
-	/* add requiered elements */
+	/* add required elements */
 	u3d->filter = HPDF_STREAM_FILTER_NONE;
-	ret += HPDF_Dict_AddName (u3d, "Type", "3D");
-	ret += HPDF_Dict_AddName (u3d, "Subtype", "U3D");
-	if (ret != HPDF_OK) {
+
+	if (HPDF_Dict_AddName (u3d, "Type", "3D") != HPDF_OK) {
 		return NULL;
 	}
 
-	if (LoadU3DHeader (u3d, u3d_data) != HPDF_OK) {
+	if (Get3DStreamType (u3d_data, &type) != HPDF_OK) {
 		return NULL;
 	}
 
-	if (HPDF_Stream_Seek (u3d_data, 0, HPDF_SEEK_SET) != HPDF_OK) {
+	if (HPDF_Dict_AddName (u3d, "Subtype", type) != HPDF_OK) {
 		return NULL;
 	}
 
