@@ -1,5 +1,5 @@
 dnl this files has to be processed by autoconf
-AC_PREREQ(2.61)
+AC_PREREQ(2.60)
 
 HPDF_MAJOR_VERSION=2
 HPDF_MINOR_VERSION=1
