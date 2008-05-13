@@ -1,4 +1,5 @@
-dnl this files has to be processed by autoconf
+dnl this file has to be processed by autoconf
+dnl run ./buildconf.sh to get a working ./configure script
 AC_PREREQ(2.60)
 
 HPDF_MAJOR_VERSION=2
@@ -15,16 +16,16 @@ AC_CONFIG_HEADERS(include/hpdf_config.h)
 AM_INIT_AUTOMAKE([no-define])
 AM_MAINTAINER_MODE
 
-dnl Checks for programs.
+dnl Check for programs
 AC_PROG_CC
 AC_PROG_LD
 AM_PROG_LIBTOOL
 AC_PROG_INSTALL
 
-dnl Checks for typedefs, structures, and compiler characteristics.
+dnl Check for size_t
 AC_TYPE_SIZE_T
 
-dnl Checks for header files.
+dnl Check for header files
 AC_CHECK_HEADERS(string.h strings.h unistd.h stdint.h)
 
 AC_CHECK_LIB([m], [floor], [LIBS="$LIBS -lm"], [AC_MSG_ERROR([can't continue without libm])])
@@ -178,4 +179,4 @@ AC_SUBST(INSTALL_STRIP_FLAG)
 AC_CONFIG_FILES([Makefile src/Makefile include/Makefile])
 AC_OUTPUT
 
-# vim600: ts=2 sw=2 et
+# vim600: expandtab sw=2 ts=2 sts=2 fdm=marker
