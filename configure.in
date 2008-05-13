@@ -175,12 +175,6 @@ dnl link against libm
 LIBS="$LIBS -lm"
 AC_SUBST(INSTALL_STRIP_FLAG)
 
-AC_DEFINE([HPDF_MAJOR_VERSION], [$HPDF_MAJOR_VERSION], [Haru major version number])
-AC_DEFINE([HPDF_MINOR_VERSION], [$HPDF_MINOR_VERSION], [Haru minor version number])
-AC_DEFINE([HPDF_BUGFIX_VERSION], [$HPDF_BUGFIX_VERSION], [Haru bugfix version number])
-AC_DEFINE([HPDF_EXTRA_VERSION], ["$HPDF_EXTRA_VERSION"], [Haru extra version string])
-AC_DEFINE([HPDF_VERSION], ["$HPDF_VERSION"], [Haru version string])
-
 AC_CONFIG_FILES([Makefile src/Makefile include/Makefile])
 AC_OUTPUT
 
