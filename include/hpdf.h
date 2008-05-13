@@ -17,6 +17,8 @@
 #ifndef _HPDF_H
 #define _HPDF_H
 
+#include "hpdf_config.h"
+
 #ifdef HPDF_DLL_MAKE
 #    define HPDF_EXPORT(A)  __declspec(dllexport) A  __stdcall
 #else
