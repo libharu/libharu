@@ -38,6 +38,7 @@ PngReadFunc  (png_structp   png_ptr,
 
 static HPDF_STATUS
 LoadPngData  (HPDF_Dict     image,
+              HPDF_Xref     xref,
               HPDF_Stream   png_data,
               HPDF_BOOL     delayed_loading);
 
@@ -120,9 +121,7 @@ ReadPngData_Interlaced  (HPDF_Dict    image,
         }
 
         if (image->error->error_no == HPDF_OK) {
-/*      } else {                                              remove this line */
             png_read_image(png_ptr, row_pointers);
-/*            if (image->error->error_no != HPDF_OK) {        remove this line */
             if (image->error->error_no == HPDF_OK) {       /* add this line */
                 for (i = 0; i < (HPDF_UINT)info_ptr->height; i++) {
                     if (HPDF_Stream_Write (image->stream, row_pointers[i], len) !=
@@ -135,7 +134,6 @@ ReadPngData_Interlaced  (HPDF_Dict    image,
         /* clean up */
         for (i = 0; i < (HPDF_UINT)info_ptr->height; i++) {
             HPDF_FreeMem (image->mmgr, row_pointers[i]);
-/*          i--                                               remove this line */
         }
 
         HPDF_FreeMem (image->mmgr, row_pointers);
@@ -170,6 +168,92 @@ ReadPngData  (HPDF_Dict    image,
     return image->error->error_no;
 }
 
+static HPDF_STATUS
+ReadTransparentPngData  (HPDF_Dict    image,
+                         png_structp  png_ptr,
+                         png_infop    info_ptr,
+                         png_bytep    smask_data)
+{
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_INT row_len;
+	HPDF_UINT i, j;
+	png_bytep *row_ptr, row;
+	png_byte color_type;
+
+	color_type = png_get_color_type(png_ptr, info_ptr);
+
+	if (!(color_type & PNG_COLOR_MASK_ALPHA)) {
+		return HPDF_INVALID_PNG_IMAGE;
+	}
+
+	row_ptr = HPDF_GetMem (image->mmgr, info_ptr->height * sizeof(png_bytep));
+	if (!row_ptr) {
+		return HPDF_FAILD_TO_ALLOC_MEM;
+	} else {
+		png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+
+		for (i = 0; i < (HPDF_UINT)info_ptr->height; i++) {
+			row_ptr[i] = HPDF_GetMem(image->mmgr, len);
+			if (!row_ptr[i]) {
+				for (; i >= 0; i--) {
+					HPDF_FreeMem (image->mmgr, row_ptr[i]);
+				}
+				HPDF_FreeMem (image->mmgr, row_ptr);
+				return HPDF_FAILD_TO_ALLOC_MEM;
+			}
+		}
+	}
+
+	png_read_image(png_ptr, row_ptr);
+	if (image->error->error_no != HPDF_OK) {
+		ret = HPDF_INVALID_PNG_IMAGE;
+		goto Error;
+	}
+
+	switch (color_type) {
+		case PNG_COLOR_TYPE_RGB_ALPHA:
+			row_len = 3 * info_ptr->width * sizeof(png_byte);
+			for (j = 0; j < info_ptr->height; j++) {
+				for (i = 0; i < info_ptr->width; i++) {
+					row = row_ptr[j];
+					memmove(row + (3 * i), row + (4*i), 3);
+					smask_data[info_ptr->width * j + i] = row[4 * i + 3];
+				}
+
+				if (HPDF_Stream_Write (image->stream, row, row_len) != HPDF_OK) {
+					ret = HPDF_FILE_IO_ERROR;
+					goto Error;
+				}
+			}
+			break;
+		case PNG_COLOR_TYPE_GRAY_ALPHA:
+			row_len = info_ptr->width * sizeof(png_byte);
+			for (j = 0; j < info_ptr->height; j++) {
+				for (i = 0; i < info_ptr->width; i++) {
+					row = row_ptr[j];
+					row[i] = row[2 * i];
+					smask_data[info_ptr->width * j + i] = row[2 * i + 1];
+				}
+
+				if (HPDF_Stream_Write (image->stream, row, row_len) != HPDF_OK) {
+					ret = HPDF_FILE_IO_ERROR;
+					goto Error;
+				}
+			}
+			break;
+		default:
+			ret = HPDF_INVALID_PNG_IMAGE;
+			goto Error;
+	}
+
+Error:
+	for (i = 0; i < (HPDF_UINT)info_ptr->height; i++) {
+		HPDF_FreeMem (image->mmgr, row_ptr[i]);
+	}
+
+	HPDF_FreeMem (image->mmgr, row_ptr);
+	return ret;
+}
 
 static HPDF_STATUS
 CreatePallet (HPDF_Dict    image,
@@ -257,7 +341,7 @@ HPDF_Image_LoadPngImage  (HPDF_MMgr        mmgr,
     if (ret != HPDF_OK)
         return NULL;
 
-    if (LoadPngData (image, png_data, delayed_loading) != HPDF_OK)
+    if (LoadPngData (image, xref, png_data, delayed_loading) != HPDF_OK)
         return NULL;
 
     return image;
@@ -266,106 +350,167 @@ HPDF_Image_LoadPngImage  (HPDF_MMgr        mmgr,
 
 static HPDF_STATUS
 LoadPngData  (HPDF_Dict     image,
+              HPDF_Xref     xref,
               HPDF_Stream   png_data,
               HPDF_BOOL     delayed_loading)
 
 {
-    HPDF_STATUS ret;
-    png_structp png_ptr = NULL;
-    png_infop info_ptr = NULL;
+	HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE ((" HPDF_Image_LoadPngImage\n"));
+	png_structp png_ptr = NULL;
+	png_infop info_ptr = NULL;
 
-    /* create read_struct. */
-    png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING,
-        image->error, PngErrorFunc, PngErrorFunc);
+	HPDF_PTRACE ((" HPDF_Image_LoadPngImage\n"));
 
-    if (png_ptr == NULL) {
-        HPDF_SetError (image->error, HPDF_FAILD_TO_ALLOC_MEM, 0);
-        return HPDF_FAILD_TO_ALLOC_MEM;
-    }
+	/* create read_struct. */
+	png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING,
+			image->error, PngErrorFunc, PngErrorFunc);
 
-    /* create info-struct */
-    info_ptr = png_create_info_struct (png_ptr);
+	if (png_ptr == NULL) {
+		HPDF_SetError (image->error, HPDF_FAILD_TO_ALLOC_MEM, 0);
+		return HPDF_FAILD_TO_ALLOC_MEM;
+	}
 
-    if (info_ptr == NULL) {
-        HPDF_SetError (image->error, HPDF_FAILD_TO_ALLOC_MEM, 0);
-        goto Exit;
-    }
+	/* create info-struct */
+	info_ptr = png_create_info_struct (png_ptr);
 
-    png_set_sig_bytes (png_ptr, HPDF_PNG_BYTES_TO_CHECK);
-    png_set_read_fn (png_ptr, (void *)png_data, (png_rw_ptr)&PngReadFunc);
+	if (info_ptr == NULL) {
+		HPDF_SetError (image->error, HPDF_FAILD_TO_ALLOC_MEM, 0);
+		goto Exit;
+	}
 
-    /* reading info structure. */
-    png_read_info(png_ptr, info_ptr);
-    if (image->error->error_no != HPDF_OK)
-        goto Exit;
+	png_set_sig_bytes (png_ptr, HPDF_PNG_BYTES_TO_CHECK);
+	png_set_read_fn (png_ptr, (void *)png_data, (png_rw_ptr)&PngReadFunc);
 
-    /* 16bit image and alpha color type are not supported. */
-    if (info_ptr->bit_depth == 16)
-        png_set_strip_16(png_ptr);
+	/* reading info structure. */
+	png_read_info(png_ptr, info_ptr);
+	if (image->error->error_no != HPDF_OK) {
+		goto Exit;
+	}
 
-    if (PNG_COLOR_MASK_ALPHA & info_ptr->color_type) {
-        /* png image with alpha chanel is not supported. */
-        png_set_strip_alpha(png_ptr);
-    }
+	/* 16bit images are not supported. */
+	if (info_ptr->bit_depth == 16) {
+		png_set_strip_16(png_ptr);
+	}
 
-    png_read_update_info(png_ptr, info_ptr);
-    if (image->error->error_no  != HPDF_OK)
-        goto Exit;
+	png_read_update_info(png_ptr, info_ptr);
+	if (image->error->error_no != HPDF_OK) {
+		goto Exit;
+	}
 
-    /* if the image has color palette, copy the pallet of the image to
-     * create color map.
-     */
-    if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE)
-        ret = CreatePallet(image, png_ptr, info_ptr);
-    else if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)
-        ret = HPDF_Dict_AddName (image, "ColorSpace", "DeviceGray");
-    else
-        ret = HPDF_Dict_AddName (image, "ColorSpace", "DeviceRGB");
+	/* read images with alpha channel right away 
+	   we have to do this because image transparent mask must be added to the Xref */
+	if (xref && PNG_COLOR_MASK_ALPHA & info_ptr->color_type) {
+		HPDF_Dict smask;
+		png_bytep smask_data;
 
-    if (ret != HPDF_OK)
-        goto Exit;
+		smask = HPDF_DictStream_New (image->mmgr, xref);
+		if (!smask) {
+			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			goto Exit;
+		}
 
-    /* read image-data
-     * if the image is interlaced, read whole image at once.
-     * if delayed_loading is HPDF_TRUE, the data does not load this phase.
-     */
-    if (delayed_loading) {
-        image->before_write_fn = PngBeforeWrite;
-        image->after_write_fn = PngAfterWrite;
-    } else {
-        if (png_get_interlace_type(png_ptr, info_ptr) != PNG_INTERLACE_NONE)
-            ret = ReadPngData_Interlaced(image, png_ptr, info_ptr);
-        else
-            ret = ReadPngData(image, png_ptr, info_ptr);
+		smask->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
+		ret = HPDF_Dict_AddName (smask, "Type", "XObject");
+		ret += HPDF_Dict_AddName (smask, "Subtype", "Image");
+		ret += HPDF_Dict_AddNumber (smask, "Width", (HPDF_UINT)info_ptr->width);
+		ret += HPDF_Dict_AddNumber (smask, "Height", (HPDF_UINT)info_ptr->height);
+		ret += HPDF_Dict_AddName (smask, "ColorSpace", "DeviceGray");
+		ret += HPDF_Dict_AddNumber (smask, "BitsPerComponent", (HPDF_UINT)info_ptr->bit_depth);
 
-        if (ret != HPDF_OK)
-            goto Exit;
-    }
+		if (ret != HPDF_OK) {
+			HPDF_Dict_Free(smask);
+			ret = HPDF_INVALID_PNG_IMAGE;
+			goto Exit;
+		}
 
-    /* setting the info of the image. */
-    if (HPDF_Dict_AddNumber (image, "Width", (HPDF_UINT)info_ptr->width)
-        != HPDF_OK)
-        goto Exit;
+		smask_data = HPDF_GetMem(image->mmgr, info_ptr->width * info_ptr->height);
+		if (!smask_data) {
+			HPDF_Dict_Free(smask);
+			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			goto Exit;
+		}
 
-    if (HPDF_Dict_AddNumber (image, "Height", (HPDF_UINT)info_ptr->height)
-        != HPDF_OK)
-        goto Exit;
+		if (ReadTransparentPngData(image, png_ptr, info_ptr, smask_data) != HPDF_OK) {
+			HPDF_FreeMem(image->mmgr, smask_data);
+			HPDF_Dict_Free(smask);
+			ret = HPDF_INVALID_PNG_IMAGE;
+			goto Exit;
+		}
 
-    if (HPDF_Dict_AddNumber (image, "BitsPerComponent",
-                (HPDF_UINT)info_ptr->bit_depth) != HPDF_OK)
-        goto Exit;
+		if (HPDF_Stream_Write(smask->stream, smask_data, info_ptr->width * info_ptr->height) != HPDF_OK) {
+			HPDF_FreeMem(image->mmgr, smask_data);
+			HPDF_Dict_Free(smask);
+			ret = HPDF_FILE_IO_ERROR;
+			goto Exit;
+		}
+		HPDF_FreeMem(image->mmgr, smask_data);
 
-    /* clean up */
-    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+		ret += HPDF_Dict_AddName (image, "ColorSpace", "DeviceRGB");
+		ret += HPDF_Dict_AddNumber (image, "Width", (HPDF_UINT)info_ptr->width);
+		ret += HPDF_Dict_AddNumber (image, "Height", (HPDF_UINT)info_ptr->height);
+		ret += HPDF_Dict_AddNumber (image, "BitsPerComponent",	(HPDF_UINT)info_ptr->bit_depth);
+		ret += HPDF_Dict_Add (image, "SMask", smask);
 
-    return HPDF_OK;
+		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+		return HPDF_OK;
+	}
+
+	/* if the image has color palette, copy the pallet of the image to
+	 * create color map.
+	 */
+	if (info_ptr->color_type == PNG_COLOR_TYPE_PALETTE)
+		ret = CreatePallet(image, png_ptr, info_ptr);
+	else if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY)
+		ret = HPDF_Dict_AddName (image, "ColorSpace", "DeviceGray");
+	else
+		ret = HPDF_Dict_AddName (image, "ColorSpace", "DeviceRGB");
+
+	if (ret != HPDF_OK)
+		goto Exit;
+
+	/* read image-data
+	 * if the image is interlaced, read whole image at once.
+	 * if delayed_loading is HPDF_TRUE, the data does not load this phase.
+	 */
+	if (delayed_loading) {
+		image->before_write_fn = PngBeforeWrite;
+		image->after_write_fn = PngAfterWrite;
+	} else {
+		if (png_get_interlace_type(png_ptr, info_ptr) != PNG_INTERLACE_NONE)
+			ret = ReadPngData_Interlaced(image, png_ptr, info_ptr);
+		else
+			ret = ReadPngData(image, png_ptr, info_ptr);
+
+		if (ret != HPDF_OK)
+			goto Exit;
+	}
+
+	/* setting the info of the image. */
+	if (HPDF_Dict_AddNumber (image, "Width", (HPDF_UINT)info_ptr->width)
+			!= HPDF_OK)
+		goto Exit;
+
+	if (HPDF_Dict_AddNumber (image, "Height", (HPDF_UINT)info_ptr->height)
+			!= HPDF_OK)
+		goto Exit;
+
+	if (HPDF_Dict_AddNumber (image, "BitsPerComponent",
+				(HPDF_UINT)info_ptr->bit_depth) != HPDF_OK)
+		goto Exit;
+
+	/* clean up */
+	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+
+	return HPDF_OK;
 
 Exit:
-    png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+	png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 
-    return image->error->error_no;
+	if (ret != HPDF_OK) {
+		return ret;
+	}
+	return image->error->error_no;
 }
 
 
@@ -386,7 +531,7 @@ PngBeforeWrite  (HPDF_Dict obj)
     if (!s)
         return HPDF_SetError (obj->error, HPDF_MISSING_FILE_NAME_ENTRY, 0);
 
-    png_data = HPDF_FileReader_New (obj->mmgr, s->value);
+    png_data = HPDF_FileReader_New (obj->mmgr, (const char *)(s->value));
     if (!HPDF_Stream_Validate (png_data))
         return obj->error->error_no;
 
@@ -398,7 +543,7 @@ PngBeforeWrite  (HPDF_Dict obj)
         return HPDF_SetError (obj->error, HPDF_INVALID_PNG_IMAGE, 0);
     }
 
-    if ((ret = LoadPngData (obj, png_data, HPDF_FALSE)) != HPDF_OK) {
+    if ((ret = LoadPngData (obj, NULL, png_data, HPDF_FALSE)) != HPDF_OK) {
         HPDF_Stream_Free(png_data);
         return ret;
     }
