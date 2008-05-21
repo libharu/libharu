@@ -169,6 +169,62 @@ ReadPngData  (HPDF_Dict    image,
 }
 
 static HPDF_STATUS
+ReadTransparentPaletteData  (HPDF_Dict    image,
+                             png_structp  png_ptr,
+                             png_infop    info_ptr,
+                             png_bytep    smask_data,
+                             png_bytep    trans,
+                             int          num_trans)
+{
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_UINT i, j;
+	png_bytep *row_ptr;
+
+	row_ptr = HPDF_GetMem (image->mmgr, info_ptr->height * sizeof(png_bytep));
+	if (!row_ptr) {
+		return HPDF_FAILD_TO_ALLOC_MEM;
+	} else {
+		png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+
+		for (i = 0; i < (HPDF_UINT)info_ptr->height; i++) {
+			row_ptr[i] = HPDF_GetMem(image->mmgr, len);
+			if (!row_ptr[i]) {
+				for (; i >= 0; i--) {
+					HPDF_FreeMem (image->mmgr, row_ptr[i]);
+				}
+				HPDF_FreeMem (image->mmgr, row_ptr);
+				return HPDF_FAILD_TO_ALLOC_MEM;
+			}
+		}
+	}
+
+	png_read_image(png_ptr, row_ptr);
+	if (image->error->error_no != HPDF_OK) {
+		ret = HPDF_INVALID_PNG_IMAGE;
+		goto Error;
+	}
+
+	for (j = 0; j < info_ptr->height; j++) {
+		for (i = 0; i < info_ptr->width; i++) {
+			smask_data[info_ptr->width * j + i] = (row_ptr[j][i] < num_trans) ? trans[row_ptr[j][i]] : 0xFF;
+		}
+
+		if (HPDF_Stream_Write (image->stream, row_ptr[j], info_ptr->width) != HPDF_OK) {
+			ret = HPDF_FILE_IO_ERROR;
+			goto Error;
+		}
+	}
+
+Error:
+	for (i = 0; i < (HPDF_UINT)info_ptr->height; i++) {
+		HPDF_FreeMem (image->mmgr, row_ptr[i]);
+	}
+
+	HPDF_FreeMem (image->mmgr, row_ptr);
+	return ret;
+}
+
+static HPDF_STATUS
 ReadTransparentPngData  (HPDF_Dict    image,
                          png_structp  png_ptr,
                          png_infop    info_ptr,
@@ -397,6 +453,73 @@ LoadPngData  (HPDF_Dict     image,
 	if (image->error->error_no != HPDF_OK) {
 		goto Exit;
 	}
+
+	/* check palette-based images for transparent areas and load them immediately if found */
+	if (xref && PNG_COLOR_TYPE_PALETTE & info_ptr->color_type) {
+		png_bytep trans;
+		int num_trans;
+		HPDF_Dict smask;
+		png_bytep smask_data;
+
+		if (!png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS) || 
+			!png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, NULL)) {
+			goto no_transparent_color_in_palette;
+		}
+
+		smask = HPDF_DictStream_New (image->mmgr, xref);
+		if (!smask) {
+			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			goto Exit;
+		}
+
+		smask->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
+		ret = HPDF_Dict_AddName (smask, "Type", "XObject");
+		ret += HPDF_Dict_AddName (smask, "Subtype", "Image");
+		ret += HPDF_Dict_AddNumber (smask, "Width", (HPDF_UINT)info_ptr->width);
+		ret += HPDF_Dict_AddNumber (smask, "Height", (HPDF_UINT)info_ptr->height);
+		ret += HPDF_Dict_AddName (smask, "ColorSpace", "DeviceGray");
+		ret += HPDF_Dict_AddNumber (smask, "BitsPerComponent", (HPDF_UINT)info_ptr->bit_depth);
+
+		if (ret != HPDF_OK) {
+			HPDF_Dict_Free(smask);
+			ret = HPDF_INVALID_PNG_IMAGE;
+			goto Exit;
+		}
+
+		smask_data = HPDF_GetMem(image->mmgr, info_ptr->width * info_ptr->height);
+		if (!smask_data) {
+			HPDF_Dict_Free(smask);
+			ret = HPDF_FAILD_TO_ALLOC_MEM;
+			goto Exit;
+		}
+
+		if (ReadTransparentPaletteData(image, png_ptr, info_ptr, smask_data, trans, num_trans) != HPDF_OK) {
+			HPDF_FreeMem(image->mmgr, smask_data);
+			HPDF_Dict_Free(smask);
+			ret = HPDF_INVALID_PNG_IMAGE;
+			goto Exit;
+		}
+
+		if (HPDF_Stream_Write(smask->stream, smask_data, info_ptr->width * info_ptr->height) != HPDF_OK) {
+			HPDF_FreeMem(image->mmgr, smask_data);
+			HPDF_Dict_Free(smask);
+			ret = HPDF_FILE_IO_ERROR;
+			goto Exit;
+		}
+		HPDF_FreeMem(image->mmgr, smask_data);
+
+
+		ret += CreatePallet(image, png_ptr, info_ptr);
+		ret += HPDF_Dict_AddNumber (image, "Width", (HPDF_UINT)info_ptr->width);
+		ret += HPDF_Dict_AddNumber (image, "Height", (HPDF_UINT)info_ptr->height);
+		ret += HPDF_Dict_AddNumber (image, "BitsPerComponent",	(HPDF_UINT)info_ptr->bit_depth);
+		ret += HPDF_Dict_Add (image, "SMask", smask);
+
+		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+		return HPDF_OK;
+	}
+
+no_transparent_color_in_palette:
 
 	/* read images with alpha channel right away 
 	   we have to do this because image transparent mask must be added to the Xref */
