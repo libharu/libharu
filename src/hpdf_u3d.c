@@ -2,6 +2,7 @@
 #include "hpdf_utils.h"
 #include "hpdf.h"
 
+#include <string.h>
 
 HPDF_U3D
 HPDF_U3D_LoadU3D  (HPDF_MMgr        mmgr,
@@ -41,7 +42,7 @@ static HPDF_STATUS Get3DStreamType (HPDF_Stream  stream, const char **type)
 }
 
 
-HPDF_EXPORT(HPDF_U3D)
+HPDF_U3D
 HPDF_U3D_LoadU3DFromMem	(	HPDF_MMgr          mmgr,
 							const HPDF_BYTE   *buf,
 							HPDF_UINT		   size,
@@ -160,4 +161,402 @@ HPDF_U3D_LoadU3D   (HPDF_MMgr        mmgr,
 
 	return u3d;
 }
+
+HPDF_EXPORT(HPDF_Dict) HPDF_Create3DView(HPDF_MMgr mmgr, const char *name)
+{
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_Dict view;
+
+	HPDF_PTRACE ((" HPDF_Create3DView\n"));
+
+	if (name == NULL || name[0] == '\0') { 
+		return NULL;
+	}
+
+	view = HPDF_Dict_New (mmgr);
+	if (!view) {
+		return NULL;
+	}
+
+	ret = HPDF_Dict_AddName (view, "TYPE", "3DView");
+	ret += HPDF_Dict_Add (view, "XN", HPDF_String_New (mmgr, name, NULL));
+	ret += HPDF_Dict_Add (view, "IN", HPDF_String_New (mmgr, name, NULL));
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (view);
+		return NULL;
+	}
+
+	return view;
+}
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view)
+{
+	HPDF_Array views = NULL;
+	HPDF_STATUS ret = HPDF_OK;
+
+	HPDF_PTRACE ((" HPDF_Add3DView\n"));
+
+	if (u3d == NULL || view == NULL) {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	views = (HPDF_Array)HPDF_Dict_GetItem (u3d, "VA", HPDF_OCLASS_ARRAY);
+	if (views == NULL) {
+		views = HPDF_Array_New (u3d->mmgr);
+		if (!views) {
+			return HPDF_Error_GetCode (u3d->error);
+		}
+
+		ret = HPDF_Dict_Add (u3d, "VA", views);
+		if (ret == HPDF_OK) {
+			ret = HPDF_Dict_AddNumber (u3d, "DV", 0);
+		} else {
+			HPDF_Array_Free (views);
+			return ret;
+		}
+	}
+
+	if (ret == HPDF_OK) {
+		ret = HPDF_Array_Add( views, view);
+	}
+
+	return ret;
+}
+
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *name)
+{
+	HPDF_STATUS ret = HPDF_OK;
+
+	HPDF_PTRACE ((" HPDF_U3D_SetDefault3DView\n"));
+
+	if (u3d == NULL || name == NULL || name[0] == '\0') {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	ret = HPDF_Dict_Add (u3d, "DV", HPDF_String_New (u3d->mmgr, name, NULL));
+	return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_AddNode(HPDF_Dict view, const char *name, HPDF_REAL opacity, HPDF_BOOL visible)
+{
+	HPDF_Array nodes = NULL;
+	HPDF_Dict  node; 
+	HPDF_STATUS ret = HPDF_OK;
+
+	HPDF_PTRACE ((" HPDF_3DView_AddNode\n"));
+
+	if (view == NULL || opacity < 0 || opacity > 1 || name == NULL || name[0] == '\0') {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	nodes = (HPDF_Array)HPDF_Dict_GetItem (view, "NA", HPDF_OCLASS_ARRAY);
+	if (nodes == NULL) {
+		nodes = HPDF_Array_New (view->mmgr);
+		if (!nodes) {
+			return HPDF_Error_GetCode (view->error);
+		}
+
+		ret = HPDF_Dict_Add (view, "NA", nodes);
+		if (ret != HPDF_OK) {
+			HPDF_Array_Free (nodes);
+			return ret;
+		}
+	}
+
+	node = HPDF_Dict_New (view->mmgr);
+	if (!node) {
+		return HPDF_Error_GetCode (view->error);
+	}
+
+	ret = HPDF_Dict_AddName (node, "Type", "3DNode");
+	ret += HPDF_Dict_Add (node, "N", HPDF_String_New (view->mmgr, name, NULL));
+	ret += HPDF_Dict_AddReal (node, "O", opacity);
+	ret += HPDF_Dict_AddBoolean (node, "V", visible);
+	ret += HPDF_Array_Add(nodes, node);
+
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (node);
+		return ret;
+	}
+	return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetLighting(HPDF_Dict view, const char *scheme)
+{
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_Dict lighting;
+	int i;
+	static const char *schemes[] =
+	{ "Artwork", "None", "White", "Day", "Night", "Hard", "Primary", "Blue", "Red", "Cube", "CAD", "Headlamp" };
+
+	HPDF_PTRACE ((" HPDF_3DView_SetLighting\n"));
+
+	if (view == NULL || scheme == NULL || scheme[0] == '\0') {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	for (i = 0; i < 12; i++) {
+		if (!strcmp(scheme, schemes[i])) {
+			break;
+		}
+	}
+
+	if (i == 12) {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	lighting = HPDF_Dict_New (view->mmgr);
+	if (!lighting) {
+		return HPDF_Error_GetCode (view->error);
+	}
+
+	ret = HPDF_Dict_AddName (lighting, "Type", "3DLightingScheme");
+	ret += HPDF_Dict_AddName (lighting, "Subtype", scheme);
+	ret += HPDF_Dict_Add (view, "LS", lighting);
+
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (lighting);
+		return ret;
+	}
+	return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REAL r, HPDF_REAL g, HPDF_REAL b)
+{
+	HPDF_Array  color; 
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_Dict background;
+
+	HPDF_PTRACE ((" HPDF_3DView_SetBackgroundColor\n"));
+
+	if (view == NULL || r < 0 || r > 1 || g < 0 || g > 1 || b < 0 || b > 1) {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	background = HPDF_Dict_New (view->mmgr);
+	if (!background) {
+		return HPDF_Error_GetCode (view->error);
+	}
+
+	color = HPDF_Array_New (view->mmgr);
+	if (!color) {
+		HPDF_Dict_Free (background);
+		return HPDF_Error_GetCode (view->error);
+	}
+
+	ret = HPDF_Array_AddReal (color, r);
+	ret += HPDF_Array_AddReal (color, g);
+	ret += HPDF_Array_AddReal (color, b);
+
+	ret += HPDF_Dict_AddName (background, "Type", "3DBG");
+	ret += HPDF_Dict_Add (background, "C", color);
+
+	ret += HPDF_Dict_Add (view, "BG", background);
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (color);
+		HPDF_Dict_Free (background);
+		return ret;
+	}
+	return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HPDF_REAL fov)
+{
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_Dict projection;
+
+	HPDF_PTRACE ((" HPDF_3DView_SetPerspectiveProjection\n"));
+
+	if (view == NULL || fov < 0 || fov > 180) {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	projection = HPDF_Dict_New (view->mmgr);
+	if (!projection) {
+		return HPDF_Error_GetCode (view->error);
+	}
+
+	ret = HPDF_Dict_AddName (projection, "Subtype", "P");
+	ret += HPDF_Dict_AddName (projection, "PS", "Min");
+	ret += HPDF_Dict_AddReal (projection, "FOV", fov);
+
+	ret += HPDF_Dict_Add (view, "P", projection);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (projection);
+		return ret;
+	}
+	return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPDF_REAL mag)
+{
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_Dict projection;
+
+	HPDF_PTRACE ((" HPDF_3DView_SetOrthogonalProjection\n"));
+
+	if (view == NULL || mag <= 0) {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	projection = HPDF_Dict_New (view->mmgr);
+	if (!projection) {
+		return HPDF_Error_GetCode (view->error);
+	}
+
+	ret = HPDF_Dict_AddName (projection, "Subtype", "O");
+	ret += HPDF_Dict_AddReal (projection, "OS", mag);
+
+	ret += HPDF_Dict_Add (view, "P", projection);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (projection);
+		return ret;
+	}
+	return ret;
+}
+
+#define normalize(x, y, z)		\
+{					\
+	HPDF_REAL modulo;			\
+	modulo = sqrtf(x*x + y*y + z*z);	\
+	if (modulo != 0.0)			\
+	{					\
+		x = x/modulo;			\
+		y = y/modulo;			\
+		z = z/modulo;			\
+	}					\
+}
+
+/* building the transformation matrix*/
+/* #1,#2,#3 centre of orbit coordinates (coo)*/
+/* #4,#5,#6 centre of orbit to camera direction vector (c2c)*/
+/* #7 orbital radius (roo)*/
+/* #8 camera roll (roll)*/
+
+HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCamera(HPDF_Dict view, HPDF_REAL coox, HPDF_REAL cooy, HPDF_REAL cooz, HPDF_REAL c2cx, HPDF_REAL c2cy, HPDF_REAL c2cz, HPDF_REAL roo, HPDF_REAL roll)
+{
+	HPDF_REAL viewx, viewy, viewz;
+	HPDF_REAL leftx, lefty, leftz;
+	HPDF_REAL upx, upy, upz;
+	HPDF_REAL transx, transy, transz;
+
+	HPDF_Array  matrix; 
+	HPDF_STATUS ret = HPDF_OK;
+
+	HPDF_PTRACE ((" HPDF_3DView_SetCamera\n"));
+
+	if (view == NULL) {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	/* view vector (opposite to c2c) */
+	viewx = -c2cx;
+	viewy = -c2cy;
+	viewz = -c2cz;
+	
+	/* c2c = (0, -1, 0) by default */
+	if (viewx == 0.0 && viewy == 0.0 && viewz == 0.0) {
+		viewy = 1.0;
+	}
+	/* normalize view vector */
+	normalize(viewx, viewy, viewz);
+
+	/* rotation matrix */
+
+	/* top and bottom views */
+	leftx = -1.0f;
+	lefty =  0.0f;
+	leftz =  0.0f;
+
+	/* up-vector */
+	if (viewz < 0.0) /* top view*/
+	{
+		upx = 0.0f;
+		upy = 1.0f;
+		upz = 0.0f;
+	}
+	else /* bottom view*/
+	{
+		upx = 0.0f;
+		upy =-1.0f;
+		upz = 0.0f;
+	}
+	
+	if ( fabs(viewx) + fabs(viewy) != 0.0f) /* other views than top and bottom*/
+	{
+		/* up-vector = up_world - (up_world dot view) view*/
+		upx = -viewz*viewx;
+		upy = -viewz*viewy;
+		upz = -viewz*viewz + 1.0f;
+		/* normalize up-vector*/
+		normalize(upx, upy, upz);
+		/* left vector = up x view*/
+		leftx = viewz*upy - viewy*upz;
+		lefty = viewx*upz - viewz*upx;
+		leftz = viewy*upx - viewx*upy;
+		/* normalize left vector*/
+		normalize(leftx, lefty, leftz);
+	}
+	/* apply camera roll*/
+	{
+		HPDF_REAL leftxprime, leftyprime, leftzprime;
+		HPDF_REAL upxprime, upyprime, upzprime;
+		HPDF_REAL sinroll, cosroll;
+
+		sinroll =  sin((roll/180.0f)*M_PI);
+		cosroll =  cos((roll/180.0f)*M_PI);
+		leftxprime = leftx*cosroll + upx*sinroll;
+		leftyprime = lefty*cosroll + upy*sinroll;
+		leftzprime = leftz*cosroll + upz*sinroll;
+		upxprime = upx*cosroll + leftx*sinroll;
+		upyprime = upy*cosroll + lefty*sinroll;
+		upzprime = upz*cosroll + leftz*sinroll;
+		leftx = leftxprime;
+		lefty = leftyprime;
+		leftz = leftzprime;
+		upx = upxprime;
+		upy = upyprime;
+		upz = upzprime;
+	}
+	
+	/* translation vector*/
+	roo = fabs(roo);
+	if (roo == 0.0) {
+		roo = 0.000000000000000001;
+	}
+	transx = coox - roo*viewx;
+	transy = cooy - roo*viewy;
+	transz = cooz - roo*viewz;
+
+	/* transformation matrix*/
+	matrix = HPDF_Array_New (view->mmgr);
+	if (!matrix) {
+		return HPDF_Error_GetCode (view->error);
+	}
+
+	ret = HPDF_Array_AddReal (matrix, leftx);
+	ret += HPDF_Array_AddReal (matrix, lefty);
+	ret += HPDF_Array_AddReal (matrix, leftz);
+	ret += HPDF_Array_AddReal (matrix, upx);
+	ret += HPDF_Array_AddReal (matrix, upy);
+	ret += HPDF_Array_AddReal (matrix, upz);
+	ret += HPDF_Array_AddReal (matrix, viewx);
+	ret += HPDF_Array_AddReal (matrix, viewy);
+	ret += HPDF_Array_AddReal (matrix, viewz);
+	ret += HPDF_Array_AddReal (matrix, transx);
+	ret += HPDF_Array_AddReal (matrix, transy);
+	ret += HPDF_Array_AddReal (matrix, transz);
+
+	ret += HPDF_Dict_AddName (view, "MS", "M");
+	ret += HPDF_Dict_Add (view, "C2W", matrix);
+	ret += HPDF_Dict_AddNumber (view, "CO", roo);
+
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (matrix);
+		return ret;
+	}
+	return ret;
+}
+#undef normalize
 
