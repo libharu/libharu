@@ -30,4 +30,5 @@ cscope.out
 config.guess
 config.sub
 configure
+configure.in~
 libtool
