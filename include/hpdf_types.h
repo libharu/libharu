@@ -146,6 +146,7 @@ typedef enum _HPDF_PdfVer {
     HPDF_VER_14,
     HPDF_VER_15,
     HPDF_VER_16,
+    HPDF_VER_17,
     HPDF_VER_EOF
 } HPDF_PDFVer;
 
