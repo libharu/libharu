@@ -59,13 +59,20 @@ HPDF_U3D_LoadU3DFromMem	(	HPDF_MMgr          mmgr,
 	}
 
 	image->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
-	ret += HPDF_Dict_AddName (image, "Type", "XObject");
-	ret += HPDF_Dict_AddName (image, "Subtype", "Image");
+	ret = HPDF_Dict_AddName (image, "Type", "XObject");
 	if (ret != HPDF_OK) {
+		HPDF_Dict_Free(image);
+		return NULL;
+	}
+
+	ret = HPDF_Dict_AddName (image, "Subtype", "Image");
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free(image);
 		return NULL;
 	}
 
 	if (HPDF_Stream_Write (image->stream, buf, size) != HPDF_OK) {
+		HPDF_Dict_Free(image);
 		return NULL;
 	}
 
@@ -125,14 +132,17 @@ HPDF_U3D_LoadU3D   (HPDF_MMgr        mmgr,
 	u3d->filter = HPDF_STREAM_FILTER_NONE;
 
 	if (HPDF_Dict_AddName (u3d, "Type", "3D") != HPDF_OK) {
+		HPDF_Dict_Free(u3d);
 		return NULL;
 	}
 
 	if (Get3DStreamType (u3d_data, &type) != HPDF_OK) {
+		HPDF_Dict_Free(u3d);
 		return NULL;
 	}
 
 	if (HPDF_Dict_AddName (u3d, "Subtype", type) != HPDF_OK) {
+		HPDF_Dict_Free(u3d);
 		return NULL;
 	}
 
@@ -146,15 +156,19 @@ HPDF_U3D_LoadU3D   (HPDF_MMgr        mmgr,
 				if (len > 0) {
 					ret = HPDF_Stream_Write (u3d->stream, buf, len);
 					if (ret != HPDF_OK) {
+						HPDF_Dict_Free(u3d);
 						return NULL;
 					}
 				}
 				break;
-			} else
+			} else {
+				HPDF_Dict_Free(u3d);
 				return NULL;
+			}
 		}
 
 		if (HPDF_Stream_Write (u3d->stream, buf, len) != HPDF_OK) {
+			HPDF_Dict_Free(u3d);
 			return NULL;
 		}
 	}
@@ -179,8 +193,18 @@ HPDF_EXPORT(HPDF_Dict) HPDF_Create3DView(HPDF_MMgr mmgr, const char *name)
 	}
 
 	ret = HPDF_Dict_AddName (view, "TYPE", "3DView");
-	ret += HPDF_Dict_Add (view, "XN", HPDF_String_New (mmgr, name, NULL));
-	ret += HPDF_Dict_Add (view, "IN", HPDF_String_New (mmgr, name, NULL));
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (view);
+		return NULL;
+	}
+	
+	ret = HPDF_Dict_Add (view, "XN", HPDF_String_New (mmgr, name, NULL));
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (view);
+		return NULL;
+	}
+
+	ret = HPDF_Dict_Add (view, "IN", HPDF_String_New (mmgr, name, NULL));
 	if (ret != HPDF_OK) {
 		HPDF_Dict_Free (view);
 		return NULL;
@@ -266,17 +290,42 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_AddNode(HPDF_Dict view, const char *name, H
 
 	node = HPDF_Dict_New (view->mmgr);
 	if (!node) {
+		HPDF_Array_Free (nodes);
 		return HPDF_Error_GetCode (view->error);
 	}
 
 	ret = HPDF_Dict_AddName (node, "Type", "3DNode");
-	ret += HPDF_Dict_Add (node, "N", HPDF_String_New (view->mmgr, name, NULL));
-	ret += HPDF_Dict_AddReal (node, "O", opacity);
-	ret += HPDF_Dict_AddBoolean (node, "V", visible);
-	ret += HPDF_Array_Add(nodes, node);
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (nodes);
+		HPDF_Dict_Free (node);
+		return ret;
+	}
 
+	ret = HPDF_Dict_Add (node, "N", HPDF_String_New (view->mmgr, name, NULL));
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (nodes);
+		HPDF_Dict_Free (node);
+		return ret;
+	}
+
+	ret = HPDF_Dict_AddReal (node, "O", opacity);
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (nodes);
+		HPDF_Dict_Free (node);
+		return ret;
+	}
+
+	ret = HPDF_Dict_AddBoolean (node, "V", visible);
 	if (ret != HPDF_OK) {
 		HPDF_Dict_Free (node);
+		HPDF_Array_Free (nodes);
+		return ret;
+	}
+
+	ret = HPDF_Array_Add(nodes, node);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (node);
+		HPDF_Array_Free (nodes);
 		return ret;
 	}
 	return ret;
@@ -312,9 +361,18 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetLighting(HPDF_Dict view, const char *sch
 	}
 
 	ret = HPDF_Dict_AddName (lighting, "Type", "3DLightingScheme");
-	ret += HPDF_Dict_AddName (lighting, "Subtype", scheme);
-	ret += HPDF_Dict_Add (view, "LS", lighting);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (lighting);
+		return ret;
+	}
 
+	ret = HPDF_Dict_AddName (lighting, "Subtype", scheme);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (lighting);
+		return ret;
+	}
+
+	ret = HPDF_Dict_Add (view, "LS", lighting);
 	if (ret != HPDF_OK) {
 		HPDF_Dict_Free (lighting);
 		return ret;
@@ -346,13 +404,42 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetBackgroundColor(HPDF_Dict view, HPDF_REA
 	}
 
 	ret = HPDF_Array_AddReal (color, r);
-	ret += HPDF_Array_AddReal (color, g);
-	ret += HPDF_Array_AddReal (color, b);
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (color);
+		HPDF_Dict_Free (background);
+		return ret;
+	}
 
-	ret += HPDF_Dict_AddName (background, "Type", "3DBG");
-	ret += HPDF_Dict_Add (background, "C", color);
+	ret = HPDF_Array_AddReal (color, g);
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (color);
+		HPDF_Dict_Free (background);
+		return ret;
+	}
 
-	ret += HPDF_Dict_Add (view, "BG", background);
+	ret = HPDF_Array_AddReal (color, b);
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (color);
+		HPDF_Dict_Free (background);
+		return ret;
+	}
+
+
+	ret = HPDF_Dict_AddName (background, "Type", "3DBG");
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (color);
+		HPDF_Dict_Free (background);
+		return ret;
+	}
+
+	ret = HPDF_Dict_Add (background, "C", color);
+	if (ret != HPDF_OK) {
+		HPDF_Array_Free (color);
+		HPDF_Dict_Free (background);
+		return ret;
+	}
+
+	ret = HPDF_Dict_Add (view, "BG", background);
 	if (ret != HPDF_OK) {
 		HPDF_Array_Free (color);
 		HPDF_Dict_Free (background);
@@ -378,10 +465,24 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetPerspectiveProjection(HPDF_Dict view, HP
 	}
 
 	ret = HPDF_Dict_AddName (projection, "Subtype", "P");
-	ret += HPDF_Dict_AddName (projection, "PS", "Min");
-	ret += HPDF_Dict_AddReal (projection, "FOV", fov);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (projection);
+		return ret;
+	}
 
-	ret += HPDF_Dict_Add (view, "P", projection);
+	ret = HPDF_Dict_AddName (projection, "PS", "Min");
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (projection);
+		return ret;
+	}
+
+	ret = HPDF_Dict_AddReal (projection, "FOV", fov);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (projection);
+		return ret;
+	}
+
+	ret = HPDF_Dict_Add (view, "P", projection);
 	if (ret != HPDF_OK) {
 		HPDF_Dict_Free (projection);
 		return ret;
@@ -406,9 +507,18 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPD
 	}
 
 	ret = HPDF_Dict_AddName (projection, "Subtype", "O");
-	ret += HPDF_Dict_AddReal (projection, "OS", mag);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (projection);
+		return ret;
+	}
 
-	ret += HPDF_Dict_Add (view, "P", projection);
+	ret = HPDF_Dict_AddReal (projection, "OS", mag);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (projection);
+		return ret;
+	}
+
+	ret = HPDF_Dict_Add (view, "P", projection);
 	if (ret != HPDF_OK) {
 		HPDF_Dict_Free (projection);
 		return ret;
@@ -536,22 +646,50 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCamera(HPDF_Dict view, HPDF_REAL coox, H
 	}
 
 	ret = HPDF_Array_AddReal (matrix, leftx);
-	ret += HPDF_Array_AddReal (matrix, lefty);
-	ret += HPDF_Array_AddReal (matrix, leftz);
-	ret += HPDF_Array_AddReal (matrix, upx);
-	ret += HPDF_Array_AddReal (matrix, upy);
-	ret += HPDF_Array_AddReal (matrix, upz);
-	ret += HPDF_Array_AddReal (matrix, viewx);
-	ret += HPDF_Array_AddReal (matrix, viewy);
-	ret += HPDF_Array_AddReal (matrix, viewz);
-	ret += HPDF_Array_AddReal (matrix, transx);
-	ret += HPDF_Array_AddReal (matrix, transy);
-	ret += HPDF_Array_AddReal (matrix, transz);
+	if (ret != HPDF_OK) goto failed;
 
-	ret += HPDF_Dict_AddName (view, "MS", "M");
-	ret += HPDF_Dict_Add (view, "C2W", matrix);
-	ret += HPDF_Dict_AddNumber (view, "CO", roo);
+	ret = HPDF_Array_AddReal (matrix, lefty);
+	if (ret != HPDF_OK) goto failed;
 
+	ret = HPDF_Array_AddReal (matrix, leftz);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, upx);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, upy);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, upz);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, viewx);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, viewy);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, viewz);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, transx);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, transy);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Array_AddReal (matrix, transz);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Dict_AddName (view, "MS", "M");
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Dict_Add (view, "C2W", matrix);
+	if (ret != HPDF_OK) goto failed;
+
+	ret = HPDF_Dict_AddNumber (view, "CO", roo);
+
+failed:
 	if (ret != HPDF_OK) {
 		HPDF_Array_Free (matrix);
 		return ret;
