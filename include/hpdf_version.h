@@ -4,5 +4,5 @@
 #define HPDF_MINOR_VERSION 1
 #define HPDF_BUGFIX_VERSION 0
 #define HPDF_EXTRA_VERSION "-dev"
-#define HPDF_VERSION "2.1.0-dev"
+#define HPDF_VERSION_TEXT "2.1.0-dev"
 #define HPDF_VERSION_ID 20100

@@ -31,7 +31,7 @@ HPDF_MINOR_VERSION=1
 HPDF_BUGFIX_VERSION=0
 HPDF_EXTRA_VERSION="-dev"
 
-HPDF_VERSION="${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION}${HPDF_EXTRA_VERSION}"
+HPDF_VERSION_TEXT="${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION}${HPDF_EXTRA_VERSION}"
 HPDF_VERSION_ID=`expr [$]HPDF_MAJOR_VERSION \* 10000 + [$]HPDF_MINOR_VERSION \* 100 + [$]HPDF_BUGFIX_VERSION`
 
 dnl generate hpdf_version.h {{{
@@ -41,7 +41,7 @@ echo "#define HPDF_MAJOR_VERSION $HPDF_MAJOR_VERSION" >> hpdf_version.h.new
 echo "#define HPDF_MINOR_VERSION $HPDF_MINOR_VERSION" >> hpdf_version.h.new
 echo "#define HPDF_BUGFIX_VERSION $HPDF_BUGFIX_VERSION" >> hpdf_version.h.new
 echo "#define HPDF_EXTRA_VERSION \"$HPDF_EXTRA_VERSION\"" >> hpdf_version.h.new
-echo "#define HPDF_VERSION \"$HPDF_VERSION\"" >> hpdf_version.h.new
+echo "#define HPDF_VERSION_TEXT \"$HPDF_VERSION_TEXT\"" >> hpdf_version.h.new
 echo "#define HPDF_VERSION_ID $HPDF_VERSION_ID" >> hpdf_version.h.new
 cmp hpdf_version.h.new $srcdir/include/hpdf_version.h >/dev/null 2>&1
 if test $? -ne 0 ; then
