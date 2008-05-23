@@ -1926,7 +1926,7 @@ QuarterCircleA  (char   *pbuf,
     pbuf = HPDF_FToA (pbuf, x, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y + ray, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 static char*
@@ -1947,7 +1947,7 @@ QuarterCircleB  (char   *pbuf,
     pbuf = HPDF_FToA (pbuf, x + ray, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 static char*
@@ -1968,7 +1968,7 @@ QuarterCircleC  (char   *pbuf,
     pbuf = HPDF_FToA (pbuf, x, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y - ray, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 static char*
@@ -1989,7 +1989,7 @@ QuarterCircleD  (char   *pbuf,
     pbuf = HPDF_FToA (pbuf, x - ray, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -2017,7 +2017,7 @@ HPDF_Page_Circle  (HPDF_Page     page,
     pbuf = HPDF_FToA (pbuf, x - ray, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y, eptr);
-    pbuf = HPDF_StrCpy (pbuf, " m\012", eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
 
     pbuf = QuarterCircleA (pbuf, eptr, x, y, ray);
     pbuf = QuarterCircleB (pbuf, eptr, x, y, ray);
@@ -2055,7 +2055,7 @@ QuarterEllipseA  (char      *pbuf,
     pbuf = HPDF_FToA (pbuf, x, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y + yray, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 static char*
@@ -2077,7 +2077,7 @@ QuarterEllipseB  (char      *pbuf,
     pbuf = HPDF_FToA (pbuf, x + xray, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 static char*
@@ -2099,7 +2099,7 @@ QuarterEllipseC  (char      *pbuf,
     pbuf = HPDF_FToA (pbuf, x, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y - yray, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 static char*
@@ -2121,7 +2121,7 @@ QuarterEllipseD  (char      *pbuf,
     pbuf = HPDF_FToA (pbuf, x - xray, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y, eptr);
-    return HPDF_StrCpy (pbuf, " c\012", eptr);
+    return (char *)HPDF_StrCpy (pbuf, " c\012", eptr);
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -2150,7 +2150,7 @@ HPDF_Page_Ellipse  (HPDF_Page   page,
     pbuf = HPDF_FToA (pbuf, x - xray, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, y, eptr);
-    pbuf = HPDF_StrCpy (pbuf, " m\012", eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
 
     pbuf = QuarterEllipseA (pbuf, eptr, x, y, xray, yray);
     pbuf = QuarterEllipseB (pbuf, eptr, x, y, xray, yray);
@@ -2278,7 +2278,7 @@ InternalArc  (HPDF_Page    page,
         pbuf = HPDF_FToA (pbuf, (HPDF_REAL)x0, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_FToA (pbuf, (HPDF_REAL)y0, eptr);
-        pbuf = HPDF_StrCpy (pbuf, " m\012", eptr);
+        pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
     }
 
     pbuf = HPDF_FToA (pbuf, (HPDF_REAL)x1, eptr);
@@ -2343,7 +2343,7 @@ InternalWriteText  (HPDF_PageAttr      attr,
         if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
             return ret;
 
-        if ((ret = HPDF_Stream_WriteBinary (attr->stream, text,
+        if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
                         HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN), NULL))
                != HPDF_OK)
             return ret;
@@ -2511,7 +2511,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                 num_char = 0;
                 encoder = ((HPDF_FontAttr)attr->gstate->font->attr)->encoder;
                 tmp_ptr = ptr;
-                HPDF_Encoder_SetParseText (encoder, &state, tmp_ptr, tmp_len);
+                HPDF_Encoder_SetParseText (encoder, &state, (HPDF_BYTE *)tmp_ptr, tmp_len);
                 i = 0;
                 while (*tmp_ptr) {
                     HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &state);
@@ -2601,7 +2601,7 @@ InternalShowTextNextLine  (HPDF_Page    page,
         if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
             return ret;
 
-        if ((ret = HPDF_Stream_WriteBinary (attr->stream, text, len, NULL))
+        if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text, len, NULL))
                != HPDF_OK)
             return ret;
 

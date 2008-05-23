@@ -316,14 +316,14 @@ LoadFontData (HPDF_FontDef  fontdef,
         return HPDF_Error_GetCode (fontdef->error);
 
     len = 11;
-    ret = HPDF_Stream_Read (stream, pbuf, &len);
+    ret = HPDF_Stream_Read (stream, (HPDF_BYTE *)pbuf, &len);
     if (ret != HPDF_OK)
         return ret;
     pbuf += 11;
 
     for (;;) {
         len = HPDF_STREAM_BUF_SIZ - 11;
-        ret = HPDF_Stream_Read (stream, pbuf, &len);
+        ret = HPDF_Stream_Read (stream, (HPDF_BYTE *)pbuf, &len);
         if (ret == HPDF_STREAM_EOF) {
             end_flg = HPDF_TRUE;
         } else if (ret != HPDF_OK)
@@ -354,16 +354,16 @@ LoadFontData (HPDF_FontDef  fontdef,
         }
 
         if (end_flg) {
-            if ((ret = HPDF_Stream_Write (attr->font_data, buf, len + 11)) !=
+            if ((ret = HPDF_Stream_Write (attr->font_data, (HPDF_BYTE *)buf, len + 11)) !=
                         HPDF_OK)
                 return ret;
 
             break;
         } else {
-            if ((ret = HPDF_Stream_Write (attr->font_data, buf, len)) !=
+            if ((ret = HPDF_Stream_Write (attr->font_data, (HPDF_BYTE *)buf, len)) !=
                         HPDF_OK)
                 return ret;
-            HPDF_MemCpy (buf, buf + len, 11);
+            HPDF_MemCpy ((HPDF_BYTE *)buf, (HPDF_BYTE *)buf + len, 11);
             pbuf = buf + 11;
         }
     }

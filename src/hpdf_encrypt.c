@@ -314,13 +314,13 @@ HPDF_PadOrTrancatePasswd  (const char  *pwd,
 
     HPDF_MemSet (new_pwd, 0x00, HPDF_PASSWD_LEN);
 
-    if (len >= HPDF_PASSWD_LEN)
-        HPDF_MemCpy (new_pwd, pwd, HPDF_PASSWD_LEN);
-    else {
-        if (len > 0)
-            HPDF_MemCpy (new_pwd, pwd, len);
-        HPDF_MemCpy (new_pwd + len, HPDF_PADDING_STRING,
-                    HPDF_PASSWD_LEN - len);
+    if (len >= HPDF_PASSWD_LEN) {
+        HPDF_MemCpy (new_pwd, (HPDF_BYTE *)pwd, HPDF_PASSWD_LEN);
+    } else {
+        if (len > 0) {
+            HPDF_MemCpy (new_pwd, (HPDF_BYTE *)pwd, len);
+        }
+        HPDF_MemCpy (new_pwd + len, HPDF_PADDING_STRING, HPDF_PASSWD_LEN - len);
     }
 }
 

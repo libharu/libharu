@@ -2481,7 +2481,7 @@ HPDF_BasicEncoder_Write  (HPDF_Encoder  encoder,
                 ptmp = HPDF_IToA (ptmp, i, tmp + HPDF_TMP_BUF_SIZ - 1);
                 *ptmp++ = ' ';
                 *ptmp++ = '/';
-                ptmp = HPDF_StrCpy (ptmp, char_name, tmp +
+                ptmp = (char *)HPDF_StrCpy (ptmp, char_name, tmp +
                         HPDF_TMP_BUF_SIZ - 1);
                 *ptmp++ = ' ';
                 *ptmp = 0;
@@ -2943,7 +2943,7 @@ HPDF_Encoder_GetByteType  (HPDF_Encoder       encoder,
     if (encoder->type != HPDF_ENCODER_TYPE_DOUBLE_BYTE)
         return HPDF_BYTE_TYPE_SINGLE;
 
-    HPDF_Encoder_SetParseText (encoder, &parse_state, text, index + 1);
+    HPDF_Encoder_SetParseText (encoder, &parse_state, (HPDF_BYTE *)text, index + 1);
 
     for (;;) {
         btype = HPDF_CMapEncoder_ByteType (encoder, &parse_state);

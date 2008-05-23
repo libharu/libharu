@@ -160,7 +160,7 @@ HPDF_Stream_ReadLn  (HPDF_Stream  stream,
 
     while (r_size > 1) {
         char *pbuf = buf;
-        HPDF_STATUS ret = HPDF_Stream_Read (stream, buf, &read_size);
+        HPDF_STATUS ret = HPDF_Stream_Read (stream, (HPDF_BYTE *)buf, &read_size);
 
         if (ret != HPDF_OK && read_size == 0)
             return ret;
@@ -250,7 +250,7 @@ HPDF_STATUS
 HPDF_Stream_WriteChar  (HPDF_Stream  stream,
                         char    value)
 {
-    return HPDF_Stream_Write(stream, &value, sizeof(char));
+    return HPDF_Stream_Write(stream, (HPDF_BYTE *)&value, sizeof(char));
 }
 
 
@@ -260,7 +260,7 @@ HPDF_Stream_WriteStr  (HPDF_Stream      stream,
 {
     HPDF_UINT len = HPDF_StrLen(value, -1);
 
-    return HPDF_Stream_Write(stream, value, len);
+    return HPDF_Stream_Write(stream, (HPDF_BYTE *)value, len);
 }
 
 HPDF_STATUS
@@ -278,7 +278,7 @@ HPDF_Stream_WriteInt  (HPDF_Stream  stream,
 
     char* p = HPDF_IToA(buf, value, buf + HPDF_INT_LEN);
 
-    return HPDF_Stream_Write(stream, buf, (HPDF_UINT)(p - buf));
+    return HPDF_Stream_Write(stream, (HPDF_BYTE *)buf, (HPDF_UINT)(p - buf));
 }
 
 HPDF_STATUS
@@ -296,7 +296,7 @@ HPDF_Stream_WriteReal  (HPDF_Stream  stream,
 
     char* p = HPDF_FToA(buf, value, buf + HPDF_REAL_LEN);
 
-    return HPDF_Stream_Write(stream, buf, (HPDF_UINT)(p - buf));
+    return HPDF_Stream_Write(stream, (HPDF_BYTE *)buf, (HPDF_UINT)(p - buf));
 }
 
 void
@@ -404,7 +404,7 @@ HPDF_Stream_WriteEscapeName  (HPDF_Stream      stream,
     }
     *pos2 = 0;
 
-    return HPDF_Stream_Write (stream, tmp_char, HPDF_StrLen(tmp_char, -1));
+    return HPDF_Stream_Write (stream, (HPDF_BYTE *)tmp_char, HPDF_StrLen(tmp_char, -1));
 }
 
 HPDF_STATUS
@@ -444,7 +444,7 @@ HPDF_Stream_WriteEscapeText2  (HPDF_Stream    stream,
             buf[idx++] = c;
 
         if (idx > HPDF_TEXT_DEFAULT_LEN - 4) {
-            ret = HPDF_Stream_Write (stream, buf, idx);
+            ret = HPDF_Stream_Write (stream, (HPDF_BYTE *)buf, idx);
             if (ret != HPDF_OK)
                 return ret;
             idx = 0;
@@ -452,7 +452,7 @@ HPDF_Stream_WriteEscapeText2  (HPDF_Stream    stream,
     }
     buf[idx++] = ')';
 
-    ret = HPDF_Stream_Write (stream, buf, idx);
+    ret = HPDF_Stream_Write (stream, (HPDF_BYTE *)buf, idx);
 
     return ret;
 }
@@ -518,7 +518,7 @@ HPDF_Stream_WriteBinary  (HPDF_Stream      stream,
         buf[idx++] = c;
 
         if (idx > HPDF_TEXT_DEFAULT_LEN - 2) {
-            ret = HPDF_Stream_Write (stream, buf, idx);
+            ret = HPDF_Stream_Write (stream, (HPDF_BYTE *)buf, idx);
             if (ret != HPDF_OK) {
                 if (flg)
                     HPDF_FreeMem (stream->mmgr, pbuf);
@@ -529,7 +529,7 @@ HPDF_Stream_WriteBinary  (HPDF_Stream      stream,
     }
 
     if (idx > 0) {
-        ret = HPDF_Stream_Write (stream, buf, idx);
+        ret = HPDF_Stream_Write (stream, (HPDF_BYTE *)buf, idx);
     }
 
     if (flg)

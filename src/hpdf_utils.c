@@ -266,7 +266,7 @@ HPDF_StrCpy  (char          *out,
 
     *out = 0;
 
-    return out;
+    return (HPDF_BYTE *)out;
 }
 
 
@@ -370,7 +370,7 @@ HPDF_StrStr  (const char   *s1,
     maxlen++;
 
     while (maxlen > 0) {
-        if (HPDF_MemCmp (s1, s2, len) == 0)
+        if (HPDF_MemCmp ((HPDF_BYTE *)s1, (HPDF_BYTE *)s2, len) == 0)
             return s1;
 
         s1++;

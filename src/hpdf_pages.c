@@ -507,7 +507,7 @@ HPDF_Page_GetLocalFontName  (HPDF_Page  page,
         char *ptr;
         char *end_ptr = fontName + HPDF_LIMIT_MAX_NAME_LEN;
 
-        ptr = HPDF_StrCpy (fontName, "F", end_ptr);
+        ptr = (char *)HPDF_StrCpy (fontName, "F", end_ptr);
         HPDF_IToA (ptr, attr->fonts->list->count + 1, end_ptr);
 
         if (HPDF_Dict_Add (attr->fonts, fontName, font) != HPDF_OK)
@@ -596,7 +596,7 @@ HPDF_Page_GetXObjectName  (HPDF_Page     page,
         char *ptr;
         char *end_ptr = xobj_name + HPDF_LIMIT_MAX_NAME_LEN;
 
-        ptr = HPDF_StrCpy (xobj_name, "X", end_ptr);
+        ptr = (char *)HPDF_StrCpy (xobj_name, "X", end_ptr);
         HPDF_IToA (ptr, attr->xobjects->list->count + 1, end_ptr);
 
         if (HPDF_Dict_Add (attr->xobjects, xobj_name, xobj) != HPDF_OK)
@@ -647,7 +647,7 @@ HPDF_Page_GetExtGStateName  (HPDF_Page       page,
         char *ptr;
         char *end_ptr = ext_gstate_name + HPDF_LIMIT_MAX_NAME_LEN;
 
-        ptr = HPDF_StrCpy (ext_gstate_name, "E", end_ptr);
+        ptr = (char *)HPDF_StrCpy (ext_gstate_name, "E", end_ptr);
         HPDF_IToA (ptr, attr->ext_gstates->list->count + 1, end_ptr);
 
         if (HPDF_Dict_Add (attr->ext_gstates, ext_gstate_name, state) != HPDF_OK)
@@ -708,7 +708,7 @@ HPDF_Page_TextWidth  (HPDF_Page        page,
         return 0;
     }
 
-    tw = HPDF_Font_TextWidth (attr->gstate->font, text, len);
+    tw = HPDF_Font_TextWidth (attr->gstate->font, (HPDF_BYTE *)text, len);
 
     ret += attr->gstate->word_space * tw.numspace;
     ret += tw.width * attr->gstate->font_size  / 1000;
@@ -744,7 +744,7 @@ HPDF_Page_MeasureText  (HPDF_Page          page,
         return 0;
     }
 
-    ret = HPDF_Font_MeasureText (attr->gstate->font, text, len, width,
+    ret = HPDF_Font_MeasureText (attr->gstate->font, (HPDF_BYTE *)text, len, width,
         attr->gstate->font_size, attr->gstate->char_space,
         attr->gstate->word_space, wordwrap, real_width);
 

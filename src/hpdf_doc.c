@@ -85,7 +85,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
 HPDF_EXPORT(const char *)
 HPDF_GetVersion (void)
 {
-    return HPDF_VERSION_TEXT;
+    return HPDF_VERSION;
 }
 
 
@@ -255,7 +255,7 @@ HPDF_NewDoc  (HPDF_Doc  pdf)
 
     pdf->cur_pages = pdf->root_pages;
 
-    ptr = HPDF_StrCpy (ptr, "Haru Free PDF Library ", eptr);
+    ptr = (char *)HPDF_StrCpy (ptr, (const char *)"Haru Free PDF Library ", eptr);
     version = HPDF_GetVersion ();
     HPDF_StrCpy (ptr, version, eptr);
 
@@ -1496,7 +1496,7 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
 
     if (embedding) {
         if (pdf->ttfont_tag[0] == 0) {
-            HPDF_MemCpy (pdf->ttfont_tag, "HPDFAA", 6);
+            HPDF_MemCpy (pdf->ttfont_tag, (HPDF_BYTE *)"HPDFAA", 6);
         } else {
             HPDF_INT i;
 
@@ -1509,7 +1509,7 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
             }
         }
 
-        HPDF_TTFontDef_SetTagName (def, pdf->ttfont_tag);
+        HPDF_TTFontDef_SetTagName (def, (char *)pdf->ttfont_tag);
     }
 
     return def->base_font;
@@ -1574,7 +1574,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
 
     if (embedding) {
         if (pdf->ttfont_tag[0] == 0) {
-            HPDF_MemCpy (pdf->ttfont_tag, "HPDFAA", 6);
+            HPDF_MemCpy (pdf->ttfont_tag, (HPDF_BYTE *)"HPDFAA", 6);
         } else {
             HPDF_INT i;
 
@@ -1587,7 +1587,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
             }
         }
 
-        HPDF_TTFontDef_SetTagName (def, pdf->ttfont_tag);
+        HPDF_TTFontDef_SetTagName (def, (char *)pdf->ttfont_tag);
     }
 
     return def->base_font;

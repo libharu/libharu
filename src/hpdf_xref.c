@@ -276,7 +276,7 @@ HPDF_Xref_WriteToStream  (HPDF_Xref    xref,
         tmp_xref->addr = stream->size;
 
         pbuf = buf;
-        pbuf = HPDF_StrCpy (pbuf, "xref\012", eptr);
+        pbuf = (char *)HPDF_StrCpy (pbuf, "xref\012", eptr);
         pbuf = HPDF_IToA (pbuf, tmp_xref->start_offset, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, tmp_xref->entries->count, eptr);

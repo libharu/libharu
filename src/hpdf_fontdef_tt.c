@@ -501,7 +501,7 @@ LoadFontData2 (HPDF_FontDef  fontdef,
     if ((ret = HPDF_Stream_Read (stream, tag, &size)) != HPDF_OK)
         return ret;
 
-    if (HPDF_MemCmp (tag, "ttcf", 4) != 0)
+    if (HPDF_MemCmp (tag, (HPDF_BYTE *)"ttcf", 4) != 0)
         return HPDF_SetError (fontdef->error, HPDF_INVALID_TTC_FILE, 0);
 
     if ((ret = HPDF_Stream_Seek (stream, 8, HPDF_SEEK_SET)) != HPDF_OK)
@@ -718,7 +718,7 @@ LoadTTFTable (HPDF_FontDef  fontdef)
     for (i = 0; i < attr->offset_tbl.num_tables; i++) {
         HPDF_UINT siz = 4;
 
-        ret += HPDF_Stream_Read (attr->stream, tbl->tag, &siz);
+        ret += HPDF_Stream_Read (attr->stream, (HPDF_BYTE *)tbl->tag, &siz);
         ret += GetUINT32 (attr->stream, &tbl->check_sum);
         ret += GetUINT32 (attr->stream, &tbl->offset);
         ret += GetUINT32 (attr->stream, &tbl->length);
@@ -1608,7 +1608,7 @@ ParseName  (HPDF_FontDef  fontdef)
                 HPDF_SEEK_SET)) != HPDF_OK)
         return ret;
 
-        if ((ret = HPDF_Stream_Read (attr->stream, attr->base_font, &len_id1))
+        if ((ret = HPDF_Stream_Read (attr->stream, (HPDF_BYTE *)attr->base_font, &len_id1))
                  != HPDF_OK)
             return ret;
     } else {
@@ -1624,7 +1624,7 @@ ParseName  (HPDF_FontDef  fontdef)
                 != HPDF_OK)
             return ret;
 
-        if ((ret = HPDF_Stream_Read (attr->stream, tmp, &len_id2)) != HPDF_OK)
+        if ((ret = HPDF_Stream_Read (attr->stream, (HPDF_BYTE *)tmp, &len_id2)) != HPDF_OK)
             return ret;
     } else {
         if ((ret = LoadUnicodeName (attr->stream, offset_id2u, len_id2u,
@@ -1639,7 +1639,7 @@ ParseName  (HPDF_FontDef  fontdef)
     * if subfamily name is "Bold" or "Italic" or "BoldItalic", set flags
     * attribute.
     */
-    if (HPDF_MemCmp (tmp, "Regular", 7) != 0) {
+    if (HPDF_MemCmp ((HPDF_BYTE *)tmp, (HPDF_BYTE *)"Regular", 7) != 0) {
         char *dst = attr->base_font + len_id1;
         char *src = tmp;
         HPDF_UINT j;
@@ -1662,8 +1662,7 @@ ParseName  (HPDF_FontDef  fontdef)
             fontdef->flags |= HPDF_FONT_ITALIC;
     }
 
-    HPDF_MemCpy (fontdef->base_font, attr->base_font,
-            HPDF_LIMIT_MAX_NAME_LEN + 1);
+    HPDF_MemCpy ((HPDF_BYTE *)fontdef->base_font, (HPDF_BYTE *)attr->base_font, HPDF_LIMIT_MAX_NAME_LEN + 1);
 
     HPDF_PTRACE(("  ParseName() base_font=%s\n", attr->base_font));
 
@@ -1843,11 +1842,11 @@ RecreateName  (HPDF_FontDef   fontdef,
         /* add suffix to font-name. */
         if (name_rec->name_id == 1 || name_rec->name_id == 4) {
             if (name_rec->platform_id == 0 || name_rec->platform_id == 3) {
-                ret += HPDF_Stream_Write (tmp_stream, attr->tag_name2,
+                ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)attr->tag_name2,
                         sizeof(attr->tag_name2));
                 name_len += sizeof(attr->tag_name2);
             } else {
-                ret += HPDF_Stream_Write (tmp_stream, attr->tag_name,
+                ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)attr->tag_name,
                         sizeof(attr->tag_name));
                 name_len += sizeof(attr->tag_name);
             }
@@ -2001,11 +2000,11 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
         length = tbl->length;
         new_offset = tmp_stream->size;
 
-        if (HPDF_MemCmp (tbl->tag, "head", 4) == 0) {
+        if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"head", 4) == 0) {
             ret = WriteHeader (fontdef, tmp_stream, &check_sum_ptr);
-        } else if (HPDF_MemCmp (tbl->tag, "glyf", 4) == 0) {
+        } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"glyf", 4) == 0) {
             ret = RecreateGLYF (fontdef, new_offsets, tmp_stream);
-        } else if (HPDF_MemCmp (tbl->tag, "loca", 4) == 0) {
+        } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"loca", 4) == 0) {
             HPDF_UINT j;
 
             HPDF_MemSet (&value, 0, 4);
@@ -2022,7 +2021,7 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
                     poffset++;
                 }
             }
-        } else if (HPDF_MemCmp (tbl->tag, "name", 4) == 0) {
+        } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"name", 4) == 0) {
             ret = RecreateName (fontdef, tmp_stream);
         } else {
             HPDF_UINT size = 4;
@@ -2081,7 +2080,7 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
                     REQUIRED_TAGS[i], (HPDF_UINT)tbl.check_sum,
                     (HPDF_UINT)tbl.offset));
 
-        ret += HPDF_Stream_Write (stream, REQUIRED_TAGS[i], 4);
+        ret += HPDF_Stream_Write (stream, (HPDF_BYTE *)REQUIRED_TAGS[i], 4);
         ret += WriteUINT32 (stream, tbl.check_sum);
         tbl.offset += offset_base;
         ret += WriteUINT32 (stream, tbl.offset);
@@ -2155,7 +2154,7 @@ HPDF_TTFontDef_SetTagName  (HPDF_FontDef   fontdef,
     if (HPDF_StrLen (tag, HPDF_LIMIT_MAX_NAME_LEN) != HPDF_TTF_FONT_TAG_LEN)
         return;
 
-    HPDF_MemCpy (attr->tag_name, tag, HPDF_TTF_FONT_TAG_LEN);
+    HPDF_MemCpy ((HPDF_BYTE *)attr->tag_name, (HPDF_BYTE *)tag, HPDF_TTF_FONT_TAG_LEN);
     attr->tag_name[HPDF_TTF_FONT_TAG_LEN] = '+';
 
     for (i = 0; i < HPDF_TTF_FONT_TAG_LEN + 1; i++) {
@@ -2164,11 +2163,10 @@ HPDF_TTFontDef_SetTagName  (HPDF_FontDef   fontdef,
     }
 
     HPDF_MemSet (buf, 0, HPDF_LIMIT_MAX_NAME_LEN + 1);
-    HPDF_MemCpy (buf, attr->tag_name, HPDF_TTF_FONT_TAG_LEN + 1);
-    HPDF_MemCpy (buf + HPDF_TTF_FONT_TAG_LEN + 1, fontdef->base_font,
-        HPDF_LIMIT_MAX_NAME_LEN - HPDF_TTF_FONT_TAG_LEN - 1);
+    HPDF_MemCpy ((HPDF_BYTE *)buf, (HPDF_BYTE *)attr->tag_name, HPDF_TTF_FONT_TAG_LEN + 1);
+    HPDF_MemCpy ((HPDF_BYTE *)buf + HPDF_TTF_FONT_TAG_LEN + 1, (HPDF_BYTE *)fontdef->base_font, HPDF_LIMIT_MAX_NAME_LEN - HPDF_TTF_FONT_TAG_LEN - 1);
 
-    HPDF_MemCpy (attr->base_font, buf, HPDF_LIMIT_MAX_NAME_LEN + 1);
+    HPDF_MemCpy ((HPDF_BYTE *)attr->base_font, (HPDF_BYTE *)buf, HPDF_LIMIT_MAX_NAME_LEN + 1);
 }
 
 /*
@@ -2188,7 +2186,7 @@ FindTable (HPDF_FontDef      fontdef,
     HPDF_UINT i;
 
     for (i = 0; i < attr->offset_tbl.num_tables; i++, tbl++) {
-        if (HPDF_MemCmp (tbl->tag, tag, 4) == 0) {
+        if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)tag, 4) == 0) {
             HPDF_PTRACE((" FindTable find table[%c%c%c%c]\n",
                         tbl->tag[0], tbl->tag[1], tbl->tag[2], tbl->tag[3]));
             return tbl;

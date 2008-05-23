@@ -79,7 +79,7 @@ HPDF_Info_GetInfoAttr (HPDF_Dict      info,
     if (!s)
         return NULL;
     else
-        return s->value;
+        return (const char *)(s->value);
 }
 
 
@@ -141,7 +141,7 @@ HPDF_Info_SetInfoDateAttr (HPDF_Dict      info,
             return HPDF_SetError (info->error, HPDF_INVALID_DATE_TIME, 0);
     }
 
-    ptmp = HPDF_MemCpy (tmp, "D:", 2);
+    ptmp = (char *)HPDF_MemCpy ((HPDF_BYTE *)tmp, (HPDF_BYTE *)"D:", 2);
     ptmp = HPDF_IToA2 (ptmp, value.year, 5);
     ptmp = HPDF_IToA2 (ptmp, value.month, 3);
     ptmp = HPDF_IToA2 (ptmp, value.day, 3);
