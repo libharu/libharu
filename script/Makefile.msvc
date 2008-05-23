@@ -78,6 +78,7 @@ OBJS = \
 	src\hpdf_image_png.obj \
 	src\hpdf_doc_png.obj \
 	src\hpdf_ext_gstate.obj \
+	src\hpdf_u3d.obj
 
 PROGRAMS = \
 	demo\encoding_list.exe \
