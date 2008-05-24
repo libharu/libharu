@@ -15,6 +15,7 @@
 #ifndef _HPDF_UTILS_H
 #define _HPDF_UTILS_H
 
+#include "hpdf_config.h"
 #include "hpdf_types.h"
 
 #ifdef __cplusplus
@@ -139,7 +140,7 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value);
 /*----------------------------------------------------------------------------*/
 /*----- macros for debug -----------------------------------------------------*/
 
-#ifdef HPDF_DEBUG
+#ifdef HPDF_DEBUG_TRACE
 #ifndef HPDF_PTRACE_ON
 #define HPDF_PTRACE_ON
 #endif /* HPDF_PTRACE_ON */

@@ -87,6 +87,24 @@ else
 fi
 dnl }}}
 
+dnl {{{ --enable-debug-trace
+AC_ARG_ENABLE(debug-trace,
+  [AS_HELP_STRING([--enable-debug-trace],[enable debug trace (only available along with --enable-debug)])
+  ],
+  [
+    if test x"$enableval" = xyes && test x"$debug" = xyes; then
+      debug_trace="yes"
+    else
+      debug_trace="no"
+    fi
+  ]
+)
+
+if test x"$debug_trace" = xyes ; then
+  AC_DEFINE([HPDF_DEBUG_TRACE], [], [debug trace enabled])
+fi
+dnl }}}
+
 dnl {{{ --with-libdir
 AC_ARG_WITH(libdir,
   [AS_HELP_STRING([--with-libdir],[look for libraries in .../NAME rather than .../lib])
