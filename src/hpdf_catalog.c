@@ -1,7 +1,10 @@
 /*
- * << Haru Free PDF Library 2.0.5 >> -- hpdf_catalog.c
+ * << Haru Free PDF Library >> -- hpdf_catalog.c
+ *
+ * URL: http://libharu.org
  *
  * Copyright (c) 1999-2006 Takeshi Kanno <takeshi_kanno@est.hi-ho.ne.jp>
+ * Copyright (c) 2007-2008 Antony Dovgal <tony@daylessday.org>
  *
  * Permission to use, copy, modify, distribute and sell this software
  * and its documentation for any purpose is hereby granted without fee,
@@ -10,8 +13,6 @@
  * in supporting documentation.
  * It is provided "as is" without express or implied warranty.
  *
- * 2006.08.07 modified.
- * 2006.09.01 added ViewerPreference functions.
  */
 
 #include "hpdf_conf.h"
