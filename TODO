@@ -1,7 +1,0 @@
-
-TODO - todo for libharu
-
-* Vertical writing support of HPDF_TextRect()
-* Correct a code which uses implicit type conversion and causes warnings.
-* Form desiner.
-
