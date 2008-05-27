@@ -1,0 +1,47 @@
+To use this interface, build Haru as a shared-library (DLL) or use binary 
+package for win32(libharu_x_x_x_dll_win32.zip).
+
+There are some example programs in demo directory. The steps to run the 
+demonstration programs is as follows. 
+
+1. Build libharu as a shared library and copy libhpdf.dll to "if\c#\demo"
+   directory. (Or expand binary package for win32(libharu_x_x_x_dll_win32.zip) 
+   and copy libhpdf.dll to "if\c#\demo" directory.)
+
+2. Compile and run demo programs. (Don't forget to compile hpdf.cs together.)
+
+   csc /out:FontDemo.exe FontDemo.cs ..\hpdf.cs 
+   FontDemo.exe
+
+   csc /out:ImageDemo.exe ImageDemo.cs ..\hpdf.cs 
+   ImageDemo.exe
+
+   csc /out:JPFontDemo.exe JPFontDemo.cs ..\hpdf.cs
+   JPFontDemo.exe
+
+   csc /out:LineDemo.exe LineDemo.cs ..\hpdf.cs
+   LineDemo.exe
+
+   csc /out:OutlineDemo.exe OutlineDemo.cs ..\hpdf.cs
+   OutlineDemo.exe
+
+   csc /out:Encryption.exe Encryption.cs ..\hpdf.cs
+   Encryption.exe
+
+   csc /out:Permission.exe Permission.cs ..\hpdf.cs
+   Permission.exe
+
+   csc /out:RawImageDemo.exe RawImageDemo.cs ..\hpdf.cs
+   RawImageDemo.exe
+
+   csc /out:TextDemo.exe TextDemo.cs ..\hpdf.cs
+   TextDemo.exe
+
+Because I do not know the Visual studio well, I do not explain usage on Visual 
+Studio here.  
+
+
+NOTE:
+libhpdf.dll is required to run the program which uses C# interface for libharu.
+I tested this interface only in Microsoft .NET Framework SDK 1.1. 
+
