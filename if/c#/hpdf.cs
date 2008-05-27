@@ -2116,7 +2116,7 @@ public class HPdfExtGState {
     private extern static uint HPDF_ExtGState_SetBlendMode(IntPtr gstate,
         HPdfBlendMode mode);
 
-    public HPdfExtGState(IntPtr hobj) {
+    public HPdfExtGState(IntPtr hgstate) {
         if (hgstate == IntPtr.Zero) {
             throw new Exception("cannot create HPdfImage object.");
         }
