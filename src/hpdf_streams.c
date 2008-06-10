@@ -17,15 +17,15 @@
 
 #include <errno.h>
 
-#ifndef HPDF_NOZLIB
-#include <zlib.h>
-#include <zconf.h>
-#endif /* HPDF_NOZLIB */
-
 #include "hpdf_conf.h"
 #include "hpdf_consts.h"
 #include "hpdf_utils.h"
 #include "hpdf_streams.h"
+
+#ifndef HPDF_NOZLIB
+#include <zlib.h>
+#include <zconf.h>
+#endif /* HPDF_NOZLIB */
 
 HPDF_STATUS
 HPDF_MemStream_WriteFunc  (HPDF_Stream      stream,
