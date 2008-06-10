@@ -62,7 +62,7 @@ public class RawImageDemo {
             page.EndText();
 
             /* load RGB raw-image file. */
-            HPdfImage image = pdf.LoadRawImageFromFile("rawimage\\32_32_rgb.dat",
+            HPdfImage image = pdf.LoadRawImageFromFile("demo\\rawimage\\32_32_rgb.dat",
                     32, 32, HPdfColorSpace.HPDF_CS_DEVICE_RGB);
 
             float x = 20;  
@@ -72,7 +72,7 @@ public class RawImageDemo {
             page.DrawImage(image, x, y, 32, 32);
 
             /* load GrayScale raw-image file. */
-            image = pdf.LoadRawImageFromFile("rawimage\\32_32_gray.dat",
+            image = pdf.LoadRawImageFromFile("demo\\rawimage\\32_32_gray.dat",
                     32, 32, HPdfColorSpace.HPDF_CS_DEVICE_GRAY);
 
             x = 70;

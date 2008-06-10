@@ -73,18 +73,18 @@ public class ImageDemo {
             page.EndText();
 
             /* load image file. */
-            HPdfImage image = pdf.LoadPngImageFromFile("pngsuite\\basn3p02.png");
+            HPdfImage image = pdf.LoadPngImageFromFile("demo\\pngsuite\\basn3p02.png");
 
             /* image1 is masked by image2. */
-            HPdfImage image1 = pdf.LoadPngImageFromFile("pngsuite\\basn3p02.png");
+            HPdfImage image1 = pdf.LoadPngImageFromFile("demo\\pngsuite\\basn3p02.png");
 
             /* image2 is a mask image. */
-            HPdfImage image2 = pdf.LoadPngImageFromFile("pngsuite\\basn0g01.png");
+            HPdfImage image2 = pdf.LoadPngImageFromFile("demo\\pngsuite\\basn0g01.png");
 
             /* image3 is a RGB-color image. we use this image for color-mask
              * demo.
              */
-            HPdfImage image3 = pdf.LoadPngImageFromFile("pngsuite\\maskimage.png");
+            HPdfImage image3 = pdf.LoadPngImageFromFile("demo\\pngsuite\\maskimage.png");
 
             float iw = image.GetWidth();
             float ih = image.GetHeight();
