@@ -64,6 +64,8 @@ typedef HPDF_HANDLE   HPDF_Destination;
 typedef HPDF_HANDLE   HPDF_XObject;
 typedef HPDF_HANDLE   HPDF_Annotation;
 typedef HPDF_HANDLE   HPDF_ExtGState;
+typedef HPDF_HANDLE   HPDF_FontDef;
+typedef HPDF_HANDLE   HPDF_U3D;
 
 #else
 
