@@ -1,6 +1,12 @@
 libHaru news
 -------------------------------------------------------------------------------
 
+Version 2.1.1 (2008.??.??)
+ - Added VB.Net bindings. (Matt Underwood) 
+ - Added CMake build system. (Werner Smekal) 
+
+ - Fixed build failure when zlib was not found. (Werner Smekal)
+
 Version 2.1.0 (2008.05.27)
  - Added initial support for Alpha channel in RGB and palette-based PNG images.
  - Added HPDF_GetTTFontDefFromFile() function. This closes [FR #1604475] (HPDF_FONT_EXISTS not error) 
