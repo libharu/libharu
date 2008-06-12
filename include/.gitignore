@@ -1,4 +1,5 @@
-hpdf_config.*
+hpdf_config.h.in*
+hpdf_config.h
 Makefile.in
 stamp-h1
 Makefile

@@ -28,36 +28,38 @@ SET(
   	raw_image_demo
 )
 
+# we need to add some definitions for win 32
+SET( DEMO_C_FLAGS )
+IF( WIN32 AND NOT CYGWIN )
+  SET( DEMO_C_FLAGS "-D__WIN32__" )
+  IF( BUILD_SHARED_LIBS)
+    SET( DEMO_C_FLAGS "${DEMO_C_FLAGS} -DHPDF_DLL" )
+  ENDIF( BUILD_SHARED_LIBS)
+endif( WIN32 AND NOT CYGWIN )
 
 # create demos
 FOREACH( demo ${demos_NAMES} )
   ADD_EXECUTABLE( ${demo} ${demo}.c )
+  TARGET_LINK_LIBRARIES( ${demo} haru )
+  IF( DEMO_C_FLAGS )
+    SET_TARGET_PROPERTIES( ${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS} )
+    MESSAGE( "DEMO_C_FLAGS=${DEMO_C_FLAGS}" )
+  ENDIF( DEMO_C_FLAGS )
 ENDFOREACH( demo ${demo_NAMES} )
   
+# some demos need grid_sheet.c compiled in
 FOREACH( demo ${demos_with_grid_NAMES} )
   ADD_EXECUTABLE( ${demo} ${demo}.c grid_sheet.c )
+  TARGET_LINK_LIBRARIES( ${demo} haru )
+  IF( DEMO_C_FLAGS )
+    SET_TARGET_PROPERTIES( ${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS} )
+  ENDIF( DEMO_C_FLAGS )
 ENDFOREACH( demo ${demos_with_grid_NAMES} )
   
+# the grid_sheet demo needs extra defines
 ADD_EXECUTABLE( grid_sheet grid_sheet.c )
-get_source_file_property(MY_C_FLAGS grid_sheet.c COMPILE_FLAGS)
-set( MY_C_FLAGS "${MY_C_FLAGS} -DSTAND_ALONE" )
-set_target_properties( grid_sheet PROPERTIES COMPILE_FLAGS ${MY_C_FLAGS})
-
-FOREACH( demo ${demos_NAMES} ${demos_with_grid_NAMES} grid_sheet )
-  TARGET_LINK_LIBRARIES( ${demo} haru )
-  if( BUILD_SHARED_LIBS AND WIN32 AND NOT CYGWIN )
-    get_source_file_property(MY_C_FLAGS ${demo}.c COMPILE_FLAGS)
-    set( MY_C_FLAGS "${MY_C_FLAGS} -DHPDF_DLL" )
-    set_source_files_properties( ${demo}.c
-                                 PROPERTIES COMPILE_FLAGS ${MY_C_FLAGS} )
-  endif( BUILD_SHARED_LIBS AND WIN32 AND NOT CYGWIN )
-  if( WIN32 AND NOT CYGWIN )
-    get_source_file_property(MY_C_FLAGS ${demo}.c COMPILE_FLAGS)
-    set( MY_C_FLAGS "${MY_C_FLAGS} -D__WIN32__" )
-    set_source_files_properties( ${demo}.c
-                                 PROPERTIES COMPILE_FLAGS ${MY_C_FLAGS} )
-  endif( WIN32 AND NOT CYGWIN )
-ENDFOREACH( demo ${demos_NAMES} ${demos_with_grid_NAMES} grid_sheet )
+TARGET_LINK_LIBRARIES( grid_sheet haru )
+SET_TARGET_PROPERTIES( grid_sheet PROPERTIES COMPILE_FLAGS "${DEMO_C_FLAGS} -DSTAND_ALONE" )
 
 # install libary and demos
 INSTALL(

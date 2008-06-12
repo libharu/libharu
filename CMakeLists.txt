@@ -9,13 +9,14 @@ PROJECT( libharu C )
 
 SET( PACKAGE libharu )
 
-cmake_minimum_required(VERSION 2.4.8 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED( VERSION 2.4.8 FATAL_ERROR )
 
-# Location where the haru cmake build system first looks for cmake modules.
-set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules )
+# Location where the haru cmake build system first looks for cmake modules
+SET( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules )
 
 # Configure haru component variables....
-include( haru )
+INCLUDE( haru )
+INCLUDE( summary )
 
 # check zlib availibility
 FIND_PACKAGE( ZLIB )
@@ -40,7 +41,7 @@ ELSE( ZLIB_FOUND )
 ENDIF( ZLIB_FOUND )
 MESSAGE( "Additional libraries: ${ADDITIONAL_LIBRARIES}" )
 
-
+# add definitions and directories to include
 ADD_DEFINITIONS( -Wall )
 INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR}/include )
 
@@ -52,11 +53,11 @@ CONFIGURE_FILE(
 INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR}/include )
 
 # create library and demos
-add_subdirectory( src )
-add_subdirectory( demo )
+ADD_SUBDIRECTORY( src )
+ADD_SUBDIRECTORY( demo )
 
 # libharu headers
-set(
+SET(
   haru_HDRS
     include/hpdf.h
     include/hpdf_encoder.h
@@ -95,3 +96,5 @@ INSTALL(
   DESTINATION
     include
 )
+
+summary()
