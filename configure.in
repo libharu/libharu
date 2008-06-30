@@ -209,6 +209,12 @@ else
 fi
 dnl }}}
 
+case "$host_alias" in
+  *cygwin*[)]
+    CFLAGS="$CFLAGS -mno-cygwin -DHPDF_DLL_MAKE_CDECL"
+    ;;
+esac
+
 dnl link against libm
 LIBS="$LIBS -lm"
 AC_SUBST(INSTALL_STRIP_FLAG)
