@@ -1388,8 +1388,9 @@ hpdf_set_info_date_attr (VALUE obj, VALUE type, VALUE year, VALUE month, VALUE d
 
     Data_Get_Struct(obj, HPDF_Doc_Rec, pdf);
     s = STR2CSTR(ind);
-    if (HPDF_StrLen(s, -1) != 1 || (s[0] != '+' || s[0] != '-' || s[0] != 'Z'))
+    if (HPDF_StrLen(s, -1) != 1 || (s[0] != '+' && s[0] != '-' && s[0] != 'Z' && s[0] != ' ')) {
         rb_raise(rb_eHPDFError, "The eighth argument must be either of '+','-','Z',' '.");
+    }
 
     tp = NUM2INT(type);
     dt.year = NUM2INT(year);
