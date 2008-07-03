@@ -1262,7 +1262,6 @@ HPDF_Page_SetBoxValue (HPDF_Page          page,
     return HPDF_OK;
 }
 
-
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetRotate (HPDF_Page      page,
                      HPDF_UINT16    angle)
@@ -1289,6 +1288,25 @@ HPDF_Page_SetRotate (HPDF_Page      page,
     return ret;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetZoom  (HPDF_Page   page,
+                    HPDF_REAL   zoom)
+{
+	HPDF_STATUS ret = HPDF_OK;
+
+	HPDF_PTRACE((" HPDF_Page_SetZoom\n"));
+
+	if (!HPDF_Page_Validate (page)) {
+		return HPDF_INVALID_PAGE;
+	}
+
+	if (zoom < 0.08 || zoom > 32) {
+		return HPDF_RaiseError (page->error, HPDF_INVALID_PARAMETER, 0);
+	}
+
+	ret = HPDF_Dict_AddReal (page, "PZ", zoom);
+	return ret;
+}
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetWidth  (HPDF_Page    page,

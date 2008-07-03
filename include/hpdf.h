@@ -238,6 +238,10 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetRotate  (HPDF_Page     page,
                       HPDF_UINT16   angle);
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetZoom  (HPDF_Page     page,
+                    HPDF_REAL     zoom);
+
 /*---------------------------------------------------------------------------*/
 /*----- font handling -------------------------------------------------------*/
 
