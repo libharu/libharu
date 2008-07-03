@@ -165,6 +165,8 @@ function HPDF_Page_SetSize (page: HPDF_Page; size: THPDF_PageSizes;
 function HPDF_Page_SetRotate (page: HPDF_Page; angle: HPDF_UINT16): HPDF_STATUS;
          stdcall external LIBHPDF_DLL;
 
+function HPDF_Page_SetZoom (page: HPDF_Page; zoom: HPDF_REAL): HPDF_STATUS;
+         stdcall external LIBHPDF_DLL;
 
 function HPDF_GetFont (pdf: HPDF_Doc; const font_name: HPDF_PCHAR;
         const encoding_name: HPDF_PCHAR): HPDF_Font; stdcall external LIBHPDF_DLL;
