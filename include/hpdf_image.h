@@ -39,6 +39,11 @@ HPDF_Image_LoadJpegImage  (HPDF_MMgr        mmgr,
                            HPDF_Stream      jpeg_data,
                            HPDF_Xref        xref);
 
+HPDF_Image
+HPDF_Image_LoadJpegImageFromMem  (HPDF_MMgr        mmgr,
+                            const HPDF_BYTE       *buf,
+                                  HPDF_UINT        size,
+                                  HPDF_Xref        xref);
 
 HPDF_Image
 HPDF_Image_LoadRawImage  (HPDF_MMgr          mmgr,

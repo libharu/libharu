@@ -475,6 +475,11 @@ HPDF_TextAnnot_SetOpened  (HPDF_Annotation   annot,
 /*----- image data ---------------------------------------------------------*/
 
 HPDF_EXPORT(HPDF_Image)
+HPDF_LoadPngImageFromMem  (HPDF_Doc     pdf,
+                    const HPDF_BYTE    *buffer,
+                          HPDF_UINT     size);
+
+HPDF_EXPORT(HPDF_Image)
 HPDF_LoadPngImageFromFile (HPDF_Doc      pdf,
                            const char    *filename);
 
@@ -487,6 +492,11 @@ HPDF_LoadPngImageFromFile2 (HPDF_Doc      pdf,
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadJpegImageFromFile (HPDF_Doc      pdf,
                             const char    *filename);
+
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadJpegImageFromMem   (HPDF_Doc      pdf,
+                      const HPDF_BYTE     *buffer,
+                            HPDF_UINT      size);
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadU3DFromFile (HPDF_Doc      pdf,

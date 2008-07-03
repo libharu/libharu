@@ -221,6 +221,36 @@ HPDF_Image_LoadJpegImage  (HPDF_MMgr        mmgr,
     return image;
 }
 
+HPDF_Image
+HPDF_Image_LoadJpegImageFromMem  (HPDF_MMgr    mmgr,
+                            const HPDF_BYTE   *buf,
+                                  HPDF_UINT    size,
+                                  HPDF_Xref    xref)
+{
+	HPDF_Stream jpeg_data;
+	HPDF_Image image;
+
+	HPDF_PTRACE ((" HPDF_Image_LoadJpegImageFromMem\n"));
+
+	jpeg_data = HPDF_MemStream_New(mmgr,size);
+	if (!HPDF_Stream_Validate (jpeg_data)) {
+		HPDF_RaiseError (mmgr->error, HPDF_INVALID_STREAM, 0);
+		return NULL;
+	}
+
+	if (HPDF_Stream_Write (jpeg_data, buf, size) != HPDF_OK) {
+		HPDF_Stream_Free (jpeg_data);
+		return NULL;
+	}
+
+	image = HPDF_Image_LoadJpegImage(mmgr,jpeg_data,xref);
+
+	/* destroy file stream */
+	HPDF_Stream_Free (jpeg_data);
+
+	return image;
+}
+
 
 HPDF_Image
 HPDF_Image_LoadRawImage (HPDF_MMgr          mmgr,

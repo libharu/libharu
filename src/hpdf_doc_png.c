@@ -27,6 +27,46 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
                         HPDF_Stream   imagedata,
                         HPDF_BOOL     delayed_loading);
 
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadPngImageFromMem  (HPDF_Doc     pdf,
+                    const HPDF_BYTE    *buffer,
+                          HPDF_UINT     size)
+{
+	HPDF_Stream imagedata;
+	HPDF_Image image;
+
+	HPDF_PTRACE ((" HPDF_LoadPngImageFromFile\n"));
+
+	if (!HPDF_HasDoc (pdf)) {
+		return NULL;
+	}
+
+	/* create file stream */
+	imagedata = HPDF_MemStream_New (pdf->mmgr, size);
+
+	if (!HPDF_Stream_Validate (imagedata)) {
+		HPDF_RaiseError (&pdf->error, HPDF_INVALID_STREAM, 0);
+		return NULL;
+	}
+
+	if (HPDF_Stream_Write (imagedata, buffer, size) != HPDF_OK) {
+		HPDF_Stream_Free (imagedata);
+		return NULL;
+	}
+
+	image = LoadPngImageFromStream (pdf, imagedata, HPDF_FALSE);
+
+	/* destroy file stream */
+	HPDF_Stream_Free (imagedata);
+
+	if (!image) {
+		HPDF_CheckError (&pdf->error);
+	}
+
+	return image;
+
+}
+
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadPngImageFromFile  (HPDF_Doc     pdf,

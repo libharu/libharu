@@ -1692,6 +1692,27 @@ HPDF_LoadJpegImageFromFile  (HPDF_Doc     pdf,
     return image;
 }
 
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadJpegImageFromMem  (HPDF_Doc    pdf,
+                     const HPDF_BYTE   *buffer,
+                           HPDF_UINT    size)
+{
+	HPDF_Image image;
+
+	HPDF_PTRACE ((" HPDF_LoadJpegImageFromMem\n"));
+
+	if (!HPDF_HasDoc (pdf)) {
+		return NULL;
+	}
+
+	image = HPDF_Image_LoadJpegImageFromMem (pdf->mmgr, buffer, size , pdf->xref);
+
+	if (!image) {
+		HPDF_CheckError (&pdf->error);
+	}
+
+	return image;
+}
 
 /*----- Catalog ------------------------------------------------------------*/
 
