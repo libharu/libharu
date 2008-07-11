@@ -371,7 +371,6 @@ hpdf_insert_page (VALUE obj, VALUE page)
     Data_Get_Struct(obj, HPDF_Doc_Rec, pdf);
     Data_Get_Struct(page, HPDF_Dict_Rec, target);
 
-    printf("@page=%p\n", target);
     HPDF_PTRACE(("hpdf_insert_page pdf=%p\n", pdf));
 
     new_page = HPDF_InsertPage(pdf, target);
