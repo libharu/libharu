@@ -686,14 +686,14 @@ HPDF_Stream_WriteToStream  (HPDF_Stream  src,
             HPDF_Error_GetCode (dst->error) != HPDF_NOERROR)
         return HPDF_THIS_FUNC_WAS_SKIPPED;
 
+    /* initialize input stream */
+    if (HPDF_Stream_Size (src) == 0)
+        return HPDF_OK;
+
 #ifndef HPDF_NOZLIB
     if (filter & HPDF_STREAM_FILTER_FLATE_DECODE)
         return HPDF_Stream_WriteToStreamWithDeflate (src, dst, e);
 #endif /* HPDF_NOZLIB */
-
-    /* initialize input stream */
-    if (HPDF_Stream_Size (src) == 0)
-        return HPDF_OK;
 
     ret = HPDF_Stream_Seek (src, 0, HPDF_SEEK_SET);
     if (ret != HPDF_OK)
