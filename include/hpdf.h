@@ -126,6 +126,10 @@ HPDF_FreeDocAll  (HPDF_Doc  pdf);
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_SaveToStream  (HPDF_Doc   pdf);
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_GetContents   (HPDF_Doc   pdf,
+                   HPDF_BYTE  *buf,
+                 HPDF_UINT32  *size);
 
 HPDF_EXPORT(HPDF_UINT32)
 HPDF_GetStreamSize  (HPDF_Doc   pdf);

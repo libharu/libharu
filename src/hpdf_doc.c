@@ -651,6 +651,39 @@ HPDF_SaveToStream  (HPDF_Doc   pdf)
     return HPDF_OK;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_GetContents   (HPDF_Doc   pdf,
+                   HPDF_BYTE  *buf,
+                 HPDF_UINT32  *size)
+{
+    HPDF_Stream stream;
+    HPDF_UINT isize;
+    HPDF_STATUS ret;
+
+    HPDF_PTRACE ((" HPDF_GetContents\n"));
+
+    if (!HPDF_HasDoc (pdf)) {
+        return HPDF_INVALID_DOCUMENT;
+    }
+
+    stream = HPDF_MemStream_New (pdf->mmgr, HPDF_STREAM_BUF_SIZ);
+
+    if (!stream) {
+        return HPDF_CheckError (&pdf->error);
+    }
+
+    if (InternalSaveToStream (pdf, stream) != HPDF_OK) {
+        HPDF_Stream_Free (stream);
+        return HPDF_CheckError (&pdf->error);
+    }
+
+    ret = HPDF_Stream_Read (stream, buf, &isize);
+
+    *size = isize;
+    HPDF_Stream_Free (stream);
+
+    return ret;
+}
 
 HPDF_EXPORT(HPDF_UINT32)
 HPDF_GetStreamSize  (HPDF_Doc   pdf)
