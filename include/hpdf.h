@@ -526,6 +526,10 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
                            HPDF_ColorSpace    color_space,
                            HPDF_UINT          bits_per_component);
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Image_AddSMask  (HPDF_Doc      pdf,
+					  HPDF_Image    image,
+                      HPDF_Image    smask);
 
 HPDF_EXPORT(HPDF_Point)
 HPDF_Image_GetSize (HPDF_Image  image);

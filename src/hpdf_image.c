@@ -609,4 +609,25 @@ HPDF_Image_SetColorMask (HPDF_Image   image,
     return HPDF_OK;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Image_AddSMask  (HPDF_Doc    pdf,
+                      HPDF_Image  image,
+                      HPDF_Image  smask)
+{
 
+   const char *name;
+
+   if (!HPDF_Image_Validate (image))
+       return HPDF_INVALID_IMAGE;
+   if (!HPDF_Image_Validate (smask))
+       return HPDF_INVALID_IMAGE;
+
+   if (HPDF_Dict_GetItem (image, "SMask", HPDF_OCLASS_BOOLEAN))
+       return HPDF_RaiseError (image->error, HPDF_INVALID_OPERATION, 0);
+
+   name = HPDF_Image_GetColorSpace (smask);
+   if (!name || HPDF_StrCmp (COL_GRAY, name) != 0)
+       return HPDF_RaiseError (smask->error, HPDF_INVALID_COLOR_SPACE, 0);
+
+   return HPDF_Dict_Add (image, "SMask", smask);
+}
