@@ -118,7 +118,7 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value);
 }
 #endif /* __cplusplus */
 
-#define HPDF_NEEDS_ESCAPE(c)    (c < 0x21 || \
+#define HPDF_NEEDS_ESCAPE(c)    (c < 0x20 || \
                                  c > 0x7e || \
                                  c == '\\' || \
                                  c == '%' || \
