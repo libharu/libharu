@@ -124,8 +124,10 @@ HPDF_LoadPngImageFromFile2  (HPDF_Doc     pdf,
     if (imagedata)
         HPDF_Stream_Free (imagedata);
 
-    if (!image)
+    if (!image) {
         HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
 
     /* add file-name to image dictionary as a hidden entry.
      * it is used when the image data is needed.
