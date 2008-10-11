@@ -1661,7 +1661,7 @@ HPDF_LoadRawImageFromFile  (HPDF_Doc          pdf,
     if (!image)
         HPDF_CheckError (&pdf->error);
 
-    if (pdf->compression_mode & HPDF_COMP_IMAGE)
+    if (image && pdf->compression_mode & HPDF_COMP_IMAGE)
         image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 
     return image;
@@ -1689,7 +1689,7 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
     if (!image)
         HPDF_CheckError (&pdf->error);
 
-    if (pdf->compression_mode & HPDF_COMP_IMAGE)
+    if (image && pdf->compression_mode & HPDF_COMP_IMAGE)
         image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 
     return image;
