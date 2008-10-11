@@ -272,11 +272,6 @@ HPDF_String_Write  (HPDF_String  obj,
                     HPDF_Encrypt e);
 
 
-HPDF_STATUS
-HPDF_String_SetValue  (HPDF_String      obj,
-                       const char  *value);
-
-
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Binary ---------------------------------------------------------*/
 
