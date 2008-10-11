@@ -27,6 +27,10 @@ HPDF_AToI  (const char  *s)
     HPDF_BOOL flg = HPDF_FALSE;
     HPDF_INT  v = 0;
 
+    if (!s) {
+        return 0;
+    }
+
     /* increment pointer until the charactor of 's' is not
      * white-space-charactor.
      */
