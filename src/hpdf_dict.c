@@ -223,7 +223,7 @@ HPDF_Dict_Write  (HPDF_Dict     dict,
                     0);
         }
 
-        if ((ret = HPDF_Stream_WriteStr (stream, "\012stream\015\012"))
+        if ((ret = HPDF_Stream_WriteStr (stream, "\012stream\012"))
                 != HPDF_OK)
             return ret;
 
