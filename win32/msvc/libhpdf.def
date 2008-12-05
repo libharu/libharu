@@ -61,6 +61,7 @@ EXPORTS
     HPDF_LoadJpegImageFromFile    
     HPDF_LoadPngImageFromFile     
     HPDF_LoadPngImageFromFile2    
+    HPDF_LoadPngImageFromMem	
     HPDF_LoadRawImageFromFile     
     HPDF_LoadRawImageFromMem      
     HPDF_LoadTTFontFromFile       
