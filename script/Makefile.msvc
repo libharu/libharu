@@ -15,7 +15,7 @@ PNG_PREFIX   = ../../libpng
 !ENDIF
 
 !IFNDEF ZLIB_PREFIX
-PNG_PREFIX   = ../../zlib
+ZLIB_PREFIX   = ../../zlib
 !ENDIF
 
 CC=cl
