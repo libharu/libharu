@@ -545,7 +545,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetOrthogonalProjection(HPDF_Dict view, HPD
 #define normalize(x, y, z)		\
 {					\
 	HPDF_REAL modulo;			\
-	modulo = sqrtf(x*x + y*y + z*z);	\
+	modulo = (float)sqrt((float)(x*x) + (float)(y*y) + (float)(z*z));	\
 	if (modulo != 0.0)			\
 	{					\
 		x = x/modulo;			\
