@@ -1072,8 +1072,13 @@ HPDF_MemStream_SeekFunc  (HPDF_Stream      stream,
     } else if (mode == HPDF_SEEK_END)
         pos = stream->size - pos;
 
-    if (pos > stream->size || stream->size == 0)
+    if (pos > stream->size) {
         return HPDF_SetError (stream->error, HPDF_STREAM_EOF, 0);
+    }
+
+    if (stream->size == 0) {
+        return HPDF_OK;
+    }
 
     attr->r_ptr_idx = pos / attr->buf_siz;
     attr->r_pos = pos % attr->buf_siz;
@@ -1164,11 +1169,11 @@ HPDF_MemStream_New  (HPDF_MMgr  mmgr,
 
     HPDF_PTRACE((" HPDF_MemStream_New\n"));
 
-    // Create new HPDF_Stream object.
+    /* Create new HPDF_Stream object. */
     stream = (HPDF_Stream)HPDF_GetMem (mmgr, sizeof(HPDF_Stream_Rec));
 
     if (stream) {
-        // Create attribute struct.
+        /* Create attribute struct. */
         HPDF_MemStreamAttr attr = (HPDF_MemStreamAttr)HPDF_GetMem (mmgr,
                 sizeof(HPDF_MemStreamAttr_Rec));
 

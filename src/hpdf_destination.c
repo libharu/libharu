@@ -85,8 +85,10 @@ HPDF_Destination_Validate (HPDF_Destination  dst)
         return HPDF_FALSE;
 
     target = (HPDF_Page)HPDF_Array_GetItem (dst, 0, HPDF_OCLASS_DICT);
-    if (!HPDF_Page_Validate (target))
-        return HPDF_SetError (dst->error, HPDF_INVALID_PAGE, 0);
+    if (!HPDF_Page_Validate (target)) {
+	    HPDF_SetError (dst->error, HPDF_INVALID_PAGE, 0);
+        return HPDF_FALSE;
+    }
 
     return HPDF_TRUE;
 }

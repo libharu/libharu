@@ -275,7 +275,7 @@ HPDF_List_Clear  (HPDF_List  list)
  *
  */
 
-HPDF_STATUS
+static HPDF_STATUS
 Resize  (HPDF_List   list,
          HPDF_UINT   count)
 {

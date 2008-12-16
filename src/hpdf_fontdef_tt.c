@@ -1225,7 +1225,7 @@ CheckCompositGryph  (HPDF_FontDef   fontdef,
 {
     HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr)fontdef->attr;
     HPDF_UINT offset = attr->glyph_tbl.offsets[gid];
-   // HPDF_UINT len = attr->glyph_tbl.offsets[gid + 1] - offset;
+    /* HPDF_UINT len = attr->glyph_tbl.offsets[gid + 1] - offset; */
     HPDF_STATUS ret;
 
     HPDF_PTRACE ((" CheckCompositGryph\n"));

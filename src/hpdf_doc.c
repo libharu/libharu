@@ -1223,10 +1223,11 @@ HPDF_SetCurrentEncoder  (HPDF_Doc    pdf,
         return HPDF_GetError (pdf);
 
     encoder = HPDF_GetEncoder (pdf, encoding_name);
-    pdf->cur_encoder = encoder;
 
-    if (!pdf)
+    if (!encoder)
         return HPDF_GetError (pdf);
+    
+	pdf->cur_encoder = encoder;
 
     return HPDF_OK;
 }
@@ -1314,6 +1315,11 @@ HPDF_GetFont  (HPDF_Doc          pdf,
             else
                 encoder = HPDF_GetEncoder (pdf, HPDF_ENCODING_STANDARD);
         } else {
+            HPDF_CheckError (&pdf->error);
+            return NULL;
+        }
+
+        if (!encoder) {
             HPDF_CheckError (&pdf->error);
             return NULL;
         }

@@ -20,7 +20,7 @@
 #include "hpdf_annotation.h"
 #include "hpdf.h"
 
-const static char  *HPDF_ANNOT_TYPE_NAMES[] = {
+static const char  *HPDF_ANNOT_TYPE_NAMES[] = {
                                         "Text",
                                         "Link",
                                         "Sound",
@@ -37,7 +37,7 @@ const static char  *HPDF_ANNOT_TYPE_NAMES[] = {
                                         "3D"
                                         };
 
-const static char  *HPDF_ANNOT_ICON_NAMES_NAMES[] = {
+static const char  *HPDF_ANNOT_ICON_NAMES_NAMES[] = {
                                         "Comment",
                                         "Key",
                                         "Note",

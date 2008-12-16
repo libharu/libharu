@@ -427,8 +427,8 @@ HPDF_Type1FontDef_Duplicate  (HPDF_MMgr     mmgr,
     fontdef->type = src->type;
     fontdef->valid = src->valid;
 
-    // copy data of attr,widths
-    // attention to charset
+    /* copy data of attr,widths
+     attention to charset */
     return NULL;
 }
 

@@ -20,7 +20,7 @@
 #include "hpdf_ext_gstate.h"
 #include "hpdf.h"
 
-const static char  *HPDF_BM_NAMES[] = {
+static const char  *HPDF_BM_NAMES[] = {
                                       "Normal",
                                       "Multiply",
                                       "Screen",

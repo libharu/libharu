@@ -247,7 +247,7 @@ CharWidth (HPDF_Font  font,
 }
 
 
-HPDF_TextWidth
+static HPDF_TextWidth
 TextWidth  (HPDF_Font         font,
             const HPDF_BYTE  *text,
             HPDF_UINT         len)
@@ -283,7 +283,7 @@ TextWidth  (HPDF_Font         font,
 }
 
 
-HPDF_UINT
+static HPDF_UINT
 MeasureText (HPDF_Font          font,
              const HPDF_BYTE   *text,
              HPDF_UINT          len,
