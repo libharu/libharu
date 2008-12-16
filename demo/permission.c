@@ -20,9 +20,9 @@
 #include "grid_sheet.h"
 
 
-const static char* text = "User cannot print and copy this document.";
-const static char* owner_passwd = "owner";
-const static char* user_passwd = "";
+static const char* text = "User cannot print and copy this document.";
+static const char* owner_passwd = "owner";
+static const char* user_passwd = "";
 
 jmp_buf env;
 

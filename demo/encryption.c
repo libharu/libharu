@@ -20,9 +20,9 @@
 #include "grid_sheet.h"
 
 
-const static char* text = "This is an encrypt document example.";
-const static char* owner_passwd = "owner";
-const static char* user_passwd = "user";
+static const char* text = "This is an encrypt document example.";
+static const char* owner_passwd = "owner";
+static const char* user_passwd = "user";
 
 jmp_buf env;
 
