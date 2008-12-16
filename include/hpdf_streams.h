@@ -34,7 +34,7 @@ typedef enum _HPDF_StreamType {
     HPDF_STREAM_UNKNOWN = 0,
     HPDF_STREAM_CALLBACK,
     HPDF_STREAM_FILE,
-    HPDF_STREAM_MEMORY,
+    HPDF_STREAM_MEMORY
 } HPDF_StreamType;
 
 #define HPDF_STREAM_FILTER_NONE          0x0000
