@@ -66,7 +66,7 @@ def main():
     page=[None for i in range(9)]
     rect=HPDF_Rect()
 
-    uri = "http://sourceforge.net/projects/libharu"
+    uri = "http://libharu.org"
 
 
 

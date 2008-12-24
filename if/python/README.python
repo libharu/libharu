@@ -1,6 +1,6 @@
 1. What is pyharu?
 Pyharu is a pure python interface to haru(Haru Free PDF Library,
-http://libharu.sourceforge.net/). All of the C API is usable.
+http://libharu.org/). All of the C API is usable.
 No OO interface yet, but maybe in the feature, or you can write one by
 yourself and send me to be inculded in pyharu ;)
 Pyharu runs on different python versions, and even in different OS

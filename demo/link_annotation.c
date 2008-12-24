@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     HPDF_Point tp;
     HPDF_Annotation annot;
     HPDF_UINT i;
-    const char *uri = "http://sourceforge.net/projects/libharu";
+    const char *uri = "http://libharu.org";
 
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");

@@ -1,7 +1,7 @@
 ##
 ## * << Haru Free PDF Library 2.0.8 >> -- hpdf.h
 ## *
-## * URL http://libharu.sourceforge.net/
+## * URL http://libharu.org/
 ## *
 ## * Copyright (c) 1999-2006 Takeshi Kanno
 ## *
