@@ -7,7 +7,7 @@ Summary:	library for generating PDF documents
 Summary(pl.UTF-8):	biblioteka do generowania dokumentów PDF
 Name:		libharu
 Version:	2.0.8
-Release:	1
+Release:	2
 License:	distributable
 Group:		Libraries
 Source0:	http://dl.sourceforge.net/libharu/%{name}_%{ver}.tgz
@@ -77,6 +77,8 @@ rm -rf $RPM_BUILD_ROOT
 	PREFIX=%{_prefix} \
 	LIBDIR=%{_libdir} \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install include/* $RPM_BUILD_ROOT%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
