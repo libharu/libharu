@@ -23,7 +23,7 @@ $(config_h_in): configure
 	@rm -f $@
 	$(AUTOHEADER) $(SUPPRESS_WARNINGS)
 
-configure: aclocal.m4 configure.in
+configure: aclocal.m4 configure.in ltmain
 	@echo rebuilding $@
 	$(AUTOCONF) $(SUPPRESS_WARNINGS)
 
