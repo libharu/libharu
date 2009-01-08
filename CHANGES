@@ -1,11 +1,28 @@
 libHaru news
 -------------------------------------------------------------------------------
 
-Version 2.1.1 (2008.??.??)
+Version 2.2.0 (2009.??.??)
  - Added VB.Net bindings. (Matt Underwood) 
- - Added CMake build system. (Werner Smekal) 
+ - Added CMake build system (experimental). (Werner Smekal) 
 
+ - Added HPDF_Image_AddSMask(). (patch by Adam Blokus)
+ - Added HPDF_LoadPngImageFromMem() and HPDF_LoadJpegImageFromMem(). 
+   (patch by Adam Blokus)
+ - Added HPDF_GetContents().
+ - Added HPDF_Page_SetZoom().
+
+ - Applied a bunch of fixes and improvements from bug report #13.
  - Fixed build failure when zlib was not found. (Werner Smekal)
+ - Fixed build with newer libtool versions.
+ - Fixed external build. (thanks to Jeremiah Willcock)
+
+ - Fixed bug #11 (sqrtf() is missing on Winblows).
+ - Fixed bug #10 (missing HPDF_LoadPngImageFromMem from win32/msvc/libhpdf.def).
+ - Fixed bug #7 (HPDF_String_SetValue() is declared twice).
+ - Fixed bug #6 (possible NULL dereference in HPDF_LoadPngImageFromFile2()).
+ - Fixed bug #5 (possible NULL derefernce in HPDF_LoadRawImageFromFile()).
+ - Fixed bug #4 (possible NULL dereference in HPDF_AToI()).
+ - Fixed bug #2 (Ruby binding: hpdf_insert_page has stray printf).
 
 Version 2.1.0 (2008.05.27)
  - Added initial support for Alpha channel in RGB and palette-based PNG images.
