@@ -13,7 +13,7 @@ targets = $(config_h_in) configure makefiles
 all: $(targets)
 
 ltmain:
-	$(LIBTOOLIZE) --force --copy 2>/dev/null
+	$(LIBTOOLIZE) --force --copy >/dev/null 2>&1
 
 aclocal.m4:
 	$(ACLOCAL)
