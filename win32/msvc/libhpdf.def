@@ -48,7 +48,7 @@ EXPORTS
     HPDF_GetVersion
     HPDF_GetViewerPreference
     HPDF_HasDoc
-    HPDF_Image_AddMask
+    HPDF_Image_AddSMask
     HPDF_Image_GetBitsPerComponent
     HPDF_Image_GetColorSpace
     HPDF_Image_GetHeight
