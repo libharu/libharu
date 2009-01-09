@@ -610,8 +610,7 @@ HPDF_Image_SetColorMask (HPDF_Image   image,
 }
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_Image_AddSMask  (HPDF_Doc    pdf,
-                      HPDF_Image  image,
+HPDF_Image_AddSMask  (HPDF_Image  image,
                       HPDF_Image  smask)
 {
 
