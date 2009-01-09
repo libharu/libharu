@@ -32,3 +32,4 @@ config.sub
 configure
 configure.in~
 libtool
+ltmain.sh
