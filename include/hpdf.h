@@ -75,6 +75,7 @@ typedef HPDF_HANDLE   HPDF_U3D;
 
 #include "hpdf_consts.h"
 #include "hpdf_doc.h"
+#include "hpdf_error.h"
 
 #endif /* HPDF_SHARED */
 
@@ -159,6 +160,10 @@ HPDF_GetErrorDetail  (HPDF_Doc   pdf);
 
 HPDF_EXPORT(void)
 HPDF_ResetError  (HPDF_Doc   pdf);
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_CheckError  (HPDF_Error   error);
 
 
 HPDF_EXPORT(HPDF_STATUS)

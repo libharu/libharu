@@ -3,6 +3,7 @@ LIBRARY     LIBHPDF.DLL
 EXPORTS
     HPDF_AddPage
     HPDF_AddPageLabel
+    HPDF_CheckError
     HPDF_CreateExtGState
     HPDF_CreateOutline
     HPDF_Destination_SetFit

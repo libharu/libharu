@@ -187,10 +187,6 @@ HPDF_SetError  (HPDF_Error   error,
 
 
 HPDF_STATUS
-HPDF_CheckError  (HPDF_Error   error);
-
-
-HPDF_STATUS
 HPDF_RaiseError  (HPDF_Error   error,
                   HPDF_STATUS  error_no,
                   HPDF_STATUS  detail_no);

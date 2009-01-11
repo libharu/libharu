@@ -19,6 +19,7 @@
 #include "hpdf_utils.h"
 #include "hpdf_error.h"
 #include "hpdf_consts.h"
+#include "hpdf.h"
 
 #ifndef HPDF_STDCALL
 #ifdef HPDF_DLL_MAKE
@@ -83,7 +84,7 @@ HPDF_SetError  (HPDF_Error   error,
 }
 
 
-HPDF_STATUS
+HPDF_EXPORT(HPDF_STATUS)
 HPDF_CheckError  (HPDF_Error   error)
 {
     HPDF_PTRACE((" HPDF_CheckError: error_no=0x%04X detail_no=0x%04X\n",
