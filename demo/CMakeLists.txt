@@ -40,7 +40,7 @@ endif( WIN32 AND NOT CYGWIN )
 # create demos
 FOREACH( demo ${demos_NAMES} )
   ADD_EXECUTABLE( ${demo} ${demo}.c )
-  TARGET_LINK_LIBRARIES( ${demo} haru )
+  TARGET_LINK_LIBRARIES( ${demo} libharu )
   IF( DEMO_C_FLAGS )
     SET_TARGET_PROPERTIES( ${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS} )
     MESSAGE( "DEMO_C_FLAGS=${DEMO_C_FLAGS}" )
@@ -50,7 +50,7 @@ ENDFOREACH( demo ${demo_NAMES} )
 # some demos need grid_sheet.c compiled in
 FOREACH( demo ${demos_with_grid_NAMES} )
   ADD_EXECUTABLE( ${demo} ${demo}.c grid_sheet.c )
-  TARGET_LINK_LIBRARIES( ${demo} haru )
+  TARGET_LINK_LIBRARIES( ${demo} libharu )
   IF( DEMO_C_FLAGS )
     SET_TARGET_PROPERTIES( ${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS} )
   ENDIF( DEMO_C_FLAGS )
@@ -58,7 +58,7 @@ ENDFOREACH( demo ${demos_with_grid_NAMES} )
   
 # the grid_sheet demo needs extra defines
 ADD_EXECUTABLE( grid_sheet grid_sheet.c )
-TARGET_LINK_LIBRARIES( grid_sheet haru )
+TARGET_LINK_LIBRARIES( grid_sheet libharu )
 SET_TARGET_PROPERTIES( grid_sheet PROPERTIES COMPILE_FLAGS "${DEMO_C_FLAGS} -DSTAND_ALONE" )
 
 # install libary and demos
