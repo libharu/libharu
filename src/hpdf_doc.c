@@ -1910,7 +1910,7 @@ HPDF_AddPageLabel  (HPDF_Doc             pdf,
 }
 
 
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile
 HPDF_AttachFile  (HPDF_Doc    pdf,
                   const char *file)
 {
@@ -1918,44 +1918,48 @@ HPDF_AttachFile  (HPDF_Doc    pdf,
     HPDF_NameTree ntree;
     HPDF_EmbeddedFile efile;
     HPDF_String name;
-    HPDF_STATUS ret;
+    HPDF_STATUS ret = HPDF_OK;
 
     HPDF_PTRACE ((" HPDF_AttachFile\n"));
 
     if (!HPDF_HasDoc (pdf))
-        return HPDF_INVALID_DOCUMENT;
+        return NULL;
 
     names = HPDF_Catalog_GetNames (pdf->catalog);
     if (!names) {
         names = HPDF_NameDict_New (pdf->mmgr, pdf->xref);
         if (!names)
-            return HPDF_CheckError (&pdf->error);
+            return NULL;
 
         ret = HPDF_Catalog_SetNames (pdf->catalog, names);
         if (ret != HPDF_OK)
-            return HPDF_CheckError (&pdf->error);
+            return NULL;
     }
 
     ntree = HPDF_NameDict_GetNameTree (names, HPDF_NAME_EMBEDDED_FILES);
     if (!ntree) {
         ntree = HPDF_NameTree_New (pdf->mmgr, pdf->xref);
         if (!ntree)
-            return HPDF_CheckError (&pdf->error);
+            return NULL;
 
         ret = HPDF_NameDict_SetNameTree (names, HPDF_NAME_EMBEDDED_FILES, ntree);
         if (ret != HPDF_OK)
-            return HPDF_CheckError (&pdf->error);
+            return NULL;
     }
 
     efile = HPDF_EmbeddedFile_New (pdf->mmgr, pdf->xref, file);
     if (!efile)
-        return HPDF_CheckError (&pdf->error);
+        return NULL;
 
     name = HPDF_String_New (pdf->mmgr, file, NULL);
     if (!name)
-        return HPDF_CheckError (&pdf->error);
+        return NULL;
 
-    return HPDF_NameTree_Add (ntree, name, efile);
+    ret += HPDF_NameTree_Add (ntree, name, efile);
+    if (ret != HPDF_OK)
+        return NULL;
+
+    return efile;
 }
 
 /*----- Info ---------------------------------------------------------------*/

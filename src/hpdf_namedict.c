@@ -204,6 +204,7 @@ HPDF_EmbeddedFile_New  (HPDF_MMgr  mmgr,
         return NULL;
     HPDF_FreeMem (mmgr, filestream->stream);
     filestream->stream = stream;
+    filestream->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
 
     eff = HPDF_Dict_New (mmgr);
     if (!eff)

@@ -677,6 +677,14 @@ HPDF_Font_MeasureText (HPDF_Font          font,
 
 
 /*--------------------------------------------------------------------------*/
+/*----- attachements -------------------------------------------------------*/
+
+HPDF_EXPORT(HPDF_EmbeddedFile)
+HPDF_AttachFile  (HPDF_Doc    pdf,
+                  const char *file);
+
+
+/*--------------------------------------------------------------------------*/
 /*----- extended graphics state --------------------------------------------*/
 
 HPDF_EXPORT(HPDF_ExtGState)
