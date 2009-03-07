@@ -2,7 +2,7 @@ dnl this file has to be processed by autoconf
 dnl run ./buildconf.sh to get a working ./configure script
 AC_PREREQ(2.60)
 
-AC_INIT([libhpdf],[2.2.0])
+AC_INIT([libhpdf],[2.3.0])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_SRCDIR(include/hpdf.h)
 AC_CONFIG_HEADERS(include/hpdf_config.h)
@@ -27,9 +27,9 @@ DEFAULT_INSTALL_PREFIX="/usr/local"
 STANDARD_PREFIXES="/usr /usr/local /opt /local"
 
 HPDF_MAJOR_VERSION=2
-HPDF_MINOR_VERSION=2
+HPDF_MINOR_VERSION=3
 HPDF_BUGFIX_VERSION=0
-HPDF_EXTRA_VERSION=""
+HPDF_EXTRA_VERSION="-dev"
 
 HPDF_VERSION_TEXT="${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION}${HPDF_EXTRA_VERSION}"
 HPDF_VERSION_ID=`expr [$]HPDF_MAJOR_VERSION \* 10000 + [$]HPDF_MINOR_VERSION \* 100 + [$]HPDF_BUGFIX_VERSION`
