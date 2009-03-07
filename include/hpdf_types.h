@@ -483,6 +483,14 @@ typedef enum _HPDF_TextAlignment {
     HPDF_TALIGN_JUSTIFY
 } HPDF_TextAlignment;
 
+/*----------------------------------------------------------------------------*/
+
+/* Name Dictionary values -- see PDF reference section 7.7.4 */
+typedef enum _HPDF_NameDictKey {
+    HPDF_NAME_EMBEDDED_FILES = 0,    /* TODO the rest */
+    HPDF_NAME_EOF
+} HPDF_NameDictKey;
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

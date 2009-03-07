@@ -19,6 +19,7 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf_encryptdict.h"
+#include "hpdf_namedict.h"
 #include "hpdf_destination.h"
 #include "hpdf_info.h"
 #include "hpdf_page_label.h"
@@ -1908,6 +1909,54 @@ HPDF_AddPageLabel  (HPDF_Doc             pdf,
     return HPDF_OK;
 }
 
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_AttachFile  (HPDF_Doc    pdf,
+                  const char *file)
+{
+    HPDF_NameDict names;
+    HPDF_NameTree ntree;
+    HPDF_EmbeddedFile efile;
+    HPDF_String name;
+    HPDF_STATUS ret;
+
+    HPDF_PTRACE ((" HPDF_AttachFile\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return HPDF_INVALID_DOCUMENT;
+
+    names = HPDF_Catalog_GetNames (pdf->catalog);
+    if (!names) {
+        names = HPDF_NameDict_New (pdf->mmgr, pdf->xref);
+        if (!names)
+            return HPDF_CheckError (&pdf->error);
+
+        ret = HPDF_Catalog_SetNames (pdf->catalog, names);
+        if (ret != HPDF_OK)
+            return HPDF_CheckError (&pdf->error);
+    }
+
+    ntree = HPDF_NameDict_GetNameTree (names, HPDF_NAME_EMBEDDED_FILES);
+    if (!ntree) {
+        ntree = HPDF_NameTree_New (pdf->mmgr, pdf->xref);
+        if (!ntree)
+            return HPDF_CheckError (&pdf->error);
+
+        ret = HPDF_NameDict_SetNameTree (names, HPDF_NAME_EMBEDDED_FILES, ntree);
+        if (ret != HPDF_OK)
+            return HPDF_CheckError (&pdf->error);
+    }
+
+    efile = HPDF_EmbeddedFile_New (pdf->mmgr, pdf->xref, file);
+    if (!efile)
+        return HPDF_CheckError (&pdf->error);
+
+    name = HPDF_String_New (pdf->mmgr, file, NULL);
+    if (!name)
+        return HPDF_CheckError (&pdf->error);
+
+    return HPDF_NameTree_Add (ntree, name, efile);
+}
 
 /*----- Info ---------------------------------------------------------------*/
 

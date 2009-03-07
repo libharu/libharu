@@ -143,6 +143,7 @@ extern "C" {
 #define HPDF_INVALID_EXT_GSTATE                   0x1081
 #define HPDF_EXT_GSTATE_READ_ONLY                 0x1082
 #define HPDF_INVALID_U3D_DATA                     0x1083
+#define HPDF_NAME_CANNOT_GET_NAMES                0x1084
 
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Error ----------------------------------------------------------*/

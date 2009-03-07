@@ -15,6 +15,7 @@
  *
  */
 
+#include <string.h>
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf_objects.h"
@@ -190,3 +191,12 @@ HPDF_String_Write  (HPDF_String   obj,
     return HPDF_OK;
 }
 
+
+HPDF_INT32
+HPDF_String_Cmp  (HPDF_String s1,
+                  HPDF_String s2)
+{
+    if (s1->len < s2->len) return -1;
+    if (s1->len > s2->len) return +1;
+    return memcmp(s1->value, s2->value, s1->len);
+}

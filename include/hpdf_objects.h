@@ -59,6 +59,8 @@ extern "C" {
 #define  HPDF_OSUBCLASS_ENCRYPT       0x0900
 #define  HPDF_OSUBCLASS_EXT_GSTATE    0x0A00
 #define  HPDF_OSUBCLASS_EXT_GSTATE_R  0x0B00  /* read only object */
+#define  HPDF_OSUBCLASS_NAMEDICT      0x0C00
+#define  HPDF_OSUBCLASS_NAMETREE      0x0D00
 
 
 
@@ -271,6 +273,10 @@ HPDF_String_Write  (HPDF_String  obj,
                     HPDF_Stream  stream,
                     HPDF_Encrypt e);
 
+HPDF_INT32
+HPDF_String_Cmp  (HPDF_String s1,
+                  HPDF_String s2);
+
 
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Binary ---------------------------------------------------------*/
@@ -382,6 +388,10 @@ HPDF_Array_AddName  (HPDF_Array       array,
 
 void
 HPDF_Array_Clear  (HPDF_Array  array);
+
+
+HPDF_UINT
+HPDF_Array_Items (HPDF_Array  array);
 
 
 /*---------------------------------------------------------------------------*/
@@ -566,6 +576,9 @@ HPDF_Xref_GetEntryByObjectId  (HPDF_Xref  xref,
 
 
 
+typedef HPDF_Dict  HPDF_EmbeddedFile;
+typedef HPDF_Dict  HPDF_NameDict;
+typedef HPDF_Dict  HPDF_NameTree;
 typedef HPDF_Dict  HPDF_Pages;
 typedef HPDF_Dict  HPDF_Page;
 typedef HPDF_Dict  HPDF_Annotation;

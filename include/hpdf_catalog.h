@@ -31,6 +31,15 @@ HPDF_Catalog_New  (HPDF_MMgr  mmgr,
                    HPDF_Xref  xref);
 
 
+HPDF_NameDict
+HPDF_Catalog_GetNames  (HPDF_Catalog  catalog);
+
+
+HPDF_STATUS
+HPDF_Catalog_SetNames  (HPDF_Catalog  catalog,
+                        HPDF_NameDict dict);
+
+
 HPDF_Pages
 HPDF_Catalog_GetRoot  (HPDF_Catalog  catalog);
 

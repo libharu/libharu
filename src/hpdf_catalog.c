@@ -84,6 +84,23 @@ HPDF_Catalog_GetRoot  (HPDF_Catalog  catalog)
 }
 
 
+HPDF_NameDict
+HPDF_Catalog_GetNames  (HPDF_Catalog catalog)
+{
+    if (!catalog)
+        return NULL;
+    return HPDF_Dict_GetItem (catalog, "Names", HPDF_OCLASS_DICT);
+}
+
+
+HPDF_STATUS
+HPDF_Catalog_SetNames  (HPDF_Catalog catalog,
+                        HPDF_NameDict dict)
+{
+    return HPDF_Dict_Add (catalog, "Names", dict);
+}
+
+
 HPDF_PageLayout
 HPDF_Catalog_GetPageLayout  (HPDF_Catalog  catalog)
 {

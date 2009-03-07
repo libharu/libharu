@@ -214,6 +214,13 @@ HPDF_Array_Add  (HPDF_Array  array,
 }
 
 
+HPDF_UINT
+HPDF_Array_Items  (HPDF_Array array)
+{
+    return array->list->count;
+}
+
+
 HPDF_STATUS
 HPDF_Array_Insert  (HPDF_Array  array,
                     void        *target,
