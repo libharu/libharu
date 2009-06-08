@@ -298,7 +298,7 @@ HPDF_Xref_WriteToStream  (HPDF_Xref    xref,
             pbuf = HPDF_IToA2 (pbuf, entry->gen_no, HPDF_GEN_NO_LEN + 1);
             *pbuf++ = ' ';
             *pbuf++ = entry->entry_typ;
-            HPDF_StrCpy (pbuf, "\012", eptr);
+            HPDF_StrCpy (pbuf, "\015\012", eptr); /* Acrobat 8.15 requires both \r and \n here */
             ret = HPDF_Stream_WriteStr (stream, buf);
             if (ret != HPDF_OK)
                 return ret;
