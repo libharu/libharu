@@ -331,7 +331,7 @@ HPDF_3DAnnot_New    (HPDF_MMgr        mmgr,
 		return NULL;
 	}
 	
-	HPDF_Dict_AddName (annot, "Contents", "3D Model");
+	HPDF_Dict_Add(annot, "Contents", HPDF_String_New (mmgr, "3D Model", NULL));
 
 	action = HPDF_Dict_New (mmgr);
 	if (!action) {
