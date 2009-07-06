@@ -52,6 +52,8 @@ SET(
   	hpdf_image_png.c
   	hpdf_doc_png.c
   	hpdf_ext_gstate.c
+  	hpdf_namedict.c
+  	hpdf_u3d.c
 )
 
 IF( BUILD_SHARED_LIBS AND WIN32 AND NOT CYGWIN )
