@@ -2,7 +2,7 @@ dnl this file has to be processed by autoconf
 dnl run ./buildconf.sh to get a working ./configure script
 AC_PREREQ(2.60)
 
-AC_INIT([libhpdf],[2.3.0])
+AC_INIT([libhpdf],[2.2.0])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_SRCDIR(include/hpdf.h)
 AC_CONFIG_HEADERS(include/hpdf_config.h)
@@ -14,6 +14,7 @@ AC_PROG_CC
 AC_PROG_LD
 AM_PROG_LIBTOOL
 AC_PROG_INSTALL
+AC_PROG_EGREP
 
 dnl Check for size_t
 AC_TYPE_SIZE_T
@@ -27,7 +28,7 @@ DEFAULT_INSTALL_PREFIX="/usr/local"
 STANDARD_PREFIXES="/usr /usr/local /opt /local"
 
 HPDF_MAJOR_VERSION=2
-HPDF_MINOR_VERSION=3
+HPDF_MINOR_VERSION=2
 HPDF_BUGFIX_VERSION=0
 HPDF_EXTRA_VERSION="-dev"
 
@@ -214,6 +215,19 @@ case "$host_alias" in
     CFLAGS="$CFLAGS -mno-cygwin -DHPDF_DLL_MAKE_CDECL"
     ;;
 esac
+
+if test "$GCC" = yes ; then
+  AC_MSG_CHECKING([whether GCC supports -fexceptions])
+  echo 'void somefunc() { };' > conftest.c
+  cmd='$CC -fexceptions -c conftest.c'
+  if eval $cmd 2>&1 | $EGREP -e $1 >/dev/null ; then
+    AC_MSG_RESULT([no])
+  else
+    AC_MSG_RESULT([yes])
+    CFLAGS="$CFLAGS -fexceptions"
+  fi
+  rm -f conftest.*
+fi
 
 dnl link against libm
 LIBS="$LIBS -lm"
