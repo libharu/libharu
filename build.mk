@@ -5,7 +5,7 @@ AUTOCONF ?= 'autoconf'
 ACLOCAL ?= 'aclocal'
 AUTOHEADER ?= 'autoheader'
 AUTOMAKE ?= 'automake'
-LIBTOOLIZE ?= 'libtoolize'
+LIBTOOLIZE ?= $(shell uname -s | grep Darwin >/dev/null && echo 'glibtoolize' || echo 'libtoolize')
 
 config_h_in = src/hpdf_config.h.in
 targets = $(config_h_in) configure makefiles
