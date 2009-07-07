@@ -33,3 +33,4 @@ configure
 configure.in~
 libtool
 ltmain.sh
+_configs.sed

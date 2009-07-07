@@ -143,11 +143,11 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value);
 /*----------------------------------------------------------------------------*/
 /*----- macros for debug -----------------------------------------------------*/
 
-#ifdef HPDF_DEBUG_TRACE
+#ifdef LIBHPDF_DEBUG_TRACE
 #ifndef HPDF_PTRACE_ON
 #define HPDF_PTRACE_ON
 #endif /* HPDF_PTRACE_ON */
-#endif /* HPDF_DEBUG */
+#endif /* LIBHPDF_DEBUG_TRACE */
 
 #ifdef HPDF_PTRACE_ON
 #define HPDF_PTRACE(ARGS)  HPDF_PRINTF ARGS
@@ -155,7 +155,7 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value);
 #define HPDF_PTRACE(ARGS)  /* do nothing */
 #endif /* HPDF_PTRACE */
 
-#ifdef HPDF_DEBUG
+#ifdef LIBHPDF_DEBUG
 #define HPDF_PRINT_BINARY(BUF, LEN, CAPTION) HPDF_PrintBinary(BUF, LEN, CAPTION)
 #else
 #define HPDF_PRINT_BINARY(BUF, LEN, CAPTION) /* do nothing */

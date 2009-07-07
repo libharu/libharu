@@ -1112,7 +1112,7 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
     } else
         attr->cmap.glyph_id_array = NULL;
 
-#ifdef HPDF_DEBUG
+#ifdef LIBHPDF_DEBUG
     /* print all elements of cmap table */
     for (i = 0; i < attr->cmap.seg_count_x2 / 2; i++) {
         HPDF_PTRACE((" ParseCMAP_format4[%d] start_count=0x%04X, "
@@ -1456,7 +1456,7 @@ ParseLoca  (HPDF_FontDef  fontdef)
     }
 
 
-#ifdef HPDF_DEBUG
+#ifdef LIBHPDF_DEBUG
     poffset = attr->glyph_tbl.offsets;
     for (i = 0; i <= attr->num_glyphs; i++) {
         HPDF_PTRACE((" ParseLOCA offset[%u]=%u\n", i, (HPDF_UINT)*poffset));

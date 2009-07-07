@@ -2116,16 +2116,16 @@ HPDF_SetCompressionMode  (HPDF_Doc    pdf,
     if (mode != (mode & HPDF_COMP_MASK))
         return HPDF_RaiseError (&pdf->error, HPDF_INVALID_COMPRESSION_MODE, 0);
 
-#ifndef HPDF_NOZLIB
+#ifndef LIBHPDF_HAVE_NOZLIB
     pdf->compression_mode = mode;
 
     return HPDF_OK;
 
-#else /* HPDF_NOZLIB */
+#else /* LIBHPDF_HAVE_NOZLIB */
 
     return HPDF_INVALID_COMPRESSION_MODE;
 
-#endif /* HPDF_NOZLIB */
+#endif /* LIBHPDF_HAVE_NOZLIB */
 }
 
 

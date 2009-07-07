@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 
-#ifndef HPDF_NOPNGLIB
+#ifndef LIBHPDF_HAVE_NOPNGLIB
 
 HPDF_Image
 HPDF_Image_LoadPngImage  (HPDF_MMgr        mmgr,

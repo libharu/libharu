@@ -1,40 +1,40 @@
 /* include/hpdf_config.h.in.  Generated from configure.in by autoheader.  */
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#undef HAVE_DLFCN_H
+#undef LIBHPDF_HAVE_DLFCN_H
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#undef HAVE_INTTYPES_H
+#undef LIBHPDF_HAVE_INTTYPES_H
 
 /* Define to 1 if you have the `png' library (-lpng). */
-#define HAVE_LIBPNG 1
+#define LIBHPDF_HAVE_LIBPNG 1
 
 /* Define to 1 if you have the `z' library (-lz). */
-#define HAVE_LIBZ 1
+#define LIBHPDF_HAVE_LIBZ 1
 
 /* Define to 1 if you have the <memory.h> header file. */
-#undef HAVE_MEMORY_H
+#undef LIBHPDF_HAVE_MEMORY_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
-#undef HAVE_STDINT_H
+#undef LIBHPDF_HAVE_STDINT_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-#define HAVE_STDLIB_H 1
+#define LIBHPDF_HAVE_STDLIB_H 1
 
 /* Define to 1 if you have the <strings.h> header file. */
-#define HAVE_STRINGS_H 1
+#define LIBHPDF_HAVE_STRINGS_H 1
 
 /* Define to 1 if you have the <string.h> header file. */
-#define HAVE_STRING_H 1
+#define LIBHPDF_HAVE_STRING_H 1
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-#define HAVE_SYS_STAT_H 1
+#define LIBHPDF_HAVE_SYS_STAT_H 1
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#undef HAVE_SYS_TYPES_H
+#undef LIBHPDF_HAVE_SYS_TYPES_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#define HAVE_UNISTD_H 1
+#define LIBHPDF_HAVE_UNISTD_H 1
 
 /* define pi */
 #ifndef M_PI
@@ -42,34 +42,34 @@
 #endif  /*  M_PI  */
 
 /* debug build */
-#undef HPDF_DEBUG
+#undef LIBHPDF_DEBUG
 
 /* debug trace enabled */
-#undef HPDF_DEBUG_TRACE
+#undef LIBHPDF_DEBUG_TRACE
 
 /* libpng is not available */
-#undef HPDF_NOPNGLIB
+#undef LIBHPDF_HAVE_NOPNGLIB
 
 /* zlib is not available */
-#undef HPDF_NOZLIB
+#undef LIBHPDF_HAVE_NOZLIB
 
 /* Define to the address where bug reports for this package should be sent. */
-#undef PACKAGE_BUGREPORT
+#undef LIBHPDF_PACKAGE_BUGREPORT
 
 /* Define to the full name of this package. */
-#undef PACKAGE_NAME
+#undef LIBHPDF_PACKAGE_NAME
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "libhpdf 2.1.0"
+#define LIBHPDF_PACKAGE_STRING "libhpdf 2.2.0"
 
 /* Define to the one symbol short name of this package. */
-#undef PACKAGE_TARNAME
+#undef LIBHPDF_PACKAGE_TARNAME
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.1.0"
+#define LIBHPDF_PACKAGE_VERSION "2.2.0"
 
 /* Define to 1 if you have the ANSI C header files. */
-#define STDC_HEADERS 1
+#define LIBHPDF_STDC_HEADERS 1
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

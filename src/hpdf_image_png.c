@@ -19,7 +19,7 @@
 #include "hpdf_utils.h"
 #include "hpdf_image.h"
 
-#ifndef HPDF_NOPNGLIB
+#ifndef LIBHPDF_HAVE_NOPNGLIB
 #include <png.h>
 
 static void
@@ -691,5 +691,5 @@ PngAfterWrite  (HPDF_Dict obj)
 }
 
 
-#endif /* HPDF_NOPNGLIB */
+#endif /* LIBHPDF_HAVE_NOPNGLIB */
 

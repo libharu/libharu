@@ -148,7 +148,7 @@ HPDF_LoadPngImageFromFile2  (HPDF_Doc     pdf,
     return image;
 }
 
-#ifndef HPDF_NOPNGLIB
+#ifndef LIBHPDF_HAVE_NOPNGLIB
 static HPDF_Image
 LoadPngImageFromStream (HPDF_Doc      pdf,
                         HPDF_Stream   imagedata,
@@ -178,5 +178,5 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
     return NULL;
 }
 
-#endif /* HPDF_NOPNGLIB */
+#endif /* LIBHPDF_HAVE_NOPNGLIB */
 

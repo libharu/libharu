@@ -65,13 +65,13 @@ HPDF_EncryptDict_CreateID  (HPDF_EncryptDict  dict,
     /* use the result of 'time' function to get random value.
      * when debugging, 'time' value is ignored.
      */
-#ifndef HPDF_DEBUG
+#ifndef LIBHPDF_DEBUG
     time_t t = HPDF_TIME (NULL);
-#endif /* HPDF_DEBUG */
+#endif /* LIBHPDF_DEBUG */
 
     HPDF_MD5Init (&ctx);
 
-#ifndef HPDF_DEBUG
+#ifndef LIBHPDF_DEBUG
     HPDF_MD5Update(&ctx, (HPDF_BYTE *)&t, sizeof(t));
 
     /* create File Identifier from elements of Into dictionary. */
