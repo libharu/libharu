@@ -630,3 +630,25 @@ HPDF_Image_AddSMask  (HPDF_Image  image,
 
    return HPDF_Dict_Add (image, "SMask", smask);
 }
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Image_SetColorSpace  (HPDF_Image   image,
+                          HPDF_Array   colorspace)
+{
+    if (!HPDF_Image_Validate (image))
+        return HPDF_INVALID_IMAGE;
+
+    return HPDF_Dict_Add (image, "ColorSpace", colorspace);
+}
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Image_SetRenderingIntent  (HPDF_Image   image,
+                          const char* intent)
+{
+    if (!HPDF_Image_Validate (image))
+        return HPDF_INVALID_IMAGE;
+
+    return HPDF_Dict_AddName (image, "Intent", intent);
+}
+

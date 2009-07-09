@@ -144,6 +144,9 @@ extern "C" {
 #define HPDF_EXT_GSTATE_READ_ONLY                 0x1082
 #define HPDF_INVALID_U3D_DATA                     0x1083
 #define HPDF_NAME_CANNOT_GET_NAMES                0x1084
+#define HPDF_INVALID_ICC_COMPONENT_NUM            0x1085
+
+/*---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Error ----------------------------------------------------------*/

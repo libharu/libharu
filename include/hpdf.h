@@ -1271,6 +1271,18 @@ HPDF_Page_SetSlideShow  (HPDF_Page              page,
                          HPDF_REAL              trans_time);
 
 
+HPDF_EXPORT(HPDF_OutputIntent)
+HPDF_ICC_LoadIccFromMem (HPDF_Doc   pdf,
+                        HPDF_MMgr   mmgr,
+                        HPDF_Stream iccdata,
+                        HPDF_Xref   xref, 
+                        int         numcomponent);
+
+HPDF_EXPORT(HPDF_OutputIntent)
+HPDF_LoadIccProfileFromFile  (HPDF_Doc  pdf,
+                            const char* icc_file_name,
+                                   int  numcomponent);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

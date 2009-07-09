@@ -2158,3 +2158,201 @@ HPDF_ResetError  (HPDF_Doc   pdf)
     HPDF_Error_Reset (&pdf->error);
 }
 
+/*
+ * create an intententry
+ */
+HPDF_EXPORT(HPDF_OutputIntent)
+HPDF_OutputIntent_New  (HPDF_Doc  pdf,
+                      const char* identifier,
+                      const char* condition,
+                      const char* registry,
+                      const char* info,
+                      HPDF_Array  outputprofile)
+{
+    HPDF_OutputIntent intent;
+    HPDF_STATUS ret = HPDF_OK;
+
+    HPDF_PTRACE((" HPDF_OutputIntent_New\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    intent = HPDF_Dict_New (pdf->mmgr);
+    if (!intent)
+        return NULL;
+
+    if (HPDF_Xref_Add (pdf->xref, intent) != HPDF_OK) {
+        HPDF_Dict_Free(intent);
+        return NULL;
+    }
+
+    ret += HPDF_Dict_AddName (intent, "Type", "OutputIntent");
+    ret += HPDF_Dict_AddName (intent, "S", "GTS_PDFX");
+    ret += HPDF_Dict_Add (intent, "OutputConditionIdentifier", HPDF_String_New (pdf->mmgr, identifier, NULL));
+    ret += HPDF_Dict_Add (intent, "OutputCondition", HPDF_String_New (pdf->mmgr, condition,NULL));
+    ret += HPDF_Dict_Add (intent, "RegistryName", HPDF_String_New (pdf->mmgr, registry, NULL));
+    
+    if (info != NULL) {
+        ret += HPDF_Dict_Add (intent, "Info", HPDF_String_New (pdf->mmgr, info, NULL));
+    }
+
+    /* add ICC base stream */
+    if (outputprofile != NULL) {
+        ret += HPDF_Dict_Add (intent, "DestOutputProfile ", outputprofile);
+    }
+
+    if (ret != HPDF_OK) {
+        HPDF_Dict_Free(intent);
+        return NULL;
+    }
+
+    return intent;
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_AddIntent(HPDF_Doc  pdf,
+      HPDF_OutputIntent  intent)
+{
+    HPDF_Array intents;
+    if (!HPDF_HasDoc (pdf))
+        return HPDF_INVALID_DOCUMENT;
+
+    intents = HPDF_Dict_GetItem (pdf->catalog, "OutputIntents", HPDF_OCLASS_ARRAY);
+    if (intents == NULL) {
+        intents = HPDF_Array_New (pdf->mmgr);
+        if (intents) {
+            HPDF_STATUS ret = HPDF_Dict_Add (pdf->catalog, "OutputIntents", intents);
+            if (ret != HPDF_OK) {
+                HPDF_CheckError (&pdf->error);
+                return HPDF_Error_GetDetailCode (&pdf->error);
+            }
+        }
+    }
+    HPDF_Array_Add(intents,intent);
+    return HPDF_Error_GetDetailCode (&pdf->error);
+}
+
+/* "Perceptual", "RelativeColorimetric", "Saturation", "AbsoluteColorimetric" */
+HPDF_EXPORT(HPDF_OutputIntent)
+HPDF_ICC_LoadIccFromMem (HPDF_Doc   pdf,
+		                HPDF_MMgr   mmgr,
+                        HPDF_Stream iccdata,
+                        HPDF_Xref   xref, 
+						int         numcomponent)
+{
+   HPDF_OutputIntent icc;
+   HPDF_STATUS ret;
+
+   HPDF_PTRACE ((" HPDF_ICC_LoadIccFromMem\n"));
+
+   icc = HPDF_DictStream_New (mmgr, xref);
+   if (!icc)
+        return NULL;
+
+   HPDF_Dict_AddNumber (icc, "N", numcomponent); 
+   switch (numcomponent) {
+   case 1 :
+	   HPDF_Dict_AddName (icc, "Alternate", "DeviceGray");
+	   break;
+   case 3 :
+	   HPDF_Dict_AddName (icc, "Alternate", "DeviceRGB");
+	   break;
+   case 4 : 
+	   HPDF_Dict_AddName (icc, "Alternate", "DeviceCMYK");
+	   break;
+   default : /* unsupported */
+       HPDF_RaiseError (&pdf->error, HPDF_INVALID_ICC_COMPONENT_NUM, 0);
+       HPDF_Dict_Free(icc);
+       return NULL;
+   }
+
+   for (;;) {
+        HPDF_BYTE buf[HPDF_STREAM_BUF_SIZ];
+        HPDF_UINT len = HPDF_STREAM_BUF_SIZ;
+        ret = HPDF_Stream_Read (iccdata, buf, &len);
+
+        if (ret != HPDF_OK) {
+            if (ret == HPDF_STREAM_EOF) {
+               if (len > 0) {
+                    ret = HPDF_Stream_Write (icc->stream, buf, len);
+                    if (ret != HPDF_OK) {
+                        HPDF_Dict_Free(icc);
+                        return NULL;
+                    }
+                }
+                break;
+            } else {
+                HPDF_Dict_Free(icc);
+                return NULL;
+            }
+        }
+
+        if (HPDF_Stream_Write (icc->stream, buf, len) != HPDF_OK) {
+            HPDF_Dict_Free(icc);
+            return NULL;
+        }
+    }
+
+    return icc;
+}
+
+HPDF_EXPORT(HPDF_Array)
+HPDF_AddColorspaceFromProfile  (HPDF_Doc pdf,
+                               HPDF_Dict icc)
+{
+    HPDF_STATUS ret = HPDF_OK;
+    HPDF_Array iccentry;
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    iccentry = HPDF_Array_New(pdf->mmgr);
+	if (!iccentry)
+        return NULL;
+
+    ret = HPDF_Array_AddName (iccentry, "ICCBased" );
+    if (ret != HPDF_OK) {
+		HPDF_Array_Free(iccentry);
+        HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
+
+    ret = HPDF_Array_Add (iccentry, icc );
+    if (ret != HPDF_OK) {
+		HPDF_Array_Free(iccentry);
+        return NULL;
+    }
+    return iccentry;
+}
+
+HPDF_EXPORT(HPDF_OutputIntent)
+HPDF_LoadIccProfileFromFile  (HPDF_Doc pdf,
+                           const char* icc_file_name, 
+						           int numcomponent)
+{
+    HPDF_Stream iccdata;
+    HPDF_OutputIntent iccentry;
+
+    HPDF_PTRACE ((" HPDF_LoadIccProfileFromFile\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+      /* create file stream */
+    iccdata = HPDF_FileReader_New (pdf->mmgr, icc_file_name);
+
+    if (HPDF_Stream_Validate (iccdata)) {
+        iccentry = HPDF_ICC_LoadIccFromMem(pdf, pdf->mmgr, iccdata, pdf->xref, numcomponent);
+    } else
+        iccentry = NULL;
+
+    /* destroy file stream */
+    if (iccdata)
+        HPDF_Stream_Free (iccdata);
+
+    if (!iccentry)
+        HPDF_CheckError (&pdf->error);
+
+    return iccentry;
+}
+

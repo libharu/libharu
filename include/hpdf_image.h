@@ -72,6 +72,14 @@ HPDF_STATUS
 HPDF_Image_SetMask (HPDF_Image   image,
                     HPDF_BOOL    mask);
 
+HPDF_STATUS
+HPDF_Image_SetColorSpace  (HPDF_Image   image,
+                           HPDF_Array   colorspace);
+
+HPDF_STATUS
+HPDF_Image_SetRenderingIntent  (HPDF_Image   image,
+                                const char* intent);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

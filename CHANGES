@@ -4,6 +4,7 @@ libHaru news
 Version 2.2.0 (2009.??.??)
  - Added VB.Net bindings. (Matt Underwood) 
  - Added CMake build system (experimental). (Werner Smekal) 
+ - Added preliminary ICC support. (vbrasseur at gmail dot com)
 
  - Added HPDF_Image_AddSMask(). (patch by Adam Blokus)
  - Added HPDF_LoadPngImageFromMem() and HPDF_LoadJpegImageFromMem(). 

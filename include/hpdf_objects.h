@@ -590,6 +590,7 @@ typedef HPDF_Dict  HPDF_Action;
 typedef HPDF_Dict  HPDF_ExtGState;
 typedef HPDF_Array HPDF_Destination;
 typedef HPDF_Dict  HPDF_U3D;
+typedef HPDF_Dict  HPDF_OutputIntent;
 
 #ifdef __cplusplus
 }
