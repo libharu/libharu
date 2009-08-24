@@ -34,3 +34,9 @@ configure.in~
 libtool
 ltmain.sh
 _configs.sed
+CMakeCache.txt
+CMakeFiles
+CPackConfig.cmake
+CPackSourceConfig.cmake
+cmake_install.cmake
+libharu.DevPackage.cmake

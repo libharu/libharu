@@ -1,14 +1,14 @@
-
-# libraries are all shared by default
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-
+# cmake/modules/haru.cmake
+#
+# Copyright (C) 2008  Werner Smekal
+#
+# check if headers exist
 # Need these modules to do subsequent checks.
 include(CheckIncludeFiles)
 
 # =======================================================================
-# Headers
+# check header availability
 # =======================================================================
-
 # check if header file exists
 check_include_files(dlfcn.h HAVE_DLFCN_H)
 check_include_files(inttypes.h HAVE_INTTYPES_H)
@@ -22,11 +22,6 @@ check_include_files(sys/types.h HAVE_SYS_TYPES_H)
 check_include_files(unistd.h HAVE_UNISTD_H)
 
 
-#=======================================================================
-# Typedefs
-#=======================================================================
-
-
 # =======================================================================
 # additional library support
 # =======================================================================
@@ -37,4 +32,6 @@ if(NOT WIN32)
   if(NOT MATH_LIB)
     message(FATAL_ERROR "Cannot find required math library")
   endif(NOT MATH_LIB)
+else(NOT WIN32)
+  set(MATH_LIB)
 endif(NOT WIN32)
