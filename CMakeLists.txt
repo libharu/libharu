@@ -41,7 +41,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 if(MSVC)
  set(LIBHARU_NAME lib)
 endif(MSVC)
-set(LIBHARU_NAME ${LIBHARU_NAME}haru)
+set(LIBHARU_NAME ${LIBHARU_NAME}hpdf)
 set(LIBHARU_NAME_STATIC ${LIBHARU_NAME}s)
 
 # =======================================================================
