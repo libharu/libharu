@@ -39,4 +39,3 @@ CMakeFiles
 CPackConfig.cmake
 CPackSourceConfig.cmake
 cmake_install.cmake
-libharu.DevPackage.cmake
