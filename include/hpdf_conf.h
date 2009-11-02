@@ -20,6 +20,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#if defined(_MSC_VER)
+#define _USE_MATH_DEFINES 1
+#endif
 #include <math.h>
 
 /*----------------------------------------------------------------------------*/
