@@ -109,7 +109,7 @@ GetKeyword  (const char  *src,
 
     *keyword = 0;
 
-    while (len > 0) {
+    while (len > 1) {
         if (HPDF_IS_WHITE_SPACE(*src)) {
             *keyword = 0;
 
