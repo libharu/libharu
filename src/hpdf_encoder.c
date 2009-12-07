@@ -2481,11 +2481,11 @@ HPDF_BasicEncoder_Write  (HPDF_Encoder  encoder,
                 const char* char_name =
                     HPDF_UnicodeToGryphName (attr->unicode_map[i]);
 
-                ptmp = HPDF_IToA (ptmp, i, tmp + HPDF_TMP_BUF_SIZ - 1);
+                ptmp = HPDF_IToA (ptmp, i, tmp + HPDF_TEXT_DEFAULT_LEN - 1);
                 *ptmp++ = ' ';
                 *ptmp++ = '/';
                 ptmp = (char *)HPDF_StrCpy (ptmp, char_name, tmp +
-                        HPDF_TMP_BUF_SIZ - 1);
+                        HPDF_TEXT_DEFAULT_LEN - 1);
                 *ptmp++ = ' ';
                 *ptmp = 0;
 
