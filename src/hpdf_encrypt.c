@@ -368,7 +368,7 @@ HPDF_Encrypt_CreateOwnerKey  (HPDF_Encrypt  attr)
         for (i = 0; i < 50; i++) {
             HPDF_MD5Init(&md5_ctx);
 
-            //HPDF_MD5Update (&md5_ctx, digest, HPDF_MD5_KEY_LEN);
+            /* HPDF_MD5Update (&md5_ctx, digest, HPDF_MD5_KEY_LEN); */
             HPDF_MD5Update (&md5_ctx, digest, attr->key_len);
             HPDF_MD5Final(digest, &md5_ctx);
 
