@@ -23,6 +23,7 @@
 #if defined(_MSC_VER)
 #define _USE_MATH_DEFINES 1
 #endif
+#define __USE_XOPEN /* for M_PI */
 #include <math.h>
 
 /*----------------------------------------------------------------------------*/
