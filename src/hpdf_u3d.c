@@ -712,5 +712,51 @@ failed:
 	}
 	return ret;
 }
+
+HPDF_Dict HPDF_3DView_New( HPDF_MMgr  mmgr, HPDF_Xref  xref, HPDF_U3D u3d, const char *name)
+{
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_Dict view;
+
+	HPDF_PTRACE ((" HPDF_3DView_New\n"));
+
+	if (name == NULL || name[0] == '\0') { 
+		return NULL;
+	}
+
+	view = HPDF_Dict_New (mmgr);
+	if (!view) {
+		return NULL;
+	}
+
+	if (HPDF_Xref_Add (xref, view) != HPDF_OK)
+        return NULL;
+
+	ret = HPDF_Dict_AddName (view, "TYPE", "3DView");
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (view);
+		return NULL;
+	}
+	
+	ret = HPDF_Dict_Add (view, "XN", HPDF_String_New (mmgr, name, NULL));
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (view);
+		return NULL;
+	}
+
+	ret = HPDF_Dict_Add (view, "IN", HPDF_String_New (mmgr, name, NULL));
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (view);
+		return NULL;
+	}
+
+	ret = HPDF_U3D_Add3DView( u3d, view);
+	if (ret != HPDF_OK) {
+		HPDF_Dict_Free (view);
+		return NULL;
+	}
+
+	return view;
+}
 #undef normalize
 

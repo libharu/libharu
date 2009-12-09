@@ -1227,7 +1227,7 @@ HPDF_SetCurrentEncoder  (HPDF_Doc    pdf,
 
     if (!encoder)
         return HPDF_GetError (pdf);
-    
+
 	pdf->cur_encoder = encoder;
 
     return HPDF_OK;
@@ -1910,7 +1910,7 @@ HPDF_AddPageLabel  (HPDF_Doc             pdf,
 }
 
 
-HPDF_EmbeddedFile
+HPDF_EXPORT(HPDF_EmbeddedFile)
 HPDF_AttachFile  (HPDF_Doc    pdf,
                   const char *file)
 {
@@ -2191,7 +2191,7 @@ HPDF_OutputIntent_New  (HPDF_Doc  pdf,
     ret += HPDF_Dict_Add (intent, "OutputConditionIdentifier", HPDF_String_New (pdf->mmgr, identifier, NULL));
     ret += HPDF_Dict_Add (intent, "OutputCondition", HPDF_String_New (pdf->mmgr, condition,NULL));
     ret += HPDF_Dict_Add (intent, "RegistryName", HPDF_String_New (pdf->mmgr, registry, NULL));
-    
+
     if (info != NULL) {
         ret += HPDF_Dict_Add (intent, "Info", HPDF_String_New (pdf->mmgr, info, NULL));
     }
@@ -2237,7 +2237,7 @@ HPDF_EXPORT(HPDF_OutputIntent)
 HPDF_ICC_LoadIccFromMem (HPDF_Doc   pdf,
 		                HPDF_MMgr   mmgr,
                         HPDF_Stream iccdata,
-                        HPDF_Xref   xref, 
+                        HPDF_Xref   xref,
 						int         numcomponent)
 {
    HPDF_OutputIntent icc;
@@ -2249,7 +2249,7 @@ HPDF_ICC_LoadIccFromMem (HPDF_Doc   pdf,
    if (!icc)
         return NULL;
 
-   HPDF_Dict_AddNumber (icc, "N", numcomponent); 
+   HPDF_Dict_AddNumber (icc, "N", numcomponent);
    switch (numcomponent) {
    case 1 :
 	   HPDF_Dict_AddName (icc, "Alternate", "DeviceGray");
@@ -2257,7 +2257,7 @@ HPDF_ICC_LoadIccFromMem (HPDF_Doc   pdf,
    case 3 :
 	   HPDF_Dict_AddName (icc, "Alternate", "DeviceRGB");
 	   break;
-   case 4 : 
+   case 4 :
 	   HPDF_Dict_AddName (icc, "Alternate", "DeviceCMYK");
 	   break;
    default : /* unsupported */
@@ -2327,7 +2327,7 @@ HPDF_AddColorspaceFromProfile  (HPDF_Doc pdf,
 
 HPDF_EXPORT(HPDF_OutputIntent)
 HPDF_LoadIccProfileFromFile  (HPDF_Doc pdf,
-                           const char* icc_file_name, 
+                           const char* icc_file_name,
 						           int numcomponent)
 {
     HPDF_Stream iccdata;

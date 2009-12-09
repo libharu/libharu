@@ -207,3 +207,41 @@ EXPORTS
     HPDF_UseJPFonts
     HPDF_UseKREncodings
     HPDF_UseKRFonts
+    HPDF_Annot_Set3DView
+    HPDF_Page_Create3DView
+    HPDF_MarkupAnnot_SetTitle
+    HPDF_MarkupAnnot_SetSubject
+    HPDF_MarkupAnnot_SetCreationDate
+    HPDF_MarkupAnnot_SetTransparency
+    HPDF_MarkupAnnot_SetIntent
+    HPDF_MarkupAnnot_SetPopup
+    HPDF_MarkupAnnot_SetRectDiff
+    HPDF_MarkupAnnot_SetCloudEffect
+    HPDF_MarkupAnnot_SetInteriorTransparent
+    HPDF_MarkupAnnot_SetInteriorGrayColor
+    HPDF_MarkupAnnot_SetInteriorCMYKColor
+    HPDF_MarkupAnnot_SetInteriorRGBColor
+    HPDF_PopupAnnot_SetOpened
+    HPDF_Page_CreateHighlightAnnot
+    HPDF_Page_CreateSquigglyAnnot
+    HPDF_Page_CreateUnderlineAnnot
+    HPDF_Page_CreateStrikeOutAnnot
+    HPDF_Page_CreatePopupAnnot
+    HPDF_TextMarkupAnnot_SetQuadPoints
+    HPDF_Page_CreateFreeTextAnnot
+    HPDF_FreeTextAnnot_SetLineEndingStyle
+    HPDF_FreeTextAnnot_Set3PointCalloutLine
+    HPDF_FreeTextAnnot_Set2PointCalloutLine
+    HPDF_FreeTextAnnot_SetDefaultStyle
+    HPDF_Page_CreateLineAnnot
+    HPDF_LineAnnot_SetPosition
+    HPDF_LineAnnot_SetLeader
+    HPDF_LineAnnot_SetCaption
+    HPDF_Page_CreateStampAnnot
+    HPDF_Annot_SetNoColor
+    HPDF_Annot_SetGrayColor
+    HPDF_Annot_SetCMYKColor
+    HPDF_Annot_SetRGBColor
+    HPDF_Page_CreateCircleAnnot
+    HPDF_Page_CreateSquareAnnot
+    HPDF_Annotation_SetBorderStyle

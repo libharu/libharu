@@ -2,6 +2,16 @@ libHaru news
 -------------------------------------------------------------------------------
 
 Version 2.2.0 (2009.??.??)
+
+ - Greatly improved U3D support (Nikhil Soman)
+    - Markup Annotations
+    - Free Text Annotations
+    - Line Annotations
+    - Circle and Squre Annotations
+    - Text Markup Annotations
+    - Rubber Stamp Annotations
+    - Popup Annotations	
+
  - Added VB.Net bindings. (Matt Underwood) 
  - Added CMake build system (experimental). (Werner Smekal) 
  - Added preliminary ICC support. (vbrasseur at gmail dot com)

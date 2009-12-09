@@ -1,9 +1,17 @@
 LIBRARY     LIBHPDF.DLL
 
 EXPORTS
+    HPDF_3DAnnot_Set3DView
+    HPDF_3DView_AddNode
+    HPDF_3DView_SetBackgroundColor
+    HPDF_3DView_SetCamera
+    HPDF_3DView_SetLighting
+    HPDF_3DView_SetOrthogonalProjection
+    HPDF_3DView_SetPerspectiveProjection
     HPDF_AddPage
     HPDF_AddPageLabel
     HPDF_CheckError
+    HPDF_Create3DView
     HPDF_CreateExtGState
     HPDF_CreateOutline
     HPDF_Destination_SetFit
@@ -46,6 +54,7 @@ EXPORTS
     HPDF_GetPageLayout
     HPDF_GetPageMode
     HPDF_GetStreamSize
+    HPDF_GetTTFontDefFromFile
     HPDF_GetVersion
     HPDF_GetViewerPreference
     HPDF_HasDoc
@@ -71,6 +80,7 @@ EXPORTS
     HPDF_LoadTTFontFromFile
     HPDF_LoadTTFontFromFile2
     HPDF_LoadType1FontFromFile
+    HPDF_LoadU3DFromFile
     HPDF_New
     HPDF_NewDoc
     HPDF_NewEx
@@ -85,6 +95,7 @@ EXPORTS
     HPDF_Page_ClosePathFillStroke
     HPDF_Page_ClosePathStroke
     HPDF_Page_Concat
+    HPDF_Page_Create3DAnnot
     HPDF_Page_CreateDestination
     HPDF_Page_CreateLinkAnnot
     HPDF_Page_CreateTextAnnot
@@ -103,21 +114,24 @@ EXPORTS
     HPDF_Page_Fill
     HPDF_Page_FillStroke
     HPDF_Page_GetCharSpace
+    HPDF_Page_GRestore
+    HPDF_Page_GSave
     HPDF_Page_GetCMYKFill
     HPDF_Page_GetCMYKStroke
+    HPDF_Page_GetCharSpace
     HPDF_Page_GetCurrentFont
     HPDF_Page_GetCurrentFontSize
     HPDF_Page_GetCurrentPos
-    HPDF_Page_GetCurrentTextPos
     HPDF_Page_GetCurrentPos2
+    HPDF_Page_GetCurrentTextPos
     HPDF_Page_GetCurrentTextPos2
     HPDF_Page_GetDash
     HPDF_Page_GetFillingColorSpace
     HPDF_Page_GetFlat
     HPDF_Page_GetGMode
+    HPDF_Page_GetGStateDepth
     HPDF_Page_GetGrayFill
     HPDF_Page_GetGrayStroke
-    HPDF_Page_GetGStateDepth
     HPDF_Page_GetHeight
     HPDF_Page_GetHorizontalScalling
     HPDF_Page_GetLineCap
@@ -129,14 +143,12 @@ EXPORTS
     HPDF_Page_GetStrokingColorSpace
     HPDF_Page_GetTextLeading
     HPDF_Page_GetTextMatrix
-    HPDF_Page_GetTextRise
     HPDF_Page_GetTextRaise
     HPDF_Page_GetTextRenderingMode
+    HPDF_Page_GetTextRise
     HPDF_Page_GetTransMatrix
     HPDF_Page_GetWidth
     HPDF_Page_GetWordSpace
-    HPDF_Page_GRestore
-    HPDF_Page_GSave
     HPDF_Page_LineTo
     HPDF_Page_MeasureText
     HPDF_Page_MoveTextPos
@@ -144,9 +156,9 @@ EXPORTS
     HPDF_Page_MoveTo
     HPDF_Page_MoveToNextLine
     HPDF_Page_Rectangle
-    HPDF_Page_SetCharSpace
     HPDF_Page_SetCMYKFill
     HPDF_Page_SetCMYKStroke
+    HPDF_Page_SetCharSpace
     HPDF_Page_SetDash
     HPDF_Page_SetExtGState
     HPDF_Page_SetFlat
@@ -166,9 +178,9 @@ EXPORTS
     HPDF_Page_SetSlideShow
     HPDF_Page_SetTextLeading
     HPDF_Page_SetTextMatrix
-    HPDF_Page_SetTextRise
     HPDF_Page_SetTextRaise
     HPDF_Page_SetTextRenderingMode
+    HPDF_Page_SetTextRise
     HPDF_Page_SetWidth
     HPDF_Page_SetWordSpace
     HPDF_Page_SetZoom
@@ -199,6 +211,8 @@ EXPORTS
     HPDF_SetViewerPreference
     HPDF_TextAnnot_SetIcon
     HPDF_TextAnnot_SetOpened
+    HPDF_U3D_Add3DView
+    HPDF_U3D_SetDefault3DView
     HPDF_UseCNSEncodings
     HPDF_UseCNSFonts
     HPDF_UseCNTEncodings
@@ -207,3 +221,41 @@ EXPORTS
     HPDF_UseJPFonts
     HPDF_UseKREncodings
     HPDF_UseKRFonts
+    HPDF_Annot_Set3DView
+    HPDF_Page_Create3DView
+    HPDF_MarkupAnnot_SetTitle
+    HPDF_MarkupAnnot_SetSubject
+    HPDF_MarkupAnnot_SetCreationDate
+    HPDF_MarkupAnnot_SetTransparency
+    HPDF_MarkupAnnot_SetIntent
+    HPDF_MarkupAnnot_SetPopup
+    HPDF_MarkupAnnot_SetRectDiff
+    HPDF_MarkupAnnot_SetCloudEffect
+    HPDF_MarkupAnnot_SetInteriorTransparent
+    HPDF_MarkupAnnot_SetInteriorGrayColor
+    HPDF_MarkupAnnot_SetInteriorCMYKColor
+    HPDF_MarkupAnnot_SetInteriorRGBColor
+    HPDF_PopupAnnot_SetOpened
+    HPDF_Page_CreateHighlightAnnot
+    HPDF_Page_CreateSquigglyAnnot
+    HPDF_Page_CreateUnderlineAnnot
+    HPDF_Page_CreateStrikeOutAnnot
+    HPDF_Page_CreatePopupAnnot
+    HPDF_TextMarkupAnnot_SetQuadPoints
+    HPDF_Page_CreateFreeTextAnnot
+    HPDF_FreeTextAnnot_SetLineEndingStyle
+    HPDF_FreeTextAnnot_Set3PointCalloutLine
+    HPDF_FreeTextAnnot_Set2PointCalloutLine
+    HPDF_FreeTextAnnot_SetDefaultStyle
+    HPDF_Page_CreateLineAnnot
+    HPDF_LineAnnot_SetPosition
+    HPDF_LineAnnot_SetLeader
+    HPDF_LineAnnot_SetCaption
+    HPDF_Page_CreateStampAnnot
+    HPDF_Annot_SetNoColor
+    HPDF_Annot_SetGrayColor
+    HPDF_Annot_SetCMYKColor
+    HPDF_Annot_SetRGBColor
+    HPDF_Page_CreateCircleAnnot
+    HPDF_Page_CreateSquareAnnot
+    HPDF_Annotation_SetBorderStyle
