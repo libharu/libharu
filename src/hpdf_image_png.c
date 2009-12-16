@@ -572,7 +572,11 @@ no_transparent_color_in_palette:
 		}
 		HPDF_FreeMem(image->mmgr, smask_data);
 
-		ret += HPDF_Dict_AddName (image, "ColorSpace", "DeviceRGB");
+		if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
+			ret += HPDF_Dict_AddName (image, "ColorSpace", "DeviceGray");
+		} else {
+			ret += HPDF_Dict_AddName (image, "ColorSpace", "DeviceRGB");
+		}
 		ret += HPDF_Dict_AddNumber (image, "Width", (HPDF_UINT)info_ptr->width);
 		ret += HPDF_Dict_AddNumber (image, "Height", (HPDF_UINT)info_ptr->height);
 		ret += HPDF_Dict_AddNumber (image, "BitsPerComponent",	(HPDF_UINT)info_ptr->bit_depth);
