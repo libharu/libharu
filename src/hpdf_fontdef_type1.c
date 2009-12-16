@@ -72,15 +72,12 @@ HPDF_Type1FontDef_New  (HPDF_MMgr  mmgr)
     if (!fontdef)
         return NULL;
 
+    HPDF_MemSet (fontdef, 0, sizeof (HPDF_FontDef_Rec));
     fontdef->sig_bytes = HPDF_FONTDEF_SIG_BYTES;
-    fontdef->base_font[0] = 0;
     fontdef->mmgr = mmgr;
     fontdef->error = mmgr->error;
     fontdef->type = HPDF_FONTDEF_TYPE_TYPE1;
-    fontdef->clean_fn = NULL;
     fontdef->free_fn = FreeFunc;
-    fontdef->descriptor = NULL;
-    fontdef->valid = HPDF_FALSE;
 
     fontdef_attr = HPDF_GetMem (mmgr, sizeof(HPDF_Type1FontDefAttr_Rec));
     if (!fontdef_attr) {
