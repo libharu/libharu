@@ -27,6 +27,7 @@ Version 2.2.0 (2009.??.??)
  - Fixed build with newer libtool versions.
  - Fixed external build. (thanks to Jeremiah Willcock)
  - Fixed memleak in HPDF_EmbeddedFile_New(). (Ralf Junker) 
+ - Fixed uninitialized fields in HPDF_Type1FontDef_New(). (Ralf Junker)
 
  - Fixed bug #18 (Missing compiler flag -fexceptions)
  - Fixed bug #11 (sqrtf() is missing on Winblows).
