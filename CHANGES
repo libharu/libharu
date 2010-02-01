@@ -23,6 +23,7 @@ Version 2.2.0 (2009.??.??)
  - Added HPDF_Page_SetZoom().
 
  - Applied a bunch of fixes and improvements from bug report #13.
+ - HPDF_Page_TextRect() corrections and improvements. (Ralf Junker)
  - Fixed build failure when zlib was not found. (Werner Smekal)
  - Fixed build with newer libtool versions.
  - Fixed external build. (thanks to Jeremiah Willcock)
