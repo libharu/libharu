@@ -421,8 +421,14 @@ HPDF_Stream_WriteEscapeText2  (HPDF_Stream    stream,
 
     HPDF_PTRACE((" HPDF_Stream_WriteEscapeText2\n"));
 
+   /* The following block is commented out because it violates "PDF Spec 7.3.4.2 Literal Strings". 
+	* It states that the two matching parentheses must still be present to represent an empty 
+	* string of zero length. 
+	*/
+   /*
     if (!len)
         return HPDF_OK;
+   */
 
     buf[idx++] = '(';
 
