@@ -21,6 +21,7 @@ Version 2.2.0 (2009.??.??)
    (patch by Adam Blokus)
  - Added HPDF_GetContents().
  - Added HPDF_Page_SetZoom().
+ - Added support for CMYK in HPDF_Image_LoadRawImageFromMem().
 
  - Applied a bunch of fixes and improvements from bug report #13.
  - HPDF_Page_TextRect() corrections and improvements. (Ralf Junker)

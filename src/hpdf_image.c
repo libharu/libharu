@@ -334,7 +334,8 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
     HPDF_PTRACE ((" HPDF_Image_LoadRawImageFromMem\n"));
 
     if (color_space != HPDF_CS_DEVICE_GRAY &&
-            color_space != HPDF_CS_DEVICE_RGB) {
+            color_space != HPDF_CS_DEVICE_RGB &&
+            color_space != HPDF_CS_DEVICE_CMYK) {
         HPDF_SetError (mmgr->error, HPDF_INVALID_COLOR_SPACE, 0);
         return NULL;
     }
@@ -355,13 +356,21 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
     if (ret != HPDF_OK)
         return NULL;
 
-    if (color_space == HPDF_CS_DEVICE_GRAY) {
-        size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
-        ret = HPDF_Dict_AddName (image, "ColorSpace", COL_GRAY);
-    } else {
-        size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
-        size *= 3;
-        ret = HPDF_Dict_AddName (image, "ColorSpace", COL_RGB);
+    switch (color_space) {
+        case HPDF_CS_DEVICE_GRAY:
+            size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
+            ret = HPDF_Dict_AddName (image, "ColorSpace", COL_GRAY);
+            break;
+        case HPDF_CS_DEVICE_RGB:
+            size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
+            size *= 3;
+            ret = HPDF_Dict_AddName (image, "ColorSpace", COL_RGB);
+            break;
+        case HPDF_CS_DEVICE_CMYK:
+            size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
+            size *= 4;
+            ret = HPDF_Dict_AddName (image, "ColorSpace", COL_CMYK);
+            break;
     }
 
     if (ret != HPDF_OK)
