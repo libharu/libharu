@@ -33,6 +33,7 @@ Version 2.2.0 (2009.??.??)
  - Fixed issue with grayscale PNG images. (Ralf Junker)
  - Fixed missing parentheses from empty string object. (Ralf Junker)
 
+ - Fixed bug #21 (Build fails on Win CE because of errno and errno.h usage).
  - Fixed bug #18 (Missing compiler flag -fexceptions)
  - Fixed bug #11 (sqrtf() is missing on Winblows).
  - Fixed bug #10 (missing HPDF_LoadPngImageFromMem from win32/msvc/libhpdf.def).

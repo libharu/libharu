@@ -15,7 +15,9 @@
  *
  */
 
+#ifndef UNDER_CE
 #include <errno.h>
+#endif
 
 #include "hpdf_conf.h"
 #include "hpdf_consts.h"
@@ -748,7 +750,11 @@ HPDF_FileReader_New  (HPDF_MMgr   mmgr,
     HPDF_PTRACE((" HPDF_FileReader_New\n"));
 
     if (!fp) {
+#ifdef UNDER_CE
+        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, GetLastError());
+#else
         HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
+#endif
         return NULL;
     }
 
@@ -920,7 +926,11 @@ HPDF_FileWriter_New  (HPDF_MMgr        mmgr,
     HPDF_PTRACE((" HPDF_FileWriter_New\n"));
 
     if (!fp) {
+#ifdef UNDER_CE
+        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, GetLastError());
+#else
         HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
+#endif
         return NULL;
     }
 
