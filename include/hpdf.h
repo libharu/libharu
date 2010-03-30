@@ -593,7 +593,7 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_MarkupAnnot_SetInteriorGrayColor (HPDF_Annotation  annot, HPDF_REAL color); /* IC with Gray entry */
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_MarkupAnnot_SetInteriorNoColor (HPDF_Annotation  annot); /* IC with No Color entry */
+HPDF_MarkupAnnot_SetInteriorTransparent (HPDF_Annotation  annot); /* IC with No Color entry */
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_TextMarkupAnnot_SetQuadPoints ( HPDF_Annotation annot, HPDF_Point lb, HPDF_Point rb, HPDF_Point rt, HPDF_Point lt); /* l-left, r-right, b-bottom, t-top positions */
