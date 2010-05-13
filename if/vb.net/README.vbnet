@@ -1,0 +1,51 @@
+To use this interface, build Haru as a shared-library (DLL) or use binary 
+package for win32.
+
+There are some example programs in demo directory. The steps to run the 
+demonstration programs is as follows. 
+
+1. Build libharu as a shared library and copy libhpdf.dll to "if\vb.net\demo"
+   directory. (Or expand binary package for win32) 
+   and copy libhpdf.dll to "if\vb.net\demo" directory.)
+
+2. Compile and run demo programs. (Don't forget to compile hpdfvb.vb together.)
+
+   vbc /out:FontDemo.exe FontDemo.vb ..\hpdfvb.vb 
+   FontDemo.exe
+
+   vbc /out:ImageDemo.exe ImageDemo.vb ..\hpdfvb.vb 
+   ImageDemo.exe
+
+   vbc /out:LineDemo.exe LineDemo.vb ..\hpdfvb.vb
+   LineDemo.exe
+
+   vbc /out:OutlineDemo.exe OutlineDemo.vb ..\hpdfvb.vb
+   OutlineDemo.exe
+
+   vbc /out:Encryption.exe Encryption.vb ..\hpdfvb.vb
+   Encryption.exe
+
+   vbc /out:Permission.exe Permission.vb ..\hpdfvb.vb
+   Permission.exe
+
+   vbc /out:RawImageDemo.exe RawImageDemo.vb ..\hpdfvb.vb
+   RawImageDemo.exe
+
+   vbc /out:TextDemo.exe TextDemo.vb ..\hpdfvb.vb
+   TextDemo.exe
+
+
+NOTE:
+If you try to compile this examples in Visual Studio I've found that I had to place
+the 'hpdfvb.vb' in the 'demo' folder, and I also had to change the default namespace
+for the project to 'empty' such that it found the hpdf namespace defined in that module.
+
+I've also successfully been able to compile just the hpdfv.vb as an assembly DLL, then used
+the 'Add Reference...' feature in Visual Studio to import the module as a utility so that
+I didn't need to include the actual 'hpdfvb.vb' source file into my projects.
+
+
+NOTE:
+libhpdf.dll is required to run the program which uses the VB.Net interface for libharu.
+This interface should work for all versions of .NET (1.1, 2.0, 3.5 etc.).
+
