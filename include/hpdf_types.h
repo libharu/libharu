@@ -142,6 +142,14 @@ typedef enum _HPDF_InfoType {
     HPDF_INFO_EOF
 } HPDF_InfoType;
 
+/* PDF-A Types */
+
+typedef enum _HPDF_PDFA_TYPE 
+{
+    HPDF_PDFA_1A = 0,
+    HPDF_PDFA_1B = 1
+} HPDF_PDFAType;
+
 
 typedef enum _HPDF_PdfVer {
     HPDF_VER_12 = 0,

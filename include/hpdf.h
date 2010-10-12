@@ -76,6 +76,7 @@ typedef HPDF_HANDLE   HPDF_U3D;
 #include "hpdf_consts.h"
 #include "hpdf_doc.h"
 #include "hpdf_error.h"
+#include "hpdf_pdfa.h"
 
 #endif /* HPDF_SHARED */
 
@@ -1446,7 +1447,7 @@ HPDF_EXPORT(HPDF_OutputIntent)
 HPDF_LoadIccProfileFromFile  (HPDF_Doc  pdf,
                             const char* icc_file_name,
                                    int  numcomponent);
-
+                                   
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
