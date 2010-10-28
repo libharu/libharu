@@ -438,6 +438,10 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_UseCNTEncodings   (HPDF_Doc   pdf);
 
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_UseUTFEncodings   (HPDF_Doc   pdf);
+
+
 /*--------------------------------------------------------------------------*/
 /*----- annotation ---------------------------------------------------------*/
 
