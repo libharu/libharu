@@ -820,8 +820,8 @@ HPDF_EXPORT(HPDF_JavaScript) HPDF_CreateJavaScript( HPDF_Doc pdf, const char *co
 	}
 
 	len = (HPDF_UINT)strlen(code);
-	if (HPDF_Stream_Write (javaScript->stream, code, len) != HPDF_OK) {
-		HPDF_Dict_Free(u3d);
+	if (HPDF_Stream_Write (javaScript->stream, (HPDF_BYTE *)code, len) != HPDF_OK) {
+		HPDF_Dict_Free(javaScript);
 		return NULL;
 	}
 
