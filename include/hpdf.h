@@ -60,12 +60,15 @@ typedef HPDF_HANDLE   HPDF_Image;
 typedef HPDF_HANDLE   HPDF_Font;
 typedef HPDF_HANDLE   HPDF_Outline;
 typedef HPDF_HANDLE   HPDF_Encoder;
+typedef HPDF_HANDLE   HPDF_3DMeasure;
+typedef HPDF_HANDLE   HPDF_ExData;
 typedef HPDF_HANDLE   HPDF_Destination;
 typedef HPDF_HANDLE   HPDF_XObject;
 typedef HPDF_HANDLE   HPDF_Annotation;
 typedef HPDF_HANDLE   HPDF_ExtGState;
 typedef HPDF_HANDLE   HPDF_FontDef;
 typedef HPDF_HANDLE   HPDF_U3D;
+typedef HPDF_HANDLE   HPDF_JavaScript;
 
 #else
 
@@ -516,6 +519,12 @@ HPDF_Page_CreateStampAnnot  (	HPDF_Page           page,
 								HPDF_Encoder		encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
+HPDF_Page_CreateProjectionAnnot(HPDF_Page page,
+								HPDF_Rect rect,
+								const char* text,
+								HPDF_Encoder encoder);
+
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateSquareAnnot (HPDF_Page          page,
 							 HPDF_Rect          rect,
 							 const char			*text,
@@ -640,6 +649,66 @@ HPDF_Annotation_SetBorderStyle  (HPDF_Annotation  annot,
                                  HPDF_UINT16      dash_off,
                                  HPDF_UINT16      dash_phase);
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata);
+
+
+/*--------------------------------------------------------------------------*/
+/*----- 3D Measure ---------------------------------------------------------*/
+HPDF_EXPORT(HPDF_3DMeasure)
+HPDF_Page_Create3DC3DMeasure(HPDF_Page       page,
+					         HPDF_Point3D    firstanchorpoint,
+					         HPDF_Point3D    textanchorpoint
+					         );
+
+HPDF_EXPORT(HPDF_3DMeasure)
+HPDF_Page_CreatePD33DMeasure(HPDF_Page       page,
+					         HPDF_Point3D    annotationPlaneNormal,
+					         HPDF_Point3D    firstAnchorPoint,
+   					         HPDF_Point3D    secondAnchorPoint,
+	        				 HPDF_Point3D    leaderLinesDirection,
+   					         HPDF_Point3D    measurementValuePoint,
+					         HPDF_Point3D    textYDirection,
+					         HPDF_REAL       value,
+							 const char*     unitsString
+  					        );
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DMeasure_SetName(HPDF_3DMeasure measure, 
+					   const char* name);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure, 
+						   HPDF_RGBColor color);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DMeasure_SetTextSize(HPDF_3DMeasure measure, 
+							  HPDF_REAL textsize);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DC3DMeasure_SetTextBoxSize(HPDF_3DMeasure measure, 
+							 HPDF_INT32 x,
+							 HPDF_INT32 y);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DC3DMeasure_SetText(HPDF_3DMeasure measure, 
+						  const char* text,
+						  HPDF_Encoder encoder);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DC3DMeasure_SetProjectionAnotation(HPDF_3DMeasure measure, 
+										 HPDF_Annotation projectionanotation);
+
+/*--------------------------------------------------------------------------*/
+/*----- External Data ---------------------------------------------------------*/
+
+HPDF_EXPORT(HPDF_ExData)
+HPDF_Page_Create3DAnnotExData(HPDF_Page       page );
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DAnnotExData_Set3DMeasurement(HPDF_ExData exdata, HPDF_3DMeasure measure);
+
+/*--------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------*/
 /*----- 3D View ---------------------------------------------------------*/
 
@@ -648,6 +717,10 @@ HPDF_Page_Create3DView    (HPDF_Page       page,
 						   HPDF_U3D        u3d,
 						   HPDF_Annotation	annot3d,
 						   const char *name);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DView_Add3DC3DMeasure(HPDF_Dict       view,
+							HPDF_3DMeasure measure);
 
 /*--------------------------------------------------------------------------*/
 /*----- image data ---------------------------------------------------------*/

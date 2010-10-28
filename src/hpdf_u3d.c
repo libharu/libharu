@@ -264,6 +264,22 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view)
 }
 
 
+HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_AddOnInstanciate(HPDF_U3D u3d, HPDF_JavaScript javascript)
+{
+	HPDF_STATUS ret = HPDF_OK;
+
+	HPDF_PTRACE ((" HPDF_U3D_AddOnInstanciate\n"));
+
+	if (u3d == NULL || javascript == NULL) {
+		return HPDF_INVALID_U3D_DATA;
+	}
+
+	ret = HPDF_Dict_Add(u3d, "OnInstantiate", javascript);
+
+	return ret;
+}
+
+
 HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *name)
 {
 	HPDF_STATUS ret = HPDF_OK;
@@ -758,5 +774,60 @@ HPDF_Dict HPDF_3DView_New( HPDF_MMgr  mmgr, HPDF_Xref  xref, HPDF_U3D u3d, const
 
 	return view;
 }
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DView_Add3DC3DMeasure(HPDF_Dict       view,
+							HPDF_3DMeasure measure)
+{
+
+	HPDF_STATUS ret = HPDF_OK;
+	HPDF_Array array;
+	void* a;
+
+	a = HPDF_Dict_GetItem (view, "MA", HPDF_OCLASS_ARRAY);
+
+	if ( a )
+	{
+		array = (HPDF_Array)a;
+	}
+	else
+	{
+		array = HPDF_Array_New (view->mmgr);
+		if (!array)
+			return 0;
+
+		if (HPDF_Dict_Add (view, "MA", array) != HPDF_OK)
+			return 0;
+	}
+
+	ret = HPDF_Array_Add(array, measure);
+
+	return ret;
+}
+
+
+HPDF_EXPORT(HPDF_JavaScript) HPDF_CreateJavaScript( HPDF_Doc pdf, const char *code )
+{
+	HPDF_JavaScript javaScript;
+	int len ;
+
+	HPDF_PTRACE ((" HPDF_CreateJavaScript\n"));
+
+	javaScript = (HPDF_JavaScript) HPDF_DictStream_New(pdf->mmgr, pdf->xref);
+	if (!javaScript) {
+		return NULL;
+	}
+
+	len = (HPDF_UINT)strlen(code);
+	if (HPDF_Stream_Write (javaScript->stream, code, len) != HPDF_OK) {
+		HPDF_Dict_Free(u3d);
+		return NULL;
+	}
+
+	return javaScript;
+}
+
+
 #undef normalize
 
