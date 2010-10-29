@@ -61,6 +61,9 @@ set(
   	hpdf_utils.c
   	hpdf_xref.c
   	hpdf_pdfa.c
+	hpdf_3dmeasure.c
+	hpdf_exdata.c
+	hpdf_encoder_utf.c
 )
 
 # =======================================================================
