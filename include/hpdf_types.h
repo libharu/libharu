@@ -108,6 +108,14 @@ typedef  struct _HPDF_Rect {
     HPDF_REAL  top;
 } HPDF_Rect;
 
+/*  HPDF_Point3D struct
+*/
+typedef  struct  _HPDF_Point3D {
+	HPDF_REAL  x;
+	HPDF_REAL  y;
+	HPDF_REAL  z;
+} HPDF_Point3D;
+
 typedef struct _HPDF_Rect HPDF_Box;
 
 /* HPDF_Date struct
@@ -141,6 +149,14 @@ typedef enum _HPDF_InfoType {
     HPDF_INFO_GTS_PDFX,
     HPDF_INFO_EOF
 } HPDF_InfoType;
+
+/* PDF-A Types */
+
+typedef enum _HPDF_PDFA_TYPE 
+{
+    HPDF_PDFA_1A = 0,
+    HPDF_PDFA_1B = 1
+} HPDF_PDFAType;
 
 
 typedef enum _HPDF_PdfVer {
@@ -349,7 +365,8 @@ typedef enum _HPDF_AnnotType {
     HPDF_ANNOT_POPUP,
     HPDF_ANNOT_3D,
     HPDF_ANNOT_SQUIGGLY,
-    HPDF_ANNOT_LINE
+	HPDF_ANNOT_LINE,
+	HPDF_ANNOT_PROJECTION
 } HPDF_AnnotType;
 
 

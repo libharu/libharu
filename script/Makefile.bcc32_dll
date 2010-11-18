@@ -78,6 +78,9 @@ OBJS = \
 	src\hpdf_image_png.obj \
 	src\hpdf_doc_png.obj \
 	src\hpdf_ext_gstate.obj \
+	src\hpdf_3dmeasure.obj \
+	src\hpdf_namedict.obj \
+	src\hpdf_exdata.obj \
 	src\hpdf_u3d.obj 
 
 PROGRAMS = \

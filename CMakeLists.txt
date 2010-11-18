@@ -157,6 +157,9 @@ set(
     include/hpdf_streams.h
     include/hpdf_u3d.h
     include/hpdf_utils.h
+    include/hpdf_pdfa.h
+    include/hpdf_3dmeasures.h
+    include/hpdf_exdata.h
     ${CMAKE_BINARY_DIR}/include/hpdf_config.h
 )
 

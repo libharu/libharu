@@ -14,7 +14,8 @@ libhpdf_la_SOURCES =	hpdf_annotation.c hpdf_array.c hpdf_binary.c hpdf_boolean.c
 						hpdf_image_png.c hpdf_info.c hpdf_list.c hpdf_mmgr.c hpdf_name.c \
 						hpdf_namedict.c hpdf_null.c hpdf_number.c hpdf_objects.c hpdf_outline.c \
 						hpdf_page_label.c hpdf_page_operator.c hpdf_pages.c hpdf_real.c \
-						hpdf_streams.c hpdf_string.c hpdf_u3d.c hpdf_utils.c hpdf_xref.c 
+						hpdf_streams.c hpdf_string.c hpdf_u3d.c hpdf_utils.c hpdf_xref.c hpdf_pdfa.c \
+						hpdf_3dmeasure.c hpdf_exdata.c hpdf_encoder_utf.c
 
 INCLUDES = -I$(top_srcdir)/include 
 libhpdf_la_LIBADD = @LTLIBOBJS@
