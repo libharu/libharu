@@ -40,6 +40,7 @@ set(
   	hpdf_fontdef_type1.c
   	hpdf_fontdef.c
   	hpdf_gstate.c
+	hpdf_image_ccitt.c
   	hpdf_image_png.c
   	hpdf_image.c
   	hpdf_info.c
@@ -65,6 +66,10 @@ set(
 	hpdf_exdata.c
 	hpdf_encoder_utf.c
 )
+
+IF(NOT DEFINED ${HAVE_LIBPNG})
+ADD_DEFINITIONS(-DLIBHPDF_HAVE_NOPNGLIB)
+ENDIF(NOT DEFINED ${HAVE_LIBPNG})
 
 # =======================================================================
 # create static and shared haru library

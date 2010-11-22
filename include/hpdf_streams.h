@@ -42,6 +42,7 @@ typedef enum _HPDF_StreamType {
 #define HPDF_STREAM_FILTER_ASCII85       0x0200
 #define HPDF_STREAM_FILTER_FLATE_DECODE  0x0400
 #define HPDF_STREAM_FILTER_DCT_DECODE    0x0800
+#define HPDF_STREAM_FILTER_CCITT_DECODE  0x1000
 
 typedef enum _HPDF_WhenceMode {
     HPDF_SEEK_SET = 0,

@@ -7,6 +7,7 @@ Version 2.3.0 (2010.??.??)
   ExData and javascript attached to a U3D model. (Robert Würfel)
 - Added support for 1- and 2-byte UTF8 codes. (Clayman)
 - Added full PDF/A1-b support. (Petr Pytelka)
+- Added support for CCITT compression for B/W images. (Petr Pytelka)
 
 Version 2.2.0 (2010.10.12)
 
