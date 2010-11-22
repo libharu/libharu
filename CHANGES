@@ -6,6 +6,7 @@ Version 2.3.0 (2010.??.??)
 - Added support for 3dMeasures of subtype PD3 and 3DC, projection annotations, 
   ExData and javascript attached to a U3D model. (Robert Würfel)
 - Added support for 1- and 2-byte UTF8 codes. (Clayman)
+- Added full PDF/A1-b support. (Petr Pytelka)
 
 Version 2.2.0 (2010.10.12)
 
