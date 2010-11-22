@@ -100,6 +100,7 @@
 #define HPDF_HIDE_WINDOW_UI  4
 #define HPDF_FIT_WINDOW      8
 #define HPDF_CENTER_WINDOW   16
+#define HPDF_PRINT_SCALING_NONE   32
 
 
 /*---------------------------------------------------------------------------*/

@@ -4,6 +4,7 @@ libHaru news
 Version 2.2.1 (2010.11.09)
 
 - Added missing typedefs into hpdf.h. (Andrea D'Amore)
+- Added PrintScaling support.
 
 Version 2.2.0 (2010.10.12)
 
