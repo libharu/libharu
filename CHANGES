@@ -9,6 +9,8 @@ Version 2.3.0 (2010.??.??)
 - Added full PDF/A1-b support. (Petr Pytelka)
 - Added support for CCITT compression for B/W images. (Petr Pytelka)
 
+- Fixed build with libpng 1.5.0
+
 Version 2.2.0 (2010.10.12)
 
  - Greatly improved U3D support (Nikhil Soman)
