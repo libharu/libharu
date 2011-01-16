@@ -209,26 +209,18 @@ UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
 static HPDF_STATUS
 UTF8_AddCodeSpaceRange (HPDF_Encoder    encoder)
 {
-    HPDF_CidRange_Rec code_space_range1 = {0x00, 0x7F, 0};
-    HPDF_CidRange_Rec code_space_range2 = {0xC280, 0xDFBF, 0};
-    HPDF_CidRange_Rec code_space_range3 = {0xE0A080, 0xE0BFBF, 0};
-    HPDF_CidRange_Rec code_space_range4 = {0xE18080, 0xECBFBF, 0};
+    HPDF_CidRange_Rec code_space_range[] =
+	{ {0x00, 0x7F, 0},
+	  {0xC280, 0xDFBF, 0},
+	  {0xE0A080, 0xE0BFBF, 0},
+	  {0xE18080, 0xEFBFBF, 0} };
+    int i;
 
-    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range1)
-                    != HPDF_OK)
+    for (i = 0; i < 4; ++i) {
+	if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range[i])
+	    != HPDF_OK)
         return encoder->error->error_no;
-
-    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range2)
-                    != HPDF_OK)
-        return encoder->error->error_no;
-
-    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range3)
-                    != HPDF_OK)
-        return encoder->error->error_no;
-
-    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range4)
-                    != HPDF_OK)
-        return encoder->error->error_no;
+    }
 
     return HPDF_OK;
 }
