@@ -52,6 +52,10 @@ UINT16ToHex  (char     *s,
               HPDF_UINT16    val,
               char     *eptr);
 
+static char*
+UINT32ToHex  (char     *s,
+              HPDF_UINT32    val,
+              char     *eptr);
 
 static HPDF_Dict
 CreateCMap  (HPDF_Encoder   encoder,
@@ -372,15 +376,25 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
         HPDF_UINT j;
 
         for (j = 0; j < 256; j++) {
-            HPDF_UINT16 cid = encoder_attr->cid_map[i][j];
-            if (cid != 0) {
-                HPDF_UNICODE unicode = encoder_attr->unicode_map[i][j];
-                HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef, unicode);
-                tmp_map[cid] = gid;
-                if (max < cid)
-                    max = cid;
-            }
-        }
+	    if (encoder->to_unicode_fn == HPDF_CMapEncoder_ToUnicode) {
+		HPDF_UINT16 cid = encoder_attr->cid_map[i][j];
+		if (cid != 0) {
+		    HPDF_UNICODE unicode = encoder_attr->unicode_map[i][j];
+		    HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef, 
+								 unicode);
+		    tmp_map[cid] = gid;
+		    if (max < cid)
+			max = cid;
+		}
+	    } else {
+		HPDF_UNICODE unicode = (i << 8) | j;
+		HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef, 
+							     unicode);
+		tmp_map[unicode] = gid;
+		if (max < unicode)
+		    max = unicode;		
+	    }
+	}
     }
 
     if (max > 0) {
@@ -576,7 +590,7 @@ TextWidth  (HPDF_Font         font,
     HPDF_Encoder_SetParseText (encoder, &parse_state, text, len);
 
     while (i < len) {
-        HPDF_ByteType btype = HPDF_CMapEncoder_ByteType (encoder, &parse_state);
+        HPDF_ByteType btype = (encoder->byte_type_fn)(encoder, &parse_state);
         HPDF_UINT16 cid;
         HPDF_UNICODE unicode;
         HPDF_UINT16 code;
@@ -585,6 +599,11 @@ TextWidth  (HPDF_Font         font,
         b = *text++;
         code = b;
 
+	/*
+	 * We need to make this conversion a property of the encoder
+	 * So that for UTF8 it can combine 3 characters to a unicode
+	 * code. The first is LEAD, the two others will be TRIAL.
+	 */
         if (btype == HPDF_BYTE_TYPE_LEAD) {
             code <<= 8;
             code += *text;
@@ -668,6 +687,11 @@ MeasureText  (HPDF_Font          font,
         HPDF_UINT16 code = b;
         HPDF_UINT16 tmp_w = 0;
 
+	/*
+	 * We need to make this conversion a property of the encoder
+	 * So that for UTF8 it can combine 3 characters to a unicode
+	 * code
+	 */
         if (btype == HPDF_BYTE_TYPE_LEAD) {
             code <<= 8;
             code += b2;
@@ -713,7 +737,7 @@ MeasureText  (HPDF_Font          font,
                     tmp_w = HPDF_CIDFontDef_GetCIDWidth (attr->fontdef, cid);
                 } else {
                     /* unicode-based font */
-                    unicode = HPDF_CMapEncoder_ToUnicode (encoder, code);
+                    unicode = (encoder->to_unicode_fn)(encoder, code);
                     tmp_w = HPDF_TTFontDef_GetCharWidth (attr->fontdef,
                             unicode);
                 }
@@ -801,6 +825,66 @@ UINT16ToHex  (char     *s,
     return s;
 }
 
+static char*
+UINT32ToHex  (char     *s,
+              HPDF_UINT32    val,
+              char     *eptr)
+{
+    HPDF_BYTE b[4];
+    HPDF_UINT32 val2;
+    char c;
+    int i;
+
+    if (eptr - s < 11)
+        return s;
+
+    /* align byte-order */
+    HPDF_MemCpy (b, (HPDF_BYTE *)&val, 4);
+    val2 = (HPDF_UINT32)((((HPDF_UINT32)b[0] << 8
+			   | (HPDF_UINT32)b[1]) << 8
+			  | (HPDF_UINT32)b[2]) << 8
+			 | (HPDF_UINT32)b[3]);
+
+    HPDF_MemCpy (b, (HPDF_BYTE *)&val2, 4);
+
+    *s++ = '<';
+
+    for (i = 0; i < 3; ++i)
+    if (b[i] != 0) {
+        c = b[i] >> 4;
+        if (c <= 9)
+            c += 0x30;
+        else
+            c += 0x41 - 10;
+        *s++ = c;
+
+        c = b[i] & 0x0f;
+        if (c <= 9)
+            c += 0x30;
+        else
+            c += 0x41 - 10;
+        *s++ = c;
+    }
+
+    c = b[3] >> 4;
+    if (c <= 9)
+        c += 0x30;
+    else
+        c += 0x41 - 10;
+    *s++ = c;
+
+    c = b[3] & 0x0f;
+    if (c <= 9)
+        c += 0x30;
+    else
+        c += 0x41 - 10;
+    *s++ = c;
+
+    *s++ = '>';
+    *s = 0;
+
+    return s;
+}
 
 static HPDF_Dict
 CreateCMap  (HPDF_Encoder   encoder,
@@ -930,9 +1014,9 @@ CreateCMap  (HPDF_Encoder   encoder,
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->code_space_range,
                         i);
 
-        pbuf = UINT16ToHex (buf, range->from, eptr);
+        pbuf = UINT32ToHex (buf, range->from, eptr);
         *pbuf++ = ' ';
-        pbuf = UINT16ToHex (pbuf, range->to, eptr);
+        pbuf = UINT32ToHex (pbuf, range->to, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
 
         ret += HPDF_Stream_WriteStr (cmap->stream, buf);
@@ -954,9 +1038,9 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->notdef_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->notdef_range, i);
 
-        pbuf = UINT16ToHex (buf, range->from, eptr);
+        pbuf = UINT32ToHex (buf, range->from, eptr);
         *pbuf++ = ' ';
-        pbuf = UINT16ToHex (pbuf, range->to, eptr);
+        pbuf = UINT32ToHex (pbuf, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
@@ -985,9 +1069,9 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->cmap_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
 
-        pbuf = UINT16ToHex (buf, range->from, eptr);
+        pbuf = UINT32ToHex (buf, range->from, eptr);
         *pbuf++ = ' ';
-        pbuf = UINT16ToHex (pbuf, range->to, eptr);
+        pbuf = UINT32ToHex (pbuf, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
