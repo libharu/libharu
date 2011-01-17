@@ -28,17 +28,12 @@ typedef struct  _UTF8_EncoderAttr_Rec {
       HPDF_BYTE           utf8_bytes[8];
 } UTF8_EncoderAttr_Rec;
 
-static const HPDF_CidRange_Rec UTF8_NOTDEF_RANGE = {0x00, 0x1F, 1};
-
-static void 
-UTF8_SetCidRange(HPDF_CidRange_Rec *rec,
-		 HPDF_UINT32 from, HPDF_UINT32 to, HPDF_UINT16 cid);
-
-static HPDF_CidRange_Rec *
-UTF8_ComputeCMap(void);
-
-static HPDF_STATUS
-UTF8_AddCodeSpaceRange (HPDF_Encoder    encoder);
+static const HPDF_CidRange_Rec UTF8_NOTDEF_RANGE = {0x0, 0x1F, 1};
+static const HPDF_CidRange_Rec UTF8_SPACE_RANGE =  {0x0, 0xFFFF, 0};
+static const HPDF_CidRange_Rec UTF8_CID_RANGE[] = {
+  { 0x0, 0xFFFF, 0x0 },
+  { 0xFFFF, 0xFFFF, 0x0 }
+};
 
 static HPDF_ByteType
 UTF8_Encoder_ByteType_Func  (HPDF_Encoder        encoder,
@@ -58,33 +53,6 @@ static HPDF_STATUS
 UTF8_Init  (HPDF_Encoder    encoder);
 
 /*--------------------------------------------------------------------------*/
-
-static void
-UTF8_SetCidRange(HPDF_CidRange_Rec *rec,
-		 HPDF_UINT32 from, HPDF_UINT32 to, HPDF_UINT16 cid)
-{
-  rec->from = from;
-  rec->to = to;
-  rec->cid = cid;
-}
-
-static HPDF_CidRange_Rec *
-UTF8_ComputeCMap(void)
-{
-  HPDF_CidRange_Rec *rec
-      = (HPDF_CidRange_Rec *)malloc(sizeof(HPDF_CidRange_Rec) * 2);
-
-  HPDF_INT index = 0;
-  HPDF_UINT16 value;
-  HPDF_UINT32 b1, b2;
-
-  UTF8_SetCidRange(&rec[index++], 0x0, 0xD7FF, 0x0); 
-  UTF8_SetCidRange(&rec[index++], 0xE000, 0xFFFE, 0xE000); 
-
-  UTF8_SetCidRange(&rec[index++], 0xFFFF, 0xFFFF, 0);
-
-  return rec;
-}
 
 static HPDF_ByteType
 UTF8_Encoder_ByteType_Func  (HPDF_Encoder        encoder,
@@ -209,7 +177,6 @@ UTF8_Encoder_EncodeText_Func  (HPDF_Encoder        encoder,
 			       (const HPDF_BYTE *)text, len);
 
     for (i = 0; i < len; i++) {
-	HPDF_BYTE b = text[i];
 	HPDF_UNICODE tmp_unicode;
 	HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &parse_state);
 
@@ -226,24 +193,6 @@ UTF8_Encoder_EncodeText_Func  (HPDF_Encoder        encoder,
 
     return result;
 }
-
-static HPDF_STATUS
-UTF8_AddCodeSpaceRange (HPDF_Encoder    encoder)
-{
-    HPDF_CidRange_Rec code_space_range[] =
-	{ {0x00, 0xD7FF, 0},
-	  {0xE000, 0xFFFF, 0} };
-    int i;
-
-    for (i = 0; i < 2; ++i) {
-	if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range[i])
-	    != HPDF_OK)
-        return encoder->error->error_no;
-    }
-
-    return HPDF_OK;
-}
-
 
 static HPDF_STATUS
 UTF8_Init  (HPDF_Encoder  encoder)
@@ -263,13 +212,12 @@ UTF8_Init  (HPDF_Encoder  encoder)
 
     attr = (HPDF_CMapEncoderAttr)encoder->attr;
 
-    HPDF_CidRange_Rec *cmap = UTF8_ComputeCMap();
-    if (HPDF_CMapEncoder_AddCMap (encoder, cmap) != HPDF_OK)
+    if (HPDF_CMapEncoder_AddCMap (encoder, UTF8_CID_RANGE) != HPDF_OK)
         return encoder->error->error_no;
-    free(cmap);
 
-    if ((ret = UTF8_AddCodeSpaceRange (encoder)) != HPDF_OK)
-        return ret;
+    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, UTF8_SPACE_RANGE)
+	       != HPDF_OK)
+      return encoder->error->error_no;
 
     if (HPDF_CMapEncoder_AddNotDefRange (encoder, UTF8_NOTDEF_RANGE)
                 != HPDF_OK)

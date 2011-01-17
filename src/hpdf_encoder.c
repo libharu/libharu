@@ -2748,7 +2748,7 @@ HPDF_CMapEncoder_AddCMap  (HPDF_Encoder             encoder,
     HPDF_PTRACE ((" HPDF_CMapEncoder_AddCMap\n"));
 
     /* Copy specified pdf_cid_range array to fRangeArray. */
-    while (range->from != 0xffff && range->to != 0xffff) {
+    while (range->from != 0xffff || range->to != 0xffff) {
 	HPDF_CidRange_Rec *prange;
 	HPDF_STATUS ret;
 
