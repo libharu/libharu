@@ -789,7 +789,7 @@ UINT16ToHex  (char     *s,
 
     *s++ = '<';
 
-    if (b[0] != 0) {
+    if (1 || b[0] != 0) {
         c = b[0] >> 4;
         if (c <= 9)
             c += 0x30;
@@ -1014,9 +1014,9 @@ CreateCMap  (HPDF_Encoder   encoder,
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->code_space_range,
                         i);
 
-        pbuf = UINT32ToHex (buf, range->from, eptr);
+        pbuf = UINT16ToHex (buf, range->from, eptr);
         *pbuf++ = ' ';
-        pbuf = UINT32ToHex (pbuf, range->to, eptr);
+        pbuf = UINT16ToHex (pbuf, range->to, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
 
         ret += HPDF_Stream_WriteStr (cmap->stream, buf);
@@ -1038,9 +1038,9 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->notdef_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->notdef_range, i);
 
-        pbuf = UINT32ToHex (buf, range->from, eptr);
+        pbuf = UINT16ToHex (buf, range->from, eptr);
         *pbuf++ = ' ';
-        pbuf = UINT32ToHex (pbuf, range->to, eptr);
+        pbuf = UINT16ToHex (pbuf, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
@@ -1069,9 +1069,9 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->cmap_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
 
-        pbuf = UINT32ToHex (buf, range->from, eptr);
+        pbuf = UINT16ToHex (buf, range->from, eptr);
         *pbuf++ = ' ';
-        pbuf = UINT32ToHex (pbuf, range->to, eptr);
+        pbuf = UINT16ToHex (pbuf, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);

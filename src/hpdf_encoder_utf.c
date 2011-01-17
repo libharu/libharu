@@ -48,6 +48,12 @@ static HPDF_UNICODE
 UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
                               HPDF_UINT16    code);
 
+static char *
+UTF8_Encoder_EncodeText_Func  (HPDF_Encoder        encoder,
+			       const char         *text,
+			       HPDF_UINT           len,
+			       HPDF_UINT          *length);
+
 static HPDF_STATUS
 UTF8_Init  (HPDF_Encoder    encoder);
 
@@ -66,32 +72,14 @@ static HPDF_CidRange_Rec *
 UTF8_ComputeCMap(void)
 {
   HPDF_CidRange_Rec *rec
-    = (HPDF_CidRange_Rec *)malloc(sizeof(HPDF_CidRange_Rec)
-				  * (1 + 30 + 64 * 16 + 1));
+      = (HPDF_CidRange_Rec *)malloc(sizeof(HPDF_CidRange_Rec) * 2);
 
   HPDF_INT index = 0;
   HPDF_UINT16 value;
   HPDF_UINT32 b1, b2;
 
-  UTF8_SetCidRange(&rec[index++], 0x20, 0x7F, 0x20); 
-
-  value = 0x80;
-  for (b1 = 0xC2; b1 <= 0xDF; ++b1) {
-      UTF8_SetCidRange(&rec[index++], (b1 << 8) | 0x80, (b1 << 8) | 0xBF,
-		       value);
-      value += 0x40;
-  }
-
-  b2 = 0xA0;
-  for (b1 = 0xE0; b1 <= 0xEF; ++b1) {
-      for (;b2 <= 0xBF; ++b2) {
-	  UTF8_SetCidRange(&rec[index++],
-			   (b1 << 16) | (b2 << 8) | 0x80,
-			   (b1 << 16) | (b2 << 8) | 0xBF, value);
-	  value += 0x40;
-      }
-      b2 = 0x80;
-  }
+  UTF8_SetCidRange(&rec[index++], 0x0, 0xD7FF, 0x0); 
+  UTF8_SetCidRange(&rec[index++], 0xE000, 0xFFFE, 0xE000); 
 
   UTF8_SetCidRange(&rec[index++], 0xFFFF, 0xFFFF, 0);
 
@@ -206,17 +194,48 @@ UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
     return val;
 }
 
+static char *
+UTF8_Encoder_EncodeText_Func  (HPDF_Encoder        encoder,
+			       const char         *text,
+			       HPDF_UINT           len,
+			       HPDF_UINT          *length)
+{
+    char *result = malloc(len * 2);
+    char *c = result;
+    HPDF_ParseText_Rec  parse_state;
+    HPDF_UINT i;
+
+    HPDF_Encoder_SetParseText (encoder, &parse_state,
+			       (const HPDF_BYTE *)text, len);
+
+    for (i = 0; i < len; i++) {
+	HPDF_BYTE b = text[i];
+	HPDF_UNICODE tmp_unicode;
+	HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &parse_state);
+
+	if (btype != HPDF_BYTE_TYPE_TRIAL) {
+	    tmp_unicode = HPDF_Encoder_ToUnicode (encoder, 0);
+
+	    HPDF_UInt16Swap (&tmp_unicode);
+	    HPDF_MemCpy ((HPDF_BYTE *)c, (const HPDF_BYTE*)&tmp_unicode, 2);
+	    c += 2;
+        }
+    }
+
+    *length = c - result;
+
+    return result;
+}
+
 static HPDF_STATUS
 UTF8_AddCodeSpaceRange (HPDF_Encoder    encoder)
 {
     HPDF_CidRange_Rec code_space_range[] =
-	{ {0x00, 0x7F, 0},
-	  {0xC280, 0xDFBF, 0},
-	  {0xE0A080, 0xE0BFBF, 0},
-	  {0xE18080, 0xEFBFBF, 0} };
+	{ {0x00, 0xD7FF, 0},
+	  {0xE000, 0xFFFF, 0} };
     int i;
 
-    for (i = 0; i < 4; ++i) {
+    for (i = 0; i < 2; ++i) {
 	if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range[i])
 	    != HPDF_OK)
         return encoder->error->error_no;
@@ -240,6 +259,7 @@ UTF8_Init  (HPDF_Encoder  encoder)
      */
     encoder->byte_type_fn = UTF8_Encoder_ByteType_Func;
     encoder->to_unicode_fn = UTF8_Encoder_ToUnicode_Func;
+    encoder->encode_text_fn = UTF8_Encoder_EncodeText_Func;
 
     attr = (HPDF_CMapEncoderAttr)encoder->attr;
 

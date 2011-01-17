@@ -2235,6 +2235,7 @@ HPDF_BasicEncoder_New  (HPDF_MMgr        mmgr,
     encoder->error = mmgr->error;
     encoder->type = HPDF_ENCODER_TYPE_SINGLE_BYTE;
     encoder->to_unicode_fn = HPDF_BasicEncoder_ToUnicode;
+    encoder->encode_text_fn = NULL;
     encoder->write_fn = HPDF_BasicEncoder_Write;
     encoder->free_fn = HPDF_BasicEncoder_Free;
 
