@@ -6,6 +6,7 @@
  * Copyright (c) 1999-2006 Takeshi Kanno <takeshi_kanno@est.hi-ho.ne.jp>
  * Copyright (c) 2007-2008 Antony Dovgal <tony@daylessday.org>
  * Copyright (c) 2010      Sergey Konovalov <webmaster@crynet.ru>
+ * Copyright (c) 2011      Koen Deforche <koen@emweb.be>
  *
  * Permission to use, copy, modify, distribute and sell this software
  * and its documentation for any purpose is hereby granted without fee,
@@ -54,6 +55,11 @@ UTF8_Init  (HPDF_Encoder    encoder);
 
 /*--------------------------------------------------------------------------*/
 
+
+/*
+ * This function is taken from hpdf_encoder_utf8.c, originally submitted
+ * to libharu by 'Mirco'
+ */
 static HPDF_ByteType
 UTF8_Encoder_ByteType_Func  (HPDF_Encoder        encoder,
                              HPDF_ParseText_Rec  *state)
@@ -118,6 +124,10 @@ UTF8_Encoder_ByteType_Func  (HPDF_Encoder        encoder,
     return HPDF_BYTE_TYPE_TRIAL;
 }
 
+/*
+ * This function is taken from hpdf_encoder_utf8.c, originally submitted
+ * to libharu by 'Mirco'
+ */
 static HPDF_UNICODE
 UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
                               HPDF_UINT16    code)
