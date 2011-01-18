@@ -204,8 +204,8 @@ typedef HPDF_BOOL
                                     HPDF_BYTE     b);
 
 typedef struct _HPDF_CidRange_Rec {
-    HPDF_UINT32  from;
-    HPDF_UINT32  to;
+    HPDF_UINT16  from;
+    HPDF_UINT16  to;
     HPDF_UINT16  cid;
 } HPDF_CidRange_Rec;
 

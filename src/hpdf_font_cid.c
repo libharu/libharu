@@ -52,11 +52,6 @@ UINT16ToHex  (char     *s,
               HPDF_UINT16    val,
               char     *eptr);
 
-static char*
-UINT32ToHex  (char     *s,
-              HPDF_UINT32    val,
-              char     *eptr);
-
 static HPDF_Dict
 CreateCMap  (HPDF_Encoder   encoder,
              HPDF_Xref      xref);
@@ -599,11 +594,6 @@ TextWidth  (HPDF_Font         font,
         b = *text++;
         code = b;
 
-	/*
-	 * We need to make this conversion a property of the encoder
-	 * So that for UTF8 it can combine 3 characters to a unicode
-	 * code. The first is LEAD, the two others will be TRIAL.
-	 */
         if (btype == HPDF_BYTE_TYPE_LEAD) {
             code <<= 8;
             code += *text;
@@ -687,11 +677,6 @@ MeasureText  (HPDF_Font          font,
         HPDF_UINT16 code = b;
         HPDF_UINT16 tmp_w = 0;
 
-	/*
-	 * We need to make this conversion a property of the encoder
-	 * So that for UTF8 it can combine 3 characters to a unicode
-	 * code
-	 */
         if (btype == HPDF_BYTE_TYPE_LEAD) {
             code <<= 8;
             code += b2;
@@ -789,6 +774,13 @@ UINT16ToHex  (char     *s,
 
     *s++ = '<';
 
+    /*
+     * In principle a range of <00> - <1F> can now not be
+     * distinguished from <0000> - <001F>..., this seems something
+     * that is wrong with CID ranges. For the UCS-2 encoding we need
+     * to add <0000> - <FFFF> and this cannot be <00> - <FFFF> (or at
+     * least, that crashes Mac OSX Preview).
+     */
     if (1 || b[0] != 0) {
         c = b[0] >> 4;
         if (c <= 9)
@@ -813,67 +805,6 @@ UINT16ToHex  (char     *s,
     *s++ = c;
 
     c = b[1] & 0x0f;
-    if (c <= 9)
-        c += 0x30;
-    else
-        c += 0x41 - 10;
-    *s++ = c;
-
-    *s++ = '>';
-    *s = 0;
-
-    return s;
-}
-
-static char*
-UINT32ToHex  (char     *s,
-              HPDF_UINT32    val,
-              char     *eptr)
-{
-    HPDF_BYTE b[4];
-    HPDF_UINT32 val2;
-    char c;
-    int i;
-
-    if (eptr - s < 11)
-        return s;
-
-    /* align byte-order */
-    HPDF_MemCpy (b, (HPDF_BYTE *)&val, 4);
-    val2 = (HPDF_UINT32)((((HPDF_UINT32)b[0] << 8
-			   | (HPDF_UINT32)b[1]) << 8
-			  | (HPDF_UINT32)b[2]) << 8
-			 | (HPDF_UINT32)b[3]);
-
-    HPDF_MemCpy (b, (HPDF_BYTE *)&val2, 4);
-
-    *s++ = '<';
-
-    for (i = 0; i < 3; ++i)
-    if (b[i] != 0) {
-        c = b[i] >> 4;
-        if (c <= 9)
-            c += 0x30;
-        else
-            c += 0x41 - 10;
-        *s++ = c;
-
-        c = b[i] & 0x0f;
-        if (c <= 9)
-            c += 0x30;
-        else
-            c += 0x41 - 10;
-        *s++ = c;
-    }
-
-    c = b[3] >> 4;
-    if (c <= 9)
-        c += 0x30;
-    else
-        c += 0x41 - 10;
-    *s++ = c;
-
-    c = b[3] & 0x0f;
     if (c <= 9)
         c += 0x30;
     else
