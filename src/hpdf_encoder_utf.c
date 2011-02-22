@@ -29,10 +29,10 @@ typedef struct  _UTF8_EncoderAttr_Rec {
       HPDF_BYTE           utf8_bytes[8];
 } UTF8_EncoderAttr_Rec;
 
-static const HPDF_CidRange_Rec UTF8_NOTDEF_RANGE = {0x0, 0x1F, 1};
-static const HPDF_CidRange_Rec UTF8_SPACE_RANGE =  {0x0, 0xFFFF, 0};
+static const HPDF_CidRange_Rec UTF8_NOTDEF_RANGE = {0x0000, 0x001F, 1};
+static const HPDF_CidRange_Rec UTF8_SPACE_RANGE =  {0x0000, 0xFFFF, 0};
 static const HPDF_CidRange_Rec UTF8_CID_RANGE[] = {
-  { 0x0, 0xFFFF, 0x0 },
+  { 0x0000, 0xFFFF, 0x0 },
   { 0xFFFF, 0xFFFF, 0x0 }
 };
 

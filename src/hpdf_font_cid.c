@@ -607,7 +607,7 @@ TextWidth  (HPDF_Font         font,
                     w = HPDF_CIDFontDef_GetCIDWidth (attr->fontdef, cid);
                 } else {
                     /* unicode-based font */
-                    unicode = HPDF_CMapEncoder_ToUnicode (encoder, code);
+                    unicode = (encoder->to_unicode_fn)(encoder, code);
                     w = HPDF_TTFontDef_GetCharWidth (attr->fontdef, unicode);
                 }
             } else {
