@@ -131,12 +131,16 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
     if (fontdef->type == HPDF_FONTDEF_TYPE_CID) {
         ret += HPDF_Dict_AddName (font, "Encoding", encoder->name);
     } else {
+      if (HPDF_StrCmp(encoder_attr->ordering, "Identity-H") == 0) {
+	ret += HPDF_Dict_AddName (font, "Encoding", "Identity-H");
+      } else {
         attr->cmap_stream = CreateCMap (encoder, xref);
 
         if (attr->cmap_stream) {
-            ret += HPDF_Dict_Add (font, "Encoding", attr->cmap_stream);
+	  ret += HPDF_Dict_Add (font, "Encoding", attr->cmap_stream);
         } else
             return NULL;
+      }
     }
 
     if (ret != HPDF_OK)

@@ -238,7 +238,7 @@ UTF8_Init  (HPDF_Encoder  encoder)
 
     HPDF_StrCpy (attr->registry, "Adobe", attr->registry +
                 HPDF_LIMIT_MAX_NAME_LEN);
-    HPDF_StrCpy (attr->ordering, "UTF-8", attr->ordering +
+    HPDF_StrCpy (attr->ordering, "Identity-H", attr->ordering +
                 HPDF_LIMIT_MAX_NAME_LEN);
     attr->suppliment = 0;
     attr->writing_mode = HPDF_WMODE_HORIZONTAL;
