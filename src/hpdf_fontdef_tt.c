@@ -1994,8 +1994,11 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
         HPDF_UINT32 *poffset;
         HPDF_UINT32 value;
 
-	if (!tbl)
+	if (!tbl) {
 	    tbl = &emptyTable;
+	    HPDF_MemCpy((HPDF_BYTE *)tbl->tag,
+			(const HPDF_BYTE *)REQUIRED_TAGS[i], 4);
+	}
 
         if (!tbl) {
             ret = HPDF_SetError (fontdef->error, HPDF_TTF_MISSING_TABLE, i);
