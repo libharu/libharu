@@ -2345,28 +2345,28 @@ InternalWriteText  (HPDF_PageAttr      attr,
         if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
             return ret;
 
-	HPDF_Encoder encoder = font_attr->encoder;
-	HPDF_UINT len = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN);
+        HPDF_Encoder encoder = font_attr->encoder;
+        HPDF_UINT len = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN);
 
-	if (encoder->encode_text_fn == NULL) {
-	  if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
-					      len, NULL))
-	      != HPDF_OK)
-            return ret;
-	} else {
-	  char *encoded;
-	  HPDF_UINT length;
+        if (encoder->encode_text_fn == NULL) {
+	    if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
+						len, NULL))
+		!= HPDF_OK)
+	        return ret;
+        } else {
+	    char *encoded;
+	    HPDF_UINT length;
 
-	  encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
+	    encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
 
-	  ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
-					 length, NULL);
+	    ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
+					   length, NULL);
 
-	  free(encoded);
+	    free(encoded);
 
-	  if (ret != HPDF_OK)
-            return ret;
-	}
+	    if (ret != HPDF_OK)
+                return ret;
+        }
 
         return HPDF_Stream_WriteStr (attr->stream, ">");
     }
@@ -2625,28 +2625,28 @@ InternalShowTextNextLine  (HPDF_Page    page,
 
     if (font_attr->type == HPDF_FONT_TYPE0_TT ||
             font_attr->type == HPDF_FONT_TYPE0_CID) {
-	HPDF_Encoder encoder = font_attr->encoder;
+        HPDF_Encoder encoder = font_attr->encoder;
 
         if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
             return ret;
 
-	if (encoder->encode_text_fn == NULL) {
-	  if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
-                        len, NULL))
-	      != HPDF_OK)
-            return ret;
-	} else {
-	  char *encoded;
-	  HPDF_UINT length;
+        if (encoder->encode_text_fn == NULL) {
+	    if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
+						len, NULL))
+		!= HPDF_OK)
+	        return ret;
+        } else {
+	    char *encoded;
+	    HPDF_UINT length;
 
-	  encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
-	  ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
-					 length, NULL);
-	  free(encoded);
+	    encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
+	    ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
+					   length, NULL);
+	    free(encoded);
 
-	  if (ret != HPDF_OK)
-            return ret;
-	}
+	    if (ret != HPDF_OK)
+	        return ret;
+        }
 
         if ((ret = HPDF_Stream_WriteStr (attr->stream, ">")) != HPDF_OK)
             return ret;

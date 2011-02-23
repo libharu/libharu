@@ -132,14 +132,14 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
         ret += HPDF_Dict_AddName (font, "Encoding", encoder->name);
     } else {
       if (HPDF_StrCmp(encoder_attr->ordering, "Identity-H") == 0) {
-	ret += HPDF_Dict_AddName (font, "Encoding", "Identity-H");
+	  ret += HPDF_Dict_AddName (font, "Encoding", "Identity-H");
       } else {
-        attr->cmap_stream = CreateCMap (encoder, xref);
+          attr->cmap_stream = CreateCMap (encoder, xref);
 
-        if (attr->cmap_stream) {
-	  ret += HPDF_Dict_Add (font, "Encoding", attr->cmap_stream);
-        } else
-            return NULL;
+	  if (attr->cmap_stream) {
+	      ret += HPDF_Dict_Add (font, "Encoding", attr->cmap_stream);
+	  } else
+              return NULL;
       }
     }
 
@@ -379,7 +379,7 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
 		HPDF_UINT16 cid = encoder_attr->cid_map[i][j];
 		if (cid != 0) {
 		    HPDF_UNICODE unicode = encoder_attr->unicode_map[i][j];
-		    HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef, 
+		    HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef,
 								 unicode);
 		    tmp_map[cid] = gid;
 		    if (max < cid)
@@ -387,11 +387,11 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
 		}
 	    } else {
 		HPDF_UNICODE unicode = (i << 8) | j;
-		HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef, 
+		HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef,
 							     unicode);
 		tmp_map[unicode] = gid;
 		if (max < unicode)
-		    max = unicode;		
+		    max = unicode;
 	    }
 	}
     }
