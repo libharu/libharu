@@ -76,9 +76,12 @@ OBJS = \
 	src/hpdf_fontdef_cns.o \
 	src/hpdf_fontdef_cnt.o \
 	src/hpdf_image_png.o \
+	src/hpdf_image_ccitt.o \
 	src/hpdf_doc_png.o \
 	src/hpdf_ext_gstate.o \
 	src/hpdf_namedict.o \
+	src/hpdf_3dmeasure.o \
+	src/hpdf_exdata.o \
 	src/hpdf_u3d.o \
 
 PROGRAMS = \

@@ -77,6 +77,13 @@ HPDF_StampAnnot_New (HPDF_MMgr         mmgr,
 					 const char*	   text,
 					 HPDF_Encoder	   encoder);
 
+HPDF_Annotation
+HPDF_ProjectionAnnot_New (HPDF_MMgr         mmgr,
+						  HPDF_Xref         xref,
+						  HPDF_Rect         rect,
+						  const char*       text,
+						  HPDF_Encoder       encoder);
+
 HPDF_BOOL
 HPDF_Annotation_Validate (HPDF_Annotation  annot);
 

@@ -1228,7 +1228,7 @@ HPDF_SetCurrentEncoder  (HPDF_Doc    pdf,
     if (!encoder)
         return HPDF_GetError (pdf);
 
-	pdf->cur_encoder = encoder;
+    pdf->cur_encoder = encoder;
 
     return HPDF_OK;
 }
@@ -1690,14 +1690,19 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
     if (!HPDF_HasDoc (pdf))
         return NULL;
 
-    image = HPDF_Image_LoadRawImageFromMem (pdf->mmgr, buf, pdf->xref, width,
-                height, color_space, bits_per_component);
+    /* Use directly HPDF_Image_LoadRaw1BitImageFromMem to save B/W images */
+    if(color_space == HPDF_CS_DEVICE_GRAY && bits_per_component == 1) {
+        return HPDF_Image_LoadRaw1BitImageFromMem (pdf, buf, width, height, (width+7)/8, HPDF_TRUE, HPDF_TRUE);
+    }
+
+    image = HPDF_Image_LoadRawImageFromMem (pdf->mmgr, buf, pdf->xref, width, height, color_space, bits_per_component);
 
     if (!image)
         HPDF_CheckError (&pdf->error);
 
-    if (image && pdf->compression_mode & HPDF_COMP_IMAGE)
+    if (image && pdf->compression_mode & HPDF_COMP_IMAGE) {
         image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
+    }
 
     return image;
 }
@@ -1873,6 +1878,8 @@ HPDF_SetViewerPreference  (HPDF_Doc     pdf,
     ret = HPDF_Catalog_SetViewerPreference (pdf->catalog, value);
     if (ret != HPDF_OK)
         return HPDF_CheckError (&pdf->error);
+
+    pdf->pdf_version = HPDF_VER_16;
 
     return HPDF_OK;
 }

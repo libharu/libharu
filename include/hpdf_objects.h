@@ -425,6 +425,7 @@ typedef struct _HPDF_Dict_Rec {
     HPDF_Dict_FreeFunc         free_fn;
     HPDF_Stream                stream;
     HPDF_UINT                  filter;
+    HPDF_Dict                  filterParams;
     void                       *attr;
 } HPDF_Dict_Rec;
 
@@ -582,6 +583,8 @@ typedef HPDF_Dict  HPDF_NameTree;
 typedef HPDF_Dict  HPDF_Pages;
 typedef HPDF_Dict  HPDF_Page;
 typedef HPDF_Dict  HPDF_Annotation;
+typedef HPDF_Dict  HPDF_3DMeasure;
+typedef HPDF_Dict  HPDF_ExData;
 typedef HPDF_Dict  HPDF_XObject;
 typedef HPDF_Dict  HPDF_Image;
 typedef HPDF_Dict  HPDF_Outline;
@@ -591,6 +594,7 @@ typedef HPDF_Dict  HPDF_ExtGState;
 typedef HPDF_Array HPDF_Destination;
 typedef HPDF_Dict  HPDF_U3D;
 typedef HPDF_Dict  HPDF_OutputIntent;
+typedef HPDF_Dict  HPDF_JavaScript;
 
 #ifdef __cplusplus
 }

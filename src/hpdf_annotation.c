@@ -37,7 +37,8 @@ static const char  *HPDF_ANNOT_TYPE_NAMES[] = {
                                         "Popup",
                                         "3D",
                                         "Squiggly",
-                                        "Line"
+										"Line",
+										"Projection"
                                         };
 
 static const char  *HPDF_ANNOT_ICON_NAMES_NAMES[] = {
@@ -839,6 +840,31 @@ HPDF_StampAnnot_New (HPDF_MMgr         mmgr,
     return annot;
 }
 
+HPDF_Annotation
+HPDF_ProjectionAnnot_New(HPDF_MMgr         mmgr,
+						 HPDF_Xref         xref,
+						 HPDF_Rect         rect,
+						 const char*       text,
+						 HPDF_Encoder       encoder)
+{
+	HPDF_Annotation annot;
+	HPDF_String s;
+	HPDF_PTRACE((" HPDF_StampAnnot_New\n"));
+
+	annot = HPDF_Annotation_New (mmgr, xref, HPDF_ANNOT_PROJECTION, rect);
+	if (!annot)
+		return NULL;
+
+	s = HPDF_String_New (mmgr, text, encoder);
+	if (!s)
+		return NULL;
+
+	if (HPDF_Dict_Add (annot, "Contents", s) != HPDF_OK)
+		return NULL;
+
+	return annot;
+}
+
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_TextMarkupAnnot_SetQuadPoints ( HPDF_Annotation annot, HPDF_Point lb, HPDF_Point rb, HPDF_Point lt, HPDF_Point rt) /* l-left, r-right, b-bottom, t-top positions */
@@ -1071,4 +1097,16 @@ HPDF_LineAnnot_SetCaption (HPDF_Annotation annot, HPDF_BOOL showCaption, HPDF_Li
     ret += HPDF_Array_AddNumber (capOffset, vertOffset);
 
     return ret;
+}
+
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata)
+{
+	HPDF_STATUS ret = HPDF_OK;
+
+	ret = HPDF_Dict_Add(annot, "ExData", exdata);
+
+	return ret;
 }

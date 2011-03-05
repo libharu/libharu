@@ -76,8 +76,12 @@ OBJS = \
 	src_SEP_hpdf_fontdef_cns_OBJ_EXT \
 	src_SEP_hpdf_fontdef_cnt_OBJ_EXT \
 	src_SEP_hpdf_image_png_OBJ_EXT \
+	src_SEP_hpdf_image_ccitt_OBJ_EXT \
 	src_SEP_hpdf_doc_png_OBJ_EXT \
 	src_SEP_hpdf_ext_gstate_OBJ_EXT \
+	src_SEP_hpdf_3dmeasure_OBJ_EXT \
+	src_SEP_hpdf_namedict_OBJ_EXT \
+	src_SEP_hpdf_exdata_OBJ_EXT \
 	src_SEP_hpdf_u3d_OBJ_EXT \
 
 PROGRAMS = \

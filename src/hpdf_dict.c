@@ -116,6 +116,25 @@ HPDF_Dict_Free  (HPDF_Dict  dict)
     HPDF_FreeMem (dict->mmgr, dict);
 }
 
+HPDF_STATUS
+HPDF_Dict_Add_FilterParams(HPDF_Dict    dict, HPDF_Dict filterParam)
+{
+    HPDF_Array paramArray;
+    /* prepare params object */
+    paramArray = HPDF_Dict_GetItem (dict, "DecodeParms",
+                                              HPDF_OCLASS_ARRAY);
+    if(paramArray==NULL) {
+        paramArray = HPDF_Array_New (dict->mmgr);
+       if (!paramArray)
+            return HPDF_Error_GetCode (dict->error);
+
+        /* add parameters */
+        HPDF_Dict_Add(dict, "DecodeParms", paramArray);
+    }
+    HPDF_Array_Add(paramArray, filterParam);
+    return HPDF_OK;
+}
+
 
 HPDF_STATUS
 HPDF_Dict_Write  (HPDF_Dict     dict,
@@ -165,6 +184,14 @@ HPDF_Dict_Write  (HPDF_Dict     dict,
 
             if (dict->filter & HPDF_STREAM_FILTER_DCT_DECODE)
                 HPDF_Array_AddName (array, "DCTDecode");
+
+            if(dict->filter & HPDF_STREAM_FILTER_CCITT_DECODE)
+                HPDF_Array_AddName (array, "CCITTFaxDecode");
+
+            if(dict->filterParams!=NULL)
+            {
+                HPDF_Dict_Add_FilterParams(dict, dict->filterParams);
+            }
         }
     }
 
