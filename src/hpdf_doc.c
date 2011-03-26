@@ -1527,8 +1527,7 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
         HPDF_FontDef  tmpdef = HPDF_Doc_FindFontDef (pdf, def->base_font);
         if (tmpdef) {
             HPDF_FontDef_Free (def);
-            HPDF_SetError (&pdf->error, HPDF_FONT_EXISTS, 0);
-            return NULL;
+            return tmpdef->base_font;
         }
 
         if (HPDF_List_Add (pdf->fontdef_list, def) != HPDF_OK) {
@@ -1605,8 +1604,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
         HPDF_FontDef  tmpdef = HPDF_Doc_FindFontDef (pdf, def->base_font);
         if (tmpdef) {
             HPDF_FontDef_Free (def);
-            HPDF_SetError (&pdf->error, HPDF_FONT_EXISTS, 0);
-            return NULL;
+            return tmpdef->base_font;
         }
 
         if (HPDF_List_Add (pdf->fontdef_list, def) != HPDF_OK) {
