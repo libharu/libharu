@@ -131,16 +131,31 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
     if (fontdef->type == HPDF_FONTDEF_TYPE_CID) {
         ret += HPDF_Dict_AddName (font, "Encoding", encoder->name);
     } else {
-      if (HPDF_StrCmp(encoder_attr->ordering, "Identity-H") == 0) {
-	ret += HPDF_Dict_AddName (font, "Encoding", "Identity-H");
-      } else {
-        attr->cmap_stream = CreateCMap (encoder, xref);
+        /*
+	 * Handle the Unicode encoding, see hpdf_encoding_utf.c For some
+	 * reason, xpdf-based readers cannot deal with our cmap but work
+	 * fine when using the predefined "Identity-H"
+	 * encoding. However, text selection does not work, unless we
+	 * add a ToUnicode cmap. This CMap should also be "Identity",
+	 * but that does not work -- specifying our cmap as a stream however
+	 * does work. Who can understand that ?
+	 */
+        if (HPDF_StrCmp(encoder_attr->ordering, "Identity-H") == 0) {
+	    ret += HPDF_Dict_AddName (font, "Encoding", "Identity-H");
+	    attr->cmap_stream = CreateCMap (encoder, xref);
 
-        if (attr->cmap_stream) {
-	  ret += HPDF_Dict_Add (font, "Encoding", attr->cmap_stream);
-        } else
-            return NULL;
-      }
+	    if (attr->cmap_stream) {
+	        ret += HPDF_Dict_Add (font, "ToUnicode", attr->cmap_stream);
+	    } else
+	        return NULL;
+	} else {
+            attr->cmap_stream = CreateCMap (encoder, xref);
+
+	    if (attr->cmap_stream) {
+	        ret += HPDF_Dict_Add (font, "Encoding", attr->cmap_stream);
+	    } else
+	      return NULL;
+	}
     }
 
     if (ret != HPDF_OK)
