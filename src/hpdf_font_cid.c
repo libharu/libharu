@@ -394,7 +394,7 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
 		HPDF_UINT16 cid = encoder_attr->cid_map[i][j];
 		if (cid != 0) {
 		    HPDF_UNICODE unicode = encoder_attr->unicode_map[i][j];
-		    HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef, 
+		    HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef,
 								 unicode);
 		    tmp_map[cid] = gid;
 		    if (max < cid)
@@ -402,11 +402,11 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
 		}
 	    } else {
 		HPDF_UNICODE unicode = (i << 8) | j;
-		HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef, 
+		HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (fontdef,
 							     unicode);
 		tmp_map[unicode] = gid;
 		if (max < unicode)
-		    max = unicode;		
+		    max = unicode;
 	    }
 	}
     }
