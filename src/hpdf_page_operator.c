@@ -2192,7 +2192,7 @@ HPDF_Page_Arc  (HPDF_Page    page,
 
     HPDF_PTRACE ((" HPDF_Page_Arc\n"));
 
-    if (ang1 >= ang2 || (ang2 - ang1) >= 360)
+    if (fabs(ang2 - ang1) >= 360)
         HPDF_RaiseError (page->error, HPDF_PAGE_OUT_OF_RANGE, 0);
 
     if (ret != HPDF_OK)
@@ -2205,10 +2205,10 @@ HPDF_Page_Arc  (HPDF_Page    page,
 
 
     for (;;) {
-        if (ang2 - ang1 <= 90)
+        if (fabs(ang2 - ang1) <= 90)
             return InternalArc (page, x, y, ray, ang1, ang2, cont_flg);
         else {
-            HPDF_REAL tmp_ang = ang1 + 90;
+	    HPDF_REAL tmp_ang = (ang2 > ang1 ? ang1 + 90 : ang1 - 90);
 
             if ((ret = InternalArc (page, x, y, ray, ang1, tmp_ang, cont_flg))
                     != HPDF_OK)
@@ -2217,7 +2217,7 @@ HPDF_Page_Arc  (HPDF_Page    page,
             ang1 = tmp_ang;
         }
 
-        if (ang1 >= ang2)
+        if (fabs(ang1 - ang2) < 0.1)
             break;
 
         cont_flg = HPDF_TRUE;
@@ -2280,7 +2280,11 @@ InternalArc  (HPDF_Page    page,
         pbuf = HPDF_FToA (pbuf, (HPDF_REAL)x0, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_FToA (pbuf, (HPDF_REAL)y0, eptr);
-        pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+
+	if (attr->gmode == HPDF_GMODE_PATH_OBJECT)
+	  pbuf = (char *)HPDF_StrCpy (pbuf, " l\012", eptr);
+	else
+	  pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
     }
 
     pbuf = HPDF_FToA (pbuf, (HPDF_REAL)x1, eptr);
