@@ -1521,6 +1521,7 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
     HPDF_FontDef def;
 
     HPDF_PTRACE ((" HPDF_LoadTTFontFromStream\n"));
+    HPDF_UNUSED (file_name);
 
     def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, embedding);
     if (def) {
@@ -1599,6 +1600,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
     HPDF_FontDef def;
 
     HPDF_PTRACE ((" HPDF_LoadTTFontFromStream2\n"));
+    HPDF_UNUSED (file_name);
 
     def = HPDF_TTFontDef_Load2 (pdf->mmgr, font_data, index, embedding);
     if (def) {

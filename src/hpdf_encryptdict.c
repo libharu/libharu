@@ -21,6 +21,9 @@
 #include "hpdf_objects.h"
 #include "hpdf_encryptdict.h"
 #include "hpdf_info.h"
+#ifndef HPDF_UNUSED
+#define HPDF_UNUSED(a) ((void)(a))
+#endif
 
 HPDF_EncryptDict
 HPDF_EncryptDict_New  (HPDF_MMgr  mmgr,
@@ -70,6 +73,8 @@ HPDF_EncryptDict_CreateID  (HPDF_EncryptDict  dict,
 #endif /* LIBHPDF_DEBUG */
 
     HPDF_MD5Init (&ctx);
+    HPDF_UNUSED (xref);
+    HPDF_UNUSED (info);
 
 #ifndef LIBHPDF_DEBUG
     HPDF_MD5Update(&ctx, (HPDF_BYTE *)&t, sizeof(t));

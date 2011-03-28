@@ -174,6 +174,8 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
                         HPDF_BOOL     delayed_loading)
 {
     HPDF_SetError (&pdf->error, HPDF_UNSUPPORTED_FUNC, 0);
+    HPDF_UNUSED (delayed_loading);
+    HPDF_UNUSED (imagedata);
 
     return NULL;
 }

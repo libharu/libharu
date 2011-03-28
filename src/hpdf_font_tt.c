@@ -307,14 +307,14 @@ MeasureText (HPDF_Font          font,
             tmp_len = i + 1;
 
             if (real_width)
-                *real_width = w;
+                *real_width = (HPDF_REAL)w;
 
             w += word_space;
         } else if (!wordwrap) {
             tmp_len = i;
 
             if (real_width)
-                *real_width = w;
+                *real_width = (HPDF_REAL)w;
         }
 
         w += (HPDF_DOUBLE)CharWidth (font, b) * font_size / 1000;
@@ -329,7 +329,7 @@ MeasureText (HPDF_Font          font,
 
     /* all of text can be put in the specified width */
     if (real_width)
-        *real_width = w;
+        *real_width = (HPDF_REAL)w;
     return len;
 }
 

@@ -34,11 +34,11 @@ typedef struct _HPDF_PageSizeValue {
 static HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[] = {
     {612, 792},     /* HPDF_PAGE_SIZE_LETTER */
     {612, 1008},    /* HPDF_PAGE_SIZE_LEGAL */
-    {841.89, 1199.551},    /* HPDF_PAGE_SIZE_A3 */
-    {595.276, 841.89},     /* HPDF_PAGE_SIZE_A4 */
-    {419.528, 595.276},     /* HPDF_PAGE_SIZE_A5 */
-    {708.661, 1000.63},     /* HPDF_PAGE_SIZE_B4 */
-    {498.898, 708.661},     /* HPDF_PAGE_SIZE_B5 */
+    {(HPDF_REAL)841.89, (HPDF_REAL)1199.551},    /* HPDF_PAGE_SIZE_A3 */
+    {(HPDF_REAL)595.276, (HPDF_REAL)841.89},     /* HPDF_PAGE_SIZE_A4 */
+    {(HPDF_REAL)419.528, (HPDF_REAL)595.276},     /* HPDF_PAGE_SIZE_A5 */
+    {(HPDF_REAL)708.661, (HPDF_REAL)1000.63},     /* HPDF_PAGE_SIZE_B4 */
+    {(HPDF_REAL)498.898, (HPDF_REAL)708.661},     /* HPDF_PAGE_SIZE_B5 */
     {522, 756},     /* HPDF_PAGE_SIZE_EXECUTIVE */
     {288, 432},     /* HPDF_PAGE_SIZE_US4x6 */
     {288, 576},     /* HPDF_PAGE_SIZE_US4x8 */
@@ -343,7 +343,7 @@ HPDF_Page_New  (HPDF_MMgr   mmgr,
     /* add requiered elements */
     ret += HPDF_Dict_AddName (page, "Type", "Page");
     ret += HPDF_Dict_Add (page, "MediaBox", HPDF_Box_Array_New (page->mmgr,
-                HPDF_ToBox (0, 0, HPDF_DEF_PAGE_WIDTH, HPDF_DEF_PAGE_HEIGHT)));
+                HPDF_ToBox (0, 0, (HPDF_INT16)(HPDF_DEF_PAGE_WIDTH), (HPDF_INT16)(HPDF_DEF_PAGE_HEIGHT))));
     ret += HPDF_Dict_Add (page, "Contents", attr->contents);
 
     ret += AddResource (page);
@@ -1688,6 +1688,7 @@ HPDF_Page_Create3DView    (HPDF_Page       page,
     HPDF_Dict view;
 
     HPDF_PTRACE((" HPDF_Page_Create3DView\n"));
+    HPDF_UNUSED(annot3d);
 
     if (!HPDF_Page_Validate (page))
         return NULL;
