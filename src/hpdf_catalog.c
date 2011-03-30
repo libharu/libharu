@@ -25,6 +25,8 @@ static const char *HPDF_PAGE_LAYOUT_NAMES[] = {
                         "OneColumn",
                         "TwoColumnLeft",
                         "TwoColumnRight",
+                        "TwoPageLeft",
+                        "TwoPageRight",
                         NULL
 };
 

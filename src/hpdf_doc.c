@@ -1790,6 +1790,9 @@ HPDF_SetPageLayout  (HPDF_Doc          pdf,
         return HPDF_RaiseError (&pdf->error, HPDF_PAGE_LAYOUT_OUT_OF_RANGE,
                 (HPDF_STATUS)layout);
 
+    if ((layout == HPDF_PAGE_LAYOUT_TWO_PAGE_LEFT || layout == HPDF_PAGE_LAYOUT_TWO_PAGE_RIGHT) && pdf->pdf_version < HPDF_VER_15)
+        pdf->pdf_version = HPDF_VER_15 ;
+
     ret = HPDF_Catalog_SetPageLayout (pdf->catalog, layout);
     if (ret != HPDF_OK)
         HPDF_CheckError (&pdf->error);
