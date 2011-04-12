@@ -48,9 +48,16 @@ MeasureText  (HPDF_Font         font,
 
 
 static char*
-UINT16ToHex  (char     *s,
-              HPDF_UINT16    val,
-              char     *eptr);
+UINT16ToHex  (char        *s,
+              HPDF_UINT16  val,
+              char        *eptr,
+	      HPDF_BYTE    width);
+
+static char *
+CidRangeToHex (char        *s,
+	       HPDF_UINT16  from,
+	       HPDF_UINT16  to,
+	       char        *eptr);
 
 static HPDF_Dict
 CreateCMap  (HPDF_Encoder   encoder,
@@ -773,10 +780,12 @@ MeasureText  (HPDF_Font          font,
 }
 
 
+
 static char*
-UINT16ToHex  (char     *s,
-              HPDF_UINT16    val,
-              char     *eptr)
+UINT16ToHex  (char        *s,
+              HPDF_UINT16  val,
+              char        *eptr,
+	      HPDF_BYTE    width)
 {
     HPDF_BYTE b[2];
     HPDF_UINT16 val2;
@@ -800,7 +809,7 @@ UINT16ToHex  (char     *s,
      * to add <0000> - <FFFF> and this cannot be <00> - <FFFF> (or at
      * least, that crashes Mac OSX Preview).
      */
-    if (1 || b[0] != 0) {
+    if (width == 2) {
         c = b[0] >> 4;
         if (c <= 9)
             c += 0x30;
@@ -834,6 +843,22 @@ UINT16ToHex  (char     *s,
     *s = 0;
 
     return s;
+}
+
+static char*
+CidRangeToHex  (char        *s,
+	     HPDF_UINT16  from,
+	     HPDF_UINT16  to,
+	     char        *eptr)
+{
+  HPDF_BYTE width = (to > 255) ? 2 : 1;
+  char *pbuf;
+
+  pbuf = UINT16ToHex (s, from, eptr, width);
+  *pbuf++ = ' ';
+  pbuf = UINT16ToHex (pbuf, to, eptr, width);
+
+  return pbuf;
 }
 
 static HPDF_Dict
@@ -964,9 +989,8 @@ CreateCMap  (HPDF_Encoder   encoder,
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->code_space_range,
                         i);
 
-        pbuf = UINT16ToHex (buf, range->from, eptr);
-        *pbuf++ = ' ';
-        pbuf = UINT16ToHex (pbuf, range->to, eptr);
+	pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
+
         HPDF_StrCpy (pbuf, "\r\n", eptr);
 
         ret += HPDF_Stream_WriteStr (cmap->stream, buf);
@@ -988,9 +1012,7 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->notdef_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->notdef_range, i);
 
-        pbuf = UINT16ToHex (buf, range->from, eptr);
-        *pbuf++ = ' ';
-        pbuf = UINT16ToHex (pbuf, range->to, eptr);
+	pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
@@ -1019,9 +1041,7 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->cmap_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
 
-        pbuf = UINT16ToHex (buf, range->from, eptr);
-        *pbuf++ = ' ';
-        pbuf = UINT16ToHex (pbuf, range->to, eptr);
+	pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
