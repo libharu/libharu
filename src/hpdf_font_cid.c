@@ -51,7 +51,7 @@ static char*
 UINT16ToHex  (char        *s,
               HPDF_UINT16  val,
               char        *eptr,
-	      HPDF_BYTE    width);
+              HPDF_BYTE    width);
 
 static char *
 CidRangeToHex (char        *s,
@@ -785,7 +785,7 @@ static char*
 UINT16ToHex  (char        *s,
               HPDF_UINT16  val,
               char        *eptr,
-	      HPDF_BYTE    width)
+              HPDF_BYTE    width)
 {
     HPDF_BYTE b[2];
     HPDF_UINT16 val2;
@@ -847,18 +847,18 @@ UINT16ToHex  (char        *s,
 
 static char*
 CidRangeToHex  (char        *s,
-	     HPDF_UINT16  from,
-	     HPDF_UINT16  to,
-	     char        *eptr)
+                HPDF_UINT16  from,
+                HPDF_UINT16  to,
+                char        *eptr)
 {
-  HPDF_BYTE width = (to > 255) ? 2 : 1;
-  char *pbuf;
+    HPDF_BYTE width = (to > 255) ? 2 : 1;
+    char *pbuf;
 
-  pbuf = UINT16ToHex (s, from, eptr, width);
-  *pbuf++ = ' ';
-  pbuf = UINT16ToHex (pbuf, to, eptr, width);
+    pbuf = UINT16ToHex (s, from, eptr, width);
+    *pbuf++ = ' ';
+    pbuf = UINT16ToHex (pbuf, to, eptr, width);
 
-  return pbuf;
+    return pbuf;
 }
 
 static HPDF_Dict
@@ -989,7 +989,7 @@ CreateCMap  (HPDF_Encoder   encoder,
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->code_space_range,
                         i);
 
-	pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
+        pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
 
         HPDF_StrCpy (pbuf, "\r\n", eptr);
 
@@ -1012,7 +1012,7 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->notdef_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->notdef_range, i);
 
-	pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
+        pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
@@ -1041,7 +1041,7 @@ CreateCMap  (HPDF_Encoder   encoder,
     for (i = 0; i < attr->cmap_range->count; i++) {
         HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
 
-	pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
+        pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_IToA (pbuf, range->cid, eptr);
         HPDF_StrCpy (pbuf, "\r\n", eptr);
