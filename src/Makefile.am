@@ -20,3 +20,4 @@ libhpdf_la_SOURCES =	hpdf_annotation.c hpdf_array.c hpdf_binary.c hpdf_boolean.c
 INCLUDES = -I$(top_srcdir)/include 
 libhpdf_la_LIBADD = @LTLIBOBJS@
 libhpdf_la_LDFLAGS = -release @VERSION@
+EXTRA_DIST = CMakeLists.txt
