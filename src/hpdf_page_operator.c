@@ -2430,7 +2430,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
     HPDF_Box bbox;
     HPDF_BOOL char_space_changed = HPDF_FALSE;
 
-    HPDF_PTRACE ((" HPDF_Page_TextOutEx\n"));
+    HPDF_PTRACE ((" HPDF_Page_TextRect\n"));
 
     if (ret != HPDF_OK)
         return ret;
