@@ -401,14 +401,14 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
 
             if (w != dw) {
                 if (!tmp_array) {
-                    if ((ret = HPDF_Array_AddNumber (array, i)) != HPDF_OK)
+                    if (HPDF_Array_AddNumber (array, i) != HPDF_OK)
                         return NULL;
 
                     tmp_array = HPDF_Array_New (font->mmgr);
                     if (!tmp_array)
                         return NULL;
 
-                    if ((ret = HPDF_Array_Add (array, tmp_array)) != HPDF_OK)
+                    if (HPDF_Array_Add (array, tmp_array) != HPDF_OK)
                         return NULL;
                 }
 
@@ -424,8 +424,7 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
             if (!attr->map_stream)
                 return NULL;
 
-            if ((ret = HPDF_Dict_Add (font, "CIDToGIDMap", attr->map_stream))
-                    != HPDF_OK)
+            if (HPDF_Dict_Add (font, "CIDToGIDMap", attr->map_stream) != HPDF_OK)
                 return NULL;
 
             for (i = 0; i < max; i++) {
