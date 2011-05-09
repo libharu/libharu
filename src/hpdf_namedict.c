@@ -223,6 +223,9 @@ HPDF_EmbeddedFile_New  (HPDF_MMgr  mmgr,
     ret += HPDF_Dict_Add (ef, "EF", eff);
     ret += HPDF_Dict_Add (eff, "F", filestream);
 
+    if (ret != HPDF_OK)
+        return NULL;
+
     return ef;
 }
 

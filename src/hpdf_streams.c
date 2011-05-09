@@ -154,7 +154,10 @@ HPDF_Stream_ReadLn  (HPDF_Stream  stream,
 
     HPDF_PTRACE((" HPDF_Stream_ReadLn\n"));
 
-    if (!stream || !s || *size == 0)
+    if (!stream)
+        return HPDF_INVALID_PARAMETER;
+
+    if (!s || *size == 0)
         return HPDF_SetError (stream->error, HPDF_INVALID_PARAMETER, 0);
 
     if (!(stream->seek_fn) || !(stream->read_fn))
