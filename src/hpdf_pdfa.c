@@ -14,6 +14,8 @@
  * It is provided "as is" without express or implied warranty.
  *
  */
+/* This is used to avoid warnings on 'ctime' when compiling in MSVC 9 */
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <time.h>
 #include "hpdf_utils.h"

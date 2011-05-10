@@ -175,7 +175,7 @@ LoadAfm (HPDF_FontDef  fontdef,
         } else
 
         if (HPDF_StrCmp (keyword, "ItalicAngle") == 0) {
-            fontdef->italic_angle = HPDF_AToI (s);
+            fontdef->italic_angle = (HPDF_INT16)HPDF_AToI (s);
             if (fontdef->italic_angle != 0)
                 fontdef->flags |= HPDF_FONT_ITALIC;
         } else
@@ -195,35 +195,35 @@ LoadAfm (HPDF_FontDef  fontdef,
             char buf[HPDF_INT_LEN + 1];
 
             s = GetKeyword (s, buf, HPDF_INT_LEN + 1);
-            fontdef->font_bbox.left = HPDF_AToI (buf);
+            fontdef->font_bbox.left = (HPDF_REAL)HPDF_AToI (buf);
 
             s = GetKeyword (s, buf, HPDF_INT_LEN + 1);
-            fontdef->font_bbox.bottom = HPDF_AToI (buf);
+            fontdef->font_bbox.bottom = (HPDF_REAL)HPDF_AToI (buf);
 
             s = GetKeyword (s, buf, HPDF_INT_LEN + 1);
-            fontdef->font_bbox.right = HPDF_AToI (buf);
+            fontdef->font_bbox.right = (HPDF_REAL)HPDF_AToI (buf);
 
             GetKeyword (s, buf, HPDF_INT_LEN + 1);
-            fontdef->font_bbox.top = HPDF_AToI (buf);
+            fontdef->font_bbox.top = (HPDF_REAL)HPDF_AToI (buf);
         } else
         if (HPDF_StrCmp (keyword, "EncodingScheme") == 0) {
             HPDF_StrCpy (attr->encoding_scheme, s,
                     attr->encoding_scheme + HPDF_LIMIT_MAX_NAME_LEN);
         } else
         if (HPDF_StrCmp (keyword, "CapHeight") == 0) {
-            fontdef->cap_height = HPDF_AToI (s);
+            fontdef->cap_height = (HPDF_UINT16)HPDF_AToI (s);
         } else
         if (HPDF_StrCmp (keyword, "Ascender") == 0) {
-            fontdef->ascent = HPDF_AToI (s);
+            fontdef->ascent = (HPDF_INT16)HPDF_AToI (s);
         } else
         if (HPDF_StrCmp (keyword, "Descender") == 0) {
-            fontdef->descent = HPDF_AToI (s);
+            fontdef->descent = (HPDF_INT16)HPDF_AToI (s);
         } else
         if (HPDF_StrCmp (keyword, "STDHW") == 0) {
-            fontdef->stemh = HPDF_AToI (s);
+            fontdef->stemh = (HPDF_UINT16)HPDF_AToI (s);
         } else
         if (HPDF_StrCmp (keyword, "STDHV") == 0) {
-            fontdef->stemv = HPDF_AToI (s);
+            fontdef->stemv = (HPDF_UINT16)HPDF_AToI (s);
         } else
         if (HPDF_StrCmp (keyword, "StartCharMetrics") == 0) {
             attr->widths_count = HPDF_AToI (s);
@@ -261,7 +261,7 @@ LoadAfm (HPDF_FontDef  fontdef,
             s = GetKeyword (s, buf2, HPDF_LIMIT_MAX_NAME_LEN + 1);
               HPDF_AToI (buf2);
 
-            cdata->char_cd = HPDF_AToI (buf2);
+            cdata->char_cd = (HPDF_INT16)HPDF_AToI (buf2);
 
         } else
             return HPDF_SetError (fontdef->error,
@@ -278,7 +278,7 @@ LoadAfm (HPDF_FontDef  fontdef,
         if (buf2[0] == 0)
             return HPDF_SetError (fontdef->error, HPDF_INVALID_WX_DATA, 0);
 
-        cdata->width = HPDF_AToI (buf2);
+        cdata->width = (HPDF_INT16)HPDF_AToI (buf2);
 
         /* N PostScript language character name */
         s = HPDF_StrStr (s, "N ", 0);

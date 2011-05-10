@@ -34,11 +34,11 @@ typedef struct _HPDF_PageSizeValue {
 static HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[] = {
     {612, 792},     /* HPDF_PAGE_SIZE_LETTER */
     {612, 1008},    /* HPDF_PAGE_SIZE_LEGAL */
-    {841.89, 1199.551},    /* HPDF_PAGE_SIZE_A3 */
-    {595.276, 841.89},     /* HPDF_PAGE_SIZE_A4 */
-    {419.528, 595.276},     /* HPDF_PAGE_SIZE_A5 */
-    {708.661, 1000.63},     /* HPDF_PAGE_SIZE_B4 */
-    {498.898, 708.661},     /* HPDF_PAGE_SIZE_B5 */
+    {(HPDF_REAL)841.89, (HPDF_REAL)1199.551},    /* HPDF_PAGE_SIZE_A3 */
+    {(HPDF_REAL)595.276, (HPDF_REAL)841.89},     /* HPDF_PAGE_SIZE_A4 */
+    {(HPDF_REAL)419.528, (HPDF_REAL)595.276},     /* HPDF_PAGE_SIZE_A5 */
+    {(HPDF_REAL)708.661, (HPDF_REAL)1000.63},     /* HPDF_PAGE_SIZE_B4 */
+    {(HPDF_REAL)498.898, (HPDF_REAL)708.661},     /* HPDF_PAGE_SIZE_B5 */
     {522, 756},     /* HPDF_PAGE_SIZE_EXECUTIVE */
     {288, 432},     /* HPDF_PAGE_SIZE_US4x6 */
     {288, 576},     /* HPDF_PAGE_SIZE_US4x8 */
@@ -165,11 +165,14 @@ HPDF_Page_InsertBefore  (HPDF_Page   page,
 
     HPDF_PTRACE((" HPDF_Page_InsertBefore\n"));
 
+    if (!target)
+        return HPDF_INVALID_PARAMETER;
+
     attr = (HPDF_PageAttr )target->attr;
     parent = attr->parent;
 
     if (!parent)
-        return HPDF_SetError (parent->error, HPDF_PAGE_CANNOT_SET_PARENT, 0);
+        return HPDF_PAGE_CANNOT_SET_PARENT;
 
     if (HPDF_Dict_GetItem (page, "Parent", HPDF_OCLASS_DICT))
         return HPDF_SetError (parent->error, HPDF_PAGE_CANNOT_SET_PARENT, 0);
@@ -343,7 +346,7 @@ HPDF_Page_New  (HPDF_MMgr   mmgr,
     /* add requiered elements */
     ret += HPDF_Dict_AddName (page, "Type", "Page");
     ret += HPDF_Dict_Add (page, "MediaBox", HPDF_Box_Array_New (page->mmgr,
-                HPDF_ToBox (0, 0, HPDF_DEF_PAGE_WIDTH, HPDF_DEF_PAGE_HEIGHT)));
+                HPDF_ToBox (0, 0, (HPDF_INT16)(HPDF_DEF_PAGE_WIDTH), (HPDF_INT16)(HPDF_DEF_PAGE_HEIGHT))));
     ret += HPDF_Dict_Add (page, "Contents", attr->contents);
 
     ret += AddResource (page);
@@ -460,14 +463,19 @@ AddResource  (HPDF_Page  page)
     if (!procset)
         return HPDF_Error_GetCode (page->error);
 
-    ret += HPDF_Dict_Add (resource, "ProcSet", procset);
+    if (HPDF_Dict_Add (resource, "ProcSet", procset) != HPDF_OK)
+        return HPDF_Error_GetCode (resource->error);
+
     ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "PDF"));
     ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "Text"));
     ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageB"));
     ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageC"));
     ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageI"));
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (procset->error);
+
+    return HPDF_OK;
 }
 
 
@@ -688,9 +696,12 @@ AddAnnotation  (HPDF_Page        page,
             return ret;
     }
     
-    ret += HPDF_Array_Add (array, annot);
+    if ((ret = HPDF_Array_Add (array, annot)) != HPDF_OK)
+       return ret;
+
     /* Add Parent to the annotation  */
-    ret += HPDF_Dict_Add( annot, "P", page);
+    ret = HPDF_Dict_Add( annot, "P", page);
+
     return ret;
 }
 
@@ -1688,6 +1699,7 @@ HPDF_Page_Create3DView    (HPDF_Page       page,
     HPDF_Dict view;
 
     HPDF_PTRACE((" HPDF_Page_Create3DView\n"));
+    HPDF_UNUSED(annot3d);
 
     if (!HPDF_Page_Validate (page))
         return NULL;
