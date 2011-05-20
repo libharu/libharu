@@ -658,7 +658,7 @@ HPDF_GetContents   (HPDF_Doc   pdf,
                  HPDF_UINT32  *size)
 {
     HPDF_Stream stream;
-    HPDF_UINT isize;
+    HPDF_UINT isize = *size;
     HPDF_STATUS ret;
 
     HPDF_PTRACE ((" HPDF_GetContents\n"));
