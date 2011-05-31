@@ -15158,6 +15158,7 @@ static HPDF_BOOL
 ETen_B5_IsLeadByte  (HPDF_Encoder    encoder,
                   HPDF_BYTE       b)
 {
+    HPDF_UNUSED (encoder);
     return ((b >= 0x81 && b <= 0xfe));
 }
 
@@ -15166,6 +15167,7 @@ static HPDF_BOOL
 ETen_B5_IsTrialByte  (HPDF_Encoder    encoder,
                    HPDF_BYTE       b)
 {
+    HPDF_UNUSED (encoder);
     return (b >= 0x40 && b <= 0xfe);
 }
 

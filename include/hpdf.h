@@ -20,6 +20,8 @@
 #include "hpdf_config.h"
 #include "hpdf_version.h"
 
+#define HPDF_UNUSED(a) ((void)(a))
+
 #ifdef HPDF_DLL_MAKE
 #    define HPDF_EXPORT(A)  __declspec(dllexport) A  __stdcall
 #else
@@ -762,6 +764,16 @@ HPDF_LoadJpegImageFromMem   (HPDF_Doc      pdf,
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadU3DFromFile (HPDF_Doc      pdf,
                             const char    *filename);
+
+HPDF_EXPORT(HPDF_Image)
+HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
+                           const HPDF_BYTE   *buf,
+                          HPDF_UINT          width,
+                          HPDF_UINT          height,
+                          HPDF_UINT          line_width,
+                          HPDF_BOOL          black_is1,
+                          HPDF_BOOL          top_is_first);
+
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadRawImageFromFile  (HPDF_Doc           pdf,

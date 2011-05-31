@@ -320,12 +320,12 @@ HPDF_LinkAnnot_SetBorderStyle  (HPDF_Annotation  annot,
 
         ret += HPDF_Array_AddNumber (dash, dash_on);
         ret += HPDF_Array_AddNumber (dash, dash_off);
+
+        if (ret != HPDF_OK)
+           return HPDF_CheckError (annot->error);
     }
 
-    if (ret != HPDF_OK)
-        return HPDF_CheckError (annot->error);
-
-    return ret;
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -486,7 +486,10 @@ HPDF_Annot_SetRGBColor (HPDF_Annotation annot, HPDF_RGBColor color)
     ret += HPDF_Array_AddReal (cArray, color.g);
     ret += HPDF_Array_AddReal (cArray, color.b);
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (annot->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -499,7 +502,7 @@ HPDF_Annot_SetCMYKColor (HPDF_Annotation annot, HPDF_CMYKColor color)
 
     cArray = HPDF_Array_New (annot->mmgr);
     if (!cArray)
-        return HPDF_Error_GetCode ( annot->error);
+        return HPDF_Error_GetCode (annot->error);
 
     ret += HPDF_Dict_Add (annot, "C", cArray);
     ret += HPDF_Array_AddReal (cArray, color.c);
@@ -507,7 +510,10 @@ HPDF_Annot_SetCMYKColor (HPDF_Annotation annot, HPDF_CMYKColor color)
     ret += HPDF_Array_AddReal (cArray, color.y);
     ret += HPDF_Array_AddReal (cArray, color.k);
 
-    return ret;
+    if (ret != HPDF_OK)
+        return HPDF_Error_GetCode (annot->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -525,7 +531,10 @@ HPDF_Annot_SetGrayColor (HPDF_Annotation annot, HPDF_REAL color)
     ret += HPDF_Dict_Add (annot, "C", cArray);
     ret += HPDF_Array_AddReal ( cArray, color);
 
-    return ret;
+    if (ret != HPDF_OK)
+        return HPDF_Error_GetCode ( annot->error);
+    
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -540,7 +549,7 @@ HPDF_Annot_SetNoColor (HPDF_Annotation annot)
     if (!cArray)
         return HPDF_Error_GetCode ( annot->error);
 
-    ret += HPDF_Dict_Add (annot, "C", cArray);
+    ret = HPDF_Dict_Add (annot, "C", cArray);
     
     return ret;
 }
@@ -554,7 +563,7 @@ HPDF_TextAnnot_SetIcon  (HPDF_Annotation  annot,
     if (!CheckSubType (annot, HPDF_ANNOT_TEXT_NOTES))
         return HPDF_INVALID_ANNOTATION;
 
-    if (icon < 0 || icon >= HPDF_ANNOT_ICON_EOF)
+    if (icon >= HPDF_ANNOT_ICON_EOF)
         return HPDF_RaiseError (annot->error, HPDF_ANNOT_INVALID_ICON,
                 (HPDF_STATUS)icon);
 
@@ -673,7 +682,10 @@ HPDF_MarkupAnnot_SetInteriorRGBColor (HPDF_Annotation  annot, HPDF_RGBColor colo
     ret += HPDF_Array_AddReal (cArray, color.g);
     ret += HPDF_Array_AddReal (cArray, color.b);
 
-    return ret;
+    if (ret != HPDF_OK)
+        return HPDF_Error_GetCode (annot->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -694,7 +706,10 @@ HPDF_MarkupAnnot_SetInteriorCMYKColor (HPDF_Annotation  annot, HPDF_CMYKColor co
     ret += HPDF_Array_AddReal (cArray, color.y);
     ret += HPDF_Array_AddReal (cArray, color.k);
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (annot->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -712,7 +727,10 @@ HPDF_MarkupAnnot_SetInteriorGrayColor (HPDF_Annotation  annot, HPDF_REAL color)/
     ret += HPDF_Dict_Add (annot, "IC", cArray);
     ret += HPDF_Array_AddReal (cArray, color);
 
-    return ret;
+    if (ret != HPDF_OK)
+        return HPDF_Error_GetCode ( annot->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -727,7 +745,7 @@ HPDF_MarkupAnnot_SetInteriorTransparent (HPDF_Annotation  annot) /* IC with No C
     if (!cArray)
         return HPDF_Error_GetCode ( annot->error);
 
-    ret += HPDF_Dict_Add (annot, "IC", cArray);
+    ret = HPDF_Dict_Add (annot, "IC", cArray);
 
     return ret;
 }
@@ -889,7 +907,11 @@ HPDF_TextMarkupAnnot_SetQuadPoints ( HPDF_Annotation annot, HPDF_Point lb, HPDF_
     ret += HPDF_Array_AddReal (quadPoints, lt.y);
     ret += HPDF_Array_AddReal (quadPoints, rt.x);
     ret += HPDF_Array_AddReal (quadPoints, rt.y);
-    return ret;
+
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (quadPoints->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -910,7 +932,10 @@ HPDF_FreeTextAnnot_SetLineEndingStyle (HPDF_Annotation annot, HPDF_LineAnnotEndi
     ret += HPDF_Array_AddName (lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT)startStyle]);
     ret += HPDF_Array_AddName (lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT)endStyle]);
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (lineEndStyles->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -940,7 +965,10 @@ HPDF_MarkupAnnot_SetRectDiff (HPDF_Annotation  annot, HPDF_Rect  rect) /* RD ent
     ret += HPDF_Array_AddReal (array, rect.right);
     ret += HPDF_Array_AddReal (array, rect.top);
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (array->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -982,7 +1010,11 @@ HPDF_FreeTextAnnot_Set3PointCalloutLine ( HPDF_Annotation annot, HPDF_Point star
     ret += HPDF_Array_AddReal (clPoints, kneePoint.y);
     ret += HPDF_Array_AddReal (clPoints, endPoint.x);
     ret += HPDF_Array_AddReal (clPoints, endPoint.y);
-    return ret;
+
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (clPoints->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1004,7 +1036,11 @@ HPDF_FreeTextAnnot_Set2PointCalloutLine ( HPDF_Annotation annot, HPDF_Point star
     ret += HPDF_Array_AddReal (clPoints, startPoint.y);
     ret += HPDF_Array_AddReal (clPoints, endPoint.x);
     ret += HPDF_Array_AddReal (clPoints, endPoint.y);
-    return ret;
+
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (clPoints->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1023,7 +1059,10 @@ HPDF_MarkupAnnot_SetCloudEffect (HPDF_Annotation  annot, HPDF_INT cloudIntensity
     ret += HPDF_Dict_AddName ( borderEffect, "S", "C");
     ret += HPDF_Dict_AddNumber ( borderEffect, "I", cloudIntensity);
     
-    return ret;
+    if (ret != HPDF_OK)
+        return HPDF_Error_GetCode (annot->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1049,6 +1088,9 @@ HPDF_LineAnnot_SetPosition (HPDF_Annotation annot,
     ret += HPDF_Array_AddReal (lineEndPoints, endPoint.x);
     ret += HPDF_Array_AddReal (lineEndPoints, endPoint.y);
 
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode ( lineEndPoints->error);
+
     lineEndStyles = HPDF_Array_New ( annot->mmgr);
     if ( !lineEndStyles)
         return HPDF_Error_GetCode ( annot->error);
@@ -1059,7 +1101,10 @@ HPDF_LineAnnot_SetPosition (HPDF_Annotation annot,
     ret += HPDF_Array_AddName (lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT)startStyle]);
     ret += HPDF_Array_AddName (lineEndStyles, HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[(HPDF_INT)endStyle]);
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode ( lineEndStyles->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1073,7 +1118,10 @@ HPDF_LineAnnot_SetLeader (HPDF_Annotation annot, HPDF_INT leaderLen, HPDF_INT le
     ret += HPDF_Dict_AddNumber ( annot, "LLE", leaderExtLen);
     ret += HPDF_Dict_AddNumber ( annot, "LLO", leaderOffsetLen);
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode ( annot->error);
+
+    return HPDF_OK;
 }
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1086,6 +1134,9 @@ HPDF_LineAnnot_SetCaption (HPDF_Annotation annot, HPDF_BOOL showCaption, HPDF_Li
     ret += HPDF_Dict_AddBoolean ( annot, "Cap", showCaption);
     ret += HPDF_Dict_AddName( annot, "CP", HPDF_LINE_ANNOT_CAP_POSITION_NAMES[(HPDF_INT)position]);
 
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode ( annot->error);
+
     capOffset = HPDF_Array_New ( annot->mmgr);
     if ( !capOffset)
         return HPDF_Error_GetCode ( annot->error);
@@ -1096,7 +1147,10 @@ HPDF_LineAnnot_SetCaption (HPDF_Annotation annot, HPDF_BOOL showCaption, HPDF_Li
     ret += HPDF_Array_AddNumber (capOffset, horzOffset);
     ret += HPDF_Array_AddNumber (capOffset, vertOffset);
 
-    return ret;
+    if (ret != HPDF_OK)
+       return HPDF_Error_GetCode (capOffset->error);
+
+    return HPDF_OK;
 }
 
 

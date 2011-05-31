@@ -40,6 +40,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 # set library name, msvc does not append 'lib' automatically
 if(MSVC)
  set(LIBHARU_NAME lib)
+ set(CMAKE_DEBUG_POSTFIX "d")
 endif(MSVC)
 set(LIBHARU_NAME ${LIBHARU_NAME}hpdf)
 set(LIBHARU_NAME_STATIC ${LIBHARU_NAME}s)
@@ -158,7 +159,7 @@ set(
     include/hpdf_u3d.h
     include/hpdf_utils.h
     include/hpdf_pdfa.h
-    include/hpdf_3dmeasures.h
+    include/hpdf_3dmeasure.h
     include/hpdf_exdata.h
     ${CMAKE_BINARY_DIR}/include/hpdf_config.h
 )

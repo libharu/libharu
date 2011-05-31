@@ -25,6 +25,8 @@ static const char *HPDF_PAGE_LAYOUT_NAMES[] = {
                         "OneColumn",
                         "TwoColumnLeft",
                         "TwoColumnRight",
+                        "TwoPageLeft",
+                        "TwoPageRight",
                         NULL
 };
 
@@ -309,6 +311,17 @@ HPDF_Catalog_SetViewerPreference  (HPDF_Catalog   catalog,
             return ret;
     } else {
         if ((ret = HPDF_Dict_RemoveElement (preferences, "CenterWindow")) !=
+                HPDF_OK)
+            if (ret != HPDF_DICT_ITEM_NOT_FOUND)
+                return ret;
+    }
+
+    if (value & HPDF_PRINT_SCALING_NONE) {
+        if ((ret = HPDF_Dict_AddName (preferences, "PrintScaling",
+                "None")) != HPDF_OK)
+            return ret;
+    } else {
+        if ((ret = HPDF_Dict_RemoveElement (preferences, "PrintScaling")) !=
                 HPDF_OK)
             if (ret != HPDF_DICT_ITEM_NOT_FOUND)
                 return ret;

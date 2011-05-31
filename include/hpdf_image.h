@@ -24,6 +24,17 @@
 extern "C" {
 #endif
 
+HPDF_Image
+HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr  mmgr,
+                          const HPDF_BYTE   *buf,
+                          HPDF_Xref          xref,
+                          HPDF_UINT          width,
+                          HPDF_UINT          height,
+                          HPDF_UINT          line_width,
+                          HPDF_BOOL          top_is_first
+                          );
+
+
 #ifndef LIBHPDF_HAVE_NOPNGLIB
 
 HPDF_Image

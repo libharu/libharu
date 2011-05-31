@@ -329,7 +329,7 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
 {
     HPDF_Dict image;
     HPDF_STATUS ret = HPDF_OK;
-    HPDF_UINT size;
+    HPDF_UINT size=0;
 
     HPDF_PTRACE ((" HPDF_Image_LoadRawImageFromMem\n"));
 
@@ -358,19 +358,20 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
 
     switch (color_space) {
         case HPDF_CS_DEVICE_GRAY:
-            size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
+            size = (HPDF_UINT)((HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876);
             ret = HPDF_Dict_AddName (image, "ColorSpace", COL_GRAY);
             break;
         case HPDF_CS_DEVICE_RGB:
-            size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
+            size = (HPDF_UINT)((HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876);
             size *= 3;
             ret = HPDF_Dict_AddName (image, "ColorSpace", COL_RGB);
             break;
         case HPDF_CS_DEVICE_CMYK:
-            size = (HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876;
+            size = (HPDF_UINT)((HPDF_DOUBLE)width * height / (8 / bits_per_component) + 0.876);
             size *= 4;
             ret = HPDF_Dict_AddName (image, "ColorSpace", COL_CMYK);
             break;
+        default:;
     }
 
     if (ret != HPDF_OK)
@@ -435,8 +436,8 @@ HPDF_Image_GetSize (HPDF_Image  image)
     height = HPDF_Dict_GetItem (image, "Height", HPDF_OCLASS_NUMBER);
 
     if (width && height) {
-      ret.x = width->value;
-      ret.y = height->value;
+      ret.x = (HPDF_REAL)width->value;
+      ret.y = (HPDF_REAL)height->value;
     }
 
     return ret;
@@ -459,8 +460,8 @@ HPDF_Image_GetSize2 (HPDF_Image  image, HPDF_Point *size)
     height = HPDF_Dict_GetItem (image, "Height", HPDF_OCLASS_NUMBER);
 
     if (width && height) {
-      size->x = width->value;
-      size->y = height->value;
+      size->x = (HPDF_REAL)width->value;
+      size->y = (HPDF_REAL)height->value;
     }
 
     return HPDF_OK;
@@ -516,13 +517,13 @@ HPDF_Image_GetColorSpace (HPDF_Image  image)
 HPDF_EXPORT(HPDF_UINT)
 HPDF_Image_GetWidth  (HPDF_Image   image)
 {
-    return HPDF_Image_GetSize (image).x;
+    return (HPDF_UINT)HPDF_Image_GetSize (image).x;
 }
 
 HPDF_EXPORT(HPDF_UINT)
 HPDF_Image_GetHeight  (HPDF_Image   image)
 {
-    return HPDF_Image_GetSize (image).y;
+    return (HPDF_UINT)HPDF_Image_GetSize (image).y;
 }
 
 HPDF_STATUS

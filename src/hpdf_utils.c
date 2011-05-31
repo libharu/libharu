@@ -136,7 +136,7 @@ HPDF_IToA  (char        *s,
     *t-- = 0;
 
     while (val > 0) {
-        *t = (char)(val % 10) + '0';
+        *t = (char)((char)(val % 10) + '0');
         val /= 10;
         t--;
     }
@@ -165,7 +165,7 @@ HPDF_IToA2  (char         *s,
     *u = 0;
     t = u - 1;
     while (val > 0 && t >= s) {
-        *t = (char)(val % 10) + '0';
+        *t = (char)((char)(val % 10) + '0');
         val /= 10;
         t--;
     }
@@ -209,7 +209,7 @@ HPDF_FToA  (char       *s,
 
     /* process decimal part */
     for (i = 0; i < 5; i++) {
-        *t = (char)(fpart_val % 10) + '0';
+        *t = (char)((char)(fpart_val % 10) + '0');
         fpart_val /= 10;
         t--;
     }
@@ -221,7 +221,7 @@ HPDF_FToA  (char       *s,
         t--;
 
     while (int_val > 0) {
-        *t = (char)(int_val % 10) + '0';
+        *t = (char)((char)(int_val % 10) + '0');
         int_val /= 10;
         t--;
     }

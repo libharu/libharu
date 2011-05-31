@@ -2605,8 +2605,8 @@ HPDF_UNICODE
 HPDF_CMapEncoder_ToUnicode  (HPDF_Encoder  encoder,
                              HPDF_UINT16   code)
 {
-    HPDF_BYTE l = code;
-    HPDF_BYTE h = code >> 8;
+    HPDF_BYTE l = (HPDF_BYTE)code;
+    HPDF_BYTE h = (HPDF_BYTE)(code >> 8);
     HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr)encoder->attr;
 
     return attr->unicode_map[l][h];
@@ -2617,8 +2617,8 @@ HPDF_UINT16
 HPDF_CMapEncoder_ToCID  (HPDF_Encoder  encoder,
                          HPDF_UINT16   code)
 {
-    HPDF_BYTE l = code;
-    HPDF_BYTE h = code >> 8;
+    HPDF_BYTE l = (HPDF_BYTE)code;
+    HPDF_BYTE h = (HPDF_BYTE)(code >> 8);
 
     HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr)encoder->attr;
 
@@ -2677,6 +2677,8 @@ HPDF_CMapEncoder_Write  (HPDF_Encoder  encoder,
                          HPDF_Stream   out)
 {
     HPDF_STATUS ret = HPDF_OK;
+    HPDF_UNUSED (out);
+    HPDF_UNUSED (encoder);
 
     return ret;
 }
@@ -2689,6 +2691,7 @@ HPDF_Encoder_SetParseText  (HPDF_Encoder        encoder,
                             HPDF_UINT           len)
 {
     HPDF_PTRACE ((" HPDF_CMapEncoder_SetParseText\n"));
+    HPDF_UNUSED (encoder);
 
     state->text = text;
     state->index = 0;
@@ -2755,8 +2758,8 @@ HPDF_CMapEncoder_AddCMap  (HPDF_Encoder             encoder,
         HPDF_STATUS ret;
 
         while (code <= range->to) {
-            HPDF_BYTE l = code;
-            HPDF_BYTE h = code >> 8;
+            HPDF_BYTE l = (HPDF_BYTE)code;
+            HPDF_BYTE h = (HPDF_BYTE)(code >> 8);
 
             attr->cid_map[l][h] = cid;
             code++;
@@ -2843,8 +2846,8 @@ HPDF_CMapEncoder_SetUnicodeArray  (HPDF_Encoder                 encoder,
 
     if (array != NULL)
         while (array->unicode != 0xffff) {
-            HPDF_BYTE l = array->code;
-            HPDF_BYTE h = array->code >> 8;
+            HPDF_BYTE l = (HPDF_BYTE)array->code;
+            HPDF_BYTE h = (HPDF_BYTE)(array->code >> 8);
             attr->unicode_map[l][h] = array->unicode;
             array++;
         }

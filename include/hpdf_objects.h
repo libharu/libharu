@@ -425,6 +425,7 @@ typedef struct _HPDF_Dict_Rec {
     HPDF_Dict_FreeFunc         free_fn;
     HPDF_Stream                stream;
     HPDF_UINT                  filter;
+    HPDF_Dict                  filterParams;
     void                       *attr;
 } HPDF_Dict_Rec;
 
