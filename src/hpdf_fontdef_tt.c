@@ -25,7 +25,7 @@
 
 #define HPDF_REQUIRED_TAGS_COUNT  13
 
-static const char  *REQUIRED_TAGS[HPDF_REQUIRED_TAGS_COUNT] = {
+static const char * const REQUIRED_TAGS[HPDF_REQUIRED_TAGS_COUNT] = {
     "OS/2",
     "cmap",
     "cvt ",

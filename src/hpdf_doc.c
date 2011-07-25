@@ -26,7 +26,7 @@
 #include "hpdf.h"
 
 
-static const char *HPDF_VERSION_STR[6] = {
+static const char * const HPDF_VERSION_STR[6] = {
                 "%PDF-1.2\012%\267\276\255\252\012",
                 "%PDF-1.3\012%\267\276\255\252\012",
                 "%PDF-1.4\012%\267\276\255\252\012",
