@@ -31,7 +31,7 @@ typedef struct _HPDF_PageSizeValue {
     HPDF_REAL   y;
 } HPDF_PageSizeValue;
 
-static HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[] = {
+static const HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[] = {
     {612, 792},     /* HPDF_PAGE_SIZE_LETTER */
     {612, 1008},    /* HPDF_PAGE_SIZE_LEGAL */
     {(HPDF_REAL)841.89, (HPDF_REAL)1199.551},    /* HPDF_PAGE_SIZE_A3 */
@@ -77,7 +77,7 @@ AddAnnotation  (HPDF_Page        page,
 static HPDF_UINT
 GetPageCount  (HPDF_Dict    pages);
 
-static const char *HPDF_INHERITABLE_ENTRIES[5] = {
+static const char * const HPDF_INHERITABLE_ENTRIES[5] = {
                         "Resources",
                         "MediaBox",
                         "CropBox",

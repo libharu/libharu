@@ -373,7 +373,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetLighting(HPDF_Dict view, const char *sch
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_Dict lighting;
 	int i;
-	static const char *schemes[] =
+	static const char * const schemes[] =
 	{ "Artwork", "None", "White", "Day", "Night", "Hard", "Primary", "Blue", "Red", "Cube", "CAD", "Headlamp" };
 
 	HPDF_PTRACE ((" HPDF_3DView_SetLighting\n"));

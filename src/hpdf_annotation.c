@@ -21,7 +21,7 @@
 #include "hpdf_annotation.h"
 #include "hpdf.h"
 
-static const char  *HPDF_ANNOT_TYPE_NAMES[] = {
+static const char * const HPDF_ANNOT_TYPE_NAMES[] = {
                                         "Text",
                                         "Link",
                                         "Sound",
@@ -41,7 +41,7 @@ static const char  *HPDF_ANNOT_TYPE_NAMES[] = {
 										"Projection"
                                         };
 
-static const char  *HPDF_ANNOT_ICON_NAMES_NAMES[] = {
+static const char * const HPDF_ANNOT_ICON_NAMES_NAMES[] = {
                                         "Comment",
                                         "Key",
                                         "Note",
@@ -51,7 +51,7 @@ static const char  *HPDF_ANNOT_ICON_NAMES_NAMES[] = {
                                         "Insert"
                                         };
 
-static const char  *HPDF_ANNOT_INTENT_NAMES[] = {
+static const char * const HPDF_ANNOT_INTENT_NAMES[] = {
                                         "FreeTextCallout",
                                         "FreeTextTypeWriter",
                                         "LineArrow",
@@ -61,7 +61,7 @@ static const char  *HPDF_ANNOT_INTENT_NAMES[] = {
                                         "PolygonDimension"
                                         };
 
-static const char  *HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[] = {
+static const char * const HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[] = {
                                         "None",
                                         "Square",
                                         "Circle",
@@ -74,12 +74,12 @@ static const char  *HPDF_LINE_ANNOT_ENDING_STYLE_NAMES[] = {
                                         "Slash"
                                         };
 
-static const char  *HPDF_LINE_ANNOT_CAP_POSITION_NAMES[] = {
+static const char * const HPDF_LINE_ANNOT_CAP_POSITION_NAMES[] = {
                                         "Inline",
                                         "Top"
                                         };
 
-static const char  *HPDF_STAMP_ANNOT_NAME_NAMES[] = {
+static const char * const HPDF_STAMP_ANNOT_NAME_NAMES[] = {
                                         "Approved",
                                         "Experimental",
                                         "NotApproved",
