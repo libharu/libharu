@@ -92,7 +92,7 @@ dnl }}}
 
 AC_PREREQ(2.60)
 
-AC_INIT([libhpdf],[2.3.0-dev])
+AC_INIT([libhpdf],[2.3.0-rc1])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_SRCDIR(include/hpdf.h)
 AC_CONFIG_HEADER(include/config.h)
