@@ -688,7 +688,8 @@ MeasureText  (HPDF_Font          font,
                 tmp_len = i + 1;
                 if (real_width)
                     *real_width = w;
-            } else
+            } /* else
+			//Commenting this out fixes problem with HPDF_Text_Rect() splitting the words
             if (last_btype == HPDF_BYTE_TYPE_TRIAL ||
                     (btype == HPDF_BYTE_TYPE_LEAD &&
                     last_btype == HPDF_BYTE_TYPE_SINGLE)) {
@@ -697,7 +698,7 @@ MeasureText  (HPDF_Font          font,
                     if (real_width)
                         *real_width = w;
                 }
-            }
+            }*/
         }
 
         if (HPDF_IS_WHITE_SPACE(b)) {
