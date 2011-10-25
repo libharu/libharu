@@ -15,7 +15,9 @@
  *
  */
 /* This is used to avoid warnings on 'ctime' when compiling in MSVC 9 */
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include <time.h>
 #include "hpdf_utils.h"
