@@ -1,20 +1,18 @@
-#
-# Conditional build:
-%bcond_without	apidocs		# do not build and package API docs
-#
-%define ver	%(echo %{version} | tr . _)
-Summary:	library for generating PDF documents
-Summary(pl.UTF-8):	biblioteka do generowania dokumentów PDF
+Summary:	Library for generating PDF documents
+Summary(pl.UTF-8):	Biblioteka do generowania dokumentów PDF
 Name:		libharu
-Version:	2.0.8
-Release:	3
-License:	distributable
+Version:	2.2.1
+Release:	1
+License:	MIT-like
 Group:		Libraries
-Source0:	http://dl.sourceforge.net/libharu/%{name}_%{ver}.tgz
-# Source0-md5:	4b9714fd89b4134b0b9c93f857add327
-Patch0:		%{name}-destdir.patch
+Source0:	http://libharu.org/files/%{name}-%{version}.tar.bz2
+# Source0-md5:	4febd7e677b1c5d54db59a608b84e79f
+Patch0:		%{name}-libdir.patch
 URL:		http://libharu.org/
+BuildRequires:	autoconf >= 2.60
+BuildRequires:	automake
 BuildRequires:	libpng-devel
+BuildRequires:	libtool
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -47,38 +45,48 @@ generowania dokumentów PDF. Biblioteka ta umożliwia:
 - wsparcie dla czcionek i kodowań znaków CJK.
 
 %package devel
-Summary:	Header files for haru library
-Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki haru
+Summary:	Header files for Haru PDF library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki Haru PDF
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 
 %description devel
-Header files for haru library.
+Header files for Haru PDF library.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe biblioteki haru.
+Pliki nagłówkowe biblioteki Haru PDF.
+
+%package static
+Summary:	Static Haru PDF library
+Summary(pl.UTF-8):	Statyczna biblioteka Haru PDF
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static Haru PDF library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka Haru PDF.
 
 %prep
 %setup -q
 %patch0 -p1
 
 %build
-./configure \
-	--shared \
-	--prefix=%{_prefix} \
-	--cflags="%{rpmcflags}"
-%{__make} \
-	CC="%{__cc}"
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+%configure
+
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	PREFIX=%{_prefix} \
-	LIBDIR=%{_libdir} \
 	DESTDIR=$RPM_BUILD_ROOT
-
-install include/* $RPM_BUILD_ROOT%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -88,10 +96,15 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README TODO
-%attr(755,root,root) %{_libdir}/lib*.so.*.*.*
+%doc README
+%attr(755,root,root) %{_libdir}/libhpdf-%{version}.so
 
 %files devel
 %defattr(644,root,root,755)
-%{_libdir}/lib*.so
-%{_includedir}/*
+%attr(755,root,root) %{_libdir}/libhpdf.so
+%{_libdir}/libhpdf.la
+%{_includedir}/hpdf*.h
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libhpdf.a

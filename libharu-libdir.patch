@@ -1,0 +1,29 @@
+--- libharu-2.2.1/configure.in.orig	2010-11-22 10:59:56.000000000 +0100
++++ libharu-2.2.1/configure.in	2011-11-20 07:14:34.760591648 +0100
+@@ -240,7 +240,6 @@
+   fi
+ 
+   AC_MSG_RESULT([$ZLIB_DIR])
+-  LDFLAGS="$LDFLAGS -L$ZLIB_DIR/$LIBDIR"
+   CFLAGS="$CFLAGS -I$ZLIB_DIR/include"
+   LIBS="$LIBS -lz"
+ 
+@@ -291,13 +290,15 @@
+   fi
+ 
+   AC_MSG_RESULT([$LIBPNG_DIR])
+-  LDFLAGS="$LDFLAGS -L$LIBPNG_DIR/$LIBDIR"
+   CFLAGS="$CFLAGS -I$LIBPNG_DIR/include"
+-  LIBS="$LIBS -lpng"
+ 
+-  AC_CHECK_LIB([png], [png_init_io], [], [
++  AC_CHECK_LIB([png14], [png_init_io], [LIBS="$LIBS -lpng14"], [
++  AC_CHECK_LIB([png12], [png_init_io], [LIBS="$LIBS -lpng12"], [
++  AC_CHECK_LIB([png], [png_init_io], [LIBS="$LIBS -lpng"], [
+     AC_MSG_ERROR([png_init_io() is missing, check config.log for more details])
+   ])
++  ])
++  ])
+ fi
+ dnl }}}
+ 
