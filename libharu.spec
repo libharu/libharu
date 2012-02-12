@@ -2,7 +2,7 @@ Summary:	Library for generating PDF documents
 Summary(pl.UTF-8):	Biblioteka do generowania dokumentów PDF
 Name:		libharu
 Version:	2.2.1
-Release:	1
+Release:	2
 License:	MIT-like
 Group:		Libraries
 Source0:	http://libharu.org/files/%{name}-%{version}.tar.bz2
