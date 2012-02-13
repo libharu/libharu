@@ -2,12 +2,13 @@ Summary:	Library for generating PDF documents
 Summary(pl.UTF-8):	Biblioteka do generowania dokumentów PDF
 Name:		libharu
 Version:	2.2.1
-Release:	2
+Release:	3
 License:	MIT-like
 Group:		Libraries
 Source0:	http://libharu.org/files/%{name}-%{version}.tar.bz2
 # Source0-md5:	4febd7e677b1c5d54db59a608b84e79f
 Patch0:		%{name}-libdir.patch
+Patch1:		%{name}-libpng15.patch
 URL:		http://libharu.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
@@ -71,6 +72,7 @@ Statyczna biblioteka Haru PDF.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
