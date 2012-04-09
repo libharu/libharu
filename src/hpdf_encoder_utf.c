@@ -2141,6 +2141,7 @@ static HPDF_BOOL
 UTF8_IsLeadByte  (HPDF_Encoder    encoder,
                   HPDF_BYTE       b)
 {
+    HPDF_UNUSED (encoder);
     return ((b >= 0xC2 && b <= 0xDF));
 }
 
@@ -2149,6 +2150,7 @@ static HPDF_BOOL
 UTF8_IsTrialByte  (HPDF_Encoder    encoder,
                    HPDF_BYTE       b)
 {
+    HPDF_UNUSED (encoder);
     return (b >= 0x80 && b <= 0xBF);
 }
 
