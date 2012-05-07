@@ -62,6 +62,7 @@ HPDF_GState_New  (HPDF_MMgr    mmgr,
 
         gstate->font = current->font;
         gstate->font_size = current->font_size;
+        gstate->writing_mode = current->writing_mode;
 
         gstate->prev = current;
         gstate->depth = current->depth + 1;
