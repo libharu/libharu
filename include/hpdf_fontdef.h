@@ -303,7 +303,8 @@ typedef struct _HPDF_TTFontDefAttr_Rec {
     HPDF_TTF_OffsetTbl       offset_tbl;
     HPDF_TTF_CmapRange       cmap;
     HPDF_UINT16              fs_type;
-    HPDF_BYTE                panose[12];
+    HPDF_BYTE                sfamilyclass[2];
+    HPDF_BYTE                panose[10];
     HPDF_UINT32              code_page_range1;
     HPDF_UINT32              code_page_range2;
 
@@ -403,4 +404,3 @@ HPDF_CIDFontDef_ChangeStyle   (HPDF_FontDef    fontdef,
 #endif /* __cplusplus */
 
 #endif /* _HPDF_FONTDEF_H */
-
