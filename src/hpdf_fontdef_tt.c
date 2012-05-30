@@ -1678,6 +1678,7 @@ ParseOS2  (HPDF_FontDef  fontdef)
     HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr)fontdef->attr;
     HPDF_TTFTable *tbl = FindTable (fontdef, "OS/2");
     HPDF_STATUS ret;
+    HPDF_UINT16 version;
     HPDF_UINT len;
 
     HPDF_PTRACE ((" ParseOS2\n"));
@@ -1685,11 +1686,19 @@ ParseOS2  (HPDF_FontDef  fontdef)
     if (!tbl)
         return HPDF_SetError (fontdef->error, HPDF_TTF_MISSING_TABLE, 0);
 
+    /* get the number version. */
+    ret = HPDF_Stream_Seek (attr->stream, tbl->offset, HPDF_SEEK_SET);
+    if (ret != HPDF_OK)
+        return ret;
+
+    if ((ret = GetUINT16 (attr->stream, &version)) != HPDF_OK)
+        return ret;
+
+    /* check whether the font is allowed to be embedded. */
     ret = HPDF_Stream_Seek (attr->stream, tbl->offset + 8, HPDF_SEEK_SET);
     if (ret != HPDF_OK)
         return ret;
 
-    /* check whether the font is allowed to be embedded. */
     if ((ret = GetUINT16 (attr->stream, &attr->fs_type)) != HPDF_OK)
         return ret;
 
@@ -1697,32 +1706,59 @@ ParseOS2  (HPDF_FontDef  fontdef)
         return HPDF_SetError (fontdef->error, HPDF_TTF_CANNOT_EMBEDDING_FONT,
                 0);
 
-    if ((ret = HPDF_Stream_Seek (attr->stream, tbl->offset + 20, HPDF_SEEK_SET))
+    /* get fields sfamilyclass and panose. */
+    if ((ret = HPDF_Stream_Seek (attr->stream, tbl->offset + 30, HPDF_SEEK_SET))
             != HPDF_OK)
         return ret;
 
-    len = 12;
+    len = 2;
+    if ((ret = HPDF_Stream_Read (attr->stream, attr->sfamilyclass, &len)) != HPDF_OK)
+        return ret;
+
+    len = 10;
     if ((ret = HPDF_Stream_Read (attr->stream, attr->panose, &len)) != HPDF_OK)
         return ret;
 
-    HPDF_PTRACE((" ParseOS2 PANOSE=%u-%u "
-            "%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X\n",
+    HPDF_PTRACE((" ParseOS2 sFamilyClass=%d-%d "
+            "Panose=%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X-%02X\n",
+        attr->sfamilyclass[0], attr->sfamilyclass[1],
         attr->panose[0], attr->panose[1], attr->panose[2], attr->panose[3],
         attr->panose[4], attr->panose[5], attr->panose[6], attr->panose[7],
-        attr->panose[8], attr->panose[9], attr->panose[10], attr->panose[11]));
+        attr->panose[8], attr->panose[9]));
 
-    if (attr->panose[0] == 1 || attr->panose[0] == 4)
+    /* Class ID = 1   Oldstyle Serifs
+       Class ID = 2   Transitional Serifs
+       Class ID = 3   Modern Serifs
+       Class ID = 4   Clarendon Serifs
+       Class ID = 5   Slab Serifs
+       Class ID = 6   (reserved for future use)
+       Class ID = 7   Freeform Serifs
+       Class ID = 8   Sans Serif
+       Class ID = 9   Ornamentals
+       Class ID = 10  Scripts
+       Class ID = 11  (reserved for future use)
+       Class ID = 12  Symbolic */
+    if ((attr->sfamilyclass[0] > 0 && attr->sfamilyclass[0] < 6)
+        || (attr->sfamilyclass[0] == 7))
         fontdef->flags = fontdef->flags | HPDF_FONT_SERIF;
 
-    /* get ulCodePageRange1 */
-    if ((ret = HPDF_Stream_Seek (attr->stream, 78, HPDF_SEEK_CUR)) != HPDF_OK)
-        return ret;
+    if (attr->sfamilyclass[0] == 10)
+        fontdef->flags = fontdef->flags | HPDF_FONT_SCRIPT;
 
-    if ((ret = GetUINT32 (attr->stream, &attr->code_page_range1)) != HPDF_OK)
-        return ret;
+    if (attr->sfamilyclass[0] == 12)
+        fontdef->flags = fontdef->flags | HPDF_FONT_SYMBOLIC;
 
-    if ((ret = GetUINT32 (attr->stream, &attr->code_page_range2)) != HPDF_OK)
-        return ret;
+    /* get fields ulCodePageRange1 and ulCodePageRange2 */
+    if(version > 0) {
+        if ((ret = HPDF_Stream_Seek (attr->stream, 36, HPDF_SEEK_CUR)) != HPDF_OK)
+            return ret;
+
+        if ((ret = GetUINT32 (attr->stream, &attr->code_page_range1)) != HPDF_OK)
+            return ret;
+
+        if ((ret = GetUINT32 (attr->stream, &attr->code_page_range2)) != HPDF_OK)
+            return ret;
+    }
 
     HPDF_PTRACE(("  ParseOS2 CodePageRange1=%08X CodePageRange2=%08X\n",
                 (HPDF_UINT)attr->code_page_range1,
@@ -2228,4 +2264,3 @@ INT16Swap (HPDF_INT16  *value)
     HPDF_MemCpy (b, (HPDF_BYTE *)value, 2);
     *value = (HPDF_INT16)((HPDF_INT16)b[0] << 8 | (HPDF_INT16)b[1]);
 }
-
