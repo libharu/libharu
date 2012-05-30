@@ -754,7 +754,7 @@ HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr        mmgr,
  *      TRUE if image is oriented TOP-BOTTOM;
  *      FALSE if image is oriented BOTTOM-TOP
  */
-HPDF_Image
+HPDF_EXPORT(HPDF_Image)
 HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
                            const HPDF_BYTE   *buf,
                           HPDF_UINT          width,
