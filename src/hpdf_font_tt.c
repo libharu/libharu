@@ -180,6 +180,7 @@ CreateDescriptor  (HPDF_Font  font)
         ret += HPDF_Dict_AddName (descriptor, "Type", "FontDescriptor");
         ret += HPDF_Dict_AddNumber (descriptor, "Ascent", def->ascent);
         ret += HPDF_Dict_AddNumber (descriptor, "Descent", def->descent);
+        ret += HPDF_Dict_AddNumber (descriptor, "CapHeight", def->cap_height);
         ret += HPDF_Dict_AddNumber (descriptor, "Flags", def->flags);
 
         array = HPDF_Box_Array_New (font->mmgr, def->font_bbox);
@@ -405,5 +406,3 @@ OnFree  (HPDF_Dict  obj)
         HPDF_FreeMem (obj->mmgr, attr);
     }
 }
-
-
