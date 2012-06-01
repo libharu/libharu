@@ -56,12 +56,14 @@ if(LIBHARU_EXAMPLES)
     set(_LIBHARU_LIB ${LIBHARU_NAME_STATIC})
   endif(LIBHARU_SHARED)
   
+  find_library(M_LIB m)
+
   # =======================================================================
   # create demos
   # =======================================================================
   foreach(demo ${demos_NAMES})
     add_executable(${demo} ${demo}.c)
-    target_link_libraries(${demo} ${_LIBHARU_LIB})
+    target_link_libraries(${demo} ${_LIBHARU_LIB} ${M_LIB})
     if(DEMO_C_FLAGS)
       set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
     endif(DEMO_C_FLAGS)
@@ -70,7 +72,7 @@ if(LIBHARU_EXAMPLES)
   # some demos need grid_sheet.c compiled in
   foreach(demo ${demos_with_grid_NAMES})
     add_executable(${demo} ${demo}.c grid_sheet.c)
-    target_link_libraries(${demo} ${_LIBHARU_LIB})
+    target_link_libraries(${demo} ${_LIBHARU_LIB} ${M_LIB})
     if(DEMO_C_FLAGS)
       set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
     endif(DEMO_C_FLAGS)
@@ -78,7 +80,7 @@ if(LIBHARU_EXAMPLES)
     
   # the grid_sheet demo needs extra defines
   add_executable(grid_sheet grid_sheet.c)
-  target_link_libraries(grid_sheet ${_LIBHARU_LIB})
+  target_link_libraries(grid_sheet ${_LIBHARU_LIB} ${M_LIB})
   set_target_properties(grid_sheet PROPERTIES COMPILE_FLAGS "${DEMO_C_FLAGS} -DSTAND_ALONE")
 
   # =======================================================================
