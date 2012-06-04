@@ -24,12 +24,12 @@ if(MSVC)
 endif(MSVC)
 
 # information about libharu
-set(LIBHARU_MAJOR 2)
-set(LIBHARU_MINOR 2)
-set(LIBHARU_PATCH 0)
-set(LIBHARU_VERSION ${LIBHARU_MAJOR}.${LIBHARU_MINOR}.${LIBHARU_PATCH})
-set(LIBHARU_DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files.")
-set(LIBHARU_PACKAGE_NAME "libHaru-${LIBHARU_VERSION}-${COMPILER_LABEL}")
+set(LIBHPDF_MAJOR 2)
+set(LIBHPDF_MINOR 2)
+set(LIBHPDF_PATCH 0)
+set(LIBHPDF_VERSION ${LIBHPDF_MAJOR}.${LIBHPDF_MINOR}.${LIBHPDF_PATCH})
+set(LIBHPDF_DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files.")
+set(LIBHPDF_PACKAGE_NAME "libHaru-${LIBHPDF_VERSION}-${COMPILER_LABEL}")
 
 # we want cmake version 2.4.8 at least
 cmake_minimum_required(VERSION 2.4.8 FATAL_ERROR)
@@ -39,31 +39,31 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 # set library name, msvc does not append 'lib' automatically
 if(MSVC)
- set(LIBHARU_NAME lib)
+ set(LIBHPDF_NAME lib)
  set(CMAKE_DEBUG_POSTFIX "d")
 endif(MSVC)
-set(LIBHARU_NAME ${LIBHARU_NAME}hpdf)
-set(LIBHARU_NAME_STATIC ${LIBHARU_NAME}s)
+set(LIBHPDF_NAME ${LIBHPDF_NAME}hpdf)
+set(LIBHPDF_NAME_STATIC ${LIBHPDF_NAME}s)
 
 # =======================================================================
 # command line options
 # =======================================================================
-option(LIBHARU_SHARED "Build shared lib" YES)
-option(LIBHARU_STATIC "Build static lib" YES)
-option(LIBHARU_EXAMPLES "Build libharu examples" NO)
+option(LIBHPDF_SHARED "Build shared lib" YES)
+option(LIBHPDF_STATIC "Build static lib" YES)
+option(LIBHPDF_EXAMPLES "Build libharu examples" NO)
 option(DEVPAK "Create DevPackage" NO)
 
 if(DEVPAK AND NOT WIN32)
   message( STATUS "DevPackage only available for Win32. Set DEVPAK to OFF." )
   set(DEVPAK OFF)
 endif(DEVPAK AND NOT WIN32)
-if(DEVPAK AND LIBHARU_EXAMPLES)
-  message( STATUS "Examples are not build for DevPackage. Set LIBHARU_EXAMPLES to OFF." )
-  set(LIBHARU_EXAMPLES OFF)
-endif(DEVPAK AND LIBHARU_EXAMPLES)
+if(DEVPAK AND LIBHPDF_EXAMPLES)
+  message( STATUS "Examples are not build for DevPackage. Set LIBHPDF_EXAMPLES to OFF." )
+  set(LIBHPDF_EXAMPLES OFF)
+endif(DEVPAK AND LIBHPDF_EXAMPLES)
 
 if(BUILD_SHARED_LIBS)
-  set(LIBHARU_SHARED ON)
+  set(LIBHPDF_SHARED ON)
 endif(BUILD_SHARED_LIBS)
 
 # =======================================================================
@@ -75,23 +75,18 @@ include(summary)
 # check zlib availibility
 find_package(ZLIB)
 if(ZLIB_FOUND)
-  set(HAVE_LIBZ ON)
   include_directories(${ZLIB_INCLUDE_DIR})
   set(ADDITIONAL_LIBRARIES ${ZLIB_LIBRARIES})
-else(ZLIB_FOUND)
-  set(HPDF_NOZLIB ON)  
 endif(ZLIB_FOUND)
   
 # check png availibility
 find_package(PNG)
 if(PNG_FOUND)
-  set(HAVE_LIBPNG ON)
   include_directories(${PNG_INCLUDE_DIR})
   add_definitions(${PNG_DEFINITIONS})
   set(ADDITIONAL_LIBRARIES ${ADDITIONAL_LIBRARIES} ${PNG_LIBRARIES})
-else(PNG_FOUND)
-  set(HPDF_NOPNGLIB ON)  
 endif(PNG_FOUND)
+
 
 # =======================================================================
 # configure header files, add compiler flags
@@ -104,6 +99,53 @@ if(MSVC_VERSION GREATER 1399)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
 endif(MSVC_VERSION GREATER 1399)
 include_directories(${CMAKE_SOURCE_DIR}/include)
+
+
+# these are options
+option (LIBHPDF_DEBUG "Enable HPDF Debug")
+option (LIBHPDF_DEBUG_TRACE "Enable HPDF Debug trace")
+
+# Transform all the usual HAVE_* variables to LIBHPDF_HAVE_*
+set (LIBHPDF_HAVE_DLFCN_H ${HAVE_DLFCN_H})
+set (LIBHPDF_HAVE_INTTYPES_H ${HAVE_INTTYPES_H})
+set (LIBHPDF_HAVE_MEMORY_H ${HAVE_MEMORY_H})
+set (LIBHPDF_HAVE_STDINT_H ${HAVE_STDINT_H})
+set (LIBHPDF_HAVE_STDLIB_H ${HAVE_STDLIB_H})
+set (LIBHPDF_HAVE_STRINGS_H ${HAVE_STRINGS_H})
+set (LIBHPDF_HAVE_STRING_H ${HAVE_STRING_H})
+set (LIBHPDF_HAVE_SYS_STAT_H ${HAVE_SYS_STAT_H})
+set (LIBHPDF_HAVE_SYS_TYPES_H ${HAVE_SYS_TYPES_H})
+set (LIBHPDF_HAVE_UNISTD_H ${HAVE_UNISTD_H})
+
+# I'll guess what these were supposed to be
+set (LIBHPDF_PACKAGE_STRING "${LIBHPDF_PACKAGE_NAME}")
+set (LIBHPDF_PACKAGE_VERSION ${LIBHPDF_VERSION})
+
+# I have no idea
+set (LIBHPDF_PACKAGE_BUGREPORT "TODO")
+set (LIBHPDF_PACKAGE_TARNAME "TODO")
+
+# Just set to 1, we'll assume they are always available.
+# If not, then someone will have to add some tests in here to correctly determine
+# the headers existance.
+set (LIBHPDF_STDC_HEADERS 1)
+
+# Don't do anything with this, it doesn't seem to be used anywhere anyhow
+# set (LIBHPDF_size_t ???)
+
+# support all of the different variations of LIBPNG defines in HARU
+set (LIBHPDF_HAVE_LIBPNG ${PNG_FOUND})
+if (!PNG_FOUND)
+   set (LIBHPDF_HAVE_NOPNGLIB 1)
+   set (HPDF_NOPNGLIB 1)
+endif (!PNG_FOUND)
+
+# support different zlib defines
+set (LIBHPDF_HAVE_LIBZ ${ZLIB_FOUND})
+if (!ZLIB_FOUND)
+   set (LIBHPDF_HAVE_NOZLIB 1)
+endif (!ZLIB_FOUND)
+
 
 # create hpdf_config.h
 configure_file(
@@ -184,13 +226,13 @@ summary()
 # =======================================================================
 # packing stuff
 # =======================================================================
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${LIBHARU_DESCRIPTION})
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${LIBHPDF_DESCRIPTION})
 set(CPACK_PACKAGE_VENDOR "Werner Smekal")
 set(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/README)
-set(CPACK_PACKAGE_VERSION_MAJOR "${LIBHARU_MAJOR}")
-set(CPACK_PACKAGE_VERSION_MINOR "${LIBHARU_MINOR}")
-set(CPACK_PACKAGE_VERSION_PATCH "${LIBHARU_PATCH}")
-set(CPACK_PACKAGE_FILE_NAME "libHaru-${LIBHARU_VERSION}-${COMPILER_LABEL}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${LIBHPDF_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${LIBHPDF_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${LIBHPDF_PATCH}")
+set(CPACK_PACKAGE_FILE_NAME "libHaru-${LIBHPDF_VERSION}-${COMPILER_LABEL}")
 
 set(CPACK_STRIP_FILES ON)
 
