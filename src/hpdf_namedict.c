@@ -24,7 +24,7 @@
 #define HPDF_UNUSED(a) ((void)(a))
 #endif
 
-static const char *HPDF_NAMEDICT_KEYS[] = {
+static const char * const HPDF_NAMEDICT_KEYS[] = {
                                         "EmbeddedFiles"
                                         };
 

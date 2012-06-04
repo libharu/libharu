@@ -175,6 +175,8 @@ HPDF_Fax3SetupState(struct _HPDF_CCITT_Data *pData, HPDF_UINT          width,
 	HPDF_Fax3CodecState* esp = EncoderState(pData);
 	uint32 rowbytes, rowpixels, nruns;
 
+	HPDF_UNUSED (height);
+
 	rowbytes = line_width;
 	rowpixels = width;
 
@@ -649,6 +651,8 @@ HPDF_Stream_CcittToStream( const HPDF_BYTE   *buf,
 	const HPDF_BYTE   *pBufEnd; /* end marker */
 	int lineIncrement;
 	struct _HPDF_CCITT_Data data;
+
+	HPDF_UNUSED (e);
 
 	if(height==0) return 1;
 	if(top_is_first) {

@@ -33,7 +33,7 @@ makefiles: configure Makefile.am src/Makefile.am
 
 cvsclean:
 	@rm -rf src/*.lo src/*.la src/*.o src/*.a src/.libs src/Makefile src/Makefile.in include/Makefile include/Makefile.in 
-	rm -rf src/stamp-h1 src/test include/hpdf_config.h* include/stamp-h1
+	rm -rf src/stamp-h1 src/test include/hpdf_config.h.in include/stamp-h1
 	rm -rf aclocal.m4 autom4te.cache install.sh libtool Makefile Makefile.in 'configure.in~' missing config.h* configure
 	rm -f config.guess config.log config.status config.sub cscope.out install-sh ltmain.sh
 

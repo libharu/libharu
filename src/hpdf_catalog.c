@@ -20,7 +20,7 @@
 #include "hpdf_catalog.h"
 #include "hpdf_pages.h"
 
-static const char *HPDF_PAGE_LAYOUT_NAMES[] = {
+static const char * const HPDF_PAGE_LAYOUT_NAMES[] = {
                         "SinglePage",
                         "OneColumn",
                         "TwoColumnLeft",
@@ -31,7 +31,7 @@ static const char *HPDF_PAGE_LAYOUT_NAMES[] = {
 };
 
 
-static const char *HPDF_PAGE_MODE_NAMES[] = {
+static const char * const HPDF_PAGE_MODE_NAMES[] = {
                         "UseNone",
                         "UseOutlines",
                         "UseThumbs",
