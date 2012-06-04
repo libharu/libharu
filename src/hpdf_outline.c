@@ -67,7 +67,7 @@ HPDF_OutlineRoot_New  (HPDF_MMgr   mmgr,
     open_flg->header.obj_id |= HPDF_OTYPE_HIDDEN;
 
     ret += HPDF_Dict_Add (outline, "_OPENED", open_flg);
-    ret += HPDF_Dict_AddName (outline, "Type", "Outline");
+    ret += HPDF_Dict_AddName (outline, "Type", "Outlines");
 
     if (ret != HPDF_OK)
         return NULL;
@@ -117,7 +117,7 @@ HPDF_Outline_New  (HPDF_MMgr          mmgr,
     open_flg->header.obj_id |= HPDF_OTYPE_HIDDEN;
     ret += HPDF_Dict_Add (outline, "_OPENED", open_flg);
 
-    ret += HPDF_Dict_AddName (outline, "Type", "Outline");
+    ret += HPDF_Dict_AddName (outline, "Type", "Outlines");
     ret += AddChild (parent, outline);
 
     if (ret != HPDF_OK)
@@ -328,5 +328,3 @@ HPDF_Outline_SetOpened  (HPDF_Outline  outline,
 
     return HPDF_OK;
 }
-
-

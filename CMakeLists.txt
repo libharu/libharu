@@ -211,7 +211,6 @@ install(FILES ${haru_HDRS} DESTINATION include)
 
 # install various files
 install(FILES README CHANGES INSTALL DESTINATION .)
-install(DIRECTORY doc DESTINATION .)
 if(NOT DEVPAK)
   install(DIRECTORY if DESTINATION .)
 endif(NOT DEVPAK)
