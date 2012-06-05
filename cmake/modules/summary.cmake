@@ -42,8 +42,8 @@ LIBHPDF_EXAMPLES:	${LIBHPDF_EXAMPLES}
 DEVPAK:			${DEVPAK}
 
 Optional libraries:
-HAVE_LIBZ:		${HAVE_LIBZ}
-HAVE_LIBPNG:		${HAVE_LIBPNG}
+HAVE_LIBZ:		${LIBHPDF_HAVE_LIBZ}
+HAVE_LIBPNG:		${LIBHPDF_HAVE_LIBPNG}
 ")
 message("${_output_results}")
 endmacro(summary)
