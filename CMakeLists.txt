@@ -53,6 +53,18 @@ option(LIBHPDF_STATIC "Build static lib" YES)
 option(LIBHPDF_EXAMPLES "Build libharu examples" NO)
 option(DEVPAK "Create DevPackage" NO)
 
+# Enable exceptions on linux if required
+# (eg if you are using libharu in a C++ environment,
+# and you want your error-callback to throw an exception,
+# you will need to enable this for the exception to be
+# able to throw through the libharu callstack).
+if (CMAKE_COMPILER_IS_GNUCC)
+   option (LIBHPDF_ENABLE_EXCEPTIONS "Enable exceptions" NO)
+   if (LIBHPDF_ENABLE_EXCEPTIONS)
+      set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
+   endif (LIBHPDF_ENABLE_EXCEPTIONS)
+endif (CMAKE_COMPILER_IS_GNUCC)
+
 if(DEVPAK AND NOT WIN32)
   message( STATUS "DevPackage only available for Win32. Set DEVPAK to OFF." )
   set(DEVPAK OFF)
