@@ -44,6 +44,7 @@
 
 /* libpng is not available */
 #cmakedefine LIBHPDF_HAVE_NOPNGLIB
+#cmakedefine HPDF_NOPNGLIB
 
 /* zlib is not available */
 #cmakedefine LIBHPDF_HAVE_NOZLIB

@@ -105,18 +105,6 @@ include_directories(${CMAKE_SOURCE_DIR}/include)
 option (LIBHPDF_DEBUG "Enable HPDF Debug")
 option (LIBHPDF_DEBUG_TRACE "Enable HPDF Debug trace")
 
-# Transform all the usual HAVE_* variables to LIBHPDF_HAVE_*
-set (LIBHPDF_HAVE_DLFCN_H ${HAVE_DLFCN_H})
-set (LIBHPDF_HAVE_INTTYPES_H ${HAVE_INTTYPES_H})
-set (LIBHPDF_HAVE_MEMORY_H ${HAVE_MEMORY_H})
-set (LIBHPDF_HAVE_STDINT_H ${HAVE_STDINT_H})
-set (LIBHPDF_HAVE_STDLIB_H ${HAVE_STDLIB_H})
-set (LIBHPDF_HAVE_STRINGS_H ${HAVE_STRINGS_H})
-set (LIBHPDF_HAVE_STRING_H ${HAVE_STRING_H})
-set (LIBHPDF_HAVE_SYS_STAT_H ${HAVE_SYS_STAT_H})
-set (LIBHPDF_HAVE_SYS_TYPES_H ${HAVE_SYS_TYPES_H})
-set (LIBHPDF_HAVE_UNISTD_H ${HAVE_UNISTD_H})
-
 # I'll guess what these were supposed to be
 set (LIBHPDF_PACKAGE_STRING "${LIBHPDF_PACKAGE_NAME}")
 set (LIBHPDF_PACKAGE_VERSION ${LIBHPDF_VERSION})
@@ -135,16 +123,16 @@ set (LIBHPDF_STDC_HEADERS 1)
 
 # support all of the different variations of LIBPNG defines in HARU
 set (LIBHPDF_HAVE_LIBPNG ${PNG_FOUND})
-if (!PNG_FOUND)
+if (NOT PNG_FOUND)
    set (LIBHPDF_HAVE_NOPNGLIB 1)
    set (HPDF_NOPNGLIB 1)
-endif (!PNG_FOUND)
+endif (NOT PNG_FOUND)
 
 # support different zlib defines
 set (LIBHPDF_HAVE_LIBZ ${ZLIB_FOUND})
-if (!ZLIB_FOUND)
+if (NOT ZLIB_FOUND)
    set (LIBHPDF_HAVE_NOZLIB 1)
-endif (!ZLIB_FOUND)
+endif (NOT ZLIB_FOUND)
 
 
 # create hpdf_config.h
