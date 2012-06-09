@@ -58,12 +58,12 @@ option(DEVPAK "Create DevPackage" NO)
 # and you want your error-callback to throw an exception,
 # you will need to enable this for the exception to be
 # able to throw through the libharu callstack).
-if (CMAKE_COMPILER_IS_GNUCC)
+if (CMAKE_COMPILER_IS_GNUCC OR ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang"))
    option (LIBHPDF_ENABLE_EXCEPTIONS "Enable exceptions" NO)
    if (LIBHPDF_ENABLE_EXCEPTIONS)
       set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fexceptions")
    endif (LIBHPDF_ENABLE_EXCEPTIONS)
-endif (CMAKE_COMPILER_IS_GNUCC)
+endif ()
 
 if(DEVPAK AND NOT WIN32)
   message( STATUS "DevPackage only available for Win32. Set DEVPAK to OFF." )
