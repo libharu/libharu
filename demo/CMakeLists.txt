@@ -4,7 +4,7 @@
 #
 # create demo executables
 
-if(LIBHARU_EXAMPLES)
+if(LIBHPDF_EXAMPLES)
   # =======================================================================
   # source file names and c flags
   # =======================================================================
@@ -47,21 +47,21 @@ if(LIBHARU_EXAMPLES)
   endif(WIN32 AND NOT CYGWIN)
 
   # link the examples to the shared library otherwise to the static
-  if(LIBHARU_SHARED)
-    set(_LIBHARU_LIB ${LIBHARU_NAME})
+  if(LIBHPDF_SHARED)
+    set(_LIBHPDF_LIB ${LIBHPDF_NAME})
     if(WIN32 AND NOT CYGWIN)
       set(DEMO_C_FLAGS "${DEMO_C_FLAGS} -DHPDF_DLL")
     endif(WIN32 AND NOT CYGWIN)
-  else(LIBHARU_SHARED)
-    set(_LIBHARU_LIB ${LIBHARU_NAME_STATIC})
-  endif(LIBHARU_SHARED)
+  else(LIBHPDF_SHARED)
+    set(_LIBHPDF_LIB ${LIBHPDF_NAME_STATIC})
+  endif(LIBHPDF_SHARED)
   
   # =======================================================================
   # create demos
   # =======================================================================
   foreach(demo ${demos_NAMES})
     add_executable(${demo} ${demo}.c)
-    target_link_libraries(${demo} ${_LIBHARU_LIB})
+    target_link_libraries(${demo} ${_LIBHPDF_LIB})
     if(DEMO_C_FLAGS)
       set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
     endif(DEMO_C_FLAGS)
@@ -70,7 +70,7 @@ if(LIBHARU_EXAMPLES)
   # some demos need grid_sheet.c compiled in
   foreach(demo ${demos_with_grid_NAMES})
     add_executable(${demo} ${demo}.c grid_sheet.c)
-    target_link_libraries(${demo} ${_LIBHARU_LIB})
+    target_link_libraries(${demo} ${_LIBHPDF_LIB})
     if(DEMO_C_FLAGS)
       set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
     endif(DEMO_C_FLAGS)
@@ -78,7 +78,7 @@ if(LIBHARU_EXAMPLES)
     
   # the grid_sheet demo needs extra defines
   add_executable(grid_sheet grid_sheet.c)
-  target_link_libraries(grid_sheet ${_LIBHARU_LIB})
+  target_link_libraries(grid_sheet ${_LIBHPDF_LIB})
   set_target_properties(grid_sheet PROPERTIES COMPILE_FLAGS "${DEMO_C_FLAGS} -DSTAND_ALONE")
 
   # =======================================================================
@@ -97,4 +97,4 @@ if(LIBHARU_EXAMPLES)
     DIRECTORY images mbtext pngsuite rawimage ttfont type1
     DESTINATION demo
   )
-endif(LIBHARU_EXAMPLES)
+endif(LIBHPDF_EXAMPLES)
