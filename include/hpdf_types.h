@@ -543,10 +543,13 @@ typedef enum _HPDF_ByteType {
 
 
 typedef enum _HPDF_TextAlignment {
-    HPDF_TALIGN_LEFT = 0,
-    HPDF_TALIGN_RIGHT,
-    HPDF_TALIGN_CENTER,
-    HPDF_TALIGN_JUSTIFY
+    HPDF_TALIGN_LEFT = 0x00,
+    HPDF_TALIGN_RIGHT = 0x02,
+    HPDF_TALIGN_CENTER = 0x04,
+    HPDF_TALIGN_JUSTIFY = 0x08,
+    HPDF_TALIGN_TOP = 0x10,
+    HPDF_TALIGN_BOTTOM = 0x20,
+    HPDF_TALIGN_MIDDLE = 0x40,
 } HPDF_TextAlignment;
 
 /*----------------------------------------------------------------------------*/
