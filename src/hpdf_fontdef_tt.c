@@ -2082,6 +2082,17 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
         tmp_tbl[i].offset = new_offset;
         tmp_tbl[i].length = tmp_stream->size - new_offset;
 
+        /* pad at 4 bytes */
+        {
+            HPDF_UINT size=tmp_tbl[i].length % 4;
+
+            HPDF_MemSet (&value, 0, 4);
+           
+            if (size != 0)
+              ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4-size);
+        }
+
+
         if (ret != HPDF_OK)
             goto Exit;
     }
