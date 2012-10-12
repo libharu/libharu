@@ -2062,6 +2062,17 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
             }
         } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"name", 4) == 0) {
             ret = RecreateName (fontdef, tmp_stream);
+        } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"post", 4) == 0) {
+            value=0x00030000;
+            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4);
+            HPDF_MemSet (&value, 0, 4);
+            ret = HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // italicAngle
+            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // underlinePosition + underlineThickness
+            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // isFixedPitch
+            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // minMemType42 
+            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // maxMemType42 
+            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // minMemType1
+            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // maxMemType1 
         } else {
             HPDF_UINT size = 4;
 
