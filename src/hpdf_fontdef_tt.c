@@ -2043,6 +2043,31 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
             ret = WriteHeader (fontdef, tmp_stream, &check_sum_ptr);
         } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"glyf", 4) == 0) {
             ret = RecreateGLYF (fontdef, new_offsets, tmp_stream);
+        } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"hmtx", 4) == 0) {
+            HPDF_UINT j;
+            HPDF_TTF_LongHorMetric *pmetric;
+
+            HPDF_MemSet (&value, 0, 4);
+            pmetric=attr->h_metric;
+            for (j = 0; j < attr->num_h_metric; j++) {
+                if (attr->glyph_tbl.flgs[i] == 1) {
+                    ret += WriteUINT16 (tmp_stream, pmetric->advance_width);
+                    ret += WriteUINT16 (tmp_stream, pmetric->lsb);
+                }
+                else
+                    ret += WriteUINT32 (tmp_stream, value);
+                pmetric++;
+            }
+
+            while (j < attr->num_glyphs) {
+                if (attr->glyph_tbl.flgs[i] == 1) {
+                    ret += WriteUINT16 (tmp_stream, pmetric->lsb);
+                }
+                else
+                    ret += WriteUINT32 (tmp_stream, value);
+                pmetric++;
+                j++;
+            }
         } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"loca", 4) == 0) {
             HPDF_UINT j;
 
