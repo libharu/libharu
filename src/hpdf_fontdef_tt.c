@@ -2050,21 +2050,24 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
             HPDF_MemSet (&value, 0, 4);
             pmetric=attr->h_metric;
             for (j = 0; j < attr->num_h_metric; j++) {
-                if (attr->glyph_tbl.flgs[i] == 1) {
+                if (attr->glyph_tbl.flgs[j] == 1) {
                     ret += WriteUINT16 (tmp_stream, pmetric->advance_width);
-                    ret += WriteUINT16 (tmp_stream, pmetric->lsb);
+                    ret += WriteINT16 (tmp_stream, pmetric->lsb);
                 }
                 else
-                    ret += WriteUINT32 (tmp_stream, value);
+                {
+                    ret += WriteUINT16 (tmp_stream, value);
+                    ret += WriteINT16 (tmp_stream, value);
+                }
                 pmetric++;
             }
 
             while (j < attr->num_glyphs) {
-                if (attr->glyph_tbl.flgs[i] == 1) {
-                    ret += WriteUINT16 (tmp_stream, pmetric->lsb);
+                if (attr->glyph_tbl.flgs[j] == 1) {
+                    ret += WriteINT16 (tmp_stream, pmetric->lsb);
                 }
                 else
-                    ret += WriteUINT32 (tmp_stream, value);
+                    ret += WriteINT16 (tmp_stream, value);
                 pmetric++;
                 j++;
             }
