@@ -2050,7 +2050,8 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
             HPDF_MemSet (&value, 0, 4);
             pmetric=attr->h_metric;
             for (j = 0; j < attr->num_h_metric; j++) {
-                if (attr->glyph_tbl.flgs[j] == 1) {
+                // write all the used glyphs and write the last metric in the hMetrics array
+                if (attr->glyph_tbl.flgs[j] == 1 || j==attr->num_h_metric-1) {
                     ret += WriteUINT16 (tmp_stream, pmetric->advance_width);
                     ret += WriteINT16 (tmp_stream, pmetric->lsb);
                 }
