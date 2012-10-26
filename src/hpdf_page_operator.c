@@ -2825,7 +2825,7 @@ HPDF_Page_New_Content_Stream  (HPDF_Page page,
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
-                               HPDF_Dict* shared_stream)
+                               HPDF_Dict shared_stream)
 {
     /* Call this function to insert a previously (with HPDF_New_Content_Stream) created content stream
        as a shared content stream on this page */
