@@ -2337,11 +2337,14 @@ InternalWriteText  (HPDF_PageAttr      attr,
 
     if (font_attr->type == HPDF_FONT_TYPE0_TT ||
             font_attr->type == HPDF_FONT_TYPE0_CID) {
+        HPDF_Encoder encoder;
+	HPDF_UINT len;
+
         if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
             return ret;
 
-        HPDF_Encoder encoder = font_attr->encoder;
-        HPDF_UINT len = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN);
+        encoder = font_attr->encoder;
+        len = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN);
 
         if (encoder->encode_text_fn == NULL) {
 	    if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
