@@ -20,6 +20,8 @@
 #include "hpdf_config.h"
 #include "hpdf_version.h"
 
+#define HPDF_UNUSED(a) ((void)(a))
+
 #ifdef HPDF_DLL_MAKE
 #    define HPDF_EXPORT(A)  __declspec(dllexport) A  __stdcall
 #else

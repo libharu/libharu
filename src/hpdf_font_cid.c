@@ -384,9 +384,9 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
     if (HPDF_Dict_Add (font, "DW2", array) != HPDF_OK)
         return NULL;
 
-    ret += HPDF_Array_AddNumber (array, fontdef->font_bbox.bottom);
-    ret += HPDF_Array_AddNumber (array, fontdef->font_bbox.bottom -
-                fontdef->font_bbox.top);
+    ret += HPDF_Array_AddNumber (array, (HPDF_INT32)(fontdef->font_bbox.bottom));
+    ret += HPDF_Array_AddNumber (array, (HPDF_INT32)(fontdef->font_bbox.bottom -
+                fontdef->font_bbox.top));
 
     HPDF_MemSet (tmp_map, 0, sizeof(HPDF_UNICODE) * 65536);
 
@@ -436,14 +436,14 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
 
             if (w != dw) {
                 if (!tmp_array) {
-                    if ((ret = HPDF_Array_AddNumber (array, i)) != HPDF_OK)
+                    if (HPDF_Array_AddNumber (array, i) != HPDF_OK)
                         return NULL;
 
                     tmp_array = HPDF_Array_New (font->mmgr);
                     if (!tmp_array)
                         return NULL;
 
-                    if ((ret = HPDF_Array_Add (array, tmp_array)) != HPDF_OK)
+                    if (HPDF_Array_Add (array, tmp_array) != HPDF_OK)
                         return NULL;
                 }
 
@@ -459,16 +459,15 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
             if (!attr->map_stream)
                 return NULL;
 
-            if ((ret = HPDF_Dict_Add (font, "CIDToGIDMap", attr->map_stream))
-                    != HPDF_OK)
+            if (HPDF_Dict_Add (font, "CIDToGIDMap", attr->map_stream) != HPDF_OK)
                 return NULL;
 
             for (i = 0; i < max; i++) {
                 HPDF_BYTE u[2];
                 HPDF_UINT16 gid = tmp_map[i];
 
-                u[0] = gid >> 8;
-                u[1] = gid;
+                u[0] = (HPDF_BYTE)(gid >> 8);
+                u[1] = (HPDF_BYTE)gid;
 
                 HPDF_MemCpy ((HPDF_BYTE *)(tmp_map + i), u, 2);
             }
@@ -604,8 +603,8 @@ TextWidth  (HPDF_Font         font,
                     (HPDF_CIDFontDefAttr)attr->fontdef->attr;
         dw2 = cid_fontdef_attr->DW2[1];
     } else {
-        dw2 = attr->fontdef->font_bbox.bottom -
-                    attr->fontdef->font_bbox.top;
+        dw2 = (HPDF_INT)(attr->fontdef->font_bbox.bottom -
+                    attr->fontdef->font_bbox.top);
     }
 
     HPDF_Encoder_SetParseText (encoder, &parse_state, text, len);
@@ -622,7 +621,7 @@ TextWidth  (HPDF_Font         font,
 
         if (btype == HPDF_BYTE_TYPE_LEAD) {
             code <<= 8;
-            code += *text;
+            code = (HPDF_UINT16)(code + *text);
         }
 
         if (btype != HPDF_BYTE_TYPE_TRIAL) {
@@ -689,8 +688,8 @@ MeasureText  (HPDF_Font          font,
                 (HPDF_CIDFontDefAttr)attr->fontdef->attr;
         dw2 = cid_fontdef_attr->DW2[1];
     } else {
-        dw2 = attr->fontdef->font_bbox.bottom -
-                    attr->fontdef->font_bbox.top;
+        dw2 = (HPDF_INT)(attr->fontdef->font_bbox.bottom -
+                    attr->fontdef->font_bbox.top);
     }
 
     HPDF_Encoder_SetParseText (encoder, &parse_state, text, len);
@@ -705,7 +704,7 @@ MeasureText  (HPDF_Font          font,
 
         if (btype == HPDF_BYTE_TYPE_LEAD) {
             code <<= 8;
-            code += b2;
+            code = (HPDF_UINT16)(code + b2);
         }
 
         if (!wordwrap) {
@@ -724,7 +723,8 @@ MeasureText  (HPDF_Font          font,
                 tmp_len = i + 1;
                 if (real_width)
                     *real_width = w;
-            } else
+            } /* else
+			//Commenting this out fixes problem with HPDF_Text_Rect() splitting the words
             if (last_btype == HPDF_BYTE_TYPE_TRIAL ||
                     (btype == HPDF_BYTE_TYPE_LEAD &&
                     last_btype == HPDF_BYTE_TYPE_SINGLE)) {
@@ -733,7 +733,7 @@ MeasureText  (HPDF_Font          font,
                     if (real_width)
                         *real_width = w;
                 }
-            }
+            }*/
         }
 
         if (HPDF_IS_WHITE_SPACE(b)) {
@@ -753,14 +753,14 @@ MeasureText  (HPDF_Font          font,
                             unicode);
                 }
             } else {
-                tmp_w = -dw2;
+                tmp_w = (HPDF_UINT16)(-dw2);
             }
 
             if (i > 0)
                 w += char_space;
         }
 
-        w += (HPDF_DOUBLE)tmp_w * font_size / 1000;
+        w += (HPDF_REAL)((HPDF_DOUBLE)tmp_w * font_size / 1000);
 
         /* 2006.08.04 break when it encountered  line feed */
         if (w > width || b == 0x0A)
@@ -817,7 +817,7 @@ UINT16ToHex  (char        *s,
             c += 0x41 - 10;
         *s++ = c;
 
-        c = b[0] & 0x0f;
+        c = (char)(b[0] & 0x0f);
         if (c <= 9)
             c += 0x30;
         else
@@ -825,14 +825,14 @@ UINT16ToHex  (char        *s,
         *s++ = c;
     }
 
-    c = b[1] >> 4;
+    c = (char)(b[1] >> 4);
     if (c <= 9)
         c += 0x30;
     else
         c += 0x41 - 10;
     *s++ = c;
 
-    c = b[1] & 0x0f;
+    c = (char)(b[1] & 0x0f);
     if (c <= 9)
         c += 0x30;
     else
