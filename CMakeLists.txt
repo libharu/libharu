@@ -40,9 +40,13 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 # set library name, msvc does not append 'lib' automatically
 if(MSVC)
  set(LIBHARU_NAME lib)
- set(CMAKE_DEBUG_POSTFIX "d")
 endif(MSVC)
-set(LIBHARU_NAME ${LIBHARU_NAME}hpdf)
+
+IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+ set(CMAKE_DEBUG_POSTFIX "d")
+ENDIF(CMAKE_BUILD_TYPE MATCHES "Debug")
+
+set(LIBHARU_NAME        ${LIBHARU_NAME}hpdf)
 set(LIBHARU_NAME_STATIC ${LIBHARU_NAME}s)
 
 # =======================================================================
@@ -165,12 +169,12 @@ set(
 )
 
 # install header files
-install(FILES ${haru_HDRS} DESTINATION include)
+install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # install various files
-install(FILES README CHANGES INSTALL DESTINATION .)
+install(FILES README CHANGES INSTALL DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 if(NOT DEVPAK)
-  install(DIRECTORY if DESTINATION .)
+  install(DIRECTORY if DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif(NOT DEVPAK)
 if(DEVPAK)
   install(FILES ${CMAKE_BINARY_DIR}/libharu.DevPackage DESTINATION .)
