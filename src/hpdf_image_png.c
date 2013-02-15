@@ -21,6 +21,7 @@
 
 #ifndef LIBHPDF_HAVE_NOPNGLIB
 #include <png.h>
+#include <string.h>
 
 static void
 PngErrorFunc  (png_structp       png_ptr,
