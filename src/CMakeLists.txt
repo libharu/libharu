@@ -67,9 +67,9 @@ set(
 	hpdf_encoder_utf.c
 )
 
-IF(NOT DEFINED ${HAVE_LIBPNG})
+IF(NOT DEFINED HAVE_LIBPNG)
 ADD_DEFINITIONS(-DLIBHPDF_HAVE_NOPNGLIB)
-ENDIF(NOT DEFINED ${HAVE_LIBPNG})
+ENDIF(NOT DEFINED HAVE_LIBPNG)
 
 # =======================================================================
 # create static and shared haru library
