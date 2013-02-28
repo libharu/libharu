@@ -169,16 +169,17 @@ set(
 )
 
 # install header files
-install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${haru_HDRS} DESTINATION include)
 
 # install various files
-install(FILES README CHANGES INSTALL DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES README CHANGES INSTALL DESTINATION .)
 if(NOT DEVPAK)
-  install(DIRECTORY if DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(DIRECTORY if DESTINATION .)
 endif(NOT DEVPAK)
 if(DEVPAK)
   install(FILES ${CMAKE_BINARY_DIR}/libharu.DevPackage DESTINATION .)
 endif(DEVPAK)
+
 # =======================================================================
 # print out some information
 # =======================================================================
