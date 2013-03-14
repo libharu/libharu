@@ -2235,6 +2235,7 @@ HPDF_BasicEncoder_New  (HPDF_MMgr        mmgr,
     encoder->error = mmgr->error;
     encoder->type = HPDF_ENCODER_TYPE_SINGLE_BYTE;
     encoder->to_unicode_fn = HPDF_BasicEncoder_ToUnicode;
+    encoder->encode_text_fn = NULL;
     encoder->write_fn = HPDF_BasicEncoder_Write;
     encoder->free_fn = HPDF_BasicEncoder_Free;
 
@@ -2520,7 +2521,7 @@ HPDF_Encoder_Validate  (HPDF_Encoder  encoder)
 
 HPDF_Encoder
 HPDF_CMapEncoder_New  (HPDF_MMgr                mmgr,
-                       char               *name,
+                       char                    *name,
                        HPDF_Encoder_Init_Func   init_fn)
 {
     HPDF_Encoder encoder;
@@ -2624,7 +2625,6 @@ HPDF_CMapEncoder_ToCID  (HPDF_Encoder  encoder,
 
     return attr->cid_map[l][h];
 }
-
 
 void
 HPDF_CMapEncoder_Free  (HPDF_Encoder  encoder)
@@ -2751,20 +2751,26 @@ HPDF_CMapEncoder_AddCMap  (HPDF_Encoder             encoder,
     HPDF_PTRACE ((" HPDF_CMapEncoder_AddCMap\n"));
 
     /* Copy specified pdf_cid_range array to fRangeArray. */
-    while (range->from != 0xffff && range->to != 0xffff) {
-        HPDF_UINT16 code = range->from;
-        HPDF_UINT16 cid = range->cid;
-        HPDF_CidRange_Rec *prange;
-        HPDF_STATUS ret;
+    while (range->from != 0xffff || range->to != 0xffff) {
+	HPDF_CidRange_Rec *prange;
+	HPDF_STATUS ret;
 
-        while (code <= range->to) {
-            HPDF_BYTE l = (HPDF_BYTE)code;
-            HPDF_BYTE h = (HPDF_BYTE)(code >> 8);
+	/*
+	 * Only if we have the default to_unicode_fn
+	 */
+	if (encoder->to_unicode_fn == HPDF_CMapEncoder_ToUnicode) {
+	    HPDF_UINT16 code = range->from;
+	    HPDF_UINT16 cid = range->cid;
 
-            attr->cid_map[l][h] = cid;
-            code++;
-            cid++;
-        }
+	    while (code <= range->to) {
+		HPDF_BYTE l = code;
+		HPDF_BYTE h = code >> 8;
+
+		attr->cid_map[l][h] = cid;
+		code++;
+		cid++;
+	    }
+	}
 
         prange = HPDF_GetMem (encoder->mmgr, sizeof(HPDF_CidRange_Rec));
         if (!prange)

@@ -1995,6 +1995,9 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
     HPDF_STATUS ret;
     HPDF_UINT32 offset_base;
     HPDF_UINT32 tmp_check_sum = 0xB1B0AFBA;
+    HPDF_TTFTable emptyTable;
+    emptyTable.length = 0;
+    emptyTable.offset = 0;
 
     HPDF_PTRACE ((" SaveFontData\n"));
 
@@ -2026,6 +2029,12 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
         HPDF_UINT new_offset;
         HPDF_UINT32 *poffset;
         HPDF_UINT32 value;
+
+	if (!tbl) {
+	    tbl = &emptyTable;
+	    HPDF_MemCpy((HPDF_BYTE *)tbl->tag,
+			(const HPDF_BYTE *)REQUIRED_TAGS[i], 4);
+	}
 
         if (!tbl) {
             ret = HPDF_SetError (fontdef->error, HPDF_TTF_MISSING_TABLE, i);
