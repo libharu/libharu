@@ -2802,3 +2802,100 @@ Fail:
     HPDF_Dict_Free (dict);
     return HPDF_Error_GetCode (page->error);
 }
+
+
+/*
+ *  This function is contributed by Finn Arildsen.
+ */
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_New_Content_Stream  (HPDF_Page page,
+                               HPDF_Dict* new_stream)
+{
+    /* Call this function to start a new content stream on a page. The
+       handle is returned to new_stream.
+       new_stream can later be used on other pages as a shared content stream;
+       insert using HPDF_Page_Insert_Shared_Content_Stream */
+
+    HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
+                    HPDF_GMODE_TEXT_OBJECT);
+    HPDF_PageAttr attr;
+    HPDF_UINT filter;
+    HPDF_Array contents_array;
+
+    HPDF_PTRACE((" HPDF_Page_New_Content_Stream\n"));
+
+    attr = (HPDF_PageAttr)page->attr;
+    filter = attr->contents->filter;
+
+    /* check if there is already an array of contents */
+    contents_array = (HPDF_Array) HPDF_Dict_GetItem(page,"Contents", HPDF_OCLASS_ARRAY);
+    if (!contents_array) {	
+        HPDF_Error_Reset (page->error);
+        /* no contents_array already -- create one
+           and replace current single contents item */
+        contents_array = HPDF_Array_New(page->mmgr);
+        if (!contents_array)
+            return HPDF_Error_GetCode (page->error);
+        ret += HPDF_Array_Add(contents_array,attr->contents);
+        ret += HPDF_Dict_Add (page, "Contents", contents_array);
+    }
+
+    /* create new contents stream and add it to the page's contents array */
+    attr->contents = HPDF_DictStream_New (page->mmgr, attr->xref);
+    attr->contents->filter = filter;
+    attr->stream = attr->contents->stream;
+
+    if (!attr->contents)
+        return HPDF_Error_GetCode (page->error);
+
+    ret += HPDF_Array_Add (contents_array,attr->contents);
+
+    /* return the value of the new stream, so that 
+       the application can use it as a shared contents stream */
+    if (ret == HPDF_OK && new_stream != NULL)
+        *new_stream = attr->contents;
+
+    return ret;
+}
+
+
+/*
+ *  This function is contributed by Finn Arildsen.
+ */
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
+                               HPDF_Dict shared_stream)
+{
+    /* Call this function to insert a previously (with HPDF_New_Content_Stream) created content stream
+       as a shared content stream on this page */
+
+    HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
+                    HPDF_GMODE_TEXT_OBJECT);
+    HPDF_Array contents_array;
+
+    HPDF_PTRACE((" HPDF_Page_Insert_Shared_Content_Stream\n"));
+
+    /* check if there is already an array of contents */
+    contents_array = (HPDF_Array) HPDF_Dict_GetItem(page,"Contents", HPDF_OCLASS_ARRAY);
+    if (!contents_array) {	
+        HPDF_PageAttr attr;
+        HPDF_Error_Reset (page->error);
+        /* no contents_array already -- create one
+           and replace current single contents item */
+        contents_array = HPDF_Array_New(page->mmgr);
+        if (!contents_array)
+            return HPDF_Error_GetCode (page->error);
+        attr = (HPDF_PageAttr)page->attr;
+        ret += HPDF_Array_Add(contents_array,attr->contents);
+        ret += HPDF_Dict_Add (page, "Contents", contents_array);
+    }
+
+    ret += HPDF_Array_Add (contents_array,shared_stream);
+
+    /* Continue with a new stream */
+    ret += HPDF_Page_New_Content_Stream (page, NULL);
+
+    return ret;
+}

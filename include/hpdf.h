@@ -1460,6 +1460,17 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_ExecuteXObject  (HPDF_Page     page,
                            HPDF_XObject  obj);
 
+/*--- Content streams ----------------------------------------------------*/
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_New_Content_Stream  (HPDF_Page page,
+                               HPDF_Dict* new_stream);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
+                                         HPDF_Dict shared_stream);
+
+
 /*--- Marked content -----------------------------------------------------*/
 
 /* BMC --not implemented yet */
