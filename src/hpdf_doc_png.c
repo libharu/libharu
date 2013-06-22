@@ -155,14 +155,20 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
                         HPDF_BOOL     delayed_loading)
 {
     HPDF_Image image;
+    HPDF_Dict smask;
 
     HPDF_PTRACE ((" HPDF_LoadPngImageFromStream\n"));
 
     image = HPDF_Image_LoadPngImage (pdf->mmgr, imagedata, pdf->xref,
                 delayed_loading);
 
-    if (image && (pdf->compression_mode & HPDF_COMP_IMAGE))
+    if (image && (pdf->compression_mode & HPDF_COMP_IMAGE)) {
         image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
+
+	// is there an alpha layer? then compress it also
+	smask = HPDF_Dict_GetItem(image, "SMask", HPDF_OCLASS_DICT);
+	if (smask) smask->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
+    }
 
     return image;
 }
