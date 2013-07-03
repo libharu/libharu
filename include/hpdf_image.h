@@ -72,7 +72,8 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
                                  HPDF_UINT          width,
                                  HPDF_UINT          height,
                                  HPDF_ColorSpace    color_space,
-                                 HPDF_UINT          bits_per_component);
+                                 HPDF_UINT          bits_per_component,
+                                 HPDF_UINT          opt_size);
 
 
 HPDF_BOOL

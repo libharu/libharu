@@ -1681,7 +1681,9 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
                            HPDF_UINT          width,
                            HPDF_UINT          height,
                            HPDF_ColorSpace    color_space,
-                           HPDF_UINT          bits_per_component)
+                           HPDF_UINT          bits_per_component,
+                           HPDF_UINT          size,
+                           HPDF_BOOL          black_white)
 {
     HPDF_Image image;
 
@@ -1691,11 +1693,11 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
         return NULL;
 
     /* Use directly HPDF_Image_LoadRaw1BitImageFromMem to save B/W images */
-    if(color_space == HPDF_CS_DEVICE_GRAY && bits_per_component == 1) {
+    if(black_white && color_space == HPDF_CS_DEVICE_GRAY && bits_per_component == 1) {
         return HPDF_Image_LoadRaw1BitImageFromMem (pdf, buf, width, height, (width+7)/8, HPDF_TRUE, HPDF_TRUE);
     }
 
-    image = HPDF_Image_LoadRawImageFromMem (pdf->mmgr, buf, pdf->xref, width, height, color_space, bits_per_component);
+    image = HPDF_Image_LoadRawImageFromMem (pdf->mmgr, buf, pdf->xref, width, height, color_space, bits_per_component, size);
 
     if (!image)
         HPDF_CheckError (&pdf->error);
