@@ -325,7 +325,8 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
                                  HPDF_UINT          width,
                                  HPDF_UINT          height,
                                  HPDF_ColorSpace    color_space,
-                                 HPDF_UINT          bits_per_component)
+                                 HPDF_UINT          bits_per_component,
+                                 HPDF_UINT          opt_size)
 {
     HPDF_Dict image;
     HPDF_STATUS ret = HPDF_OK;
@@ -372,6 +373,11 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
             ret = HPDF_Dict_AddName (image, "ColorSpace", COL_CMYK);
             break;
         default:;
+    }
+
+    if( opt_size != 0 )
+    {
+      size = opt_size;
     }
 
     if (ret != HPDF_OK)
