@@ -93,6 +93,11 @@ typedef HPDF_UNICODE
 (*HPDF_Encoder_ToUnicode_Func)  (HPDF_Encoder   encoder,
                                  HPDF_UINT16    code);
 
+typedef char *
+(*HPDF_Encoder_EncodeText_Func)  (HPDF_Encoder  encoder,
+				  const char   *text,
+				  HPDF_UINT     len,
+				  HPDF_UINT    *encoded_length);
 
 typedef HPDF_STATUS
 (*HPDF_Encoder_Write_Func)  (HPDF_Encoder  encoder,
@@ -109,13 +114,14 @@ typedef void
 
 typedef struct  _HPDF_Encoder_Rec {
     HPDF_UINT32                     sig_bytes;
-    char                       name[HPDF_LIMIT_MAX_NAME_LEN + 1];
+    char                            name[HPDF_LIMIT_MAX_NAME_LEN + 1];
     HPDF_MMgr                       mmgr;
     HPDF_Error                      error;
     HPDF_EncoderType                type;
 
     HPDF_Encoder_ByteType_Func      byte_type_fn;
     HPDF_Encoder_ToUnicode_Func     to_unicode_fn;
+    HPDF_Encoder_EncodeText_Func    encode_text_fn;
     HPDF_Encoder_Write_Func         write_fn;
     HPDF_Encoder_Free_Func          free_fn;
     HPDF_Encoder_Init_Func          init_fn;
@@ -231,7 +237,7 @@ typedef struct  _HPDF_CMapEncoderAttr_Rec {
 
 HPDF_Encoder
 HPDF_CMapEncoder_New  (HPDF_MMgr                mmgr,
-                       char               *name,
+                       char                    *name,
                        HPDF_Encoder_Init_Func   init_fn);
 
 

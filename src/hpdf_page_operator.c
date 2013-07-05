@@ -2183,7 +2183,7 @@ HPDF_Page_Arc  (HPDF_Page    page,
 
     HPDF_PTRACE ((" HPDF_Page_Arc\n"));
 
-    if (ang1 >= ang2 || (ang2 - ang1) >= 360)
+    if (fabs(ang2 - ang1) >= 360)
         HPDF_RaiseError (page->error, HPDF_PAGE_OUT_OF_RANGE, 0);
 
     if (ret != HPDF_OK)
@@ -2196,10 +2196,10 @@ HPDF_Page_Arc  (HPDF_Page    page,
 
 
     for (;;) {
-        if (ang2 - ang1 <= 90)
+        if (fabs(ang2 - ang1) <= 90)
             return InternalArc (page, x, y, ray, ang1, ang2, cont_flg);
         else {
-            HPDF_REAL tmp_ang = ang1 + 90;
+	    HPDF_REAL tmp_ang = (ang2 > ang1 ? ang1 + 90 : ang1 - 90);
 
             if ((ret = InternalArc (page, x, y, ray, ang1, tmp_ang, cont_flg))
                     != HPDF_OK)
@@ -2208,7 +2208,7 @@ HPDF_Page_Arc  (HPDF_Page    page,
             ang1 = tmp_ang;
         }
 
-        if (ang1 >= ang2)
+        if (fabs(ang1 - ang2) < 0.1)
             break;
 
         cont_flg = HPDF_TRUE;
@@ -2271,7 +2271,11 @@ InternalArc  (HPDF_Page    page,
         pbuf = HPDF_FToA (pbuf, (HPDF_REAL)x0, eptr);
         *pbuf++ = ' ';
         pbuf = HPDF_FToA (pbuf, (HPDF_REAL)y0, eptr);
-        pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+
+	if (attr->gmode == HPDF_GMODE_PATH_OBJECT)
+	  pbuf = (char *)HPDF_StrCpy (pbuf, " l\012", eptr);
+	else
+	  pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
     }
 
     pbuf = HPDF_FToA (pbuf, (HPDF_REAL)x1, eptr);
@@ -2333,13 +2337,34 @@ InternalWriteText  (HPDF_PageAttr      attr,
 
     if (font_attr->type == HPDF_FONT_TYPE0_TT ||
             font_attr->type == HPDF_FONT_TYPE0_CID) {
+        HPDF_Encoder encoder;
+	HPDF_UINT len;
+
         if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
             return ret;
 
-        if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
-                        HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN), NULL))
-               != HPDF_OK)
-            return ret;
+        encoder = font_attr->encoder;
+        len = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN);
+
+        if (encoder->encode_text_fn == NULL) {
+	    if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
+						len, NULL))
+		!= HPDF_OK)
+	        return ret;
+        } else {
+	    char *encoded;
+	    HPDF_UINT length;
+
+	    encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
+
+	    ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
+					   length, NULL);
+
+	    free(encoded);
+
+	    if (ret != HPDF_OK)
+                return ret;
+        }
 
         return HPDF_Stream_WriteStr (attr->stream, ">");
     }
@@ -2598,12 +2623,28 @@ InternalShowTextNextLine  (HPDF_Page    page,
 
     if (font_attr->type == HPDF_FONT_TYPE0_TT ||
             font_attr->type == HPDF_FONT_TYPE0_CID) {
+        HPDF_Encoder encoder = font_attr->encoder;
+
         if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
             return ret;
 
-        if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text, len, NULL))
-               != HPDF_OK)
-            return ret;
+        if (encoder->encode_text_fn == NULL) {
+	    if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
+						len, NULL))
+		!= HPDF_OK)
+	        return ret;
+        } else {
+	    char *encoded;
+	    HPDF_UINT length;
+
+	    encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
+	    ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
+					   length, NULL);
+	    free(encoded);
+
+	    if (ret != HPDF_OK)
+	        return ret;
+        }
 
         if ((ret = HPDF_Stream_WriteStr (attr->stream, ">")) != HPDF_OK)
             return ret;
@@ -2760,4 +2801,101 @@ HPDF_Page_SetSlideShow  (HPDF_Page            page,
 Fail:
     HPDF_Dict_Free (dict);
     return HPDF_Error_GetCode (page->error);
+}
+
+
+/*
+ *  This function is contributed by Finn Arildsen.
+ */
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_New_Content_Stream  (HPDF_Page page,
+                               HPDF_Dict* new_stream)
+{
+    /* Call this function to start a new content stream on a page. The
+       handle is returned to new_stream.
+       new_stream can later be used on other pages as a shared content stream;
+       insert using HPDF_Page_Insert_Shared_Content_Stream */
+
+    HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
+                    HPDF_GMODE_TEXT_OBJECT);
+    HPDF_PageAttr attr;
+    HPDF_UINT filter;
+    HPDF_Array contents_array;
+
+    HPDF_PTRACE((" HPDF_Page_New_Content_Stream\n"));
+
+    attr = (HPDF_PageAttr)page->attr;
+    filter = attr->contents->filter;
+
+    /* check if there is already an array of contents */
+    contents_array = (HPDF_Array) HPDF_Dict_GetItem(page,"Contents", HPDF_OCLASS_ARRAY);
+    if (!contents_array) {	
+        HPDF_Error_Reset (page->error);
+        /* no contents_array already -- create one
+           and replace current single contents item */
+        contents_array = HPDF_Array_New(page->mmgr);
+        if (!contents_array)
+            return HPDF_Error_GetCode (page->error);
+        ret += HPDF_Array_Add(contents_array,attr->contents);
+        ret += HPDF_Dict_Add (page, "Contents", contents_array);
+    }
+
+    /* create new contents stream and add it to the page's contents array */
+    attr->contents = HPDF_DictStream_New (page->mmgr, attr->xref);
+    attr->contents->filter = filter;
+    attr->stream = attr->contents->stream;
+
+    if (!attr->contents)
+        return HPDF_Error_GetCode (page->error);
+
+    ret += HPDF_Array_Add (contents_array,attr->contents);
+
+    /* return the value of the new stream, so that 
+       the application can use it as a shared contents stream */
+    if (ret == HPDF_OK && new_stream != NULL)
+        *new_stream = attr->contents;
+
+    return ret;
+}
+
+
+/*
+ *  This function is contributed by Finn Arildsen.
+ */
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
+                               HPDF_Dict shared_stream)
+{
+    /* Call this function to insert a previously (with HPDF_New_Content_Stream) created content stream
+       as a shared content stream on this page */
+
+    HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
+                    HPDF_GMODE_TEXT_OBJECT);
+    HPDF_Array contents_array;
+
+    HPDF_PTRACE((" HPDF_Page_Insert_Shared_Content_Stream\n"));
+
+    /* check if there is already an array of contents */
+    contents_array = (HPDF_Array) HPDF_Dict_GetItem(page,"Contents", HPDF_OCLASS_ARRAY);
+    if (!contents_array) {	
+        HPDF_PageAttr attr;
+        HPDF_Error_Reset (page->error);
+        /* no contents_array already -- create one
+           and replace current single contents item */
+        contents_array = HPDF_Array_New(page->mmgr);
+        if (!contents_array)
+            return HPDF_Error_GetCode (page->error);
+        attr = (HPDF_PageAttr)page->attr;
+        ret += HPDF_Array_Add(contents_array,attr->contents);
+        ret += HPDF_Dict_Add (page, "Contents", contents_array);
+    }
+
+    ret += HPDF_Array_Add (contents_array,shared_stream);
+
+    /* Continue with a new stream */
+    ret += HPDF_Page_New_Content_Stream (page, NULL);
+
+    return ret;
 }

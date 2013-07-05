@@ -7,7 +7,7 @@
 # libharu source files
 # =======================================================================
 set(
-  libharu_SRCS
+  LIBHPDF_SRCS
   	hpdf_annotation.c
   	hpdf_array.c
   	hpdf_binary.c
@@ -67,18 +67,14 @@ set(
 	hpdf_encoder_utf.c
 )
 
-IF(NOT DEFINED ${HAVE_LIBPNG})
-ADD_DEFINITIONS(-DLIBHPDF_HAVE_NOPNGLIB)
-ENDIF(NOT DEFINED ${HAVE_LIBPNG})
-
 # =======================================================================
 # create static and shared haru library
 # =======================================================================
-if(LIBHARU_STATIC)
-  add_library(${LIBHARU_NAME_STATIC} STATIC ${libharu_SRCS})
-  target_link_libraries(${LIBHARU_NAME_STATIC} ${ADDITIONAL_LIBRARIES})
+if(LIBHPDF_STATIC)
+  add_library(${LIBHPDF_NAME_STATIC} STATIC ${LIBHPDF_SRCS})
+  target_link_libraries(${LIBHPDF_NAME_STATIC} ${ADDITIONAL_LIBRARIES})
   install(
-    TARGETS ${LIBHARU_NAME_STATIC}
+    TARGETS ${LIBHPDF_NAME_STATIC}
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
@@ -88,17 +84,17 @@ if(LIBHARU_STATIC)
 			install(FILES ${addlib} DESTINATION lib)
 		endforeach(addlib)
   endif(WIN32 AND NOT CYGWIN)
-endif(LIBHARU_STATIC)
-if(LIBHARU_SHARED)
-  add_library(${LIBHARU_NAME} SHARED ${libharu_SRCS})
-  target_link_libraries(${LIBHARU_NAME} ${ADDITIONAL_LIBRARIES})
+endif(LIBHPDF_STATIC)
+if(LIBHPDF_SHARED)
+  add_library(${LIBHPDF_NAME} SHARED ${LIBHPDF_SRCS})
+  target_link_libraries(${LIBHPDF_NAME} ${ADDITIONAL_LIBRARIES})
   if(WIN32 AND NOT CYGWIN)
-  	set_target_properties(${LIBHARU_NAME} PROPERTIES DEFINE_SYMBOL HPDF_DLL_MAKE)
+  	set_target_properties(${LIBHPDF_NAME} PROPERTIES DEFINE_SYMBOL HPDF_DLL_MAKE)
   endif(WIN32 AND NOT CYGWIN)
   install(
-    TARGETS ${LIBHARU_NAME}
+    TARGETS ${LIBHPDF_NAME}
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
   )
-endif(LIBHARU_SHARED)
+endif(LIBHPDF_SHARED)
