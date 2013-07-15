@@ -890,7 +890,7 @@ HPDF_Page_GetMiterLimit  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_DashMode)
 HPDF_Page_GetDash  (HPDF_Page   page)
 {
-    HPDF_DashMode mode = {{0, 0, 0, 0, 0, 0, 0, 0}, 0, 0};
+    HPDF_DashMode mode = {{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, 0, 0.0f};
 
     HPDF_PTRACE((" HPDF_Page_GetDash\n"));
 
