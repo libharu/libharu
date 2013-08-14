@@ -18,10 +18,13 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf_font.h"
+#include "hpdf.h"
+
 
 static HPDF_STATUS
 OnWrite  (HPDF_Dict    obj,
           HPDF_Stream  stream);
+
 
 static HPDF_STATUS
 BeforeWrite  (HPDF_Dict   obj);
@@ -32,29 +35,16 @@ OnFree  (HPDF_Dict  obj);
 
 
 static HPDF_INT
-CharWidth (HPDF_Font  font,
-           HPDF_BYTE  code);
-
-static HPDF_TextWidth
-TextWidth  (HPDF_Font         font,
-            const HPDF_BYTE  *text,
-            HPDF_UINT         len);
+CharWidth  (HPDF_Font        font,
+            HPDF_BOOL        converted,
+            HPDF_BYTE        irf,
+            const HPDF_BYTE *text,
+            HPDF_UINT       *bytes,
+            HPDF_UCS4       *ucs4);
 
 
 static HPDF_STATUS
 CreateDescriptor  (HPDF_Font  font);
-
-
-static HPDF_UINT
-MeasureText  (HPDF_Font          font,
-              const HPDF_BYTE   *text,
-              HPDF_UINT          len,
-              HPDF_REAL          width,
-              HPDF_REAL          font_size,
-              HPDF_REAL          char_space,
-              HPDF_REAL          word_space,
-              HPDF_BOOL          wordwrap,
-              HPDF_REAL         *real_width);
 
 
 HPDF_Font
@@ -104,8 +94,7 @@ HPDF_TTFont_New  (HPDF_MMgr        mmgr,
 
     attr->type = HPDF_FONT_TRUETYPE;
     attr->writing_mode = HPDF_WMODE_HORIZONTAL;
-    attr->text_width_fn = TextWidth;
-    attr->measure_text_fn = MeasureText;
+    attr->char_width_fn = CharWidth;
     attr->fontdef = fontdef;
     attr->encoder = encoder;
     attr->xref = xref;
@@ -199,7 +188,7 @@ CreateDescriptor  (HPDF_Font  font)
         if (ret != HPDF_OK)
             return HPDF_Error_GetCode (font->error);
 
-        if (def_attr->embedding) {
+        if (def_attr->options & HPDF_FONTOPT_EMBEDDING) {
             HPDF_Dict font_data = HPDF_DictStream_New (font->mmgr,
                     font_attr->xref);
 
@@ -231,107 +220,50 @@ CreateDescriptor  (HPDF_Font  font)
 
 
 static HPDF_INT
-CharWidth (HPDF_Font  font,
-           HPDF_BYTE  code)
+CharWidth  (HPDF_Font        font,
+            HPDF_BOOL        converted,
+            HPDF_BYTE        irf,
+            const HPDF_BYTE *text,
+            HPDF_UINT       *bytes,
+            HPDF_UCS4       *ucs4)
 {
     HPDF_FontAttr attr = (HPDF_FontAttr)font->attr;
+    HPDF_CODE code = (HPDF_CODE)text[0];
+    HPDF_UCS4 tmp_ucs4;
+
+    if (!ucs4 && !converted)
+        ucs4 = &tmp_ucs4;
+
+    if (ucs4)
+        *ucs4 = HPDF_Encoder_GetUcs4 (attr->encoder, text, bytes);
+    else if (bytes)
+        *bytes = 1;
+
+    if (converted) {
+        if (irf != 0xFF)
+            while (irf-- && font)
+                font = ((HPDF_FontAttr)font->attr)->relief_font;
+        else
+            font = NULL;
+    } else {
+        font = HPDF_Font_GetReliefFont (font, *ucs4, NULL);
+    }
+    if (!font)
+        return attr->fontdef->missing_width;
+
+    attr = (HPDF_FontAttr)font->attr;
 
     if (attr->used[code] == 0) {
-        HPDF_UNICODE unicode = HPDF_Encoder_ToUnicode (attr->encoder, code);
+        if (!ucs4) {
+            ucs4 = &tmp_ucs4;
+            *ucs4 = HPDF_Encoder_GetUcs4 (attr->encoder, text, bytes);
+        }
 
         attr->used[code] = 1;
-        attr->widths[code] = HPDF_TTFontDef_GetCharWidth(attr->fontdef,
-                unicode);
+        attr->widths[code] = HPDF_TTFontDef_GetCharWidth(attr->fontdef, *ucs4);
     }
 
     return attr->widths[code];
-}
-
-
-static HPDF_TextWidth
-TextWidth  (HPDF_Font         font,
-            const HPDF_BYTE  *text,
-            HPDF_UINT         len)
-{
-    HPDF_FontAttr attr = (HPDF_FontAttr)font->attr;
-    HPDF_TextWidth ret = {0, 0, 0, 0};
-    HPDF_UINT i;
-    HPDF_BYTE b = 0;
-
-    HPDF_PTRACE ((" HPDF_TTFont_TextWidth\n"));
-
-    if (attr->widths) {
-        for (i = 0; i < len; i++) {
-            b = text[i];
-            ret.numchars++;
-            ret.width += CharWidth (font, b);
-
-            if (HPDF_IS_WHITE_SPACE(b)) {
-                ret.numspace++;
-                ret.numwords++;
-            }
-        }
-    } else
-        HPDF_SetError (font->error, HPDF_FONT_INVALID_WIDTHS_TABLE, 0);
-
-    /* 2006.08.19 add. */
-    if (HPDF_IS_WHITE_SPACE(b))
-        ; /* do nothing. */
-    else
-        ret.numwords++;
-
-    return ret;
-}
-
-
-static HPDF_UINT
-MeasureText (HPDF_Font          font,
-             const HPDF_BYTE   *text,
-             HPDF_UINT          len,
-             HPDF_REAL          width,
-             HPDF_REAL          font_size,
-             HPDF_REAL          char_space,
-             HPDF_REAL          word_space,
-             HPDF_BOOL          wordwrap,
-             HPDF_REAL         *real_width)
-{
-    HPDF_DOUBLE w = 0;
-    HPDF_UINT tmp_len = 0;
-    HPDF_UINT i;
-
-    HPDF_PTRACE ((" HPDF_TTFont_MeasureText\n"));
-
-    for (i = 0; i < len; i++) {
-        HPDF_BYTE b = text[i];
-
-        if (HPDF_IS_WHITE_SPACE(b)) {
-            tmp_len = i + 1;
-
-            if (real_width)
-                *real_width = (HPDF_REAL)w;
-
-            w += word_space;
-        } else if (!wordwrap) {
-            tmp_len = i;
-
-            if (real_width)
-                *real_width = (HPDF_REAL)w;
-        }
-
-        w += (HPDF_DOUBLE)CharWidth (font, b) * font_size / 1000;
-
-        /* 2006.08.04 break when it encountered  line feed */
-        if (w > width || b == 0x0A)
-            return tmp_len;
-
-        if (i > 0)
-            w += char_space;
-    }
-
-    /* all of text can be put in the specified width */
-    if (real_width)
-        *real_width = (HPDF_REAL)w;
-    return len;
 }
 
 
@@ -379,6 +311,7 @@ OnWrite  (HPDF_Dict    obj,
     return attr->encoder->write_fn (attr->encoder, stream);
 }
 
+
 static HPDF_STATUS
 BeforeWrite  (HPDF_Dict   obj)
 {
@@ -387,12 +320,15 @@ BeforeWrite  (HPDF_Dict   obj)
     return CreateDescriptor (obj);
 }
 
+
 static void
 OnFree  (HPDF_Dict  obj)
 {
     HPDF_FontAttr attr = (HPDF_FontAttr)obj->attr;
 
     HPDF_PTRACE ((" HPDF_TTFont_OnFree\n"));
+
+    HPDF_Font_FreeConvertersListAll ((HPDF_Font)obj);
 
     if (attr) {
         if (attr->widths) {

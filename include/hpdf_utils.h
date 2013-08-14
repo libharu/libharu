@@ -114,6 +114,10 @@ void
 HPDF_UInt16Swap  (HPDF_UINT16  *value);
 
 
+void
+HPDF_UInt32Swap  (HPDF_UINT32  *value);
+
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

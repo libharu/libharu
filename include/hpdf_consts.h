@@ -148,7 +148,9 @@
 #define HPDF_MAX_LINEWIDTH          100
 #define HPDF_MAX_DASH_PATTERN       100
 
-#define HPDF_MAX_JWW_NUM            128
+#define HPDF_MAX_UCS4               0x2FFFF
+
+#define HPDF_MAX_CONVERTERS         3
 
 /*----------------------------------------------------------------------------*/
 /*----- country code definition ----------------------------------------------*/
@@ -542,6 +544,28 @@
 #define   HPDF_GMODE_SHADING                0x0010
 #define   HPDF_GMODE_INLINE_IMAGE           0x0020
 #define   HPDF_GMODE_EXTERNAL_OBJECT        0x0040
+
+
+/*----------------------------------------------------------------------------*/
+/*----- Font options ---------------------------------------------------------*/
+
+#define   HPDF_FONTOPT_EMBEDDING             0x00000001
+#define   HPDF_FONTOPT_WITH_CID_MAP          0x00000002
+#define   HPDF_FONTOPT_WITHOUT_TOUNICODE_MAP 0x00000004
+
+
+/*----------------------------------------------------------------------------*/
+/*----- MeasureText options --------------------------------------------------*/
+
+#define   HPDF_MEASURE_WORD_WRAP             0x00000001
+#define   HPDF_MEASURE_CAN_SHORTEN           0x00000002
+#define   HPDF_MEASURE_IGNORE_TATWEEL        0x00000004
+
+
+/*----------------------------------------------------------------------------*/
+/*----- Convert flag ---------------------------------------------------------*/
+
+#define   HPDF_CONVERT_HOLD_CHARACTERS       0x00000001
 
 
 /*----------------------------------------------------------------------------*/

@@ -36,6 +36,7 @@ extern "C" {
 typedef struct _HPDF_Doc_Rec {
     HPDF_UINT32     sig_bytes;
     HPDF_PDFVer     pdf_version;
+    HPDF_PDFVer     pdf_version_max;
 
     HPDF_MMgr         mmgr;
     HPDF_Catalog      catalog;
@@ -57,6 +58,7 @@ typedef struct _HPDF_Doc_Rec {
 
     /* list for loaded encodings */
     HPDF_List         encoder_list;
+    HPDF_List         cmap_list;
 
     HPDF_Encoder      cur_encoder;
 
@@ -78,9 +80,27 @@ typedef struct _HPDF_Doc_Rec {
 typedef struct _HPDF_Doc_Rec  *HPDF_Doc;
 
 
+HPDF_STATUS
+HPDF_Doc_RequireVersion  (HPDF_Doc    pdf,
+                          HPDF_PDFVer ver);
+
+
+HPDF_PDFVer
+HPDF_Doc_RecommendVersion  (HPDF_Doc    pdf,
+                            HPDF_PDFVer ver);
+
+
 HPDF_Encoder
 HPDF_Doc_FindEncoder (HPDF_Doc         pdf,
                       const char  *encoding_name);
+
+
+HPDF_CMapInfo
+HPDF_Doc_GetCMap  (HPDF_Doc         pdf,
+                   const char      *registry,
+                   const char      *ordering,
+                   HPDF_WritingMode writing_mode,
+                   HPDF_UINT32      size);
 
 
 HPDF_FontDef
@@ -138,7 +158,6 @@ HPDF_Doc_RegisterFontDef  (HPDF_Doc       pdf,
 HPDF_STATUS
 HPDF_Doc_RegisterEncoder  (HPDF_Doc       pdf,
                            HPDF_Encoder   encoder);
-
 
 
 /*----- encryptio------------------------------------------------------------*/

@@ -25,8 +25,10 @@ static const HPDF_DashMode INIT_MODE = {{0, 0, 0, 0, 0, 0, 0, 0}, 0, 0};
 
 
 static HPDF_STATUS
-InternalWriteText  (HPDF_PageAttr    attr,
-                    const char      *text);
+InternalWriteText  (HPDF_Page        page,
+                    HPDF_REAL        tw,
+                    const char      *prefix,
+                    const char      *operator);
 
 
 static HPDF_STATUS
@@ -37,13 +39,6 @@ InternalArc  (HPDF_Page    page,
               HPDF_REAL    ang1,
               HPDF_REAL    ang2,
               HPDF_BOOL    cont_flg);
-
-
-static HPDF_STATUS
-InternalShowTextNextLine  (HPDF_Page    page,
-                           const char  *text,
-                           HPDF_UINT    len);
-
 
 
 /*--- General graphics state ---------------------------------------------*/
@@ -1132,7 +1127,6 @@ HPDF_Page_SetTextLeading  (HPDF_Page  page,
 }
 
 /* Tf */
-
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetFontAndSize  (HPDF_Page  page,
                            HPDF_Font  font,
@@ -1140,10 +1134,6 @@ HPDF_Page_SetFontAndSize  (HPDF_Page  page,
 {
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
                     HPDF_GMODE_TEXT_OBJECT);
-    char buf[HPDF_TMP_BUF_SIZ];
-    char *pbuf = buf;
-    char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
-    const char *local_name;
     HPDF_PageAttr attr;
 
     HPDF_PTRACE ((" HPDF_Page_SetFontAndSize\n"));
@@ -1161,6 +1151,51 @@ HPDF_Page_SetFontAndSize  (HPDF_Page  page,
         return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
 
     attr = (HPDF_PageAttr)page->attr;
+
+    attr->gstate->font = font;
+    attr->gstate->font_size = size;
+    attr->gstate->actual_font = NULL;
+    attr->gstate->writing_mode = ((HPDF_FontAttr)font->attr)->writing_mode;
+
+    return ret;
+}
+
+
+static HPDF_Font
+GetActualFont  (HPDF_Page  page,
+                HPDF_UINT  index)
+{
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr; 
+    HPDF_Font  font;
+
+    if (index == 0xFF)
+        return attr->gstate->actual_font;
+
+    for (font = attr->gstate->font; index && font; index--)
+        font = ((HPDF_FontAttr)font->attr)->relief_font;
+
+    return font;
+}
+
+
+static HPDF_STATUS
+SetActualFont  (HPDF_Page  page,
+                HPDF_Font  font)
+{
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr; 
+    char buf[HPDF_TMP_BUF_SIZ];
+    char *pbuf = buf;
+    char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
+    const char *local_name;
+
+    if (!HPDF_Font_Validate(font))
+        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
+
+    if (font == attr->gstate->actual_font)
+        return HPDF_OK;
+
+    attr->gstate->actual_font = font;
+
     local_name = HPDF_Page_GetLocalFontName (page, font);
 
     if (!local_name)
@@ -1171,18 +1206,15 @@ HPDF_Page_SetFontAndSize  (HPDF_Page  page,
 
     HPDF_MemSet (buf, 0, HPDF_TMP_BUF_SIZ);
     *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, size, eptr);
+    pbuf = HPDF_FToA (pbuf, attr->gstate->font_size, eptr);
     HPDF_StrCpy (pbuf, " Tf\012", eptr);
 
     if (HPDF_Stream_WriteStr (attr->stream, buf) != HPDF_OK)
         return HPDF_CheckError (page->error);
 
-    attr->gstate->font = font;
-    attr->gstate->font_size = size;
-    attr->gstate->writing_mode = ((HPDF_FontAttr)font->attr)->writing_mode;
-
-    return ret;
+    return HPDF_OK;
 }
+
 
 /* Tr */
 HPDF_EXPORT(HPDF_STATUS)
@@ -1425,7 +1457,7 @@ HPDF_Page_ShowText  (HPDF_Page    page,
 
     HPDF_PTRACE ((" HPDF_Page_ShowText\n"));
 
-    if (ret != HPDF_OK || text == NULL || text[0] == 0)
+    if (ret != HPDF_OK)
         return ret;
 
     attr = (HPDF_PageAttr)page->attr;
@@ -1438,20 +1470,8 @@ HPDF_Page_ShowText  (HPDF_Page    page,
     if (!tw)
         return ret;
 
-    if (InternalWriteText (attr, text) != HPDF_OK)
+    if (InternalWriteText (page, tw, NULL, NULL) != HPDF_OK)
         return HPDF_CheckError (page->error);
-
-    if (HPDF_Stream_WriteStr (attr->stream, " Tj\012") != HPDF_OK)
-        return HPDF_CheckError (page->error);
-
-    /* calculate the reference point of text */
-    if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
-        attr->text_pos.x += tw * attr->text_matrix.a;
-        attr->text_pos.y += tw * attr->text_matrix.b;
-    } else {
-        attr->text_pos.x -= tw * attr->text_matrix.b;
-        attr->text_pos.y -= tw * attr->text_matrix.a;
-    }
 
     return ret;
 }
@@ -1477,31 +1497,15 @@ HPDF_Page_ShowTextNextLine  (HPDF_Page    page,
     if (!attr->gstate->font)
         return HPDF_RaiseError (page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
 
-    if (text == NULL || text[0] == 0)
+    if (text && !HPDF_Font_StrLen ((HPDF_Font)attr->gstate->font, text, 4))
         return HPDF_Page_MoveToNextLine(page);
 
-    if (InternalWriteText (attr, text) != HPDF_OK)
-        return HPDF_CheckError (page->error);
-
-    if (HPDF_Stream_WriteStr (attr->stream, " \'\012") != HPDF_OK)
-        return HPDF_CheckError (page->error);
-
     tw = HPDF_Page_TextWidth (page, text);
+    if (!tw)
+        return HPDF_Page_MoveToNextLine(page);
 
-    /* calculate the reference point of text */
-    attr->text_matrix.x -= attr->gstate->text_leading * attr->text_matrix.c;
-    attr->text_matrix.y -= attr->gstate->text_leading * attr->text_matrix.d;
-
-    attr->text_pos.x = attr->text_matrix.x;
-    attr->text_pos.y = attr->text_matrix.y;
-
-    if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
-        attr->text_pos.x += tw * attr->text_matrix.a;
-        attr->text_pos.y += tw * attr->text_matrix.b;
-    } else {
-        attr->text_pos.x -= tw * attr->text_matrix.b;
-        attr->text_pos.y -= tw * attr->text_matrix.a;
-    }
+    if (InternalWriteText (page, tw, NULL, " \'\012") != HPDF_OK)
+        return HPDF_CheckError (page->error);
 
     return ret;
 }
@@ -1537,43 +1541,24 @@ HPDF_Page_ShowTextNextLineEx  (HPDF_Page    page,
     if (!attr->gstate->font)
         return HPDF_RaiseError (page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
 
-    if (text == NULL || text[0] == 0)
+    if (text && !HPDF_Font_StrLen ((HPDF_Font)attr->gstate->font, text, 4))
         return HPDF_Page_MoveToNextLine(page);
 
-    HPDF_MemSet (buf, 0, HPDF_TMP_BUF_SIZ);
     pbuf = HPDF_FToA (pbuf, word_space, eptr);
     *pbuf++ = ' ';
     pbuf = HPDF_FToA (pbuf, char_space, eptr);
-    *pbuf = ' ';
-
-    if (InternalWriteText (attr, buf) != HPDF_OK)
-        return HPDF_CheckError (page->error);
-
-    if (InternalWriteText (attr, text) != HPDF_OK)
-        return HPDF_CheckError (page->error);
-
-    if (HPDF_Stream_WriteStr (attr->stream, " \"\012") != HPDF_OK)
-        return HPDF_CheckError (page->error);
+    *pbuf++ = ' ';
+    *pbuf = 0;
 
     attr->gstate->word_space = word_space;
     attr->gstate->char_space = char_space;
 
     tw = HPDF_Page_TextWidth (page, text);
+    if (!tw)
+        return HPDF_Page_MoveToNextLine(page);
 
-    /* calculate the reference point of text */
-    attr->text_matrix.x += attr->gstate->text_leading * attr->text_matrix.b;
-    attr->text_matrix.y -= attr->gstate->text_leading * attr->text_matrix.a;
-
-    attr->text_pos.x = attr->text_matrix.x;
-    attr->text_pos.y = attr->text_matrix.y;
-
-    if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
-        attr->text_pos.x += tw * attr->text_matrix.a;
-        attr->text_pos.y += tw * attr->text_matrix.b;
-    } else {
-        attr->text_pos.x -= tw * attr->text_matrix.b;
-        attr->text_pos.y -= tw * attr->text_matrix.a;
-    }
+    if (InternalWriteText (page, tw, buf, " \"\012") != HPDF_OK)
+        return HPDF_CheckError (page->error);
 
     return ret;
 }
@@ -2199,7 +2184,7 @@ HPDF_Page_Arc  (HPDF_Page    page,
         if (fabs(ang2 - ang1) <= 90)
             return InternalArc (page, x, y, ray, ang1, ang2, cont_flg);
         else {
-	    HPDF_REAL tmp_ang = (ang2 > ang1 ? ang1 + 90 : ang1 - 90);
+            HPDF_REAL tmp_ang = (ang2 > ang1 ? ang1 + 90 : ang1 - 90);
 
             if ((ret = InternalArc (page, x, y, ray, ang1, tmp_ang, cont_flg))
                     != HPDF_OK)
@@ -2272,10 +2257,10 @@ InternalArc  (HPDF_Page    page,
         *pbuf++ = ' ';
         pbuf = HPDF_FToA (pbuf, (HPDF_REAL)y0, eptr);
 
-	if (attr->gmode == HPDF_GMODE_PATH_OBJECT)
-	  pbuf = (char *)HPDF_StrCpy (pbuf, " l\012", eptr);
-	else
-	  pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+        if (attr->gmode == HPDF_GMODE_PATH_OBJECT)
+          pbuf = (char *)HPDF_StrCpy (pbuf, " l\012", eptr);
+        else
+          pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
     }
 
     pbuf = HPDF_FToA (pbuf, (HPDF_REAL)x1, eptr);
@@ -2327,49 +2312,92 @@ HPDF_Page_DrawImage  (HPDF_Page    page,
 
 
 static HPDF_STATUS
-InternalWriteText  (HPDF_PageAttr      attr,
-                    const char        *text)
+InternalWriteText  (HPDF_Page        page,
+                    HPDF_REAL        tw,
+                    const char      *prefix,
+                    const char      *operator)
 {
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr; 
     HPDF_FontAttr font_attr = (HPDF_FontAttr)attr->gstate->font->attr;
     HPDF_STATUS ret;
+    HPDF_UINT i, n;
+    HPDF_BYTE *pirf;
 
     HPDF_PTRACE ((" InternalWriteText\n"));
 
-    if (font_attr->type == HPDF_FONT_TYPE0_TT ||
-            font_attr->type == HPDF_FONT_TYPE0_CID) {
-        HPDF_Encoder encoder;
-	HPDF_UINT len;
+    pirf = font_attr->text_cache +
+            (font_attr->text_cache_allocated / 2);
 
-        if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
+    for (i = 0, n = 1; n <= font_attr->text_cache_len; n++) {
+        HPDF_Font rf;
+        HPDF_FontAttr rf_attr;
+
+        if (n < font_attr->text_cache_len &&
+                (pirf[n] == 0xFF || pirf[n] == pirf[i]))
+            continue;
+
+        rf = GetActualFont (page, pirf[i]);
+        rf_attr = (HPDF_FontAttr)rf->attr;
+
+        if ((ret = SetActualFont (page, rf)) != HPDF_OK)
             return ret;
 
-        encoder = font_attr->encoder;
-        len = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN);
+        if (!i && prefix)
+            if ((ret = HPDF_Stream_WriteStr (attr->stream, prefix)) != HPDF_OK)
+                return ret;
 
-        if (encoder->encode_text_fn == NULL) {
-	    if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
-						len, NULL))
-		!= HPDF_OK)
-	        return ret;
+        if (rf_attr->type == HPDF_FONT_TYPE0_TT ||
+            rf_attr->type == HPDF_FONT_TYPE0_CID) {
+            HPDF_TTFontDefAttr ttfontdef_attr = NULL;
+            HPDF_Encoder encoder = NULL;
+
+            if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
+                return ret;
+        
+            if (rf_attr->type == HPDF_FONT_TYPE0_TT)
+                ttfontdef_attr = (HPDF_TTFontDefAttr)rf_attr->fontdef->attr;
+            if (ttfontdef_attr &&
+                !(ttfontdef_attr->options & HPDF_FONTOPT_WITH_CID_MAP))
+                encoder = rf_attr->encoder;
+
+            if ((ret = HPDF_Stream_WriteBinary (attr->stream,
+                    font_attr->text_cache + i, n - i, NULL, encoder))
+                    != HPDF_OK)
+                return ret;
+        
+            if ((ret = HPDF_Stream_WriteStr (attr->stream, ">")) != HPDF_OK)
+                return ret;
         } else {
-	    char *encoded;
-	    HPDF_UINT length;
-
-	    encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
-
-	    ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
-					   length, NULL);
-
-	    free(encoded);
-
-	    if (ret != HPDF_OK)
+            if ((ret = HPDF_Stream_WriteEscapeText2 (attr->stream,
+                    font_attr->text_cache + i, n - i)) != HPDF_OK)
                 return ret;
         }
 
-        return HPDF_Stream_WriteStr (attr->stream, ">");
+        if ((ret = HPDF_Stream_WriteStr (attr->stream,
+                ((i || !operator)? " Tj\012": operator))) != HPDF_OK)
+            return ret;
+
+        i = n;
     }
 
-    return HPDF_Stream_WriteEscapeText (attr->stream, text);
+    /* calculate the reference point of text */
+    if (operator) {
+        attr->text_matrix.x -= attr->gstate->text_leading * attr->text_matrix.c;
+        attr->text_matrix.y -= attr->gstate->text_leading * attr->text_matrix.d;
+    
+        attr->text_pos.x = attr->text_matrix.x;
+        attr->text_pos.y = attr->text_matrix.y;
+    }
+
+    if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
+        attr->text_pos.x += tw * attr->text_matrix.a;
+        attr->text_pos.y += tw * attr->text_matrix.b;
+    } else {
+        attr->text_pos.x -= tw * attr->text_matrix.b;
+        attr->text_pos.y -= tw * attr->text_matrix.a;
+    }
+
+    return HPDF_OK;
 }
 
 
@@ -2433,63 +2461,122 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                      HPDF_REAL            bottom,
                      const char          *text,
                      HPDF_TextAlignment   align,
-                     HPDF_UINT           *len
-                     )
+                     HPDF_UINT           *len)
 {
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
+    HPDF_Font font;
     const char *ptr = text;
     HPDF_BOOL pos_initialized = HPDF_FALSE;
-    HPDF_REAL save_char_space = 0;
+    HPDF_BOOL pos_for_rtl = HPDF_FALSE;
     HPDF_BOOL is_insufficient_space = HPDF_FALSE;
     HPDF_UINT num_rest;
     HPDF_Box bbox;
-    HPDF_BOOL char_space_changed = HPDF_FALSE;
+    HPDF_BOOL bidi_each_paragraph = HPDF_FALSE;
+    HPDF_BOOL remove_tatweel = HPDF_FALSE;
+    HPDF_INT meas_opt;
+    HPDF_REAL word_space;
+    HPDF_REAL char_space;
+    const char *operator;
+    char buf[HPDF_TMP_BUF_SIZ];
+    char *pbuf = NULL;
+    char *eptr = buf + sizeof buf - 1;
+    HPDF_REAL save_text_leading, text_leading;
 
     HPDF_PTRACE ((" HPDF_Page_TextRect\n"));
 
     if (ret != HPDF_OK)
         return ret;
 
-    attr = (HPDF_PageAttr )page->attr;
+    attr = (HPDF_PageAttr)page->attr;
+    font = attr->gstate->font;
 
     /* no font exists */
-    if (!attr->gstate->font) {
+    if (!font) {
         return HPDF_RaiseError (page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
     }
 
-    bbox = HPDF_Font_GetBBox (attr->gstate->font);
+    if (align & HPDF_TALIGNOPT_BIDI_EACH_PARAGRAPH)
+        bidi_each_paragraph = HPDF_TRUE;
+    if (align & HPDF_TALIGNOPT_REMOVE_TATWEEL)
+        remove_tatweel = HPDF_TRUE;
+    align &= HPDF_TALIGN_MASK;
+
+    operator = " \'\012";
+    meas_opt = HPDF_MEASURE_WORD_WRAP;
+    if (align == HPDF_TALIGN_JUSTIFY ||
+        align == HPDF_TALIGN_JUSTIFY_ALL ||
+        align == HPDF_TALIGN_STRETCH) {
+        operator = " \"\012";
+        if (align != HPDF_TALIGN_STRETCH)
+            meas_opt |= HPDF_MEASURE_CAN_SHORTEN;
+        if (remove_tatweel)
+            meas_opt |= HPDF_MEASURE_IGNORE_TATWEEL;
+    }
+
+    bbox = HPDF_Font_GetBBox (font);
 
     if (len)
         *len = 0;
-    num_rest = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN + 1);
+    num_rest = HPDF_Font_StrLen (font, text, HPDF_LIMIT_MAX_STRING_LEN + 1);
 
     if (num_rest > HPDF_LIMIT_MAX_STRING_LEN) {
         return HPDF_RaiseError (page->error, HPDF_STRING_OUT_OF_RANGE, 0);
     } else if (!num_rest)
         return HPDF_OK;
 
-    if (attr->gstate->text_leading == 0)
-        HPDF_Page_SetTextLeading (page, (bbox.top - bbox.bottom) / 1000 *
-                attr->gstate->font_size);
+    save_text_leading = text_leading = attr->gstate->text_leading;
 
-    top = top - bbox.top / 1000 * attr->gstate->font_size +
-                attr->gstate->text_leading;
-    bottom = bottom - bbox.bottom / 1000 * attr->gstate->font_size;
+    if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
+        if (text_leading == 0) {
+            text_leading = (bbox.top - bbox.bottom) / 1000 *
+                    attr->gstate->font_size;
+            HPDF_Page_SetTextLeading (page, text_leading);
+        }
 
-    if (align == HPDF_TALIGN_JUSTIFY) {
-        save_char_space = attr->gstate->char_space;
-        attr->gstate->char_space = 0;
+        top    -= bbox.top    / 1000 * attr->gstate->font_size - text_leading;
+        bottom -= bbox.bottom / 1000 * attr->gstate->font_size;
+    } else {
+        HPDF_REAL cw;
+        HPDF_REAL tmp = top;
+        top = right;
+        right = -bottom;
+        bottom = left;
+        left = -tmp;
+
+        if (text_leading == 0)
+            text_leading = (bbox.right - bbox.left) / 1000 *
+                    attr->gstate->font_size;
+        else
+            HPDF_Page_SetTextLeading (page, 0);
+
+        cw = (bbox.right - bbox.left) / 1000 * attr->gstate->font_size;
+        top    -= cw / 2;
+        bottom -= cw / 2;
+        if (text_leading < 0) {
+            tmp = top;
+            top = bottom;
+            bottom = tmp;
+            top += cw;
+        }
     }
+
+    word_space = attr->gstate->word_space;
+    char_space = attr->gstate->char_space;
+
+    HPDF_Font_CheckBiDi (font, bidi_each_paragraph);
 
     for (;;) {
         HPDF_REAL x, y;
         HPDF_UINT line_len, tmp_len;
+        HPDF_UINT numchars, numspaces, numtatweels;
         HPDF_REAL rw;
-        HPDF_BOOL LineBreak;
+        HPDF_BOOL line_break, justify;
+        HPDF_UCS4 ucs4 = 0;
 
-        attr->gstate->char_space = 0;
-        line_len = tmp_len = HPDF_Page_MeasureText (page, ptr, right - left, HPDF_TRUE, &rw);
+        line_len = HPDF_Page_MeasureTextEx (page, ptr, right - left, meas_opt,
+                &rw, &tmp_len, &numchars, &numspaces, &numtatweels);
+
         if (line_len == 0) {
             is_insufficient_space = HPDF_TRUE;
             break;
@@ -2500,179 +2587,264 @@ HPDF_Page_TextRect  (HPDF_Page            page,
         num_rest -= line_len;
 
         /* Shorten tmp_len by trailing whitespace and control characters. */
-        LineBreak = HPDF_FALSE;
-        while (tmp_len > 0 && HPDF_IS_WHITE_SPACE(ptr[tmp_len - 1])) {
-            tmp_len--;
-            if (ptr[tmp_len] == 0x0A || ptr[tmp_len] == 0x0D) {
-                LineBreak = HPDF_TRUE;
-            }
+        line_break = HPDF_FALSE;
+        if (tmp_len < line_len) {
+            ucs4 = HPDF_Font_GetUcs4 (font, ptr + tmp_len, NULL);
+            if (ucs4 == 0x0A || ucs4 == 0x0C || ucs4 == 0x0D)
+                line_break = HPDF_TRUE;
+        }
+
+        if (!tmp_len) {
+            if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL)
+                ret = HPDF_Page_MoveToNextLine(page);
+            else
+                ret = HPDF_Page_MoveTextPos (page, -text_leading, 0);
+            if (ret != HPDF_OK)
+                return ret;
+
+            if (num_rest <= 0 || ucs4 == 0x0C)
+                break;
+
+            ptr += line_len;
+            continue;
         }
 
         switch (align) {
 
             case HPDF_TALIGN_RIGHT:
-                TextPos_AbsToRel (attr->text_matrix, right - rw, top, &x, &y);
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
+                if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
+                    TextPos_AbsToRel (attr->text_matrix,
+                            right - rw, top, &x, &y);
+                    if (pos_initialized)
+                        y = 0;
                 } else {
-                    y = 0;
+                    TextPos_AbsToRel (attr->text_matrix,
+                            top, -(right - rw), &x, &y);
+                    if (pos_initialized)
+                        x = -text_leading;
                 }
                 if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
                     return ret;
+                pos_initialized = HPDF_TRUE;
                 break;
 
             case HPDF_TALIGN_CENTER:
-                TextPos_AbsToRel (attr->text_matrix, left + (right - left - rw) / 2, top, &x, &y);
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
+                if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
+                    TextPos_AbsToRel (attr->text_matrix,
+                            left + (right - left - rw) / 2, top, &x, &y);
+                    if (pos_initialized)
+                        y = 0;
                 } else {
-                    y = 0;
+                    TextPos_AbsToRel (attr->text_matrix,
+                             top, -(left + (right - left - rw) / 2), &x, &y);
+                    if (pos_initialized)
+                        x = -text_leading;
                 }
                 if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
                     return ret;
+                pos_initialized = HPDF_TRUE;
                 break;
 
             case HPDF_TALIGN_JUSTIFY:
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
-                    TextPos_AbsToRel (attr->text_matrix, left, top, &x, &y);
-                    if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
-                        return ret;
-                }
+            case HPDF_TALIGN_JUSTIFY_ALL:
+            case HPDF_TALIGN_STRETCH:
+                word_space = attr->gstate->word_space;
+                char_space = attr->gstate->char_space;
 
                 /* Do not justify last line of paragraph or text. */
-                if (LineBreak || num_rest <= 0) {
-                    if ((ret = HPDF_Page_SetCharSpace (page, save_char_space))
-                                    != HPDF_OK)
-                        return ret;
-                    char_space_changed = HPDF_FALSE;
-                } else {
-                    HPDF_REAL x_adjust;
-                    HPDF_ParseText_Rec state;
-                    HPDF_UINT i = 0;
-                    HPDF_UINT num_char = 0;
-                    HPDF_Encoder encoder = ((HPDF_FontAttr)attr->gstate->font->attr)->encoder;
-                    const char *tmp_ptr = ptr;
-                    HPDF_Encoder_SetParseText (encoder, &state, (HPDF_BYTE *)tmp_ptr, tmp_len);
-                    while (*tmp_ptr) {
-                        HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &state);
-                        if (btype != HPDF_BYTE_TYPE_TRIAL)
-                            num_char++;
-                        i++;
-                        if (i >= tmp_len)
-                            break;
-                        tmp_ptr++;
+                justify = (align == HPDF_TALIGN_JUSTIFY_ALL ||
+                        !((line_break || num_rest <= 0) && rw < right - left));
+                if (justify) {
+                    HPDF_REAL ch, sp, tt, all, ttw;
+    
+                    if (attr->gstate->writing_mode == HPDF_WMODE_VERTICAL) {
+                        char_space *= -1;
+                        word_space *= -1;
                     }
 
-                    x_adjust = num_char == 0 ? 0 : (right - left - rw) / (num_char - 1);
-                    if ((ret = HPDF_Page_SetCharSpace (page, x_adjust)) != HPDF_OK)
-                        return ret;
-                    char_space_changed = HPDF_TRUE;
+                    if (numchars <= 1)
+                        numchars = 0;
+                    else
+                        numchars--;
+    
+                    ch = numchars    * attr->gstate->justify_char_space;
+                    sp = numspaces   * attr->gstate->justify_word_space;
+                    tt = numtatweels * attr->gstate->justify_kashida;
+                    if (tt) {
+                        ttw = ((HPDF_REAL)HPDF_Font_GetUcs4Width (font, 0x0640)
+                                * attr->gstate->font_size / 1000) + char_space;
+                        if (remove_tatweel) {
+                            tt *= ttw;
+                            rw += ttw * numtatweels;
+                        }
+                    }
+                    if (!ch && !sp && !tt)
+                        all = ch = 1;
+                    else
+                        all = ch + sp + tt;
+
+                    all = (right - left - rw) / all;
+                    ch *= all;
+                    sp *= all;
+                    tt *= all;
+
+                    if (tt) {
+                        HPDF_INT tatweels;
+                        HPDF_UINT dst_tatweels;
+                        tatweels = (HPDF_INT)((tt / ttw) + numtatweels);
+                        if (tatweels < 0)
+                            tatweels = 0;
+                        dst_tatweels = (HPDF_UINT)tatweels;
+                        if (dst_tatweels != numtatweels)
+                            HPDF_Font_SetTatweelCount (font, dst_tatweels,
+                                    numtatweels, numchars);
+                        tatweels -= (HPDF_INT)numtatweels;
+                        ttw = tt - (tatweels * ttw);
+                        if (sp)
+                            sp += ttw;
+                        else
+                            ch += ttw;
+                        numchars += tatweels;
+                    }
+
+                    if (ch < 0 && (char_space * numchars) + ch < 0 && sp) {
+                        if (0 < char_space) {
+                            sp += (char_space * numchars) + ch;
+                            char_space = 0;
+                        } else {
+                            sp += ch;
+                        }
+                    } else if (ch && numchars)
+                        char_space += ch / numchars;
+
+                    if (sp && numspaces)
+                        word_space += sp / numspaces;
+    
+                    if (attr->gstate->writing_mode == HPDF_WMODE_VERTICAL) {
+                        char_space *= -1;
+                        word_space *= -1;
+                    }
+
+                    rw = right - left;
+                } else if (remove_tatweel && numtatweels) {
+                    HPDF_Font_SetTatweelCount (font, 0, numtatweels, numchars);
                 }
+
+                if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
+                    if (!justify && HPDF_Font_IsRtL(font)) { /* align right. */
+                        TextPos_AbsToRel (attr->text_matrix,
+                                right - rw, top, &x, &y);
+                        if (pos_initialized)
+                            y = 0;
+                        if ((ret = HPDF_Page_MoveTextPos (page, x, y))
+                                != HPDF_OK)
+                            return ret;
+                        pos_for_rtl = HPDF_TRUE;
+                        pos_initialized = HPDF_TRUE;
+                    } else {        /* align left */
+                        if (!pos_initialized || pos_for_rtl) {
+                            TextPos_AbsToRel (attr->text_matrix,
+                                    left, top, &x, &y);
+                            if (pos_for_rtl)
+                                y = 0;
+                            if ((ret = HPDF_Page_MoveTextPos (page, x, y))
+                                    != HPDF_OK)
+                                return ret;
+                            pos_for_rtl = HPDF_FALSE;
+                            pos_initialized = HPDF_TRUE;
+                        }
+                    }
+                } else {     /* ignore RtL in vertical writing mode */
+                    TextPos_AbsToRel (attr->text_matrix, top, -left, &x, &y);
+                    if (pos_initialized)
+                        x = -text_leading;
+                    if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+                        return ret;
+                    pos_initialized = HPDF_TRUE;
+                }
+
+                pbuf = buf;
+                pbuf = HPDF_FToA (pbuf, word_space, eptr);
+                *pbuf++ = ' ';
+                pbuf = HPDF_FToA (pbuf, char_space, eptr);
+                *pbuf++ = ' ';
+                *pbuf = 0;
+                pbuf = buf;
+
                 break;
 
             default:
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
-                    TextPos_AbsToRel (attr->text_matrix, left, top, &x, &y);
+                if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
+                    if (!pos_initialized) {
+                        TextPos_AbsToRel (attr->text_matrix, left, top, &x, &y);
+                        if ((ret = HPDF_Page_MoveTextPos (page, x, y))
+                                != HPDF_OK)
+                            return ret;
+                        pos_initialized = HPDF_TRUE;
+                    }
+                } else {
+                    TextPos_AbsToRel (attr->text_matrix, top, -left, &x, &y);
+                    if (pos_initialized)
+                        x = -text_leading;
                     if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
                         return ret;
+                    pos_initialized = HPDF_TRUE;
                 }
+                break;
         }
 
-        if (InternalShowTextNextLine (page, ptr, tmp_len) != HPDF_OK)
+        if ((ret = HPDF_Font_ConvertText (font, 0, ptr, tmp_len))
+                != HPDF_OK)
+            return ret;
+
+        if (InternalWriteText (page, rw, pbuf, operator) != HPDF_OK)
             return HPDF_CheckError (page->error);
 
-        if (num_rest <= 0)
+        if (num_rest <= 0 || ucs4 == 0x0C)
             break;
 
-        if (attr->text_pos.y - attr->gstate->text_leading < bottom) {
-            is_insufficient_space = HPDF_TRUE;
-            break;
+        if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
+            if (attr->text_pos.y - text_leading < bottom) {
+                is_insufficient_space = HPDF_TRUE;
+                break;
+            }
+        } else if (0 < text_leading) {
+            if (attr->text_pos.x - text_leading < bottom) {
+                is_insufficient_space = HPDF_TRUE;
+                break;
+            }
+        } else {
+            if (bottom < attr->text_pos.x - text_leading) {
+                is_insufficient_space = HPDF_TRUE;
+                break;
+            }
         }
+
+        if (line_break && bidi_each_paragraph)
+            HPDF_Font_CheckBiDi (font, HPDF_TRUE);
 
         ptr += line_len;
     }
 
-    if (char_space_changed && save_char_space != attr->gstate->char_space) {
-        if ((ret = HPDF_Page_SetCharSpace (page, save_char_space)) != HPDF_OK)
+    if (word_space != attr->gstate->word_space)
+        if ((ret = HPDF_Page_SetWordSpace (page, attr->gstate->word_space))
+                != HPDF_OK)
             return ret;
-    }
+
+    if (char_space != attr->gstate->char_space)
+        if ((ret = HPDF_Page_SetCharSpace (page, attr->gstate->char_space))
+                != HPDF_OK)
+            return ret;
+
+    if (save_text_leading != attr->gstate->text_leading)
+        if ((ret = HPDF_Page_SetTextLeading (page, save_text_leading))
+                != HPDF_OK)
+            return ret;
 
     if (is_insufficient_space)
         return HPDF_PAGE_INSUFFICIENT_SPACE;
     else
         return HPDF_OK;
-}
-
-
-static HPDF_STATUS
-InternalShowTextNextLine  (HPDF_Page    page,
-                           const char  *text,
-                           HPDF_UINT    len)
-{
-    HPDF_STATUS ret;
-    HPDF_PageAttr attr;
-    HPDF_REAL tw;
-    HPDF_FontAttr font_attr;
-
-    HPDF_PTRACE ((" ShowTextNextLine\n"));
-
-    attr = (HPDF_PageAttr)page->attr;
-    font_attr = (HPDF_FontAttr)attr->gstate->font->attr;
-
-    if (font_attr->type == HPDF_FONT_TYPE0_TT ||
-            font_attr->type == HPDF_FONT_TYPE0_CID) {
-        HPDF_Encoder encoder = font_attr->encoder;
-
-        if ((ret = HPDF_Stream_WriteStr (attr->stream, "<")) != HPDF_OK)
-            return ret;
-
-        if (encoder->encode_text_fn == NULL) {
-	    if ((ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)text,
-						len, NULL))
-		!= HPDF_OK)
-	        return ret;
-        } else {
-	    char *encoded;
-	    HPDF_UINT length;
-
-	    encoded = (encoder->encode_text_fn)(encoder, text, len, &length);
-	    ret = HPDF_Stream_WriteBinary (attr->stream, (HPDF_BYTE *)encoded,
-					   length, NULL);
-	    free(encoded);
-
-	    if (ret != HPDF_OK)
-	        return ret;
-        }
-
-        if ((ret = HPDF_Stream_WriteStr (attr->stream, ">")) != HPDF_OK)
-            return ret;
-    } else  if ((ret = HPDF_Stream_WriteEscapeText2 (attr->stream, text,
-                len)) != HPDF_OK)
-        return ret;
-
-    if ((ret = HPDF_Stream_WriteStr (attr->stream, " \'\012")) != HPDF_OK)
-        return ret;
-
-    tw = HPDF_Page_TextWidth (page, text);
-
-    /* calculate the reference point of text */
-    attr->text_matrix.x -= attr->gstate->text_leading * attr->text_matrix.c;
-    attr->text_matrix.y -= attr->gstate->text_leading * attr->text_matrix.d;
-
-    attr->text_pos.x = attr->text_matrix.x;
-    attr->text_pos.y = attr->text_matrix.y;
-
-    if (attr->gstate->writing_mode == HPDF_WMODE_HORIZONTAL) {
-        attr->text_pos.x += tw * attr->text_matrix.a;
-        attr->text_pos.y += tw * attr->text_matrix.b;
-    } else {
-        attr->text_pos.x -= tw * attr->text_matrix.b;
-        attr->text_pos.y -= tw * attr->text_matrix.a;
-    }
-
-    return ret;
 }
 
 
@@ -2830,7 +3002,7 @@ HPDF_Page_New_Content_Stream  (HPDF_Page page,
 
     /* check if there is already an array of contents */
     contents_array = (HPDF_Array) HPDF_Dict_GetItem(page,"Contents", HPDF_OCLASS_ARRAY);
-    if (!contents_array) {	
+    if (!contents_array) {      
         HPDF_Error_Reset (page->error);
         /* no contents_array already -- create one
            and replace current single contents item */
@@ -2879,7 +3051,7 @@ HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
 
     /* check if there is already an array of contents */
     contents_array = (HPDF_Array) HPDF_Dict_GetItem(page,"Contents", HPDF_OCLASS_ARRAY);
-    if (!contents_array) {	
+    if (!contents_array) {      
         HPDF_PageAttr attr;
         HPDF_Error_Reset (page->error);
         /* no contents_array already -- create one

@@ -46,6 +46,10 @@ PrepareTrailer  (HPDF_Doc   pdf);
 
 
 static void
+FreeCMapList (HPDF_Doc  pdf);
+
+
+static void
 FreeEncoderList (HPDF_Doc  pdf);
 
 
@@ -73,7 +77,7 @@ LoadType1FontFromStream (HPDF_Doc     pdf,
 static const char*
 LoadTTFontFromStream (HPDF_Doc         pdf,
                       HPDF_Stream      font_data,
-                      HPDF_BOOL        embedding,
+                      HPDF_INT         options,
                        const char      *file_name);
 
 
@@ -81,7 +85,7 @@ static const char*
 LoadTTFontFromStream2 (HPDF_Doc         pdf,
                        HPDF_Stream      font_data,
                        HPDF_UINT        index,
-                       HPDF_BOOL        embedding,
+                       HPDF_INT         options,
                        const char      *file_name);
 
 
@@ -168,6 +172,7 @@ HPDF_NewEx  (HPDF_Error_Handler    user_error_fn,
     pdf->sig_bytes = HPDF_SIG_BYTES;
     pdf->mmgr = mmgr;
     pdf->pdf_version = HPDF_VER_13;
+    pdf->pdf_version_max = HPDF_VER_17;
     pdf->compression_mode = HPDF_COMP_NONE;
 
     /* copy the data of temporary-error object to the one which is
@@ -246,6 +251,13 @@ HPDF_NewDoc  (HPDF_Doc  pdf)
             return HPDF_CheckError (&pdf->error);
     }
 
+    if (!pdf->cmap_list) {
+        pdf->cmap_list = HPDF_List_New (pdf->mmgr,
+                HPDF_DEF_ITEMS_PER_BLOCK);
+        if (!pdf->cmap_list)
+            return HPDF_CheckError (&pdf->error);
+    }
+
     pdf->catalog = HPDF_Catalog_New (pdf->mmgr, pdf->xref);
     if (!pdf->catalog)
         return HPDF_CheckError (&pdf->error);
@@ -293,6 +305,7 @@ HPDF_FreeDoc  (HPDF_Doc  pdf)
         HPDF_MemSet(pdf->ttfont_tag, 0, 6);
 
         pdf->pdf_version = HPDF_VER_13;
+        pdf->pdf_version_max = HPDF_VER_17;
         pdf->outlines = NULL;
         pdf->catalog = NULL;
         pdf->root_pages = NULL;
@@ -336,10 +349,63 @@ HPDF_FreeDocAll  (HPDF_Doc  pdf)
         if (pdf->encoder_list)
             FreeEncoderList (pdf);
 
+        if (pdf->cmap_list)
+            FreeCMapList (pdf);
+
         pdf->compression_mode = HPDF_COMP_NONE;
 
         HPDF_Error_Reset (&pdf->error);
     }
+}
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_LimitVersion  (HPDF_Doc    pdf,
+                    HPDF_PDFVer max)
+{
+    HPDF_PTRACE ((" HPDF_LimitVersion\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return HPDF_INVALID_DOCUMENT;
+
+    if (max < pdf->pdf_version)
+        return HPDF_RaiseError (&pdf->error, HPDF_TOO_SMALL_PDF_VERSION, 0);
+
+    pdf->pdf_version_max = max;
+
+    return HPDF_OK;
+}
+
+
+HPDF_STATUS
+HPDF_Doc_RequireVersion  (HPDF_Doc    pdf,
+                          HPDF_PDFVer ver)
+{
+    HPDF_PTRACE ((" HPDF_Doc_RequireVersion\n"));
+
+    if (pdf->pdf_version_max < ver)
+        return HPDF_RaiseError (&pdf->error, HPDF_TOO_SMALL_PDF_VERSION, 0);
+
+    if (pdf->pdf_version < ver)
+        pdf->pdf_version = ver;
+
+    return HPDF_OK;
+}
+
+
+HPDF_PDFVer
+HPDF_Doc_RecommendVersion  (HPDF_Doc    pdf,
+                            HPDF_PDFVer ver)
+{
+    HPDF_PTRACE ((" HPDF_Doc_RecommendVersion\n"));
+
+    if (pdf->pdf_version_max < ver)
+        ver = pdf->pdf_version_max;
+
+    if (pdf->pdf_version < ver)
+        pdf->pdf_version = ver;
+
+    return pdf->pdf_version;
 }
 
 
@@ -497,7 +563,9 @@ HPDF_SetEncryptionMode  (HPDF_Doc           pdf,
             /* if encryption mode is specified revision-3, the version of
              * pdf file is set to 1.4
              */
-            pdf->pdf_version = HPDF_VER_14;
+            HPDF_STATUS ret = HPDF_Doc_RequireVersion (pdf, HPDF_VER_14);
+            if (ret != HPDF_OK)
+                return ret;
 
             if (key_len >= 5 && key_len <= 16)
                 e->key_len = key_len;
@@ -1135,7 +1203,7 @@ HPDF_Doc_FindEncoder  (HPDF_Doc         pdf,
             /* if encoder is uninitialize, call init_fn() */
             if (encoder->type == HPDF_ENCODER_TYPE_UNINITIALIZED) {
                 if (!encoder->init_fn ||
-                    encoder->init_fn (encoder) != HPDF_OK)
+                    encoder->init_fn (encoder, pdf) != HPDF_OK)
                     return NULL;
             }
 
@@ -1254,6 +1322,73 @@ FreeEncoderList  (HPDF_Doc  pdf)
 }
 
 
+HPDF_CMapInfo
+HPDF_Doc_GetCMap  (HPDF_Doc         pdf,
+                   const char      *registry,
+                   const char      *ordering,
+                   HPDF_WritingMode writing_mode,
+                   HPDF_UINT32      size)
+{
+    HPDF_List list = pdf->cmap_list;
+    HPDF_CMapInfo cmap;
+    HPDF_STATUS ret;
+    HPDF_UINT i;
+
+    HPDF_PTRACE ((" HPDF_Doc_GetCMap\n"));
+
+    for (i = 0; i < list->count; i++) {
+        cmap = (HPDF_CMapInfo)HPDF_List_ItemAt (list, i);
+
+        if (HPDF_StrCmp (registry, cmap->registry) == 0 &&
+            HPDF_StrCmp (ordering, cmap->ordering) == 0 &&
+            writing_mode == cmap->writing_mode)
+            return cmap;
+    }
+
+    if ((cmap = HPDF_GetMem (pdf->mmgr, size)) == NULL) {
+        HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
+
+    if ((ret = HPDF_List_Add (list, cmap)) != HPDF_OK) {
+        HPDF_FreeMem (pdf->mmgr, cmap);
+        HPDF_RaiseError (&pdf->error, ret, 0);
+        return NULL;
+    }
+
+    HPDF_MemSet (cmap, 0, size);
+    HPDF_StrCpy (cmap->registry, registry,
+                 cmap->registry + HPDF_LIMIT_MAX_NAME_LEN);
+    HPDF_StrCpy (cmap->ordering, ordering,
+                 cmap->ordering + HPDF_LIMIT_MAX_NAME_LEN);
+    cmap->writing_mode = writing_mode;
+    cmap->count = (size - sizeof (HPDF_CMapInfo_Rec)) / sizeof (HPDF_CID);
+    cmap->pdf_version = HPDF_VER_EOF; /* means uninitialized */
+
+    return cmap;
+}
+
+
+static void
+FreeCMapList  (HPDF_Doc  pdf)
+{
+    HPDF_List list = pdf->cmap_list;
+    HPDF_UINT i;
+
+    HPDF_PTRACE ((" FreeCMapList\n"));
+
+    for (i = 0; i < list->count; i++) {
+        HPDF_CMapInfo cmap = (HPDF_CMapInfo)HPDF_List_ItemAt (list, i);
+
+        HPDF_FreeMem (pdf->mmgr, cmap);
+    }
+
+    HPDF_List_Free (list);
+
+    pdf->cmap_list = NULL;
+}
+
+
 /*----- font handling -------------------------------------------------------*/
 
 
@@ -1291,7 +1426,7 @@ HPDF_GetFont  (HPDF_Doc          pdf,
     HPDF_Encoder encoder = NULL;
     HPDF_Font font;
 
-    HPDF_PTRACE ((" HPDF_GetFont\n"));
+    HPDF_PTRACE ((" HPDF_GetFontEx\n"));
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1351,25 +1486,28 @@ HPDF_GetFont  (HPDF_Doc          pdf,
 
     switch (fontdef->type) {
         case HPDF_FONTDEF_TYPE_TYPE1:
-            font = HPDF_Type1Font_New (pdf->mmgr, fontdef, encoder, pdf->xref);
+            font = HPDF_Type1Font_New (pdf->mmgr, fontdef, encoder,
+                    pdf->xref);
 
             if (font)
                 HPDF_List_Add (pdf->font_mgr, font);
 
             break;
         case HPDF_FONTDEF_TYPE_TRUETYPE:
-            if (encoder->type == HPDF_ENCODER_TYPE_DOUBLE_BYTE)
+            if (encoder->type == HPDF_ENCODER_TYPE_MULTI_BYTE)
                 font = HPDF_Type0Font_New (pdf->mmgr, fontdef, encoder,
                         pdf->xref);
             else
-                font = HPDF_TTFont_New (pdf->mmgr, fontdef, encoder, pdf->xref);
+                font = HPDF_TTFont_New (pdf->mmgr, fontdef, encoder,
+                        pdf->xref);
 
             if (font)
                 HPDF_List_Add (pdf->font_mgr, font);
 
             break;
         case HPDF_FONTDEF_TYPE_CID:
-            font = HPDF_Type0Font_New (pdf->mmgr, fontdef, encoder, pdf->xref);
+            font = HPDF_Type0Font_New (pdf->mmgr, fontdef, encoder,
+                    pdf->xref);
 
             if (font)
                 HPDF_List_Add (pdf->font_mgr, font);
@@ -1464,7 +1602,7 @@ LoadType1FontFromStream  (HPDF_Doc      pdf,
 HPDF_EXPORT(HPDF_FontDef)
 HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
                            const char   *file_name,
-                           HPDF_BOOL     embedding)
+                           HPDF_INT      options)
 {
 	HPDF_Stream font_data;
 	HPDF_FontDef def;
@@ -1475,7 +1613,7 @@ HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
 	font_data = HPDF_FileReader_New (pdf->mmgr, file_name);
 
 	if (HPDF_Stream_Validate (font_data)) {
-		def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, embedding);
+		def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, options);
 	} else {
 		HPDF_CheckError (&pdf->error);
 		return NULL;
@@ -1487,7 +1625,7 @@ HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
 HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile (HPDF_Doc         pdf,
                          const char      *file_name,
-                         HPDF_BOOL        embedding)
+                         HPDF_INT         options)
 {
     HPDF_Stream font_data;
     const char *ret;
@@ -1501,7 +1639,7 @@ HPDF_LoadTTFontFromFile (HPDF_Doc         pdf,
     font_data = HPDF_FileReader_New (pdf->mmgr, file_name);
 
     if (HPDF_Stream_Validate (font_data)) {
-        ret = LoadTTFontFromStream (pdf, font_data, embedding, file_name);
+        ret = LoadTTFontFromStream (pdf, font_data, options, file_name);
     } else
         ret = NULL;
 
@@ -1515,7 +1653,7 @@ HPDF_LoadTTFontFromFile (HPDF_Doc         pdf,
 static const char*
 LoadTTFontFromStream (HPDF_Doc         pdf,
                       HPDF_Stream      font_data,
-                      HPDF_BOOL        embedding,
+                      HPDF_INT         options,
                       const char      *file_name)
 {
     HPDF_FontDef def;
@@ -1523,7 +1661,7 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
     HPDF_PTRACE ((" HPDF_LoadTTFontFromStream\n"));
     HPDF_UNUSED (file_name);
 
-    def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, embedding);
+    def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, options);
     if (def) {
         HPDF_FontDef  tmpdef = HPDF_Doc_FindFontDef (pdf, def->base_font);
         if (tmpdef) {
@@ -1538,7 +1676,7 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
     } else
         return NULL;
 
-    if (embedding) {
+    if (options & HPDF_FONTOPT_EMBEDDING) {
         if (pdf->ttfont_tag[0] == 0) {
             HPDF_MemCpy (pdf->ttfont_tag, (HPDF_BYTE *)"HPDFAA", 6);
         } else {
@@ -1564,7 +1702,7 @@ HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile2 (HPDF_Doc         pdf,
                           const char      *file_name,
                           HPDF_UINT        index,
-                          HPDF_BOOL        embedding)
+                          HPDF_INT         options)
 {
     HPDF_Stream font_data;
     const char *ret;
@@ -1578,7 +1716,7 @@ HPDF_LoadTTFontFromFile2 (HPDF_Doc         pdf,
     font_data = HPDF_FileReader_New (pdf->mmgr, file_name);
 
     if (HPDF_Stream_Validate (font_data)) {
-        ret = LoadTTFontFromStream2 (pdf, font_data, index, embedding, file_name);
+        ret = LoadTTFontFromStream2 (pdf, font_data, index, options, file_name);
     } else
         ret = NULL;
 
@@ -1593,7 +1731,7 @@ static const char*
 LoadTTFontFromStream2 (HPDF_Doc         pdf,
                        HPDF_Stream      font_data,
                        HPDF_UINT        index,
-                       HPDF_BOOL        embedding,
+                       HPDF_INT         options,
                        const char      *file_name)
 {
     HPDF_FontDef def;
@@ -1601,7 +1739,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
     HPDF_PTRACE ((" HPDF_LoadTTFontFromStream2\n"));
     HPDF_UNUSED (file_name);
 
-    def = HPDF_TTFontDef_Load2 (pdf->mmgr, font_data, index, embedding);
+    def = HPDF_TTFontDef_Load2 (pdf->mmgr, font_data, index, options);
     if (def) {
         HPDF_FontDef  tmpdef = HPDF_Doc_FindFontDef (pdf, def->base_font);
         if (tmpdef) {
@@ -1616,7 +1754,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
     } else
         return NULL;
 
-    if (embedding) {
+    if (options & HPDF_FONTOPT_EMBEDDING) {
         if (pdf->ttfont_tag[0] == 0) {
             HPDF_MemCpy (pdf->ttfont_tag, (HPDF_BYTE *)"HPDFAA", 6);
         } else {
@@ -1788,8 +1926,12 @@ HPDF_SetPageLayout  (HPDF_Doc          pdf,
         return HPDF_RaiseError (&pdf->error, HPDF_PAGE_LAYOUT_OUT_OF_RANGE,
                 (HPDF_STATUS)layout);
 
-    if ((layout == HPDF_PAGE_LAYOUT_TWO_PAGE_LEFT || layout == HPDF_PAGE_LAYOUT_TWO_PAGE_RIGHT) && pdf->pdf_version < HPDF_VER_15)
-        pdf->pdf_version = HPDF_VER_15 ;
+    if (layout == HPDF_PAGE_LAYOUT_TWO_PAGE_LEFT ||
+        layout == HPDF_PAGE_LAYOUT_TWO_PAGE_RIGHT) {
+        ret = HPDF_Doc_RequireVersion (pdf, HPDF_VER_15);
+        if (ret != HPDF_OK)
+            return HPDF_CheckError (&pdf->error);
+    }
 
     ret = HPDF_Catalog_SetPageLayout (pdf->catalog, layout);
     if (ret != HPDF_OK)
@@ -1882,7 +2024,9 @@ HPDF_SetViewerPreference  (HPDF_Doc     pdf,
     if (ret != HPDF_OK)
         return HPDF_CheckError (&pdf->error);
 
-    pdf->pdf_version = HPDF_VER_16;
+    ret = HPDF_Doc_RequireVersion (pdf, HPDF_VER_16);
+    if (ret != HPDF_OK)
+        return HPDF_CheckError (&pdf->error);
 
     return HPDF_OK;
 }
@@ -2106,7 +2250,10 @@ HPDF_CreateExtGState  (HPDF_Doc  pdf)
     if (!HPDF_HasDoc (pdf))
         return NULL;
 
-    pdf->pdf_version = HPDF_VER_14;
+    if (HPDF_Doc_RequireVersion (pdf, HPDF_VER_14) != HPDF_OK) {
+        HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
 
     ext_gstate = HPDF_ExtGState_New (pdf->mmgr, pdf->xref);
     if (!ext_gstate)

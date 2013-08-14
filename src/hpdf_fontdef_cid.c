@@ -105,9 +105,9 @@ HPDF_CIDFontDef_New  (HPDF_MMgr               mmgr,
 }
 
 
-HPDF_INT16
+HPDF_CID
 HPDF_CIDFontDef_GetCIDWidth  (HPDF_FontDef  fontdef,
-                              HPDF_UINT16    cid)
+                              HPDF_CID      cid)
 {
     HPDF_CIDFontDefAttr attr = (HPDF_CIDFontDefAttr)fontdef->attr;
     HPDF_UINT i;

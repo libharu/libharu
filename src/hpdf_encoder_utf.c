@@ -22,240 +22,429 @@
 #include "hpdf_encoder.h"
 #include "hpdf.h"
 
-typedef struct _UTF8_EncoderAttr_Rec  *UTF8_EncoderAttr;
-typedef struct  _UTF8_EncoderAttr_Rec {
-      HPDF_BYTE           current_byte;
-      HPDF_BYTE           end_byte;
-      HPDF_BYTE           utf8_bytes[8];
-} UTF8_EncoderAttr_Rec;
 
-static const HPDF_CidRange_Rec UTF8_NOTDEF_RANGE = {0x0000, 0x001F, 1};
-static const HPDF_CidRange_Rec UTF8_SPACE_RANGE =  {0x0000, 0xFFFF, 0};
-static const HPDF_CidRange_Rec UTF8_CID_RANGE[] = {
-  { 0x0000, 0xFFFF, 0x0 },
-  { 0xFFFF, 0xFFFF, 0x0 }
-};
+static HPDF_CID
+Haru_Modern1_ToCID  (HPDF_Encoder  encoder,
+                     HPDF_UCS4     ucs4)
+{
+    HPDF_UNUSED (encoder);
 
-static HPDF_ByteType
-UTF8_Encoder_ByteType_Func  (HPDF_Encoder        encoder,
-                             HPDF_ParseText_Rec  *state);
+    return (HPDF_CID)((                   ucs4 <= 0x0D7FF)?  ucs4:
+                      (0x0E000 <= ucs4 && ucs4 <= 0x0FFFF)? (ucs4 - 0x0E000 + 0xD800):
+                      (0x1F000 <= ucs4 && ucs4 <= 0x1F7FF)? (ucs4 - 0x1F000 + 0xF800):
+                      0);
+}
 
-static HPDF_UNICODE
-UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
-                              HPDF_UINT16    code);
-
-static char *
-UTF8_Encoder_EncodeText_Func  (HPDF_Encoder        encoder,
-			       const char         *text,
-			       HPDF_UINT           len,
-			       HPDF_UINT          *length);
 
 static HPDF_STATUS
-UTF8_Init  (HPDF_Encoder    encoder);
-
-/*--------------------------------------------------------------------------*/
-
-
-/*
- * This function is taken from hpdf_encoder_utf8.c, originally submitted
- * to libharu by 'Mirco'
- */
-static HPDF_ByteType
-UTF8_Encoder_ByteType_Func  (HPDF_Encoder        encoder,
-                             HPDF_ParseText_Rec  *state)
+SetHaruModern1  (HPDF_Encoder     encoder,
+                 HPDF_Doc         pdf,
+                 HPDF_INT         supplement,
+                 HPDF_WritingMode writing_mode)
 {
-    // This function is supposed to increment state->index
-    // Not logical ! (look at function HPDF_String_Write in hpdf_string.c)
+    HPDF_CMapEncoderAttr attr;
+    HPDF_CMapInfo info;
 
-    // When HPDF_BYTE_TYPE_SINGLE is returned, the current byte is the
-    //   CODE argument in call ToUnicode_Func
-    // When HPDF_BYTE_TYPE_LEAD is returned, the current byte (msb) and the
-    //   next byte (lsb) is the CODE arguement in call ToUnicodeFunc
-    // When HPDF_BYTE_TYPE_TRIAL is returned, the current byte is ignored
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
 
-    HPDF_CMapEncoderAttr  encoder_attr;
-    HPDF_BYTE             byte;
-    UTF8_EncoderAttr      utf8_attr;
+    attr->to_cid_fn = Haru_Modern1_ToCID;
+    attr->supplement = supplement;
+    attr->max_cid = 0xFFFF;
 
-    encoder_attr = (HPDF_CMapEncoderAttr) encoder->attr;
-    utf8_attr = (UTF8_EncoderAttr) ((void *)encoder_attr->cid_map[0]);
+    info = HPDF_Doc_GetCMap (pdf, "Haru", "Modern1",
+            writing_mode, sizeof (HPDF_CMapInfo_Rec));
 
-    if (state->index == 0) {
-	//First byte, initialize.
-	HPDF_PTRACE ((" UTF8_Encoder_ByteType_Func - Initialize: (%u) %s\n",
-		      state->len, state->text));
+    if (!info)
+        return HPDF_CheckError (&pdf->error);
 
-	utf8_attr->current_byte = 0;
-    }
+    attr->cmap = info;
 
-    byte = state->text[state->index];
-    state->index++;
+    info->pdf_version = HPDF_Doc_RecommendVersion (pdf, HPDF_VER_16);
 
-    HPDF_PTRACE ((" UTF8_Encoder_ByteType_Func - Byte: %hx\n", byte));
-
-    if (utf8_attr->current_byte == 0) {
-	utf8_attr->utf8_bytes[0] = byte;
-	utf8_attr->current_byte = 1;
-
-	if (!(byte & 0x80)) {
-	    utf8_attr->current_byte = 0;
-	    utf8_attr->end_byte = 0;
-	    return HPDF_BYTE_TYPE_SINGLE;
-	}
-
-	if ((byte & 0xf8) == 0xf0)
-	    utf8_attr->end_byte = 3;
-	else if ((byte & 0xf0) == 0xe0)
-	    utf8_attr->end_byte = 2;
-	else if ((byte & 0xe0) == 0xc0)
-	    utf8_attr->end_byte = 1;
-	else
-	    utf8_attr->current_byte = 0; //ERROR, skip this byte
-    } else {
-	utf8_attr->utf8_bytes[utf8_attr->current_byte] = byte;
-	if (utf8_attr->current_byte == utf8_attr->end_byte) {
-	    utf8_attr->current_byte = 0;
-	    return HPDF_BYTE_TYPE_SINGLE;
-	}
-
-	utf8_attr->current_byte++;
-    }
-
-    return HPDF_BYTE_TYPE_TRIAL;
+    return HPDF_OK;
 }
 
-/*
- * This function is taken from hpdf_encoder_utf8.c, originally submitted
- * to libharu by 'Mirco'
- */
-static HPDF_UNICODE
-UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
-                              HPDF_UINT16    code)
+
+static HPDF_CID
+Haru_Ancient1_ToCID  (HPDF_Encoder  encoder,
+                      HPDF_UCS4     ucs4)
 {
-    // Supposed to convert CODE to unicode.
-    // This function is allways called after ByteType_Func.
-    // ByteType_Func recognizes the utf-8 bytes belonging to one character.
+    HPDF_UNUSED (encoder);
 
-    HPDF_CMapEncoderAttr encoder_attr;
-    UTF8_EncoderAttr     utf8_attr;
-    unsigned int         val;
-
-    encoder_attr = (HPDF_CMapEncoderAttr) encoder->attr;
-    utf8_attr = (UTF8_EncoderAttr) ((void *)encoder_attr->cid_map[0]);
-
-    switch (utf8_attr->end_byte) {
-    case 3:
-	val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0x7) << 18) +
-	    (unsigned int) ((utf8_attr->utf8_bytes[1]) << 12)       +
-	    (unsigned int) ((utf8_attr->utf8_bytes[2] & 0x3f) << 6) +
-	    (unsigned int) ((utf8_attr->utf8_bytes[3] & 0x3f));
-	break;
-    case 2:
-	val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0xf) << 12) +
-	    (unsigned int) ((utf8_attr->utf8_bytes[1] & 0x3f) << 6) +
-	    (unsigned int) ((utf8_attr->utf8_bytes[2] & 0x3f));
-	break;
-    case 1:
-	val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0x1f) << 6) +
-	    (unsigned int) ((utf8_attr->utf8_bytes[1] & 0x3f));
-	break;
-    case 0:
-	val = (unsigned int)  utf8_attr->utf8_bytes[0];
-	break;
-    default:
-	val = 32; // Unknown character
-    }
-
-    if (val > 65535) //Convert everything outside UCS-2 to space
-        val = 32;
-
-    return val;
+    return (HPDF_CID)((                   ucs4 <= 0x02FFF)?  ucs4:
+                      (0x0A000 <= ucs4 && ucs4 <= 0x0D7FF)? (ucs4 - 0x0A000 + 0x3000):
+                      (0x0E000 <= ucs4 && ucs4 <= 0x117FF)? (ucs4 - 0x0E000 + 0x6800):
+                      (0x12000 <= ucs4 && ucs4 <= 0x127FF)? (ucs4 - 0x12000 + 0xA000):
+                      (0x13000 <= ucs4 && ucs4 <= 0x137FF)? (ucs4 - 0x13000 + 0xA800):
+                      (0x16800 <= ucs4 && ucs4 <= 0x16FFF)? (ucs4 - 0x16800 + 0xB000):
+                      (0x1D000 <= ucs4 && ucs4 <= 0x1D7FF)? (ucs4 - 0x1D000 + 0xB800):
+                      (0x1E800 <= ucs4 && ucs4 <= 0x1F7FF)? (ucs4 - 0x1E800 + 0xC000):
+                      0);
 }
 
-static char *
-UTF8_Encoder_EncodeText_Func  (HPDF_Encoder        encoder,
-			       const char         *text,
-			       HPDF_UINT           len,
-			       HPDF_UINT          *length)
-{
-    char *result = malloc(len * 2);
-    char *c = result;
-    HPDF_ParseText_Rec  parse_state;
-    HPDF_UINT i;
-
-    HPDF_Encoder_SetParseText (encoder, &parse_state,
-			       (const HPDF_BYTE *)text, len);
-
-    for (i = 0; i < len; i++) {
-	HPDF_UNICODE tmp_unicode;
-	HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &parse_state);
-
-	if (btype != HPDF_BYTE_TYPE_TRIAL) {
-	    tmp_unicode = HPDF_Encoder_ToUnicode (encoder, 0);
-
-	    HPDF_UInt16Swap (&tmp_unicode);
-	    HPDF_MemCpy ((HPDF_BYTE *)c, (const HPDF_BYTE*)&tmp_unicode, 2);
-	    c += 2;
-        }
-    }
-
-    *length = c - result;
-
-    return result;
-}
 
 static HPDF_STATUS
-UTF8_Init  (HPDF_Encoder  encoder)
+SetHaruAncient1  (HPDF_Encoder     encoder,
+                  HPDF_Doc         pdf,
+                  HPDF_INT         supplement,
+                  HPDF_WritingMode writing_mode)
+{
+    HPDF_CMapEncoderAttr attr;
+    HPDF_CMapInfo info;
+
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
+
+    attr->to_cid_fn = Haru_Ancient1_ToCID;
+    attr->supplement = supplement;
+    attr->max_cid = 0xCFFF;
+
+    info = HPDF_Doc_GetCMap (pdf, "Haru", "Ancient1",
+            writing_mode, sizeof (HPDF_CMapInfo_Rec));
+
+    if (!info)
+        return HPDF_CheckError (&pdf->error);
+
+    attr->cmap = info;
+
+    info->pdf_version = HPDF_Doc_RecommendVersion (pdf, HPDF_VER_16);
+
+    return HPDF_OK;
+}
+
+
+static const HPDF_CidRange_Rec UTF32_NOTDEF_RANGE = {0x00000000, 0x00001F, 4, 1};
+
+
+static HPDF_UCS4
+UTF32_ToUcs4  (HPDF_Encoder     encoder,
+               const HPDF_BYTE *text,
+               HPDF_UINT        bytes)
+{
+    HPDF_UNUSED (encoder);
+
+    return HPDF_UTF32BEToUcs4 (text, bytes);
+}
+
+
+static HPDF_STATUS
+UTF32_AddCodeSpaceRange (HPDF_Encoder    encoder)
+{
+    HPDF_CidRange_Rec code_space_range1 = {0x00000000, 0x0001FFFF, 4, 0};
+
+    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range1)
+                    != HPDF_OK)
+        return encoder->error->error_no;
+
+    return HPDF_OK;
+}
+
+
+static const HPDF_CidRange_Rec UCS2LE_NOTDEF_RANGE = {0x0000, 0x1F00, 2, 1};
+
+
+static HPDF_UCS4
+UCS2LE_ToUcs4  (HPDF_Encoder     encoder,
+                const HPDF_BYTE *text,
+                HPDF_UINT        bytes)
+{
+    HPDF_UNUSED (encoder);
+
+    return HPDF_UTF16LEToUcs4 (text, bytes);
+}
+
+
+static HPDF_STATUS
+UCS2LE_AddCodeSpaceRange (HPDF_Encoder    encoder)
+{
+    /* These code space ranges are *NOT* asceding order,
+       might cause something.... */
+    HPDF_CidRange_Rec code_space_range1 = {0x0000, 0xFFD7, 2, 0};
+    HPDF_CidRange_Rec code_space_range2 = {0x00E0, 0xFFFF, 2, 0};
+
+    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range1)
+                    != HPDF_OK)
+        return encoder->error->error_no;
+
+    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range2)
+                    != HPDF_OK)
+        return encoder->error->error_no;
+
+    return HPDF_OK;
+}
+
+
+static const HPDF_CidRange_Rec UTF32LE_NOTDEF_RANGE = {0x00000000, 0x1F000000, 4, 1};
+
+
+static HPDF_UCS4
+UTF32LE_ToUcs4  (HPDF_Encoder     encoder,
+                 const HPDF_BYTE *text,
+                 HPDF_UINT        bytes)
+{
+    HPDF_UNUSED (encoder);
+
+    return HPDF_UTF32LEToUcs4 (text, bytes);
+}
+
+
+static HPDF_STATUS
+UTF32LE_AddCodeSpaceRange (HPDF_Encoder    encoder)
+{
+    HPDF_CidRange_Rec code_space_range1 = {0x00000000, 0xFFFF0100, 4, 0};
+
+    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, code_space_range1)
+                    != HPDF_OK)
+        return encoder->error->error_no;
+
+    return HPDF_OK;
+}
+
+
+static HPDF_STATUS
+Modern_UTF8_H_Init  (HPDF_Encoder  encoder,
+                     HPDF_Doc      pdf)
 {
     HPDF_CMapEncoderAttr attr;
     HPDF_STATUS ret;
 
-    if ((ret = HPDF_CMapEncoder_InitAttr (encoder)) != HPDF_OK)
+    if ((ret = HPDF_UTF8Encoder_Init (encoder, pdf)) != HPDF_OK)
         return ret;
 
-    /*
-     * We override these two
-     */
-    encoder->byte_type_fn = UTF8_Encoder_ByteType_Func;
-    encoder->to_unicode_fn = UTF8_Encoder_ToUnicode_Func;
-    encoder->encode_text_fn = UTF8_Encoder_EncodeText_Func;
+    if ((ret = SetHaruModern1 (encoder, pdf, 0, HPDF_WMODE_HORIZONTAL))
+            != HPDF_OK)
+        return ret;
 
     attr = (HPDF_CMapEncoderAttr)encoder->attr;
 
-    if (HPDF_CMapEncoder_AddCMap (encoder, UTF8_CID_RANGE) != HPDF_OK)
-        return encoder->error->error_no;
-
-    if (HPDF_CMapEncoder_AddCodeSpaceRange (encoder, UTF8_SPACE_RANGE)
-	       != HPDF_OK)
-      return encoder->error->error_no;
-
-    if (HPDF_CMapEncoder_AddNotDefRange (encoder, UTF8_NOTDEF_RANGE)
-                != HPDF_OK)
-        return encoder->error->error_no;
-
-    attr->is_lead_byte_fn = NULL;
-    attr->is_trial_byte_fn = NULL;
-
-    HPDF_StrCpy (attr->registry, "Adobe", attr->registry +
-                HPDF_LIMIT_MAX_NAME_LEN);
-    HPDF_StrCpy (attr->ordering, "Identity-H", attr->ordering +
-                HPDF_LIMIT_MAX_NAME_LEN);
-    attr->suppliment = 0;
-    attr->writing_mode = HPDF_WMODE_HORIZONTAL;
-    
+    attr->uid_offset = -1;
     /* Not sure about this
-    attr->uid_offset = 0;
     attr->xuid[0] = 0;
     attr->xuid[1] = 0;
     attr->xuid[2] = 0;
     */
 
-    encoder->type = HPDF_ENCODER_TYPE_DOUBLE_BYTE;
+    encoder->type = HPDF_ENCODER_TYPE_MULTI_BYTE;
 
     return HPDF_OK;
 }
 
+
+static HPDF_STATUS
+Modern_UTF16_H_Init  (HPDF_Encoder  encoder,
+                      HPDF_Doc      pdf)
+{
+    HPDF_CMapEncoderAttr attr;
+    HPDF_STATUS ret;
+
+    if ((ret = HPDF_UTF16Encoder_Init (encoder, pdf)) != HPDF_OK)
+        return ret;
+
+    if ((ret = SetHaruModern1 (encoder, pdf, 0, HPDF_WMODE_HORIZONTAL))
+            != HPDF_OK)
+        return ret;
+
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
+
+    attr->uid_offset = -1;
+    /* Not sure about this
+    attr->xuid[0] = 0;
+    attr->xuid[1] = 0;
+    attr->xuid[2] = 0;
+    */
+
+    encoder->type = HPDF_ENCODER_TYPE_MULTI_BYTE;
+
+    return HPDF_OK;
+}
+
+
+static HPDF_STATUS
+Modern_UTF32_H_Init  (HPDF_Encoder  encoder,
+                      HPDF_Doc      pdf)
+{
+    HPDF_CMapEncoderAttr attr;
+    HPDF_STATUS ret;
+
+    encoder->to_ucs4_fn = UTF32_ToUcs4;
+    encoder->charenc = HPDF_CHARENC_UTF32BE;
+
+    if ((ret = HPDF_CMapEncoder_InitAttr (encoder)) != HPDF_OK)
+        return ret;
+
+    if ((ret = SetHaruModern1 (encoder, pdf, 0, HPDF_WMODE_HORIZONTAL))
+            != HPDF_OK)
+        return ret;
+
+    if ((ret = UTF32_AddCodeSpaceRange (encoder)) != HPDF_OK)
+        return ret;
+
+    if (HPDF_CMapEncoder_AddNotDefRange (encoder, UTF32_NOTDEF_RANGE)
+                != HPDF_OK)
+        return encoder->error->error_no;
+
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
+
+    attr->uid_offset = -1;
+    /* Not sure about this
+    attr->xuid[0] = 0;
+    attr->xuid[1] = 0;
+    attr->xuid[2] = 0;
+    */
+
+    encoder->type = HPDF_ENCODER_TYPE_MULTI_BYTE;
+
+    return HPDF_OK;
+}
+
+
+static HPDF_STATUS
+Modern_UCS2LE_H_Init  (HPDF_Encoder  encoder,
+                       HPDF_Doc      pdf)
+{
+    HPDF_CMapEncoderAttr attr;
+    HPDF_STATUS ret;
+
+    encoder->to_ucs4_fn = UCS2LE_ToUcs4;
+    encoder->charenc = HPDF_CHARENC_UTF16LE;
+
+    if ((ret = HPDF_CMapEncoder_InitAttr (encoder)) != HPDF_OK)
+        return ret;
+
+    if ((ret = SetHaruModern1 (encoder, pdf, 0, HPDF_WMODE_HORIZONTAL))
+            != HPDF_OK)
+        return ret;
+
+    if ((ret = UCS2LE_AddCodeSpaceRange (encoder)) != HPDF_OK)
+        return ret;
+
+    if (HPDF_CMapEncoder_AddNotDefRange (encoder, UCS2LE_NOTDEF_RANGE)
+                != HPDF_OK)
+        return encoder->error->error_no;
+
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
+
+    attr->max_cid = 0xF7FF;     /* override to limit in UCS2 */
+    attr->uid_offset = -1;
+    /* Not sure about this
+    attr->xuid[0] = 0;
+    attr->xuid[1] = 0;
+    attr->xuid[2] = 0;
+    */
+
+    encoder->type = HPDF_ENCODER_TYPE_MULTI_BYTE;
+
+    return HPDF_OK;
+}
+
+
+static HPDF_STATUS
+Modern_UTF32LE_H_Init  (HPDF_Encoder  encoder,
+                        HPDF_Doc      pdf)
+{
+    HPDF_CMapEncoderAttr attr;
+    HPDF_STATUS ret;
+
+    encoder->to_ucs4_fn = UTF32LE_ToUcs4;
+    encoder->charenc = HPDF_CHARENC_UTF32LE;
+
+    if ((ret = HPDF_CMapEncoder_InitAttr (encoder)) != HPDF_OK)
+        return ret;
+
+    if ((ret = SetHaruModern1 (encoder, pdf, 0, HPDF_WMODE_HORIZONTAL))
+            != HPDF_OK)
+        return ret;
+
+    if ((ret = UTF32LE_AddCodeSpaceRange (encoder)) != HPDF_OK)
+        return ret;
+
+    if (HPDF_CMapEncoder_AddNotDefRange (encoder, UTF32LE_NOTDEF_RANGE)
+                != HPDF_OK)
+        return encoder->error->error_no;
+
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
+
+    attr->uid_offset = -1;
+    /* Not sure about this
+    attr->xuid[0] = 0;
+    attr->xuid[1] = 0;
+    attr->xuid[2] = 0;
+    */
+
+    encoder->type = HPDF_ENCODER_TYPE_MULTI_BYTE;
+
+    return HPDF_OK;
+}
+
+
+static HPDF_STATUS
+Ancient_UTF8_H_Init  (HPDF_Encoder  encoder,
+                       HPDF_Doc      pdf)
+{
+    HPDF_CMapEncoderAttr attr;
+    HPDF_STATUS ret;
+
+    if ((ret = HPDF_UTF8Encoder_Init (encoder, pdf)) != HPDF_OK)
+        return ret;
+
+    if ((ret = SetHaruAncient1 (encoder, pdf, 0, HPDF_WMODE_HORIZONTAL))
+            != HPDF_OK)
+        return ret;
+
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
+
+    attr->uid_offset = -1;
+    /* Not sure about this
+    attr->xuid[0] = 0;
+    attr->xuid[1] = 0;
+    attr->xuid[2] = 0;
+    */
+
+    encoder->type = HPDF_ENCODER_TYPE_MULTI_BYTE;
+
+    return HPDF_OK;
+}
+
+
+static HPDF_STATUS
+Ancient_UTF16_H_Init  (HPDF_Encoder  encoder,
+                       HPDF_Doc      pdf)
+{
+    HPDF_CMapEncoderAttr attr;
+    HPDF_STATUS ret;
+
+    if ((ret = HPDF_UTF16Encoder_Init (encoder, pdf)) != HPDF_OK)
+        return ret;
+
+    if ((ret = SetHaruAncient1 (encoder, pdf, 0, HPDF_WMODE_HORIZONTAL))
+            != HPDF_OK)
+        return ret;
+
+    attr = (HPDF_CMapEncoderAttr)encoder->attr;
+
+    attr->uid_offset = -1;
+    /* Not sure about this
+    attr->xuid[0] = 0;
+    attr->xuid[1] = 0;
+    attr->xuid[2] = 0;
+    */
+
+    encoder->type = HPDF_ENCODER_TYPE_MULTI_BYTE;
+
+    return HPDF_OK;
+}
+
+
 /*--------------------------------------------------------------------------*/
+
+static const char MODERN_ENCODERS[][17] = {
+  "",
+  "UTF-8",        /* not "Modern-UTF8-H" for backward compatibility */
+  "Modern-UTF16-H",
+  "Modern-UTF32-H",
+  "Modern-UCS2LE-H",
+  "Modern-UTF32LE-H",
+};
+
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_UseUTFEncodings   (HPDF_Doc   pdf)
@@ -266,11 +455,71 @@ HPDF_UseUTFEncodings   (HPDF_Doc   pdf)
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
 
-    encoder = HPDF_CMapEncoder_New (pdf->mmgr,  "UTF-8",
-                UTF8_Init);
+    encoder = HPDF_CMapEncoder_New (pdf->mmgr,
+            MODERN_ENCODERS[HPDF_CHARENC_UTF8], Modern_UTF8_H_Init);
+
+    if ((ret = HPDF_Doc_RegisterEncoder (pdf, encoder)) != HPDF_OK)
+        return ret;
+
+    encoder = HPDF_CMapEncoder_New (pdf->mmgr,
+            MODERN_ENCODERS[HPDF_CHARENC_UTF16BE], Modern_UTF16_H_Init);
+
+    if ((ret = HPDF_Doc_RegisterEncoder (pdf, encoder)) != HPDF_OK)
+        return ret;
+
+    encoder = HPDF_CMapEncoder_New (pdf->mmgr,
+            MODERN_ENCODERS[HPDF_CHARENC_UTF32BE], Modern_UTF32_H_Init);
+
+    if ((ret = HPDF_Doc_RegisterEncoder (pdf, encoder)) != HPDF_OK)
+        return ret;
+
+    encoder = HPDF_CMapEncoder_New (pdf->mmgr,
+            MODERN_ENCODERS[HPDF_CHARENC_UTF16LE], Modern_UCS2LE_H_Init);
+
+    if ((ret = HPDF_Doc_RegisterEncoder (pdf, encoder)) != HPDF_OK)
+        return ret;
+
+    encoder = HPDF_CMapEncoder_New (pdf->mmgr,
+            MODERN_ENCODERS[HPDF_CHARENC_UTF32LE], Modern_UTF32LE_H_Init);
+
+    if ((ret = HPDF_Doc_RegisterEncoder (pdf, encoder)) != HPDF_OK)
+        return ret;
+
+    encoder = HPDF_CMapEncoder_New (pdf->mmgr,
+            "Ancient-UTF8-H", Ancient_UTF8_H_Init);
+
+    if ((ret = HPDF_Doc_RegisterEncoder (pdf, encoder)) != HPDF_OK)
+        return ret;
+
+    encoder = HPDF_CMapEncoder_New (pdf->mmgr,
+            "Ancient-UTF16-H", Ancient_UTF16_H_Init);
 
     if ((ret = HPDF_Doc_RegisterEncoder (pdf, encoder)) != HPDF_OK)
         return ret;
 
     return HPDF_OK;
+}
+
+
+HPDF_EXPORT(HPDF_Encoder)
+HPDF_GetUTFEncoder  (HPDF_Doc      pdf,
+                     HPDF_CharEnc  charenc)
+{
+    HPDF_Encoder encoder;
+
+    HPDF_PTRACE ((" HPDF_GetUTFEncoder\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    HPDF_NormalizeCharEnc (&charenc);
+
+    if (charenc == HPDF_CHARENC_UNSUPPORTED) {
+        HPDF_RaiseError (&pdf->error, HPDF_NOT_UTF_ENCODING, 0);
+        return NULL;
+    }
+
+    encoder = HPDF_Doc_FindEncoder (pdf, MODERN_ENCODERS[charenc]);
+
+    return encoder;
 }

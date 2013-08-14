@@ -29,6 +29,7 @@
 #include "hpdf_consts.h"
 #include "hpdf_utils.h"
 #include "hpdf_streams.h"
+#include "hpdf_encoder.h"
 
 #ifndef LIBHPDF_HAVE_NOZLIB
 #include <zlib.h>
@@ -492,7 +493,8 @@ HPDF_STATUS
 HPDF_Stream_WriteBinary  (HPDF_Stream      stream,
                           const HPDF_BYTE  *data,
                           HPDF_UINT        len,
-                          HPDF_Encrypt     e)
+                          HPDF_Encrypt     e,
+                          HPDF_Encoder     encoder)
 {
     char buf[HPDF_TEXT_DEFAULT_LEN];
     HPDF_BYTE ebuf[HPDF_TEXT_DEFAULT_LEN];
@@ -514,6 +516,33 @@ HPDF_Stream_WriteBinary  (HPDF_Stream      stream,
         }
 
         HPDF_Encrypt_CryptBuf (e, data, pbuf, len);
+        p = pbuf;
+    } else if (encoder && encoder->type == HPDF_ENCODER_TYPE_MULTI_BYTE) {
+        HPDF_ParseText_Rec parse_state;
+        HPDF_CID *pcid;
+
+        if (len * 2 <= HPDF_TEXT_DEFAULT_LEN) {
+            pbuf = ebuf;
+        } else {
+            pbuf = (HPDF_BYTE *)HPDF_GetMem (stream->mmgr, len * 2);
+            flg = HPDF_TRUE;
+        }
+
+        HPDF_Encoder_SetParseText (encoder, &parse_state, data, len);
+
+        for (i = 0, pcid = (HPDF_CID *)pbuf; i < len; i++) {
+            HPDF_UINT bytes;
+            HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &parse_state, &bytes);
+
+            if (btype != HPDF_BYTE_TYPE_TRIAL) {
+                HPDF_UCS4 ucs4 = HPDF_Encoder_ToUcs4 (encoder, data + i, bytes);
+                HPDF_CID cid = HPDF_CMapEncoder_ToCID (encoder, ucs4);
+                HPDF_UInt16Swap(&cid);
+                *pcid++ = cid;
+            }
+        }
+        len = (HPDF_UINT)((HPDF_BYTE *)pcid - pbuf);
+
         p = pbuf;
     } else {
         p = data;
@@ -808,7 +837,7 @@ HPDF_FileReader_ReadFunc  (HPDF_Stream  stream,
     HPDF_PTRACE((" HPDF_FileReader_ReadFunc\n"));
 
     HPDF_MemSet(ptr, 0, *siz);
-    rsiz = HPDF_FREAD(ptr, 1, *siz, fp);
+    rsiz = (HPDF_UINT)HPDF_FREAD(ptr, 1, *siz, fp);
 
     if (rsiz != *siz) {
         if (HPDF_FEOF(fp)) {
@@ -975,7 +1004,7 @@ HPDF_FileWriter_WriteFunc  (HPDF_Stream      stream,
     HPDF_PTRACE((" HPDF_FileWriter_WriteFunc\n"));
 
     fp = (HPDF_FILEP)stream->attr;
-    ret = HPDF_FWRITE (ptr, 1, siz, fp);
+    ret = (HPDF_UINT)HPDF_FWRITE (ptr, 1, siz, fp);
 
     if (ret != siz) {
         return HPDF_SetError (stream->error, HPDF_FILE_IO_ERROR, HPDF_FERROR(fp));
