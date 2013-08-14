@@ -1319,7 +1319,7 @@ HPDF_Font_ConvertText  (HPDF_Font        font,
             else
                 dst += UCS4TO_FNS[attr->encoder->charenc] (dst, '-');
         }
-        attr->text_cache_len = dst - attr->text_cache;
+        attr->text_cache_len = (HPDF_UINT)(dst - attr->text_cache);
     }
 
     /* set relief font index */
