@@ -43,22 +43,13 @@ typedef enum _HPDF_FontType {
 typedef HPDF_Dict HPDF_Font;
 
 
-typedef HPDF_TextWidth
-(*HPDF_Font_TextWidths_Func)  (HPDF_Font        font,
-                             const HPDF_BYTE  *text,
-                             HPDF_UINT        len);
-
-
-typedef HPDF_UINT
-(*HPDF_Font_MeasureText_Func)  (HPDF_Font        font,
-                              const HPDF_BYTE  *text,
-                              HPDF_UINT        len,
-                              HPDF_REAL        width,
-                              HPDF_REAL        fontsize,
-                              HPDF_REAL        charspace,
-                              HPDF_REAL        wordspace,
-                              HPDF_BOOL        wordwrap,
-                              HPDF_REAL        *real_width);
+typedef HPDF_INT
+(*HPDF_Font_CharWidth_Func)  (HPDF_Font        font,
+                              HPDF_BOOL        converted,
+                              HPDF_BYTE        irf,
+                              const HPDF_BYTE *text,
+                              HPDF_UINT       *bytes,
+                              HPDF_UCS4       *ucs4);
 
 
 typedef struct _HPDF_FontAttr_Rec  *HPDF_FontAttr;
@@ -66,8 +57,7 @@ typedef struct _HPDF_FontAttr_Rec  *HPDF_FontAttr;
 typedef struct _HPDF_FontAttr_Rec {
     HPDF_FontType               type;
     HPDF_WritingMode            writing_mode;
-    HPDF_Font_TextWidths_Func   text_width_fn;
-    HPDF_Font_MeasureText_Func  measure_text_fn;
+    HPDF_Font_CharWidth_Func    char_width_fn;
     HPDF_FontDef                fontdef;
     HPDF_Encoder                encoder;
 
@@ -82,6 +72,16 @@ typedef struct _HPDF_FontAttr_Rec {
     HPDF_Font                   descendant_font;
     HPDF_Dict                   map_stream;
     HPDF_Dict                   cmap_stream;
+    HPDF_Dict                   to_unicode_stream;
+
+    HPDF_Font                   relief_font;
+    HPDF_List                   converters_list[HPDF_MAX_CONVERTERS + 1];
+    HPDF_UINT                   converters_index;
+    HPDF_UINT                   text_cache_allocated;
+    HPDF_BYTE                  *text_cache;
+    HPDF_UINT                   text_cache_len;
+    HPDF_TextWidth              tw_cache;
+    HPDF_REAL                   width_per_byte;
 } HPDF_FontAttr_Rec;
 
 
@@ -104,8 +104,62 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
                      HPDF_Xref        xref);
 
 
+HPDF_TextWidth
+HPDF_Font_TextCacheWidth  (HPDF_Font font,
+                           HPDF_BOOL ignore_flags,
+                           HPDF_UINT cache_begin,
+                           HPDF_UINT cache_end);
+
+
 HPDF_BOOL
 HPDF_Font_Validate  (HPDF_Font font);
+
+
+HPDF_UINT
+HPDF_Font_StrLen  (HPDF_Font        font,
+                   const char      *s,
+                   HPDF_INT         maxlen);
+
+
+void
+HPDF_Font_FreeConvertersListAll (HPDF_Font font);
+
+
+HPDF_STATUS
+HPDF_Font_ConvertText  (HPDF_Font        font,
+                        HPDF_UINT32      flags,
+                        const char      *text,
+                        HPDF_UINT        len);
+
+
+HPDF_BOOL
+HPDF_Font_IsRtL  (HPDF_Font font);
+
+
+void
+HPDF_Font_CheckBiDi  (HPDF_Font font,
+                      HPDF_BOOL even_users);
+
+
+void
+HPDF_Font_SetParseText  (HPDF_Font            font,
+                         HPDF_ParseText_Rec  *state,
+                         const char          *text,
+                         HPDF_UINT            len);
+
+
+HPDF_Font
+HPDF_Font_GetReliefFont  (HPDF_Font  font,
+                          HPDF_UCS4  ucs4,
+                          HPDF_BYTE *index);
+
+
+#define HPDF_RELIEF_FONT_INDEX_MASK 0x0F
+#define HPDF_INTERLINEAR_ANNOTATED  0x80
+#define HPDF_INTERLINEAR_ANNOTATION 0x40
+/*         reserved for TATECHUYOKO 0x20 */
+/*         reserved                 0x10 */
+
 
 #ifdef __cplusplus
 }

@@ -178,7 +178,9 @@ HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,HPDF_PDFAType pdfatype)
         }
 
         /* Update the PDF number version */
-        pdf->pdf_version = HPDF_VER_14;
+        ret = HPDF_Doc_RequireVersion (pdf, HPDF_VER_14);
+        if (ret != HPDF_OK)
+            return ret;
 
         HPDF_Dict_AddName(xmp,"Type","Metadata");
         HPDF_Dict_AddName(xmp,"SubType","XML");

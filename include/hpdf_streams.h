@@ -51,6 +51,7 @@ typedef enum _HPDF_WhenceMode {
 } HPDF_WhenceMode;
 
 typedef struct _HPDF_Stream_Rec  *HPDF_Stream;
+typedef struct _HPDF_Encoder_Rec *HPDF_Encoder;
 
 typedef HPDF_STATUS
 (*HPDF_Stream_Write_Func)  (HPDF_Stream      stream,
@@ -266,7 +267,8 @@ HPDF_STATUS
 HPDF_Stream_WriteBinary  (HPDF_Stream      stream,
                           const HPDF_BYTE  *data,
                           HPDF_UINT        len,
-                          HPDF_Encrypt     e);
+                          HPDF_Encrypt     e,
+                          HPDF_Encoder     encoder);
 
 
 HPDF_STATUS

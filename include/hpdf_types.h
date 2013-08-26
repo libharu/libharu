@@ -94,6 +94,12 @@ typedef  HPDF_UINT16         HPDF_CID;
 typedef  HPDF_UINT16         HPDF_UNICODE;
 
 
+/*  charactor-code type (32bit)
+ */
+typedef  HPDF_UINT32         HPDF_UCS4;
+typedef  HPDF_UINT32         HPDF_CODE;
+
+
 /*  HPDF_Point struct
  */
 typedef  struct  _HPDF_Point {
@@ -111,9 +117,9 @@ typedef  struct _HPDF_Rect {
 /*  HPDF_Point3D struct
 */
 typedef  struct  _HPDF_Point3D {
-	HPDF_REAL  x;
-	HPDF_REAL  y;
-	HPDF_REAL  z;
+        HPDF_REAL  x;
+        HPDF_REAL  y;
+        HPDF_REAL  z;
 } HPDF_Point3D;
 
 typedef struct _HPDF_Rect HPDF_Box;
@@ -201,6 +207,18 @@ typedef struct _HPDF_TextWidth {
     HPDF_UINT width;
     HPDF_UINT numspace;
 } HPDF_TextWidth;
+
+
+typedef struct _HPDF_TextLineWidth {
+    HPDF_UINT16 flags;
+    HPDF_UINT16 linebytes;
+    HPDF_UINT16 numbytes;
+    HPDF_UINT16 numchars;
+    HPDF_UINT16 numspaces;
+    HPDF_UINT16 numtatweels;
+    HPDF_UINT   charswidth;
+    HPDF_REAL   width;
+} HPDF_TextLineWidth;
 
 
 /*---------------------------------------------------------------------------*/
@@ -301,6 +319,8 @@ typedef enum _HPDF_TextRenderingMode {
 typedef enum _HPDF_WritingMode {
     HPDF_WMODE_HORIZONTAL = 0,
     HPDF_WMODE_VERTICAL,
+    HPDF_WMODE_SIDEWAYS,        /* gstate only */
+    HPDF_WMODE_MIXED,           /* gstate only */
     HPDF_WMODE_EOF
 } HPDF_WritingMode;
 
@@ -367,8 +387,8 @@ typedef enum _HPDF_AnnotType {
     HPDF_ANNOT_POPUP,
     HPDF_ANNOT_3D,
     HPDF_ANNOT_SQUIGGLY,
-	HPDF_ANNOT_LINE,
-	HPDF_ANNOT_PROJECTION
+    HPDF_ANNOT_LINE,
+    HPDF_ANNOT_PROJECTION
 } HPDF_AnnotType;
 
 
@@ -528,7 +548,9 @@ typedef enum _HPDF_PageDirection {
 
 typedef enum  _HPDF_EncoderType {
     HPDF_ENCODER_TYPE_SINGLE_BYTE,
-    HPDF_ENCODER_TYPE_DOUBLE_BYTE,
+    HPDF_ENCODER_TYPE_MULTI_BYTE,
+    /* obsoleted */ HPDF_ENCODER_TYPE_DOUBLE_BYTE
+        = HPDF_ENCODER_TYPE_MULTI_BYTE,
     HPDF_ENCODER_TYPE_UNINITIALIZED,
     HPDF_ENCODER_UNKNOWN
 } HPDF_EncoderType;
@@ -543,10 +565,24 @@ typedef enum _HPDF_ByteType {
 
 
 typedef enum _HPDF_TextAlignment {
-    HPDF_TALIGN_LEFT = 0,
-    HPDF_TALIGN_RIGHT,
-    HPDF_TALIGN_CENTER,
-    HPDF_TALIGN_JUSTIFY
+    HPDF_TALIGN_LEFT                  =          0,
+    HPDF_TALIGN_RIGHT                 =          1,
+    HPDF_TALIGN_CENTER                =          2,
+    HPDF_TALIGN_JUSTIFY               =          3,
+    HPDF_TALIGN_STRETCH               =          4,
+    HPDF_TALIGN_JUSTIFY_ALL           =       0x83,
+    HPDF_TALIGN_STRETCH_ALL           =       0x84,
+    HPDF_TALIGN_MASK                  =       0xFF,
+    HPDF_VALIGN_TOP                   =     0x0000,
+    HPDF_VALIGN_BOTTOM                =     0x0100,
+    HPDF_VALIGN_CENTER                =     0x0200,
+    HPDF_VALIGN_JUSTIFY               =     0x0300,
+    HPDF_VALIGN_STRETCH               =     0x0400,
+    HPDF_VALIGN_JUSTIFY_ALL           =     0x8300,
+    HPDF_VALIGN_STRETCH_ALL           =     0x8400,
+    HPDF_VALIGN_MASK                  =     0xFF00,
+    HPDF_ALIGNOPT_BIDI_EACH_PARAGRAPH = 0x40000000,
+    HPDF_ALIGNOPT_REMOVE_TATWEEL      = 0x20000000,
 } HPDF_TextAlignment;
 
 /*----------------------------------------------------------------------------*/
@@ -556,6 +592,68 @@ typedef enum _HPDF_NameDictKey {
     HPDF_NAME_EMBEDDED_FILES = 0,    /* TODO the rest */
     HPDF_NAME_EOF
 } HPDF_NameDictKey;
+
+
+/*----------------------------------------------------------------------------*/
+/*----- text converter -------------------------------------------------------*/
+
+
+typedef enum _HPDF_CharEnc {
+    HPDF_CHARENC_UNSUPPORTED = 0,
+    HPDF_CHARENC_UTF8,
+    HPDF_CHARENC_UTF16BE,
+    HPDF_CHARENC_UTF32BE,
+    HPDF_CHARENC_UTF16LE,
+    HPDF_CHARENC_UTF32LE,
+    HPDF_CHARENC_UNICODE,       /* UTF16 native endian */
+    HPDF_CHARENC_UCS4,          /* UTF32 native endian */
+    HPDF_CHARENC_WCHAR_T,       /* UNICODE or UCS4 */
+    HPDF_CHARENC_EOF,
+} HPDF_CharEnc;
+
+
+typedef struct _HPDF_Converter_Rec *HPDF_Converter;
+
+
+typedef HPDF_Converter
+(HPDF_STDCALL *HPDF_Converter_New_Func)  (HPDF_Alloc_Func alloc_fn,
+                                          HPDF_Free_Func  free_fn,
+                                          void           *param);
+
+
+typedef HPDF_UINT
+(HPDF_STDCALL *HPDF_Converter_Convert_Func)  (HPDF_Converter   converter,
+                                              HPDF_UINT32      flags,
+                                              const HPDF_BYTE *src,
+                                              HPDF_UINT        src_bytes,
+                                              HPDF_BYTE       *dst);
+
+
+typedef void
+(HPDF_STDCALL *HPDF_Converter_Delete_Func)  (HPDF_Converter   converter,
+                                             HPDF_Free_Func   free_fn);
+
+
+typedef struct _HPDF_Converter_Rec {
+    HPDF_Converter_Convert_Func convert_fn;
+    HPDF_Converter_Delete_Func  delete_fn;
+    HPDF_CharEnc                src_charenc;
+    HPDF_CharEnc                dst_charenc;
+    HPDF_UINT                   bytes_factor;
+    HPDF_UINT                   chars_factor;
+} HPDF_Converter_Rec;
+
+
+typedef struct _HPDF_ConverterBiDi_Param_Rec {
+    HPDF_UINT32  max_chars;
+    HPDF_UINT32  base_dir;
+    HPDF_UINT32 *bidi_types;
+    HPDF_UINT8  *ar_props;
+    HPDF_INT8   *embedding_levels;
+    HPDF_INT    *positions_L_to_V;
+    HPDF_INT    *positions_V_to_L;
+} HPDF_ConverterBiDi_Param_Rec;
+
 
 #ifdef __cplusplus
 }

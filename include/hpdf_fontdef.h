@@ -307,11 +307,8 @@ typedef struct _HPDF_TTFontDefAttr_Rec {
     HPDF_BYTE                panose[10];
     HPDF_UINT32              code_page_range1;
     HPDF_UINT32              code_page_range2;
-
     HPDF_UINT                length1;
-
-    HPDF_BOOL                embedding;
-    HPDF_BOOL                is_cidfont;
+    HPDF_INT                 options;
 
     HPDF_Stream              stream;
 } HPDF_TTFontDefAttr_Rec;
@@ -325,24 +322,24 @@ HPDF_TTFontDef_New (HPDF_MMgr   mmgr);
 HPDF_FontDef
 HPDF_TTFontDef_Load  (HPDF_MMgr     mmgr,
                       HPDF_Stream   stream,
-                      HPDF_BOOL     embedding);
+                      HPDF_INT      options);
 
 
 HPDF_FontDef
 HPDF_TTFontDef_Load2  (HPDF_MMgr     mmgr,
                        HPDF_Stream   stream,
                        HPDF_UINT     index,
-                       HPDF_BOOL     embedding);
+                       HPDF_INT      options);
 
 
 HPDF_UINT16
 HPDF_TTFontDef_GetGlyphid  (HPDF_FontDef   fontdef,
-                            HPDF_UINT16    unicode);
+                            HPDF_UCS4      ucs4);
 
 
 HPDF_INT16
 HPDF_TTFontDef_GetCharWidth  (HPDF_FontDef   fontdef,
-                              HPDF_UINT16    unicode);
+                              HPDF_UCS4      ucs4);
 
 
 HPDF_INT16
@@ -357,7 +354,7 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
 
 HPDF_Box
 HPDF_TTFontDef_GetCharBBox  (HPDF_FontDef   fontdef,
-                             HPDF_UINT16    unicode);
+                             HPDF_UCS4      ucs4);
 
 
 void
@@ -388,9 +385,9 @@ HPDF_CIDFontDef_AddWidth  (HPDF_FontDef            fontdef,
                            const HPDF_CID_Width   *widths);
 
 
-HPDF_INT16
+HPDF_CID
 HPDF_CIDFontDef_GetCIDWidth  (HPDF_FontDef  fontdef,
-                              HPDF_UINT16   cid);
+                              HPDF_CID      cid);
 
 
 

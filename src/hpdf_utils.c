@@ -443,3 +443,15 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value)
     *value = (HPDF_UINT16)((HPDF_UINT16)u[0] << 8 | (HPDF_UINT16)u[1]);
 }
 
+
+void
+HPDF_UInt32Swap  (HPDF_UINT32  *value)
+{
+    HPDF_BYTE u[4];
+
+    HPDF_MemCpy (u, (HPDF_BYTE*)value, 4);
+    *value = (HPDF_UINT32)((HPDF_UINT32)u[0] << 24 |
+                           (HPDF_UINT32)u[1] << 16 |
+                           (HPDF_UINT32)u[2] <<  8 |
+                           (HPDF_UINT32)u[3]);
+}

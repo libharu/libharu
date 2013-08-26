@@ -62,8 +62,8 @@ HPDF_Binary_Write  (HPDF_Binary   obj,
     if (e)
         HPDF_Encrypt_Reset (e);
 
-    if ((ret = HPDF_Stream_WriteBinary (stream, obj->value, obj->len, e)) !=
-                    HPDF_OK)
+    if ((ret = HPDF_Stream_WriteBinary (stream, obj->value, 
+            obj->len, e, NULL)) != HPDF_OK)
         return ret;
 
     return HPDF_Stream_WriteChar (stream, '>');

@@ -711,28 +711,40 @@ HPDF_Page_TextWidth  (HPDF_Page        page,
                       const char      *text)
 {
     HPDF_PageAttr attr;
+    HPDF_Font font;
     HPDF_TextWidth tw;
     HPDF_REAL ret = 0;
-    HPDF_UINT len = HPDF_StrLen(text, HPDF_LIMIT_MAX_STRING_LEN + 1);
+    HPDF_UINT len = 0;
+    HPDF_REAL char_space, word_space;
 
     HPDF_PTRACE((" HPDF_Page_TextWidth\n"));
 
-    if (!HPDF_Page_Validate (page) || len == 0)
+    if (!HPDF_Page_Validate (page))
         return 0;
 
     attr = (HPDF_PageAttr )page->attr;
+    font = attr->gstate->font;
 
     /* no font exists */
-    if (!attr->gstate->font) {
+    if (!font) {
         HPDF_RaiseError (page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
         return 0;
     }
 
-    tw = HPDF_Font_TextWidth (attr->gstate->font, (HPDF_BYTE *)text, len);
+    if (text)
+        len = HPDF_Font_StrLen(font, text, HPDF_LIMIT_MAX_STRING_LEN + 1);
 
-    ret += attr->gstate->word_space * tw.numspace;
+    tw = HPDF_Font_TextWidth (font, (const HPDF_BYTE *)text, len);
+
+    char_space = attr->gstate->char_space;
+    word_space = attr->gstate->word_space;
+    if (attr->gstate->writing_mode == HPDF_WMODE_VERTICAL) {
+        char_space = -char_space;
+        word_space = -word_space;
+    }
+    ret += tw.numchars * char_space;
+    ret += tw.numspace * word_space;
     ret += tw.width * attr->gstate->font_size  / 1000;
-    ret += attr->gstate->char_space * tw.numchars;
 
     HPDF_CheckError (page->error);
 
@@ -744,29 +756,65 @@ HPDF_EXPORT(HPDF_UINT)
 HPDF_Page_MeasureText  (HPDF_Page          page,
                         const char        *text,
                         HPDF_REAL          width,
-                        HPDF_BOOL          wordwrap,
+                        HPDF_INT           options,
                         HPDF_REAL         *real_width)
 {
-    HPDF_PageAttr attr;
-    HPDF_UINT len = HPDF_StrLen(text, HPDF_LIMIT_MAX_STRING_LEN + 1);
-    HPDF_UINT ret;
-
-    if (!HPDF_Page_Validate (page) || len == 0)
-        return 0;
-
-    attr = (HPDF_PageAttr )page->attr;
+    HPDF_TextLineWidth tlw;
+    HPDF_UINT lines;
 
     HPDF_PTRACE((" HPDF_Page_MeasureText\n"));
 
+    lines = HPDF_Page_MeasureTextLines (page, text, width, options, &tlw, 1);
+    if (!lines)
+        return 0;
+
+    if (real_width)
+        *real_width = tlw.width;
+    return tlw.linebytes;
+}
+
+
+HPDF_EXPORT(HPDF_UINT)
+HPDF_Page_MeasureTextLines  (HPDF_Page           page,
+                             const char         *text,
+                             HPDF_REAL           line_width,
+                             HPDF_INT            options,
+                             HPDF_TextLineWidth *width,
+                             HPDF_UINT           max_lines)
+{
+    HPDF_PageAttr attr;
+    HPDF_Font font;
+    HPDF_UINT len;
+    HPDF_UINT ret;
+    HPDF_REAL char_space, word_space;
+
+    HPDF_PTRACE((" HPDF_Page_MeasureTextEx\n"));
+
+    if (!HPDF_Page_Validate (page) || !text || !width)
+        return 0;
+
+    attr = (HPDF_PageAttr )page->attr;
+    font = attr->gstate->font;
+
     /* no font exists */
-    if (!attr->gstate->font) {
+    if (!font) {
         HPDF_RaiseError (page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
         return 0;
     }
 
-    ret = HPDF_Font_MeasureText (attr->gstate->font, (HPDF_BYTE *)text, len, width,
-        attr->gstate->font_size, attr->gstate->char_space,
-        attr->gstate->word_space, wordwrap, real_width);
+    len = HPDF_Font_StrLen(font, text, HPDF_LIMIT_MAX_STRING_LEN + 1);
+    if (len == 0)
+        return 0;
+
+    char_space = attr->gstate->char_space;
+    word_space = attr->gstate->word_space;
+    if (attr->gstate->writing_mode == HPDF_WMODE_VERTICAL) {
+        char_space = -char_space;
+        word_space = -word_space;
+    }
+    ret = HPDF_Font_MeasureTextLines (font, (const HPDF_BYTE *)text, len,
+            line_width, attr->gstate->font_size, char_space, word_space,
+            options, width, max_lines);
 
     HPDF_CheckError (page->error);
 
@@ -1715,10 +1763,10 @@ HPDF_Page_Create3DView    (HPDF_Page       page,
 
 HPDF_Annotation
 HPDF_Page_CreateTextMarkupAnnot (HPDF_Page     page,
-                                HPDF_Rect      rect,
-                                const char     *text,
-                                HPDF_Encoder   encoder,
-                                HPDF_AnnotType subType)
+                                 HPDF_Rect      rect,
+                                 const char     *text,
+                                 HPDF_Encoder   encoder,
+                                 HPDF_AnnotType subType)
 {
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
@@ -1750,9 +1798,9 @@ HPDF_Page_CreateTextMarkupAnnot (HPDF_Page     page,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateHighlightAnnot  (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char   *text,
-                                HPDF_Encoder       encoder)
+                                 HPDF_Rect          rect,
+                                 const char   *text,
+                                 HPDF_Encoder       encoder)
 {
     HPDF_PTRACE((" HPDF_Page_CreateHighlightAnnot\n"));
 
@@ -1772,9 +1820,9 @@ HPDF_Page_CreateSquigglyAnnot  (HPDF_Page          page,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateUnderlineAnnot  (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char   *text,
-                                HPDF_Encoder       encoder)
+                                 HPDF_Rect          rect,
+                                 const char   *text,
+                                 HPDF_Encoder       encoder)
 {
     HPDF_PTRACE((" HPDF_Page_CreateUnderlineAnnot\n"));
 
@@ -1783,9 +1831,9 @@ HPDF_Page_CreateUnderlineAnnot  (HPDF_Page          page,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateStrikeOutAnnot  (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char   *text,
-                                HPDF_Encoder       encoder)
+                                 HPDF_Rect          rect,
+                                 const char   *text,
+                                 HPDF_Encoder       encoder)
 {
     HPDF_PTRACE((" HPDF_Page_CreateStrikeOutAnnot\n"));
 
@@ -1794,8 +1842,8 @@ HPDF_Page_CreateStrikeOutAnnot  (HPDF_Page          page,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreatePopupAnnot  (    HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                HPDF_Annotation       parent)
+                                 HPDF_Rect          rect,
+                                 HPDF_Annotation       parent)
 {
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
@@ -1821,10 +1869,10 @@ HPDF_Page_CreatePopupAnnot  (    HPDF_Page          page,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateStampAnnot  (    HPDF_Page           page,
-                                HPDF_Rect           rect,
-                                HPDF_StampAnnotName name,
-                                const char*            text,
-                                HPDF_Encoder        encoder)
+                                 HPDF_Rect           rect,
+                                 HPDF_StampAnnotName name,
+                                 const char*            text,
+                                 HPDF_Encoder        encoder)
 {
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
@@ -1850,113 +1898,113 @@ HPDF_Page_CreateStampAnnot  (    HPDF_Page           page,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateProjectionAnnot(HPDF_Page page,
-								HPDF_Rect rect,
-								const char* text,
-								HPDF_Encoder encoder)
+                                HPDF_Rect rect,
+                                const char* text,
+                                HPDF_Encoder encoder)
 {
-	HPDF_PageAttr attr;
-	HPDF_Annotation annot;
+        HPDF_PageAttr attr;
+        HPDF_Annotation annot;
 
-	HPDF_PTRACE((" HPDF_Page_CreateProjectionAnnot\n"));
+        HPDF_PTRACE((" HPDF_Page_CreateProjectionAnnot\n"));
 
-	if (!HPDF_Page_Validate (page))
-		return NULL;
+        if (!HPDF_Page_Validate (page))
+                return NULL;
 
-	attr = (HPDF_PageAttr)page->attr;
+        attr = (HPDF_PageAttr)page->attr;
 
-	annot = HPDF_ProjectionAnnot_New (page->mmgr, attr->xref, rect, text, encoder);
-	if (annot) {
-		if (AddAnnotation (page, annot) != HPDF_OK) {
-			HPDF_CheckError (page->error);
-			annot = NULL;
-		}
-	} else
-		HPDF_CheckError (page->error);
+        annot = HPDF_ProjectionAnnot_New (page->mmgr, attr->xref, rect, text, encoder);
+        if (annot) {
+                if (AddAnnotation (page, annot) != HPDF_OK) {
+                        HPDF_CheckError (page->error);
+                        annot = NULL;
+                }
+        } else
+                HPDF_CheckError (page->error);
 
-	return annot;
+        return annot;
 }
 
 
 HPDF_EXPORT(HPDF_3DMeasure)
 HPDF_Page_Create3DC3DMeasure(HPDF_Page page,
-							 HPDF_Point3D    firstanchorpoint,
-							 HPDF_Point3D    textanchorpoint)
+                             HPDF_Point3D    firstanchorpoint,
+                             HPDF_Point3D    textanchorpoint)
 {
-	HPDF_PageAttr attr;
-	HPDF_Annotation measure;
+        HPDF_PageAttr attr;
+        HPDF_Annotation measure;
 
-	HPDF_PTRACE((" HPDF_Page_Create3DC3DMeasure\n"));
+        HPDF_PTRACE((" HPDF_Page_Create3DC3DMeasure\n"));
 
-	if (!HPDF_Page_Validate (page))
-		return NULL;
+        if (!HPDF_Page_Validate (page))
+                return NULL;
 
-	attr = (HPDF_PageAttr)page->attr;
+        attr = (HPDF_PageAttr)page->attr;
 
-	measure = HPDF_3DC3DMeasure_New(page->mmgr, attr->xref, firstanchorpoint, textanchorpoint);
-	if ( !measure) 
-		HPDF_CheckError (page->error);
+        measure = HPDF_3DC3DMeasure_New(page->mmgr, attr->xref, firstanchorpoint, textanchorpoint);
+        if ( !measure) 
+                HPDF_CheckError (page->error);
 
-	return measure;
+        return measure;
 }
 
 HPDF_EXPORT(HPDF_3DMeasure)
 HPDF_Page_CreatePD33DMeasure(HPDF_Page       page,
-							 HPDF_Point3D    annotationPlaneNormal,
-							 HPDF_Point3D    firstAnchorPoint,
-							 HPDF_Point3D    secondAnchorPoint,
-							 HPDF_Point3D    leaderLinesDirection,
-							 HPDF_Point3D    measurementValuePoint,
-							 HPDF_Point3D    textYDirection,
-							 HPDF_REAL       value,
-							 const char*     unitsString
-							 )
+                             HPDF_Point3D    annotationPlaneNormal,
+                             HPDF_Point3D    firstAnchorPoint,
+                             HPDF_Point3D    secondAnchorPoint,
+                             HPDF_Point3D    leaderLinesDirection,
+                             HPDF_Point3D    measurementValuePoint,
+                             HPDF_Point3D    textYDirection,
+                             HPDF_REAL       value,
+                             const char*     unitsString
+                             )
 {
-	HPDF_PageAttr attr;
-	HPDF_Annotation measure;
+        HPDF_PageAttr attr;
+        HPDF_Annotation measure;
 
-	HPDF_PTRACE((" HPDF_Page_CreatePD33DMeasure\n"));
+        HPDF_PTRACE((" HPDF_Page_CreatePD33DMeasure\n"));
 
-	if (!HPDF_Page_Validate (page))
-		return NULL;
+        if (!HPDF_Page_Validate (page))
+                return NULL;
 
-	attr = (HPDF_PageAttr)page->attr;
+        attr = (HPDF_PageAttr)page->attr;
 
-	measure = HPDF_PD33DMeasure_New(page->mmgr, 
-		attr->xref, 
-		annotationPlaneNormal, 
-		firstAnchorPoint,
-		secondAnchorPoint,
-		leaderLinesDirection,
-		measurementValuePoint,
-		textYDirection,
-		value,
-		unitsString
-		);
-	if ( !measure) 
-		HPDF_CheckError (page->error);
+        measure = HPDF_PD33DMeasure_New(page->mmgr, 
+                attr->xref, 
+                annotationPlaneNormal, 
+                firstAnchorPoint,
+                secondAnchorPoint,
+                leaderLinesDirection,
+                measurementValuePoint,
+                textYDirection,
+                value,
+                unitsString
+                );
+        if ( !measure) 
+                HPDF_CheckError (page->error);
 
-	return measure;
+        return measure;
 }
 
 
 HPDF_EXPORT(HPDF_ExData)
 HPDF_Page_Create3DAnnotExData(HPDF_Page page)
 {
-	HPDF_PageAttr attr;
-	HPDF_Annotation exData;
+        HPDF_PageAttr attr;
+        HPDF_Annotation exData;
 
-	HPDF_PTRACE((" HPDF_Page_Create3DAnnotExData\n"));
+        HPDF_PTRACE((" HPDF_Page_Create3DAnnotExData\n"));
 
-	if (!HPDF_Page_Validate (page))
-		return NULL;
+        if (!HPDF_Page_Validate (page))
+                return NULL;
 
-	attr = (HPDF_PageAttr)page->attr;
+        attr = (HPDF_PageAttr)page->attr;
 
-	exData = HPDF_3DAnnotExData_New(page->mmgr, attr->xref);
-	if ( !exData) 
-		HPDF_CheckError (page->error);
+        exData = HPDF_3DAnnotExData_New(page->mmgr, attr->xref);
+        if ( !exData) 
+                HPDF_CheckError (page->error);
 
-	return exData;
+        return exData;
 }
 
 
@@ -1973,3 +2021,50 @@ HPDF_Page_SetFilter  (HPDF_Page    page,
     attr->contents->filter = filter;
 }
 
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetJustifyRatio  (HPDF_Page page,
+                            HPDF_REAL word_space,
+                            HPDF_REAL char_space,
+                            HPDF_REAL kashida)
+{
+    HPDF_PageAttr attr;
+
+    HPDF_PTRACE((" HPDF_Page_SetJustifyRatio\n"));
+
+    if (!HPDF_Page_Validate (page))
+        return HPDF_INVALID_PAGE;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    if (char_space < 0 || word_space < 0 || kashida < 0)
+        return HPDF_RaiseError (page->error, HPDF_INVALID_PARAMETER, 0);
+
+    attr->gstate->justify_char_space = char_space;
+    attr->gstate->justify_word_space = word_space;
+    attr->gstate->justify_kashida    = kashida;
+
+    return HPDF_OK;
+}
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_InterlinearAnnotationRatio  (HPDF_Page page,
+                                       HPDF_REAL ratio)
+{
+    HPDF_PageAttr attr;
+
+    HPDF_PTRACE((" HPDF_Page_InterlinearAnnotationRatio\n"));
+
+    if (!HPDF_Page_Validate (page))
+        return HPDF_INVALID_PAGE;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    if (ratio <= 0)
+        return HPDF_RaiseError (page->error, HPDF_INVALID_PARAMETER, 0);
+
+    attr->gstate->ia_font_size_ratio = ratio;
+
+    return HPDF_OK;
+}

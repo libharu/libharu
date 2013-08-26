@@ -44,6 +44,10 @@ HPDF_GState_New  (HPDF_MMgr    mmgr,
         gstate->dash_mode = current->dash_mode;
         gstate->flatness = current->flatness;
 
+        gstate->justify_char_space = current->justify_char_space;
+        gstate->justify_word_space = current->justify_word_space;
+        gstate->justify_kashida = current->justify_kashida;
+
         gstate->char_space = current->char_space;
         gstate->word_space = current->word_space;
         gstate->h_scalling = current->h_scalling;
@@ -61,7 +65,10 @@ HPDF_GState_New  (HPDF_MMgr    mmgr,
         gstate->gray_stroke = current->gray_stroke;
 
         gstate->font = current->font;
+        gstate->actual_font = current->actual_font;
         gstate->font_size = current->font_size;
+        gstate->actual_font_size = current->actual_font_size;
+        gstate->ia_font_size_ratio = current->ia_font_size_ratio;
         gstate->writing_mode = current->writing_mode;
 
         gstate->prev = current;
@@ -80,6 +87,10 @@ HPDF_GState_New  (HPDF_MMgr    mmgr,
         gstate->dash_mode = DEF_DASH_MODE;
         gstate->flatness = HPDF_DEF_FLATNESS;
 
+        gstate->justify_char_space = 1;
+        gstate->justify_word_space = 0;
+        gstate->justify_kashida = 0;
+
         gstate->char_space = HPDF_DEF_CHARSPACE;
         gstate->word_space = HPDF_DEF_WORDSPACE;
         gstate->h_scalling = HPDF_DEF_HSCALING;
@@ -97,7 +108,10 @@ HPDF_GState_New  (HPDF_MMgr    mmgr,
         gstate->gray_stroke = 0;
 
         gstate->font = NULL;
+        gstate->actual_font = NULL;
         gstate->font_size = 0;
+        gstate->actual_font_size = 0;
+        gstate->ia_font_size_ratio = 0.5F;
         gstate->writing_mode = HPDF_WMODE_HORIZONTAL;
 
         gstate->prev = NULL;

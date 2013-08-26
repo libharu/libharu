@@ -39,6 +39,10 @@ typedef struct _HPDF_GState_Rec {
     HPDF_DashMode           dash_mode;
     HPDF_REAL               flatness;
 
+    HPDF_REAL               justify_char_space;
+    HPDF_REAL               justify_word_space;
+    HPDF_REAL               justify_kashida;
+
     HPDF_REAL               char_space;
     HPDF_REAL               word_space;
     HPDF_REAL               h_scalling;
@@ -56,7 +60,10 @@ typedef struct _HPDF_GState_Rec {
     HPDF_REAL               gray_stroke;
 
     HPDF_Font               font;
+    HPDF_Font               actual_font;
     HPDF_REAL               font_size;
+    HPDF_REAL               actual_font_size;
+    HPDF_REAL               ia_font_size_ratio;
     HPDF_WritingMode        writing_mode;
 
     HPDF_GState             prev;
