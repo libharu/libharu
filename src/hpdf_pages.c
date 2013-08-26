@@ -715,6 +715,7 @@ HPDF_Page_TextWidth  (HPDF_Page        page,
     HPDF_TextWidth tw;
     HPDF_REAL ret = 0;
     HPDF_UINT len = 0;
+    HPDF_REAL char_space, word_space;
 
     HPDF_PTRACE((" HPDF_Page_TextWidth\n"));
 
@@ -730,17 +731,20 @@ HPDF_Page_TextWidth  (HPDF_Page        page,
         return 0;
     }
 
-    if (text) {
+    if (text)
         len = HPDF_Font_StrLen(font, text, HPDF_LIMIT_MAX_STRING_LEN + 1);
-        if (len == 0)
-            return 0;
-    }
 
     tw = HPDF_Font_TextWidth (font, (const HPDF_BYTE *)text, len);
 
-    ret += attr->gstate->word_space * tw.numspace;
+    char_space = attr->gstate->char_space;
+    word_space = attr->gstate->word_space;
+    if (attr->gstate->writing_mode == HPDF_WMODE_VERTICAL) {
+        char_space = -char_space;
+        word_space = -word_space;
+    }
+    ret += tw.numchars * char_space;
+    ret += tw.numspace * word_space;
     ret += tw.width * attr->gstate->font_size  / 1000;
-    ret += attr->gstate->char_space * tw.numchars;
 
     HPDF_CheckError (page->error);
 
@@ -755,23 +759,28 @@ HPDF_Page_MeasureText  (HPDF_Page          page,
                         HPDF_INT           options,
                         HPDF_REAL         *real_width)
 {
+    HPDF_TextLineWidth tlw;
+    HPDF_UINT lines;
+
     HPDF_PTRACE((" HPDF_Page_MeasureText\n"));
 
-    return HPDF_Page_MeasureTextEx (page, text, width, options, real_width,
-            NULL, NULL, NULL, NULL);
+    lines = HPDF_Page_MeasureTextLines (page, text, width, options, &tlw, 1);
+    if (!lines)
+        return 0;
+
+    if (real_width)
+        *real_width = tlw.width;
+    return tlw.linebytes;
 }
 
 
 HPDF_EXPORT(HPDF_UINT)
-HPDF_Page_MeasureTextEx  (HPDF_Page    page,
-                          const char  *text,
-                          HPDF_REAL    width,
-                          HPDF_INT     options,
-                          HPDF_REAL   *real_width,
-                          HPDF_UINT   *numbytes,
-                          HPDF_UINT   *numchars,
-                          HPDF_UINT   *numspaces,
-                          HPDF_UINT   *numtatweels)
+HPDF_Page_MeasureTextLines  (HPDF_Page           page,
+                             const char         *text,
+                             HPDF_REAL           line_width,
+                             HPDF_INT            options,
+                             HPDF_TextLineWidth *width,
+                             HPDF_UINT           max_lines)
 {
     HPDF_PageAttr attr;
     HPDF_Font font;
@@ -781,7 +790,7 @@ HPDF_Page_MeasureTextEx  (HPDF_Page    page,
 
     HPDF_PTRACE((" HPDF_Page_MeasureTextEx\n"));
 
-    if (!HPDF_Page_Validate (page) || !text)
+    if (!HPDF_Page_Validate (page) || !text || !width)
         return 0;
 
     attr = (HPDF_PageAttr )page->attr;
@@ -800,12 +809,12 @@ HPDF_Page_MeasureTextEx  (HPDF_Page    page,
     char_space = attr->gstate->char_space;
     word_space = attr->gstate->word_space;
     if (attr->gstate->writing_mode == HPDF_WMODE_VERTICAL) {
-        char_space *= -1;
-        word_space *= -1;
+        char_space = -char_space;
+        word_space = -word_space;
     }
-    ret = HPDF_Font_MeasureTextEx (font, (const HPDF_BYTE *)text, len, width,
-            attr->gstate->font_size, char_space, word_space, options,
-            real_width, numbytes, numchars, numspaces, numtatweels);
+    ret = HPDF_Font_MeasureTextLines (font, (const HPDF_BYTE *)text, len,
+            line_width, attr->gstate->font_size, char_space, word_space,
+            options, width, max_lines);
 
     HPDF_CheckError (page->error);
 
@@ -2034,6 +2043,28 @@ HPDF_Page_SetJustifyRatio  (HPDF_Page page,
     attr->gstate->justify_char_space = char_space;
     attr->gstate->justify_word_space = word_space;
     attr->gstate->justify_kashida    = kashida;
+
+    return HPDF_OK;
+}
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_InterlinearAnnotationRatio  (HPDF_Page page,
+                                       HPDF_REAL ratio)
+{
+    HPDF_PageAttr attr;
+
+    HPDF_PTRACE((" HPDF_Page_InterlinearAnnotationRatio\n"));
+
+    if (!HPDF_Page_Validate (page))
+        return HPDF_INVALID_PAGE;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    if (ratio <= 0)
+        return HPDF_RaiseError (page->error, HPDF_INVALID_PARAMETER, 0);
+
+    attr->gstate->ia_font_size_ratio = ratio;
 
     return HPDF_OK;
 }

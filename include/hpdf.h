@@ -969,19 +969,16 @@ HPDF_Font_MeasureText  (HPDF_Font          font,
 
 
 HPDF_EXPORT(HPDF_UINT)
-HPDF_Font_MeasureTextEx  (HPDF_Font          font,
-                          const char        *text,
-                          HPDF_UINT          len,
-                          HPDF_REAL          width,
-                          HPDF_REAL          font_size,
-                          HPDF_REAL          char_space,
-                          HPDF_REAL          word_space,
-                          HPDF_INT           options,
-                          HPDF_REAL         *real_width,
-                          HPDF_UINT         *numbytes,
-                          HPDF_UINT         *numchars,
-                          HPDF_UINT         *numspaces,
-                          HPDF_UINT         *numtatweels);
+HPDF_Font_MeasureTextLines  (HPDF_Font           font,
+                             const char         *text,
+                             HPDF_UINT           len,
+                             HPDF_REAL           line_width,
+                             HPDF_REAL           font_size,
+                             HPDF_REAL           char_space,
+                             HPDF_REAL           word_space,
+                             HPDF_INT            options,
+                             HPDF_TextLineWidth *width,
+                             HPDF_UINT           max_lines);
 
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1079,15 +1076,12 @@ HPDF_Page_MeasureText  (HPDF_Page    page,
 
 
 HPDF_EXPORT(HPDF_UINT)
-HPDF_Page_MeasureTextEx  (HPDF_Page    page,
-                          const char  *text,
-                          HPDF_REAL    width,
-                          HPDF_INT     options,
-                          HPDF_REAL   *real_width,
-                          HPDF_UINT   *numbytes,
-                          HPDF_UINT   *numchars,
-                          HPDF_UINT   *numspaces,
-                          HPDF_UINT   *numtatweels);
+HPDF_Page_MeasureTextLines  (HPDF_Page           page,
+                             const char         *text,
+                             HPDF_REAL           line_width,
+                             HPDF_INT            options,
+                             HPDF_TextLineWidth *width,
+                             HPDF_UINT           max_lines);
 
 
 HPDF_EXPORT(HPDF_REAL)
@@ -1647,6 +1641,11 @@ HPDF_Page_SetJustifyRatio  (HPDF_Page page,
                             HPDF_REAL word_space,
                             HPDF_REAL char_space,
                             HPDF_REAL kashida);
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_InterlinearAnnotationRatio  (HPDF_Page page,
+                                       HPDF_REAL ratio);
 
 
 HPDF_EXPORT(HPDF_STATUS)

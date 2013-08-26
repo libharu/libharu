@@ -209,6 +209,18 @@ typedef struct _HPDF_TextWidth {
 } HPDF_TextWidth;
 
 
+typedef struct _HPDF_TextLineWidth {
+    HPDF_UINT16 flags;
+    HPDF_UINT16 linebytes;
+    HPDF_UINT16 numbytes;
+    HPDF_UINT16 numchars;
+    HPDF_UINT16 numspaces;
+    HPDF_UINT16 numtatweels;
+    HPDF_UINT   charswidth;
+    HPDF_REAL   width;
+} HPDF_TextLineWidth;
+
+
 /*---------------------------------------------------------------------------*/
 /*------ dash mode ----------------------------------------------------------*/
 
@@ -307,6 +319,8 @@ typedef enum _HPDF_TextRenderingMode {
 typedef enum _HPDF_WritingMode {
     HPDF_WMODE_HORIZONTAL = 0,
     HPDF_WMODE_VERTICAL,
+    HPDF_WMODE_SIDEWAYS,        /* gstate only */
+    HPDF_WMODE_MIXED,           /* gstate only */
     HPDF_WMODE_EOF
 } HPDF_WritingMode;
 
@@ -373,8 +387,8 @@ typedef enum _HPDF_AnnotType {
     HPDF_ANNOT_POPUP,
     HPDF_ANNOT_3D,
     HPDF_ANNOT_SQUIGGLY,
-        HPDF_ANNOT_LINE,
-        HPDF_ANNOT_PROJECTION
+    HPDF_ANNOT_LINE,
+    HPDF_ANNOT_PROJECTION
 } HPDF_AnnotType;
 
 
@@ -551,15 +565,24 @@ typedef enum _HPDF_ByteType {
 
 
 typedef enum _HPDF_TextAlignment {
-    HPDF_TALIGN_LEFT = 0,
-    HPDF_TALIGN_RIGHT,
-    HPDF_TALIGN_CENTER,
-    HPDF_TALIGN_JUSTIFY,
-    HPDF_TALIGN_JUSTIFY_ALL,
-    HPDF_TALIGN_STRETCH,
-    HPDF_TALIGN_MASK                   = 0x0000000F,
-    HPDF_TALIGNOPT_BIDI_EACH_PARAGRAPH = 0x40000000,
-    HPDF_TALIGNOPT_REMOVE_TATWEEL      = 0x20000000,
+    HPDF_TALIGN_LEFT                  =          0,
+    HPDF_TALIGN_RIGHT                 =          1,
+    HPDF_TALIGN_CENTER                =          2,
+    HPDF_TALIGN_JUSTIFY               =          3,
+    HPDF_TALIGN_STRETCH               =          4,
+    HPDF_TALIGN_JUSTIFY_ALL           =       0x83,
+    HPDF_TALIGN_STRETCH_ALL           =       0x84,
+    HPDF_TALIGN_MASK                  =       0xFF,
+    HPDF_VALIGN_TOP                   =     0x0000,
+    HPDF_VALIGN_BOTTOM                =     0x0100,
+    HPDF_VALIGN_CENTER                =     0x0200,
+    HPDF_VALIGN_JUSTIFY               =     0x0300,
+    HPDF_VALIGN_STRETCH               =     0x0400,
+    HPDF_VALIGN_JUSTIFY_ALL           =     0x8300,
+    HPDF_VALIGN_STRETCH_ALL           =     0x8400,
+    HPDF_VALIGN_MASK                  =     0xFF00,
+    HPDF_ALIGNOPT_BIDI_EACH_PARAGRAPH = 0x40000000,
+    HPDF_ALIGNOPT_REMOVE_TATWEEL      = 0x20000000,
 } HPDF_TextAlignment;
 
 /*----------------------------------------------------------------------------*/

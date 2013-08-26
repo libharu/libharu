@@ -65,8 +65,10 @@ HPDF_GState_New  (HPDF_MMgr    mmgr,
         gstate->gray_stroke = current->gray_stroke;
 
         gstate->font = current->font;
-        gstate->font_size = current->font_size;
         gstate->actual_font = current->actual_font;
+        gstate->font_size = current->font_size;
+        gstate->actual_font_size = current->actual_font_size;
+        gstate->ia_font_size_ratio = current->ia_font_size_ratio;
         gstate->writing_mode = current->writing_mode;
 
         gstate->prev = current;
@@ -106,8 +108,10 @@ HPDF_GState_New  (HPDF_MMgr    mmgr,
         gstate->gray_stroke = 0;
 
         gstate->font = NULL;
-        gstate->font_size = 0;
         gstate->actual_font = NULL;
+        gstate->font_size = 0;
+        gstate->actual_font_size = 0;
+        gstate->ia_font_size_ratio = 0.5F;
         gstate->writing_mode = HPDF_WMODE_HORIZONTAL;
 
         gstate->prev = NULL;

@@ -38,12 +38,15 @@ error_handler (HPDF_STATUS   error_no,
 int main (int argc, char **argv)
 {
     const wchar_t *HELLO =
-        L"Hello.\x09 مرحبا.\u200F สวัสดี\x0A नमस्कार.\x0C "
-        L"שלום.\u200F 안녕하세요.\x0D 你好。こんにちは。"
+        L"Hello.\x09 \uFFF9مرحبا.\u200F\uFFFAmarḥába\uFFFB สวัสดี\x0A नमस्कार.\x0C "
+        L"שלום.\u200F 안녕하세요．\x0D\uFFF9你好\uFFFAnǐhǎo\uFFFB。こんにちは。"
+        ;
+    const wchar_t *HELLO_ru =
+        L"Здравствуйте. "
         ;
     const wchar_t *ONCE_UPON_A_TIME =
         L"以前老夫婦が住んでいました。"
-        L"老夫が山へ収穫に行きました。"
+        L"老夫が山へ\uFFF9収穫\uFFFAしばかり\uFFFBに行きました。"
         L"老妻が川へ洗濯に行きました。\n"
         L"老夫婦住。"
         L"老丈夫去到了收穫的山。"
@@ -51,8 +54,8 @@ int main (int argc, char **argv)
         L"老夫妇住。"
         L"老丈夫去到了收获的山。"
         L"老妻在河里去洗。\n"
-        L"이전 노부부가 살고있었습니다． "
-        L"늙은 남편이 산에 수확에갔습니다． "
+        L"이전 노부부가 살고있었습니다．"
+        L"늙은 남편이 산에 수확에갔습니다．"
         L"늙은 아내가 강에 세탁갔습니다．\n"
         L"Пожилая пара жила раньше. "
         L"Старый муж пошел в урожай в горы. "
@@ -67,8 +70,8 @@ int main (int argc, char **argv)
         L"Հին Ամուսինը գնաց բերքը լեռը. "
         L"Հին կինը գնաց լվանում է գետը.\u200E\n"
         L"عاش زوجين مسنين من قبل. "
-        L"ذه\u0640ب الزوج القديم إلى الحص\u0640اد إلى الجبل. "
-        L"زوجته البالغة من العمر ذه\u0640ب ليغسل في الن\u0640هر.\u200F\n"
+        L"ذهـب الزوج القديم إلى الحصـاد إلى الجبل. "
+        L"زوجته البالغة من العمر ذهـب ليغسل في النـهر.\u200F\n"
         L"זוג קשישים חי בעבר. "
         L"הבעל ישן הלך לקציר להר. "
         L"אישה זקנה הלכה לרחוץ בנהר.\u200F\n"
@@ -83,23 +86,25 @@ int main (int argc, char **argv)
     HPDF_Doc  pdf;
     char fname[256];
     HPDF_Page page;
-    HPDF_Font detail_font;
-    HPDF_Font detail_font_v;
-    HPDF_Font detail_font_v2;
+    HPDF_Font detail_font, detail_font_v, relief_font;
     const char *detail_font_name;
-    HPDF_Font relief_font;
-    HPDF_REAL page_height;
-    HPDF_REAL page_width;
+    HPDF_REAL page_width, page_height;
     HPDF_UINT len;
     HPDF_Rect rect;
+    HPDF_INT ttopt;
 
-    if (1 < argc) {
-        printf ("usage: converter_demo\n");
+    if (2 < argc || (1 < argc &&
+            (argv[1][0] != '-' || argv[1][1] != 'c' || argv[1][2] != 0))) {
+        printf ("usage: converter_demo [-c]\n");
         return 1;
     }
 
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
+
+    ttopt = HPDF_FONTOPT_EMBEDDING;
+    if (1 < argc)
+        ttopt |= HPDF_FONTOPT_WITHOUT_CID_MAP;
 
     pdf = HPDF_New (error_handler, NULL);
     if (!pdf) {
@@ -112,53 +117,54 @@ int main (int argc, char **argv)
         return 1;
     }
 
+    HPDF_SetCompressionMode (pdf, HPDF_COMP_IMAGE | HPDF_COMP_METADATA);
+
     HPDF_UseCNSEncodings (pdf);
-    HPDF_UseCNTEncodings (pdf);
-    HPDF_UseJPEncodings (pdf);
+    //HPDF_UseCNTEncodings (pdf);
+    //HPDF_UseJPEncodings (pdf);
     HPDF_UseKREncodings (pdf);
     HPDF_UseUTFEncodings (pdf);
 
     HPDF_UseCNSFonts (pdf);
-    HPDF_UseCNTFonts (pdf);
-    HPDF_UseJPFonts (pdf);
+    //HPDF_UseCNTFonts (pdf);
+    //HPDF_UseJPFonts (pdf);
     HPDF_UseKRFonts (pdf);
 
 
-    /* Korean */
-    detail_font_name = HPDF_LoadTTFontFromFile2 (pdf,
-            "C:\\Windows\\Fonts\\gulim.ttc", 1,
-            HPDF_FONTOPT_EMBEDDING /* | HPDF_FONTOPT_WITH_CID_MAP */);
-    detail_font = HPDF_GetFont (pdf, detail_font_name, "UTF-8");
-
-    /* Simplified Chinese, Traditional Chinese, Japanese */
-    relief_font = detail_font;
-    detail_font_name = HPDF_LoadTTFontFromFile2 (pdf,
-            "C:\\Windows\\Fonts\\simsun.ttc", 1,
-            HPDF_FONTOPT_EMBEDDING /* | HPDF_FONTOPT_WITH_CID_MAP */);
-    detail_font = HPDF_GetFont (pdf, detail_font_name, "UTF-8");
-    HPDF_Font_SetReliefFont (detail_font, relief_font);
-
     /* Devanagari */
-    relief_font = detail_font;
     detail_font_name = HPDF_LoadTTFontFromFile (pdf,
-            "C:\\Windows\\Fonts\\mangal.ttf",
-            HPDF_FONTOPT_EMBEDDING /* | HPDF_FONTOPT_WITH_CID_MAP */);
+            "C:\\Windows\\Fonts\\mangal.ttf", ttopt);
     detail_font = HPDF_GetFont (pdf, detail_font_name, "Ancient-UTF8-H");
-    HPDF_Font_SetReliefFont (detail_font, relief_font);
+    detail_font_v = HPDF_GetFont (pdf, detail_font_name, "Ancient-UTF16-H");
 
     /* Thai, Armenian */
-    relief_font = detail_font;
     detail_font_name = HPDF_LoadTTFontFromFile (pdf,
-            "C:\\Windows\\Fonts\\tahoma.ttf",
-            HPDF_FONTOPT_EMBEDDING /* | HPDF_FONTOPT_WITH_CID_MAP */);
+            "C:\\Windows\\Fonts\\tahoma.ttf", ttopt);
+    relief_font = detail_font;
     detail_font = HPDF_GetFont (pdf, detail_font_name, "Ancient-UTF8-H");
+    HPDF_Font_SetReliefFont (detail_font, relief_font);
+    relief_font = detail_font_v;
+    detail_font_v = HPDF_GetFont (pdf, detail_font_name, "Ancient-UTF16-H");
+    HPDF_Font_SetReliefFont (detail_font_v, relief_font);
+
+    /* Korean */
+    detail_font_name = HPDF_LoadTTFontFromFile2 (pdf,
+            "C:\\Windows\\Fonts\\gulim.ttc", 1, ttopt);
+    relief_font = detail_font;
+    detail_font = HPDF_GetFont (pdf, detail_font_name, "UniKS-UTF8-H");
+    HPDF_Font_SetReliefFont (detail_font, relief_font);
+
+    /* Simplified Chinese, Traditional Chinese, Japanese */
+    detail_font_name = HPDF_LoadTTFontFromFile2 (pdf,
+            "C:\\Windows\\Fonts\\simsun.ttc", 1, ttopt);
+    relief_font = detail_font;
+    detail_font = HPDF_GetFont (pdf, detail_font_name, "UniGB-UTF8-H");
     HPDF_Font_SetReliefFont (detail_font, relief_font);
 
     /* Latin, Cyrillic, Greek, Arabic, Hebrew */
-    relief_font = detail_font;
     detail_font_name = HPDF_LoadTTFontFromFile (pdf,
-            "C:\\Windows\\Fonts\\times.ttf",
-            HPDF_FONTOPT_EMBEDDING /* | HPDF_FONTOPT_WITH_CID_MAP */);
+            "C:\\Windows\\Fonts\\times.ttf", ttopt);
+    relief_font = detail_font;
     detail_font = HPDF_GetFont (pdf, detail_font_name, "Ancient-UTF8-H");
     HPDF_Font_SetReliefFont (detail_font, relief_font);
 
@@ -166,38 +172,42 @@ int main (int argc, char **argv)
     HPDF_Font_SetCharacterEncoding (detail_font, HPDF_CHARENC_WCHAR_T);
 
 
-    //detail_font_name = "MS-Mincho";
-    //detail_font_v = HPDF_GetFont (pdf, detail_font_name, "UniJIS-UTF16-V");
-
-    //relief_font = detail_font_v;
+    //detail_font_name = HPDF_LoadTTFontFromFile2 (pdf,
+    //        "C:\\Windows\\Fonts\\batang.ttc", 1, ttopt);
     detail_font_name = "Batang";
-    detail_font_v = HPDF_GetFont (pdf, detail_font_name, "UniKS-UTF16-V");
-    //HPDF_Font_SetReliefFont (detail_font_v, relief_font);
-
     relief_font = detail_font_v;
+    detail_font_v = HPDF_GetFont (pdf, detail_font_name, "UniKS-UTF16-V");
+    HPDF_Font_SetReliefFont (detail_font_v, relief_font);
+
+    //detail_font_name = HPDF_LoadTTFontFromFile (pdf,
+    //        "C:\\Windows\\Fonts\\simhei.ttf", ttopt);
     detail_font_name = "SimHei";
+    relief_font = detail_font_v;
     detail_font_v = HPDF_GetFont (pdf, detail_font_name, "UniGB-UTF16-V");
     HPDF_Font_SetReliefFont (detail_font_v, relief_font);
 
+    detail_font_name = HPDF_LoadTTFontFromFile (pdf,
+            "C:\\Windows\\Fonts\\arial.ttf", ttopt);
+    relief_font = detail_font_v;
+    detail_font_v = HPDF_GetFont (pdf, detail_font_name, "Ancient-UTF16-H");
+    HPDF_Font_SetReliefFont (detail_font_v, relief_font);
+
+    HPDF_Font_PushBuiltInConverter (detail_font_v, "BiDi", NULL);
     HPDF_Font_SetCharacterEncoding (detail_font_v, HPDF_CHARENC_WCHAR_T);
-
-
-    detail_font_name = "MS-Mincho";
-    detail_font_v2 = HPDF_GetFont (pdf, detail_font_name, "90ms-RKSJ-V");
 
 
     /* Add a new page object. */
     page = HPDF_AddPage (pdf);
 
-    page_height = 841.88976F;
     page_width  = 595.27559F;
+    page_height = 841.88976F;
 
     HPDF_Page_SetWidth  (page, page_width);
     HPDF_Page_SetHeight (page, page_height);
 
-    rect.left   = 30;
+    rect.left   = page_width / 2 - 10;
     rect.bottom = page_height - 60;
-    rect.right  = 50;
+    rect.right  = page_width / 2 + 10;
     rect.top    = page_height - 80;
     HPDF_Page_CreateTextAnnot (page, rect, (const char *)HELLO,
             HPDF_GetUTFEncoder (pdf, HPDF_CHARENC_WCHAR_T));
@@ -205,58 +215,45 @@ int main (int argc, char **argv)
     HPDF_Page_BeginText (page);
 
     HPDF_Page_SetFontAndSize (page, detail_font, 15);
-
-    HPDF_Page_SetWordSpace (page, 10);
+    HPDF_Page_SetWordSpace (page, 5);
     HPDF_Page_SetCharSpace (page, 0);
 
-    HPDF_Page_MoveTextPos (page, 30, page_height - 40);
-    HPDF_Page_ShowText (page, (const char *)HELLO);
+    HPDF_Page_TextOut (page, 20, page_height - 50, (const char *)HELLO);
+    HPDF_Page_ShowText (page, (const char *)HELLO_ru);
 
-    HPDF_Page_SetWordSpace (page, 6);
-    HPDF_Page_SetCharSpace (page, 0);
-    HPDF_Page_SetJustifyRatio (page, 10, 0, 1000);
+    HPDF_Page_SetTextLeading (page, 0);
+    HPDF_Page_SetJustifyRatio (page, 1, 1, 100);
 
-    HPDF_Page_TextRect (page, 30, page_height - 90,
+    HPDF_Page_TextRect (page, 30, page_height - 60,
             page_width / 2 - 29, 30, (const char *)ONCE_UPON_A_TIME,
-            HPDF_TALIGN_JUSTIFY | HPDF_TALIGNOPT_BIDI_EACH_PARAGRAPH | HPDF_TALIGNOPT_REMOVE_TATWEEL, &len);
+            HPDF_TALIGN_JUSTIFY | HPDF_VALIGN_JUSTIFY_ALL |
+            HPDF_ALIGNOPT_BIDI_EACH_PARAGRAPH | HPDF_ALIGNOPT_REMOVE_TATWEEL,
+            &len);
 
     HPDF_Page_SetFontAndSize (page, detail_font_v, 15);
+    HPDF_Page_SetWordSpace (page, 0);
 
-    HPDF_Page_SetWordSpace (page,  4);
-    HPDF_Page_SetCharSpace (page, -2);
-    HPDF_Page_SetJustifyRatio (page, 1, 1, 0);
+    HPDF_Page_SetTextLeading (page, 30);
+    HPDF_Page_TextOut (page, page_width / 2 + 20, page_height - 90,
+            (const char *)HELLO_ru);
+    HPDF_Page_ShowText (page, (const char *)HELLO);
+    HPDF_Page_ShowTextNextLine (page, NULL);
+    HPDF_Page_ShowText (page, (const char *)HELLO_ru);
+    HPDF_Page_ShowText (page, (const char *)L"!!!!");
 
-    HPDF_Page_TextRect (page, page_width / 2 + 30, page_height - 90,
-            page_width - 30, 450, (const char *)ONCE_UPON_A_TIME,
-            HPDF_TALIGN_JUSTIFY, &len);
+    HPDF_Page_SetTextLeading (page, 0);
 
-    HPDF_Page_SetFontAndSize (page, detail_font_v2, 15);
+    HPDF_Page_TextRect (page, page_width / 2 + 40, page_height - 60,
+            page_width - 30, 405, (const char *)ONCE_UPON_A_TIME,
+            HPDF_TALIGN_JUSTIFY | HPDF_VALIGN_JUSTIFY, &len);
 
-    HPDF_Page_SetWordSpace (page, -1);
-    HPDF_Page_SetCharSpace (page,  4);
-    HPDF_Page_SetJustifyRatio (page, 2, 1, 0);
-    HPDF_Page_SetTextLeading (page, -10);
+    HPDF_Page_SetTextLeading (page, -20);
 
-    HPDF_Page_TextRect (page, page_width / 2 + 30, 400, page_width - 30, 30,
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. "
-            "A quick brown fox jumps over the lazy dog. ",
-            HPDF_TALIGN_JUSTIFY, &len);
+    HPDF_Page_TextRect (page, page_width / 2 + 40, 380, page_width - 30, 30,
+            (const char *)ONCE_UPON_A_TIME + len,
+            HPDF_TALIGN_JUSTIFY | HPDF_VALIGN_JUSTIFY |
+            HPDF_ALIGNOPT_BIDI_EACH_PARAGRAPH | HPDF_ALIGNOPT_REMOVE_TATWEEL,
+            &len);
 
     /* Finish to print text. */
     HPDF_Page_EndText (page);
@@ -268,16 +265,16 @@ int main (int argc, char **argv)
     HPDF_Page_LineTo (page, page_width - 10, page_height - 25);
     HPDF_Page_Stroke (page);
 
-    HPDF_Page_Rectangle (page, 30, page_height - 90,
-            page_width / 2 - 29 - 30, 30 - (page_height - 90));
+    HPDF_Page_Rectangle (page, 30, page_height - 60,
+            page_width / 2 - 29 - 30, 30 - (page_height - 60));
     HPDF_Page_Stroke (page);
 
-    HPDF_Page_Rectangle (page, page_width / 2 + 30, page_height - 90,
-            page_width - 30 - (page_width / 2 + 30), 450 - (page_height - 90));
+    HPDF_Page_Rectangle (page, page_width / 2 + 40, page_height - 60,
+            page_width - 30 - (page_width / 2 + 40), 405 - (page_height - 60));
     HPDF_Page_Stroke (page);
 
-    HPDF_Page_Rectangle (page, page_width / 2 + 30, 400,
-            page_width - 30 - (page_width / 2 + 30), 30 - 400);
+    HPDF_Page_Rectangle (page, page_width / 2 + 40, 380,
+            page_width - 30 - (page_width / 2 + 40), 30 - 380);
     HPDF_Page_Stroke (page);
 
 

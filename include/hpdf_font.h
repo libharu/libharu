@@ -104,6 +104,13 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
                      HPDF_Xref        xref);
 
 
+HPDF_TextWidth
+HPDF_Font_TextCacheWidth  (HPDF_Font font,
+                           HPDF_BOOL ignore_flags,
+                           HPDF_UINT cache_begin,
+                           HPDF_UINT cache_end);
+
+
 HPDF_BOOL
 HPDF_Font_Validate  (HPDF_Font font);
 
@@ -145,6 +152,13 @@ HPDF_Font
 HPDF_Font_GetReliefFont  (HPDF_Font  font,
                           HPDF_UCS4  ucs4,
                           HPDF_BYTE *index);
+
+
+#define HPDF_RELIEF_FONT_INDEX_MASK 0x0F
+#define HPDF_INTERLINEAR_ANNOTATED  0x80
+#define HPDF_INTERLINEAR_ANNOTATION 0x40
+/*         reserved for TATECHUYOKO 0x20 */
+/*         reserved                 0x10 */
 
 
 #ifdef __cplusplus

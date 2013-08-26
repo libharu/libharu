@@ -60,8 +60,10 @@ typedef struct _HPDF_GState_Rec {
     HPDF_REAL               gray_stroke;
 
     HPDF_Font               font;
-    HPDF_REAL               font_size;
     HPDF_Font               actual_font;
+    HPDF_REAL               font_size;
+    HPDF_REAL               actual_font_size;
+    HPDF_REAL               ia_font_size_ratio;
     HPDF_WritingMode        writing_mode;
 
     HPDF_GState             prev;

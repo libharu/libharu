@@ -67,14 +67,14 @@ IsCIDText  (HPDF_Font font,
 
 
 static HPDF_UINT
-MeasureTextEx  (HPDF_Font          font,
-                HPDF_REAL          width,
-                HPDF_REAL          font_size,
-                HPDF_REAL          char_space,
-                HPDF_REAL          word_space,
-                HPDF_INT           options,
-                HPDF_REAL         *real_width,
-                HPDF_UINT         *numtatweels);
+MeasureTextCache  (HPDF_Font           font,
+                   HPDF_REAL           line_width,
+                   HPDF_REAL           font_size,
+                   HPDF_REAL           char_space,
+                   HPDF_REAL           word_space,
+                   HPDF_INT            options,
+                   HPDF_UINT           cache_begin,
+                   HPDF_TextLineWidth *width);
 
 
 static HPDF_BOOL
@@ -86,10 +86,10 @@ CanBreakBefore  (HPDF_UCS4 b);
 
 
 static HPDF_UINT
-GetUncovertedBytes  (HPDF_Font   font,
-                     const char *text,
-                     HPDF_UINT   len,
-                     HPDF_UINT  *numbytes);
+GetUncovertedBytes  (HPDF_Font           font,
+                     const char         *text,
+                     HPDF_UINT           cache_begin,
+                     HPDF_TextLineWidth *width);
 
 
 static HPDF_CharEnc
@@ -107,10 +107,6 @@ HPDF_Font_TextWidth  (HPDF_Font        font,
 {
     HPDF_TextWidth tw = {0, 0, 0, 0};
     HPDF_FontAttr attr;
-    HPDF_UINT i;
-    HPDF_UCS4 b;
-    HPDF_BYTE *pirf;
-    HPDF_UINT bytes;
 
     HPDF_PTRACE ((" HPDF_Font_TextWidth\n"));
 
@@ -137,37 +133,52 @@ HPDF_Font_TextWidth  (HPDF_Font        font,
         return attr->tw_cache;
     }
 
-    text = attr->text_cache;
-    pirf = attr->text_cache + (attr->text_cache_allocated / 2);
-    len  = attr->text_cache_len;
-    b = 0;
-    i = 0;
+    attr->tw_cache = HPDF_Font_TextCacheWidth (font, HPDF_FALSE,
+            0, attr->text_cache_len);
 
-    while (i < len) {
+    return attr->tw_cache;
+}
+
+
+HPDF_TextWidth
+HPDF_Font_TextCacheWidth  (HPDF_Font font,
+                           HPDF_BOOL ignore_flags,
+                           HPDF_UINT cache_begin,
+                           HPDF_UINT cache_end)
+{
+    HPDF_TextWidth tw = {0, 0, 0, 0};
+    HPDF_FontAttr attr = (HPDF_FontAttr)font->attr;
+    const HPDF_BYTE *text = attr->text_cache;
+    HPDF_BYTE *pirf = attr->text_cache + (attr->text_cache_allocated / 2);
+    HPDF_BYTE irf;
+    HPDF_UCS4 b = 0;
+    HPDF_UINT i, bytes;
+
+    HPDF_PTRACE ((" HPDF_Font_TextCacheWidth\n"));
+
+    for (i = cache_begin; i < cache_end; i += bytes) {
         HPDF_UINT cw;
 
-        cw = attr->char_width_fn (font, HPDF_TRUE, *pirf, text, &bytes, &b);
-        tw.width += cw;
+        irf = pirf[i] & HPDF_RELIEF_FONT_INDEX_MASK;
+        cw = attr->char_width_fn (font, HPDF_TRUE, irf, text+i, &bytes, &b);
 
+        if (!ignore_flags && (pirf[i] & HPDF_INTERLINEAR_ANNOTATION))
+            continue;
+
+        tw.width += cw;
         tw.numchars++;
 
-        if (b == 0x20 && bytes == 1 && !IsCIDText (font, *pirf)) {
+        if (b == 0x20 && bytes == 1 && !IsCIDText (font, irf)) {
             tw.numwords++;
             tw.numspace++;
         }
-
-        pirf += bytes;
-        text += bytes;
-        i    += bytes;
     }
 
     /* 2006.08.19 add. */
-    if (b == 0x20 && bytes == 1 && !IsCIDText (font, *pirf))
+    if (b == 0x20 && bytes == 1 && !IsCIDText (font, irf))
         ; /* do nothing. */
     else
         tw.numwords++;
-
-    attr->tw_cache = tw;
 
     return tw;
 }
@@ -184,36 +195,41 @@ HPDF_Font_MeasureText (HPDF_Font          font,
                        HPDF_INT           options,
                        HPDF_REAL         *real_width)
 {
+    HPDF_TextLineWidth tlw;
+    HPDF_UINT lines;
+
     HPDF_PTRACE ((" HPDF_Font_MeasureText\n"));
 
-    return HPDF_Font_MeasureTextEx (font, (const char *)text, len, width,
-            font_size, char_space, word_space, options, real_width,
-            NULL, NULL, NULL, NULL);
+    lines = HPDF_Font_MeasureTextLines (font, (const char *)text, len, width,
+            font_size, char_space, word_space, options, &tlw, 1);
+    if (!lines)
+        return 0;
+
+    if (real_width)
+        *real_width = tlw.width;
+    return tlw.linebytes;
 }
 
 
 HPDF_EXPORT(HPDF_UINT)
-HPDF_Font_MeasureTextEx  (HPDF_Font          font,
-                          const char        *text,
-                          HPDF_UINT          len,
-                          HPDF_REAL          width,
-                          HPDF_REAL          font_size,
-                          HPDF_REAL          char_space,
-                          HPDF_REAL          word_space,
-                          HPDF_INT           options,
-                          HPDF_REAL         *real_width,
-                          HPDF_UINT         *numbytes,
-                          HPDF_UINT         *numchars,
-                          HPDF_UINT         *numspaces,
-                          HPDF_UINT         *numtatweels)
+HPDF_Font_MeasureTextLines  (HPDF_Font           font,
+                             const char         *text,
+                             HPDF_UINT           len,
+                             HPDF_REAL           line_width,
+                             HPDF_REAL           font_size,
+                             HPDF_REAL           char_space,
+                             HPDF_REAL           word_space,
+                             HPDF_INT            options,
+                             HPDF_TextLineWidth *width,
+                             HPDF_UINT           max_lines)
 {
     HPDF_FontAttr attr;
-    HPDF_UINT cvt_len, tmp_len, tatweels;
-    HPDF_REAL rw, margin;
+    HPDF_UINT line, begin, cvt_len;
+    HPDF_REAL margin;
 
-    HPDF_PTRACE ((" HPDF_Font_MeasureTextEx\n"));
+    HPDF_PTRACE ((" HPDF_Font_MeasureTextLines\n"));
 
-    if (!HPDF_Font_Validate(font) || !text)
+    if (!HPDF_Font_Validate(font) || !text || !width)
         return 0;
 
     if (len > HPDF_LIMIT_MAX_STRING_LEN) {
@@ -228,54 +244,60 @@ HPDF_Font_MeasureTextEx  (HPDF_Font          font,
         return 0;
     }
 
-    if (!real_width)
-        real_width = &rw;
-    if (!numtatweels)
-        numtatweels = &tatweels;
-
     margin = 1.25F;             /* margin 25% */
     do { /* estimate result length and convert only the length+margin */
+        HPDF_UINT cache_begin, cache_end;
+        HPDF_REAL w = 0;
+
         if (!attr->width_per_byte) /* expect average width is missing_width/2 */
             attr->width_per_byte = (HPDF_REAL)attr->fontdef->missing_width / 2 /
                     MINBYTES[GetSourceCharEnc (font)];
 
-        cvt_len = (HPDF_UINT)(width / font_size * 1000 / attr->width_per_byte
-                * margin);
+        cvt_len = (HPDF_UINT)(line_width * max_lines / font_size * 1000 *
+                margin / attr->width_per_byte);
         if (len < cvt_len)
             cvt_len = len;
 
         if (HPDF_Font_ConvertText (font, HPDF_CONVERT_HOLD_CHARACTERS,
                 text, cvt_len) != HPDF_OK)
             return 0;
-        
-        tmp_len = MeasureTextEx (font, width, font_size, char_space, word_space,
-                options, real_width, numtatweels);
-        
-        if (numchars)
-            *numchars = attr->tw_cache.numchars;
-        if (numspaces)
-            *numspaces = attr->tw_cache.numspace;
 
-        tmp_len = GetUncovertedBytes (font, text, tmp_len, numbytes);
+        for (begin = 0, cache_begin = 0, line = 0;
+                line < max_lines &&
+                begin < cvt_len &&
+                !(line && (width[line - 1].flags & HPDF_TLW_PAGE_BREAK));
+                line++) {
+            MeasureTextCache (font, line_width, font_size, char_space,
+                    word_space, options, cache_begin, width + line);
+            w += width[line].width;
+            if (line_width < width[line].width)
+                width[line].flags |= HPDF_TLW_SHORTEN;
 
-        if (8 < tmp_len)        /* ignore too short sample */
-            attr->width_per_byte = *real_width / font_size * 1000 / tmp_len;
+            cache_end = cache_begin + width[line].linebytes;
+            GetUncovertedBytes (font, text + begin, cache_begin, width + line);
+
+            begin += width[line].linebytes;
+            cache_begin = cache_end;
+        }
+
+        if (8 < begin)          /* ignore too short sample */
+            attr->width_per_byte = w / font_size * 1000 / begin;
         margin += 0.25F;        /* margin +25% */
-    } while (cvt_len <= tmp_len + 4 && cvt_len < len); /* while misestimate */
+    } while (cvt_len <= begin + 4 && cvt_len < len); /* while misestimate */
 
-    return tmp_len;
+    return line;
 }
 
 
 static HPDF_UINT
-MeasureTextEx  (HPDF_Font          font,
-                HPDF_REAL          width,
-                HPDF_REAL          font_size,
-                HPDF_REAL          char_space,
-                HPDF_REAL          word_space,
-                HPDF_INT           options,
-                HPDF_REAL         *real_width,
-                HPDF_UINT         *numtatweels)
+MeasureTextCache  (HPDF_Font           font,
+                   HPDF_REAL           line_width,
+                   HPDF_REAL           font_size,
+                   HPDF_REAL           char_space,
+                   HPDF_REAL           word_space,
+                   HPDF_INT            options,
+                   HPDF_UINT           cache_begin,
+                   HPDF_TextLineWidth *width)
 {
     HPDF_FontAttr attr;
     HPDF_REAL w;
@@ -293,39 +315,46 @@ MeasureTextEx  (HPDF_Font          font,
 
     attr = (HPDF_FontAttr)font->attr;
 
-    text = attr->text_cache;
-    pirf = attr->text_cache + (attr->text_cache_allocated / 2);
-    len  = attr->text_cache_len;
-    attr->text_cache_len = 0;
-    HPDF_MemSet (&attr->tw_cache, 0, sizeof attr->tw_cache);
-    *real_width = 0;
+    text = attr->text_cache + cache_begin;
+    pirf = attr->text_cache + cache_begin + (attr->text_cache_allocated / 2);
+    len  = attr->text_cache_len - cache_begin;
+    HPDF_MemSet (width, 0, sizeof *width);
     tmp_len = 0;
     nch = nsp = ntt = 0;
     tw = 0;
     w = v = 0;
 
     for (i = 0; i < len; i += bytes) {
-        HPDF_UCS4 b;
         HPDF_REAL tmp_w;
+        HPDF_UCS4 b;
+        HPDF_BYTE irf;
         HPDF_INT cw;
 
-        cw = attr->char_width_fn (font, HPDF_TRUE, pirf[i], text + i, &bytes, &b);
+        irf = pirf[i] & HPDF_RELIEF_FONT_INDEX_MASK;
+        cw = attr->char_width_fn (font, HPDF_TRUE, irf, text+i, &bytes, &b);
 
-        if (HPDF_IS_WHITE_SPACE(b)) {
-            tmp_len = i + bytes;
-            attr->text_cache_len = i;
-            *real_width = w;
-            attr->tw_cache.width = tw;
-            attr->tw_cache.numchars = nch;
-            attr->tw_cache.numspace = attr->tw_cache.numwords = nsp;
-            *numtatweels = ntt;
+        if (pirf[i] & HPDF_INTERLINEAR_ANNOTATION)
+            continue;
 
-            if (width < w || b == 0x0A || b == 0x0C || b == 0x0D)
-                return tmp_len;
+        if (HPDF_IS_WHITE_SPACE(b) || b == 0x200B /* ZWSP */) {
+            width->linebytes = i + bytes;
+            width->numbytes = i;
+            width->numchars = nch;
+            width->numspaces = nsp;
+            width->numtatweels = ntt;
+            width->charswidth = tw;
+            width->width = w;
 
-            if (b != 0x20) {
+            if (b == 0x0A || b == 0x0D)
+                return (width->flags |= HPDF_TLW_PRAGRAPH_BREAK);
+            if (b == 0x0C)
+                return (width->flags |= HPDF_TLW_PAGE_BREAK);
+            if (line_width < w)
+                return (width->flags |= HPDF_TLW_WORD_WRAP);
+
+            if (b != 0x20) {    /* TAB, ZWSP */
                 continue;
-            } else if (bytes == 1 && !IsCIDText (font, pirf[i])) {
+            } else if (bytes == 1 && !IsCIDText (font, irf)) {
                 nsp++;
                 w += word_space;
             }
@@ -341,35 +370,23 @@ MeasureTextEx  (HPDF_Font          font,
                     hyphen_w += char_space;
                 }
                 tmp_w = hyphen_w;
-                if (width < v + tmp_w ||
+                if (line_width < v + tmp_w ||
                     (!(options & HPDF_MEASURE_CAN_SHORTEN) &&
-                     width < w + tmp_w))
-                    return tmp_len;
+                     line_width < w + tmp_w))
+                    return (width->flags |= HPDF_TLW_WORD_WRAP);
             }
 
-            tmp_len = i + bytes;
-            attr->text_cache_len = i + bytes;
-            *real_width = w + tmp_w;
-            attr->tw_cache.width = tw + cw;
-            attr->tw_cache.numchars = nch;
-            attr->tw_cache.numspace = attr->tw_cache.numwords = nsp;
-            *numtatweels = ntt;
+            width->linebytes = i + bytes;
+            width->numbytes = i + bytes;
+            width->numchars = nch;
+            width->numspaces = nsp;
+            width->numtatweels = ntt;
+            width->charswidth = tw + cw;
+            width->width = w + tmp_w;
 
-            if (width < w + tmp_w)
-                return tmp_len;
-
-            continue;
-        } else if (b == 0x200B) { /* ZWSP */
-            tmp_len = i + bytes;
-            attr->text_cache_len = i;
-            *real_width = w;
-            attr->tw_cache.width = tw;
-            attr->tw_cache.numchars = nch;
-            attr->tw_cache.numspace = attr->tw_cache.numwords = nsp;
-            *numtatweels = ntt;
-
-            if (width < w)
-                return tmp_len;
+            if (line_width < w + tmp_w)
+                return (width->flags |=
+                        (HPDF_TLW_WORD_WRAP | HPDF_TLW_HYPHENATION));
 
             continue;
         } else if ((b <= 0x001F) ||
@@ -381,59 +398,62 @@ MeasureTextEx  (HPDF_Font          font,
                    (0xFFF0 <= b && b <= 0xFFFF)) { /* control codes */
             continue;
         } else if (!(options & HPDF_MEASURE_WORD_WRAP) ||
-                    (can_break && CanBreakBefore (b))) {
-            tmp_len = i;
-            attr->text_cache_len = i;
-            *real_width = w;
-            attr->tw_cache.width = tw;
-            attr->tw_cache.numchars = nch;
-            attr->tw_cache.numspace = attr->tw_cache.numwords = nsp;
-            *numtatweels = ntt;
+                   (!(pirf[i] & HPDF_INTERLINEAR_ANNOTATED) &&
+                    can_break && CanBreakBefore (b))) {
+            width->linebytes = i;
+            width->numbytes = i;
+            width->numchars = nch;
+            width->numspaces = nsp;
+            width->numtatweels = ntt;
+            width->charswidth = tw;
+            width->width = w;
 
-            if (width < w)
-                return tmp_len;
+            if (line_width < w)
+                return width->flags;
         }
 
         if ((options & HPDF_MEASURE_WORD_WRAP) &&
-            (attr->type == HPDF_FONT_TYPE0_CID ||
-             attr->type == HPDF_FONT_TYPE0_TT))
+                (attr->type == HPDF_FONT_TYPE0_CID ||
+                 attr->type == HPDF_FONT_TYPE0_TT))
             can_break = CanBreakAfter (b);
 
-        nch++;
-
-        tw += cw;
         tmp_w = (HPDF_REAL)cw * font_size / 1000;
 
         if (b == 0x0640) {      /* Arabic tatweel */
             ntt++;
-            if (!(options & HPDF_MEASURE_IGNORE_TATWEEL)) {
+            if (options & HPDF_MEASURE_IGNORE_TATWEEL) {
+                width->flags |= HPDF_TLW_IGNORE_TATWEEL;
+            } else {
+                nch++;
+                tw += cw;
                 w += tmp_w;
                 if (0 < i)
                     w += char_space;
             }
         } else {
+            nch++;
+            tw += cw;
             w += tmp_w;
             v += tmp_w;
-            if (0 < i) {
+            if (0 < i)
                 w += char_space;
-                v += char_space;
-            }
         }
 
-        if (width < v || (!(options & HPDF_MEASURE_CAN_SHORTEN) && width < w))
-            return tmp_len;
+        if (line_width < v ||
+                (!(options & HPDF_MEASURE_CAN_SHORTEN) && line_width < w))
+            return (width->flags |= HPDF_TLW_WORD_WRAP);
     }
 
     /* all of text can be put in the specified width */
-    tmp_len = i;
-    attr->text_cache_len = i;
-    *real_width = w;
-    attr->tw_cache.width = tw;
-    attr->tw_cache.numchars = nch;
-    attr->tw_cache.numspace = attr->tw_cache.numwords = nsp;
-    *numtatweels = ntt;
+    width->linebytes = i;
+    width->numbytes = i;
+    width->numchars = nch;
+    width->numspaces = nsp;
+    width->numtatweels = ntt;
+    width->charswidth = tw;
+    width->width = w;
 
-    return tmp_len;
+    return width->flags;
 }
 
 
@@ -747,7 +767,7 @@ BiDi_FreeArrays  (HPDF_ConverterBiDi bidi)
 }
 
 
-static HPDF_UINT HPDF_STDCALL 
+static HPDF_UINT HPDF_STDCALL
 BiDi  (HPDF_Converter   converter,
        HPDF_UINT32      flags,
        const HPDF_BYTE *src,
@@ -915,7 +935,7 @@ BiDi_New   (HPDF_Alloc_Func alloc_fn,
 #endif /* LIBHPDF_ENABLE_BIDI */
 
 
-static HPDF_UINT HPDF_STDCALL 
+static HPDF_UINT HPDF_STDCALL
 EncConv  (HPDF_Converter   converter,
           HPDF_UINT32      flags,
           const HPDF_BYTE *src,
@@ -946,7 +966,7 @@ EncConv  (HPDF_Converter   converter,
 }
 
 
-static HPDF_UINT HPDF_STDCALL 
+static HPDF_UINT HPDF_STDCALL
 Swap16  (HPDF_Converter   converter,
          HPDF_UINT32      flags,
          const HPDF_BYTE *src,
@@ -967,7 +987,7 @@ Swap16  (HPDF_Converter   converter,
 }
 
 
-static HPDF_UINT HPDF_STDCALL 
+static HPDF_UINT HPDF_STDCALL
 Swap32  (HPDF_Converter   converter,
          HPDF_UINT32      flags,
          const HPDF_BYTE *src,
@@ -1239,6 +1259,9 @@ HPDF_Font_ConvertText  (HPDF_Font        font,
     if (!text)
         return HPDF_OK;
 
+    if (!len)
+        len = HPDF_Font_StrLen(font, text, HPDF_LIMIT_MAX_STRING_LEN + 1);
+
     if (!attr->text_cache)
         HPDF_NormalizeCharEnc (&attr->encoder->charenc);
 
@@ -1276,6 +1299,7 @@ HPDF_Font_ConvertText  (HPDF_Font        font,
             return HPDF_CheckError (font->error);
     }
 
+    /* do convert */
     if (!list || list->count <= 0) {
         HPDF_MemCpy (attr->text_cache, text, attr->text_cache_len);
         text = (char *)(dst = attr->text_cache);
@@ -1291,13 +1315,21 @@ HPDF_Font_ConvertText  (HPDF_Font        font,
         }
     }
 
+    /* set relief font index */
+    if (attr->relief_font)
+        SetReliefFontIndex (font);
+
+    /* remove control character */
     if (!(flags & HPDF_CONVERT_HOLD_CHARACTERS)) {
         HPDF_UINT bytes;
         HPDF_UCS4 b = 0;
+        HPDF_UINT irfofs = attr->text_cache_allocated / 2;
 
         for (i = 0; i < attr->text_cache_len;) {
             b = HPDF_Encoder_GetUcs4 (attr->encoder, (const HPDF_BYTE *)text,
                     &bytes);
+            if (!bytes)
+                bytes = 1;
             i += bytes;
             if ((b <= 0x001F) ||
                 (0x007F <= b && b <= 0x009F) ||
@@ -1309,63 +1341,59 @@ HPDF_Font_ConvertText  (HPDF_Font        font,
                 (0xFFF0 <= b && b <= 0xFFFF)) /* control codes */
                 text += bytes;
             else
-                while (bytes--)
+                while (bytes--) {
+                    dst[irfofs] = ((const HPDF_BYTE *)text)[irfofs];
                     *dst++ = *(const HPDF_BYTE *)text++;
+                }
         }
         if (b == 0x00AD) {
+            HPDF_BYTE irf;
+            HPDF_Font_GetReliefFont (font, '-', &irf);
+            bytes = 1;
             if (attr->encoder->charenc == HPDF_CHARENC_UNSUPPORTED ||
                 attr->encoder->charenc == HPDF_CHARENC_UTF8)
-                *dst++ = '-';
+                *dst = '-';
             else
-                dst += UCS4TO_FNS[attr->encoder->charenc] (dst, '-');
+                bytes = UCS4TO_FNS[attr->encoder->charenc] (dst, '-');
+            while (bytes--)
+                (dst++)[irfofs] = irf;
         }
         attr->text_cache_len = (HPDF_UINT)(dst - attr->text_cache);
     }
-
-    /* set relief font index */
-    HPDF_MemSet (attr->text_cache + (attr->text_cache_allocated / 2),
-                 0,                  attr->text_cache_allocated / 2);
-    if (attr->relief_font)
-        SetReliefFontIndex (font);
 
     return HPDF_OK;
 }
 
 
 static HPDF_UINT
-GetUncovertedBytes  (HPDF_Font   font,
-                     const char *text,
-                     HPDF_UINT   len,
-                     HPDF_UINT  *numbytes)
+GetUncovertedBytes  (HPDF_Font           font,
+                     const char         *text,
+                     HPDF_UINT           cache_begin,
+                     HPDF_TextLineWidth *width)
 {
     HPDF_FontAttr attr;
     HPDF_CharEnc src_charenc;
     HPDF_CharEnc dst_charenc;
-    HPDF_UINT i, j, tmp_len;
+    HPDF_UINT i, j, numbytes;
 
     attr = (HPDF_FontAttr)font->attr;
     dst_charenc = attr->encoder->charenc;
 
-    if (dst_charenc == HPDF_CHARENC_UNSUPPORTED) {
-        if (numbytes)
-            *numbytes = attr->text_cache_len;
-        return len;
-    }
+    if (dst_charenc == HPDF_CHARENC_UNSUPPORTED)
+        return width->linebytes;
 
     src_charenc = GetSourceCharEnc (font);
 
-    i = 0;
-    j = 0;
-    tmp_len = 0;
-    while (i < len) {
-        i += BYTES_FNS[dst_charenc] (attr->text_cache + i);
+    i = j = numbytes = 0;
+    while (i < width->linebytes) {
+        i += BYTES_FNS[dst_charenc] (attr->text_cache + cache_begin + i);
         j += BYTES_FNS[src_charenc] ((const HPDF_BYTE *)text + j);
-        if (attr->text_cache_len == i)
-            tmp_len = j;
+        if (width->numbytes == i)
+            numbytes = j;
     }
 
-    if (numbytes)
-        *numbytes = tmp_len;
+    width->numbytes = numbytes;
+    width->linebytes = j;
 
     return j;
 }
@@ -1589,8 +1617,7 @@ HPDF_Font_SetReliefFont  (HPDF_Font   font,
 
     if (rf_attr->encoder != attr->encoder &&
         (rf_attr->encoder->charenc == HPDF_CHARENC_UNSUPPORTED ||
-         rf_attr->encoder->charenc != attr->encoder->charenc ||
-         rf_attr->writing_mode     != attr->writing_mode))
+         rf_attr->encoder->charenc != attr->encoder->charenc))
         return HPDF_RaiseError (font->error,
             HPDF_UNMATCHED_RELIEF_FONT, 0);
 
@@ -1616,7 +1643,8 @@ HPDF_Font_GetReliefFont  (HPDF_Font  font,
     HPDF_FontAttr rfattr = (HPDF_FontAttr)rf->attr;
 
     if (rfattr->fontdef->type != HPDF_FONT_TYPE1) {
-        for (; rf; rf = rfattr->relief_font, irf++) {
+        for (; rf && irf <= HPDF_RELIEF_FONT_INDEX_MASK;
+                    rf = rfattr->relief_font, irf++) {
             rfattr = (HPDF_FontAttr)rf->attr;
             if (rfattr->fontdef->type == HPDF_FONTDEF_TYPE_CID) {
                 /* cid-based font */
@@ -1634,8 +1662,11 @@ HPDF_Font_GetReliefFont  (HPDF_Font  font,
         }
     }
 
-    if (rf && index)
-        *index = irf;
+    if (HPDF_RELIEF_FONT_INDEX_MASK < irf)
+        rf = NULL;
+
+    if (index)
+        *index = (rf? irf: 0);
 
     return rf;
 }
@@ -1647,6 +1678,7 @@ SetReliefFontIndex  (HPDF_Font font)
     HPDF_FontAttr attr = (HPDF_FontAttr)font->attr;
     HPDF_Encoder encoder = attr->encoder;
     HPDF_BYTE irf = 0;
+    HPDF_BYTE irff = 0;
     HPDF_ParseText_Rec parse_state;
     HPDF_UINT i;
     HPDF_BYTE *pirf = attr->text_cache + (attr->text_cache_allocated / 2);
@@ -1665,10 +1697,26 @@ SetReliefFontIndex  (HPDF_Font font)
             HPDF_UCS4 b = HPDF_Encoder_ToUcs4 (encoder,
                     attr->text_cache + i, bytes);
 
-            if (!HPDF_Font_GetReliefFont (font, b, &irf))
-                irf = 0xFF;
+            HPDF_Font_GetReliefFont (font, b, &irf);
+
+            switch (b) {
+                case 0xFFF9:    /* IAA */
+                    irff &= ~(HPDF_INTERLINEAR_ANNOTATED |
+                              HPDF_INTERLINEAR_ANNOTATION);
+                    irff |= HPDF_INTERLINEAR_ANNOTATED;
+                    break;
+                case 0xFFFA:    /* IAS */
+                    irff &= ~(HPDF_INTERLINEAR_ANNOTATED |
+                              HPDF_INTERLINEAR_ANNOTATION);
+                    irff |= HPDF_INTERLINEAR_ANNOTATION;
+                    break;
+                case 0xFFFB:    /* IAT */
+                    irff &= ~(HPDF_INTERLINEAR_ANNOTATED |
+                              HPDF_INTERLINEAR_ANNOTATION);
+                    break;
+            }
         }
-        pirf[i] = irf;
+        pirf[i] = irff | irf;
     }
 }
 
@@ -1679,14 +1727,13 @@ IsCIDText  (HPDF_Font font,
 {
     HPDF_FontAttr rfattr = (HPDF_FontAttr)font->attr;
 
-    if (index != 0xFF)
-        while (index-- && rfattr) {
-            if (!(font = rfattr->relief_font))
-                break;
-            rfattr = (HPDF_FontAttr)font->attr;
-        }
+    while (index-- && rfattr) {
+        if (!(font = rfattr->relief_font))
+            break;
+        rfattr = (HPDF_FontAttr)font->attr;
+    }
 
     return (rfattr->type == HPDF_FONT_TYPE0_TT &&
-            !(((HPDF_TTFontDefAttr)rfattr->fontdef->attr)->options &
-             HPDF_FONTOPT_WITH_CID_MAP));
+            (((HPDF_TTFontDefAttr)rfattr->fontdef->attr)->options &
+             HPDF_FONTOPT_WITHOUT_CID_MAP));
 }

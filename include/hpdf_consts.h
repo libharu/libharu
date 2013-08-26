@@ -550,22 +550,31 @@
 /*----- Font options ---------------------------------------------------------*/
 
 #define   HPDF_FONTOPT_EMBEDDING             0x00000001
-#define   HPDF_FONTOPT_WITH_CID_MAP          0x00000002
+#define   HPDF_FONTOPT_WITHOUT_CID_MAP       0x00000002
 #define   HPDF_FONTOPT_WITHOUT_TOUNICODE_MAP 0x00000004
 
 
 /*----------------------------------------------------------------------------*/
 /*----- MeasureText options --------------------------------------------------*/
 
-#define   HPDF_MEASURE_WORD_WRAP             0x00000001
-#define   HPDF_MEASURE_CAN_SHORTEN           0x00000002
-#define   HPDF_MEASURE_IGNORE_TATWEEL        0x00000004
+#define   HPDF_MEASURE_WORD_WRAP        0x00000001
+#define   HPDF_MEASURE_CAN_SHORTEN      0x00000002
+#define   HPDF_MEASURE_IGNORE_TATWEEL   0x00000004
+
+/*----- TextLineWidth flags --------------------------------------------------*/
+
+#define   HPDF_TLW_WORD_WRAP                0x0001
+#define   HPDF_TLW_SHORTEN                  0x0002
+#define   HPDF_TLW_IGNORE_TATWEEL           0x0004
+#define   HPDF_TLW_HYPHENATION              0x0100
+#define   HPDF_TLW_PRAGRAPH_BREAK           0x0200
+#define   HPDF_TLW_PAGE_BREAK               0x0400
 
 
 /*----------------------------------------------------------------------------*/
-/*----- Convert flag ---------------------------------------------------------*/
+/*----- Convert flags --------------------------------------------------------*/
 
-#define   HPDF_CONVERT_HOLD_CHARACTERS       0x00000001
+#define   HPDF_CONVERT_HOLD_CHARACTERS  0x00000001
 
 
 /*----------------------------------------------------------------------------*/

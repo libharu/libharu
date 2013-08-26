@@ -134,7 +134,7 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
         ret += HPDF_Dict_AddName (font, "Encoding", encoder->name);
     } else {
         ttfontdef_attr = (HPDF_TTFontDefAttr)fontdef->attr;
-        if (!(ttfontdef_attr->options & HPDF_FONTOPT_WITH_CID_MAP)) {
+        if (ttfontdef_attr->options & HPDF_FONTOPT_WITHOUT_CID_MAP) {
             ret += HPDF_Dict_AddName (font, "Encoding",
                     ((attr->writing_mode == HPDF_WMODE_HORIZONTAL)?
                      "Identity-H": "Identity-V"));
@@ -151,7 +151,7 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
 
     if (ttfontdef_attr &&
         !(ttfontdef_attr->options & HPDF_FONTOPT_WITHOUT_TOUNICODE_MAP)) {
-        if (!(ttfontdef_attr->options & HPDF_FONTOPT_WITH_CID_MAP))
+        if (ttfontdef_attr->options & HPDF_FONTOPT_WITHOUT_CID_MAP)
             attr->to_unicode_stream =
                     CreateCMap (encoder, xref, HPDF_CMapType_CidToUnicode);
         else
@@ -388,7 +388,7 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
     if (HPDF_Dict_Add (font, "DW2", array) != HPDF_OK)
         return NULL;
 
-    ret += HPDF_Array_AddNumber (array, (HPDF_INT32)(fontdef->font_bbox.bottom));
+    ret += HPDF_Array_AddNumber (array, (HPDF_INT32)(fontdef->font_bbox.top));
     ret += HPDF_Array_AddNumber (array, (HPDF_INT32)(fontdef->font_bbox.bottom -
                 fontdef->font_bbox.top));
 
@@ -548,6 +548,7 @@ CIDFontType2_BeforeWrite_Func  (HPDF_Dict obj)
         ret += HPDF_Dict_AddName (descriptor, "Type", "FontDescriptor");
         ret += HPDF_Dict_AddNumber (descriptor, "Ascent", def->ascent);
         ret += HPDF_Dict_AddNumber (descriptor, "Descent", def->descent);
+        ret += HPDF_Dict_AddNumber (descriptor, "CapHeight", def->cap_height);
         ret += HPDF_Dict_AddNumber (descriptor, "Flags", def->flags);
 
         array = HPDF_Box_Array_New (obj->mmgr, def->font_bbox);
@@ -592,11 +593,8 @@ CharWidth  (HPDF_Font        font,
 
     if (converted) {
         code = HPDF_Encoder_GetUcs4 (attr->encoder, text, bytes);
-        if (irf != 0xFF)
-            while (irf-- && font)
-                font = ((HPDF_FontAttr)font->attr)->relief_font;
-        else
-            font = NULL;
+        while (irf-- && font)
+            font = ((HPDF_FontAttr)font->attr)->relief_font;
     } else {
         code = HPDF_Font_GetUcs4 (font, (const char *)text, bytes);
         font = HPDF_Font_GetReliefFont (font, code, NULL);

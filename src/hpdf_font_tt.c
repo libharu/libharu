@@ -240,11 +240,8 @@ CharWidth  (HPDF_Font        font,
         *bytes = 1;
 
     if (converted) {
-        if (irf != 0xFF)
-            while (irf-- && font)
-                font = ((HPDF_FontAttr)font->attr)->relief_font;
-        else
-            font = NULL;
+        while (irf-- && font)
+            font = ((HPDF_FontAttr)font->attr)->relief_font;
     } else {
         font = HPDF_Font_GetReliefFont (font, *ucs4, NULL);
     }

@@ -438,7 +438,7 @@ Ancient_UTF16_H_Init  (HPDF_Encoder  encoder,
 
 static const char MODERN_ENCODERS[][17] = {
   "",
-  "UTF-8",        /* not "Modern-UTF8-H" for backward compatibility */
+  "Modern-UTF8-H",
   "Modern-UTF16-H",
   "Modern-UTF32-H",
   "Modern-UCS2LE-H",

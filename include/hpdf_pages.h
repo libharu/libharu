@@ -60,12 +60,13 @@ typedef struct _HPDF_PageAttr_Rec {
     HPDF_Point         cur_pos;
     HPDF_Point         text_pos;
     HPDF_TransMatrix   text_matrix;
+    HPDF_BOOL          fake_text_pos;
     HPDF_UINT16        gmode;
     HPDF_Dict          contents;
     HPDF_Stream        stream;
     HPDF_Xref          xref;
     HPDF_UINT          compression_mode;
-	HPDF_PDFVer       *ver; 
+    HPDF_PDFVer       *ver; 
 } HPDF_PageAttr_Rec;
 
 
