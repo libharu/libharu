@@ -1484,6 +1484,37 @@ HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
 	return def;
 }
 
+
+HPDF_EXPORT(const char *)
+HPDF_LoadTTFontFromMemory (HPDF_Doc       pdf,
+                   const HPDF_BYTE       *buffer,
+                         HPDF_UINT        size,
+                         HPDF_BOOL        embedding)
+{
+    HPDF_Stream font_data;
+    const char *ret;
+
+    HPDF_PTRACE ((" HPDF_LoadTTFontFromMemory\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    /* create memory stream */
+    font_data = HPDF_MemStream_New (pdf->mmgr, size);
+    if (!HPDF_Stream_Validate (font_data)) {
+        HPDF_RaiseError (&pdf->error, HPDF_INVALID_STREAM, 0);
+        return NULL;
+    }
+
+    if (HPDF_Stream_Write (font_data, buffer, size) != HPDF_OK) {
+        HPDF_Stream_Free (font_data);
+        return NULL;
+    }
+
+    return LoadTTFontFromStream (pdf, font_data, embedding, "");
+}
+
+
 HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile (HPDF_Doc         pdf,
                          const char      *file_name,
