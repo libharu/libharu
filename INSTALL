@@ -2,7 +2,16 @@ Installation
 ------------
 
 Installing libHaru on Linux/Unix is as easy as this:
-./configure && make && make install
+
+$ cmake -G 'Unix Makefiles'
+$ make
+$ sudo make install
+
+NOTE: If you get any error regarding cmake, then run
+
+$ sudo apt-get install cmake
+
+to install cmake
 
 You might want to look at ./configure options though.
 
