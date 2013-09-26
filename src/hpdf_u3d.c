@@ -132,6 +132,48 @@ HPDF_LoadU3DFromFile  (HPDF_Doc     pdf,
 	return image;
 }
 
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadU3DFromMem (HPDF_Doc pdf,
+             const HPDF_BYTE *buffer,
+                    HPDF_UINT size)
+{
+	HPDF_Stream imagedata;
+	HPDF_Image image;
+
+	HPDF_PTRACE ((" HPDF_LoadU3DFromMem\n"));
+
+	if (!HPDF_HasDoc (pdf)) {
+		return NULL;
+	}
+
+	/* create file stream */
+	imagedata = HPDF_MemStream_New (pdf->mmgr, size);
+
+	if (!HPDF_Stream_Validate (imagedata)) {
+		HPDF_RaiseError (&pdf->error, HPDF_INVALID_STREAM, 0);
+		return NULL;
+	}
+
+	if (HPDF_Stream_Write (imagedata, buffer, size) != HPDF_OK) {
+		HPDF_Stream_Free (imagedata);
+		return NULL;
+	}
+
+	if (HPDF_Stream_Validate (imagedata)) {
+		image = HPDF_U3D_LoadU3D (pdf->mmgr, imagedata, pdf->xref);
+	} else {
+		image = NULL;
+	}
+
+	/* destroy file stream */
+	HPDF_Stream_Free (imagedata);
+
+	if (!image) {
+		HPDF_CheckError (&pdf->error);
+	}
+	return image;
+}
+
 HPDF_U3D
 HPDF_U3D_LoadU3D   (HPDF_MMgr        mmgr,
 					HPDF_Stream      u3d_data,

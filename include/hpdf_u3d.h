@@ -28,6 +28,7 @@ HPDF_EXPORT(HPDF_JavaScript) HPDF_CreateJavaScript(HPDF_Doc pdf, const char *cod
 
 
 HPDF_EXPORT(HPDF_U3D) HPDF_LoadU3DFromFile (HPDF_Doc pdf, const char *filename);
+HPDF_EXPORT(HPDF_Image) HPDF_LoadU3DFromMem (HPDF_Doc pdf, const HPDF_BYTE *buffer, HPDF_UINT size);
 HPDF_EXPORT(HPDF_Dict) HPDF_Create3DView (HPDF_MMgr mmgr, const char *name);
 HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_Add3DView(HPDF_U3D u3d, HPDF_Dict view);
 HPDF_EXPORT(HPDF_STATUS) HPDF_U3D_SetDefault3DView(HPDF_U3D u3d, const char *name);
