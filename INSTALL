@@ -13,8 +13,6 @@ $ sudo apt-get install cmake
 
 to install cmake
 
-You might want to look at ./configure options though.
-
 See more details installation instructions here:
 http://libharu.org/wiki/Documentation/Install
 
