@@ -142,7 +142,7 @@
 #define HPDF_MAX_WORDSPACE          300
 #define HPDF_MIN_CHARSPACE          -30
 #define HPDF_MAX_CHARSPACE          300
-#define HPDF_MAX_FONTSIZE           300
+#define HPDF_MAX_FONTSIZE           600
 #define HPDF_MAX_ZOOMSIZE           10
 #define HPDF_MAX_LEADING            300
 #define HPDF_MAX_LINEWIDTH          100
