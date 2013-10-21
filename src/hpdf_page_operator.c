@@ -21,7 +21,7 @@
 #include "hpdf.h"
 
 static const HPDF_Point INIT_POS = {0, 0};
-static const HPDF_DashMode INIT_MODE = {{0, 0, 0, 0, 0, 0, 0, 0}, 0, 0};
+static const HPDF_DashMode INIT_MODE = {{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, 0, 0.0f};
 
 
 static HPDF_STATUS
@@ -175,16 +175,16 @@ HPDF_Page_SetMiterLimit  (HPDF_Page  page,
 /* d */
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetDash  (HPDF_Page           page,
-                    const HPDF_UINT16  *dash_ptn,
+                    const HPDF_REAL    *dash_ptn,
                     HPDF_UINT           num_param,
-                    HPDF_UINT           phase)
+                    HPDF_REAL           phase)
 {
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
                     HPDF_GMODE_TEXT_OBJECT);
     char buf[HPDF_TMP_BUF_SIZ];
     char *pbuf = buf;
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
-    const HPDF_UINT16 *pdash_ptn = dash_ptn;
+    const HPDF_REAL *pdash_ptn = dash_ptn;
     HPDF_PageAttr attr;
     HPDF_UINT i;
 
@@ -192,10 +192,6 @@ HPDF_Page_SetDash  (HPDF_Page           page,
 
     if (ret != HPDF_OK)
         return ret;
-
-    if (num_param != 1 && (num_param / 2) * 2 != num_param)
-        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_PARAM_COUNT,
-                num_param);
 
     if (num_param == 0 && phase > 0)
         return HPDF_RaiseError (page->error, HPDF_PAGE_OUT_OF_RANGE,
@@ -212,7 +208,7 @@ HPDF_Page_SetDash  (HPDF_Page           page,
         if (*pdash_ptn == 0 || *pdash_ptn > HPDF_MAX_DASH_PATTERN)
             return HPDF_RaiseError (page->error, HPDF_PAGE_OUT_OF_RANGE, 0);
 
-        pbuf = HPDF_IToA (pbuf, *pdash_ptn, eptr);
+        pbuf = HPDF_FToA (pbuf, *pdash_ptn, eptr);
         *pbuf++ = ' ';
         pdash_ptn++;
     }
@@ -220,7 +216,7 @@ HPDF_Page_SetDash  (HPDF_Page           page,
     *pbuf++ = ']';
     *pbuf++ = ' ';
 
-    pbuf = HPDF_IToA (pbuf, phase, eptr);
+    pbuf = HPDF_FToA (pbuf, phase, eptr);
     HPDF_StrCpy (pbuf, " d\012", eptr);
 
     attr = (HPDF_PageAttr)page->attr;
@@ -2898,4 +2894,17 @@ HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
     ret += HPDF_Page_New_Content_Stream (page, NULL);
 
     return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_WriteComment  (HPDF_Page    page,
+                         const char  *text)
+{
+    HPDF_PageAttr attr;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    if (HPDF_Stream_WriteStr (attr->stream, text) != HPDF_OK)
+        return HPDF_CheckError (page->error);
+    return HPDF_OK;
 }

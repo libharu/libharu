@@ -794,7 +794,9 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
                            HPDF_UINT          width,
                            HPDF_UINT          height,
                            HPDF_ColorSpace    color_space,
-                           HPDF_UINT          bits_per_component);
+                           HPDF_UINT          bits_per_component,
+                           HPDF_UINT          size,
+                           HPDF_BOOL          black_white);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Image_AddSMask  (HPDF_Image    image,
@@ -1152,9 +1154,9 @@ HPDF_Page_SetMiterLimit  (HPDF_Page  page,
 /* d */
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetDash  (HPDF_Page           page,
-                    const HPDF_UINT16  *dash_ptn,
+                    const HPDF_REAL    *dash_ptn,
                     HPDF_UINT           num_param,
-                    HPDF_UINT           phase);
+                    HPDF_REAL           phase);
 
 
 
@@ -1558,7 +1560,11 @@ HPDF_EXPORT(HPDF_OutputIntent)
 HPDF_LoadIccProfileFromFile  (HPDF_Doc  pdf,
                             const char* icc_file_name,
                                    int  numcomponent);
-                                   
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_WriteComment (HPDF_Page    page,
+                        const char  *text);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

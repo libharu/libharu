@@ -134,6 +134,10 @@ LoadAfm (HPDF_FontDef  fontdef,
     HPDF_UINT len;
     char keyword[HPDF_LIMIT_MAX_NAME_LEN + 1];
     HPDF_UINT i;
+    HPDF_CharData* cdata_temp;
+    HPDF_CharData* cdata_temp_root;
+    HPDF_INT16 temp_count = 0;
+    HPDF_INT16 unicode = 0;
 
     HPDF_PTRACE ((" LoadAfm\n"));
 
@@ -154,7 +158,7 @@ LoadAfm (HPDF_FontDef  fontdef,
         const char *s;
 
         len = HPDF_TMP_BUF_SIZ;
-        if ((ret = HPDF_Stream_ReadLn (stream, buf, &len)) != HPDF_OK)
+        if ((ret = HPDF_Stream_ReadLn (stream, buf, &len)) != HPDF_OK && ret != HPDF_STREAM_READLN_CONTINUE)
             return ret;
 
         s = GetKeyword (buf, keyword, HPDF_LIMIT_MAX_NAME_LEN + 1);
@@ -232,17 +236,24 @@ LoadAfm (HPDF_FontDef  fontdef,
     }
 
     cdata = (HPDF_CharData*)HPDF_GetMem (fontdef->mmgr,
-            sizeof(HPDF_CharData) * attr->widths_count);
-    if (cdata == NULL)
+            sizeof(HPDF_CharData) * attr->widths_count * 2);
+
+    cdata_temp = (HPDF_CharData*)HPDF_GetMem (fontdef->mmgr, sizeof(HPDF_CharData) * attr->widths_count);
+
+    if (cdata == NULL || cdata_temp == NULL)
         return HPDF_Error_GetCode (fontdef->error);
 
-    HPDF_MemSet (cdata, 0, sizeof(HPDF_CharData) * attr->widths_count);
+    HPDF_MemSet (cdata, 0, sizeof(HPDF_CharData) * attr->widths_count * 2);
     attr->widths = cdata;
+
+    HPDF_MemSet (cdata_temp, 0, sizeof(HPDF_CharData) * attr->widths_count);
+    cdata_temp_root = cdata_temp;
 
     /* load CharMetrics */
     for (i = 0; i < attr->widths_count; i++, cdata++) {
         const char *s;
         char buf2[HPDF_LIMIT_MAX_NAME_LEN + 1];
+        unicode = 0;
 
         len = HPDF_TMP_BUF_SIZ;
         if ((ret = HPDF_Stream_ReadLn (stream, buf, &len)) != HPDF_OK)
@@ -256,6 +267,7 @@ LoadAfm (HPDF_FontDef  fontdef,
                     HPDF_INVALID_CHAR_MATRICS_DATA, 0);
         } else
         if (HPDF_StrCmp (buf2, "C") == 0) {
+            unicode = (HPDF_INT16)HPDF_AToI (s);
             s += 2;
 
             s = GetKeyword (s, buf2, HPDF_LIMIT_MAX_NAME_LEN + 1);
@@ -291,7 +303,44 @@ LoadAfm (HPDF_FontDef  fontdef,
 
         cdata->unicode = HPDF_GryphNameToUnicode (buf2);
 
+        if( cdata->unicode != unicode && unicode != -1 )
+        {
+            cdata_temp->char_cd = cdata->char_cd;
+            cdata_temp->width = cdata->width;
+            cdata_temp->unicode = unicode;
+            cdata_temp++;
+            temp_count++;
+        }
     }
+
+    cdata_temp = cdata_temp_root;
+    int x = 0;
+    int y = 0;
+    int flag = 0;
+    for( x = 0; x < temp_count; x++, cdata_temp++ )
+    {
+        HPDF_CharData *cdata_cmp = attr->widths;
+        flag = 0;
+        for( y = 0; y < i; y++ )
+        {
+            if( cdata_cmp->unicode == cdata_temp->unicode )
+            {
+                // cdata already contains this unicode
+                flag = 1;
+                break;
+            }
+            cdata_cmp++;
+        }
+        if( flag == 0 )
+        {
+            cdata++;
+            cdata->char_cd = cdata_temp->char_cd;
+            cdata->width = cdata_temp->width;
+            cdata->unicode = cdata_temp->unicode;
+            i++;
+        }
+    }
+    attr->widths_count = i;
 
     return HPDF_OK;
 }
