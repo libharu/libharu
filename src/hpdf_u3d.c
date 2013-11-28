@@ -787,7 +787,7 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCamera(HPDF_Dict view, HPDF_REAL coox, H
 	ret = HPDF_Dict_Add (view, "C2W", matrix);
 	if (ret != HPDF_OK) goto failed;
 
-	ret = HPDF_Dict_AddNumber (view, "CO", (HPDF_INT32)roo);
+	ret = HPDF_Dict_AddReal (view, "CO", roo);
 
 failed:
 	if (ret != HPDF_OK) {
