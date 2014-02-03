@@ -1291,8 +1291,15 @@ CheckCompositGryph  (HPDF_FontDef   fontdef,
                     return ret;
             }
 
-            if (glyph_index > 0 && glyph_index < attr->num_glyphs)
+            if (glyph_index > 0 && glyph_index < attr->num_glyphs &&
+                    !attr->glyph_tbl.flgs[glyph_index]) {
+                HPDF_INT32 next_glyph;
+
                 attr->glyph_tbl.flgs[glyph_index] = 1;
+                next_glyph = HPDF_Stream_Tell (attr->stream);
+                CheckCompositGryph (fontdef, glyph_index);
+                HPDF_Stream_Seek (attr->stream, next_glyph, HPDF_SEEK_SET);
+            }
 
             HPDF_PTRACE ((" gid=%d, num_of_contours=%d, flags=%d, "
                     "glyph_index=%d\n", gid, num_of_contours, flags,
