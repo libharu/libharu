@@ -2,7 +2,7 @@
 
 eval `grep '^HPDF_EXTRA_VERSION=' configure.in`
 case "$HPDF_EXTRA_VERSION" in
-  *-dev)
+  *dev)
     rebuildok=1
     ;;
   *)
