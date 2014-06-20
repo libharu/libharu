@@ -48,7 +48,7 @@ hpdf_error_handler  (HPDF_STATUS  error_no,
 {
     char msg[256];
 
-    snprintf(msg, 256, "ERROR 0x%04X-0x%04X", error_no, detail_no);
+    snprintf(msg, 256, "ERROR 0x%04lX-0x%04lX", error_no, detail_no);
 
     rb_raise(rb_eHPDFError, "%s", msg);
 }
@@ -1974,7 +1974,7 @@ hpdf_page_get_dash (VALUE obj)
     VALUE ret;
     VALUE num_ptn;
     VALUE phase;
-    HPDF_INT i;
+    HPDF_UINT i;
 
     Data_Get_Struct(obj, HPDF_Dict_Rec, page);
 
