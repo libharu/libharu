@@ -210,7 +210,7 @@ set(
 install(FILES ${haru_HDRS} DESTINATION include)
 
 # install various files
-install(FILES README CHANGES INSTALL DESTINATION .)
+install(FILES README CHANGES INSTALL DESTINATION share/libharu/doc)
 if(NOT DEVPAK)
   install(DIRECTORY if DESTINATION .)
 endif(NOT DEVPAK)
