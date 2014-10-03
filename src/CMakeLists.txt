@@ -79,11 +79,11 @@ if(LIBHPDF_STATIC)
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
   )
-  if(WIN32 AND NOT CYGWIN)
+  if(MSVC)
 		foreach(addlib ${ADDITIONAL_LIBRARIES})
 			install(FILES ${addlib} DESTINATION lib)
 		endforeach(addlib)
-  endif(WIN32 AND NOT CYGWIN)
+  endif()
 endif(LIBHPDF_STATIC)
 if(LIBHPDF_SHARED)
   add_library(${LIBHPDF_NAME} SHARED ${LIBHPDF_SRCS})
