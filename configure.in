@@ -206,101 +206,14 @@ AC_ARG_WITH(libdir,
 )
 dnl }}}
 
-dnl {{{ --with-zlib
-AC_ARG_WITH(zlib,
-  [AS_HELP_STRING([--with-zlib],[specify Zlib install prefix])
-  ],
-  [ ],
-  [with_zlib=yes]
-)
+PKG_CHECK_MODULES(ZLIB, zlib)
+AC_SUBST(ZLIB_CFLAGS)
+AC_SUBST(ZLIB_LIBS)
 
-if test "x$with_zlib" = "xno"; then
-  AC_DEFINE([HAVE_NOZLIB], [], [zlib is not available])
-else
-  AC_MSG_CHECKING([Zlib install prefix])
-
-  if test "x$with_zlib" = "xyes"; then
-    for i in `echo "$STANDARD_PREFIXES"`; do
-      if test -f "$i/include/zlib.h"; then
-        ZLIB_DIR="$i"
-        break;
-      fi
-    done
-  else
-    if test -f "$with_zlib/include/zlib.h"; then
-      ZLIB_DIR="$with_zlib"
-      break;
-    else
-      AC_MSG_ERROR([Can't find Zlib headers under $with_zlib directory]);
-    fi
-  fi
-
-  if test "x$ZLIB_DIR" = "x"; then
-    AC_MSG_ERROR([Unable to locate Zlib headers, please use --with-zlib=<DIR>]);
-  fi
-
-  AC_MSG_RESULT([$ZLIB_DIR])
-  LDFLAGS="$LDFLAGS -L$ZLIB_DIR/$LIBDIR"
-  CFLAGS="$CFLAGS -I$ZLIB_DIR/include"
-  LIBS="$LIBS -lz"
-
-  AC_CHECK_LIB([z], [deflate], [], [
-    AC_MSG_ERROR([deflate() is missing, check config.log for more details])
-  ])
-
-  HAVE_ZLIB=yes
-fi
-dnl }}}
-
-dnl {{{ --with-png
-AC_ARG_WITH(png,
-  [AS_HELP_STRING([--with-png],[specify libpng install prefix])
-  ],
-  [ ],
-  [with_png=yes]
-)
-
-if test "x$with_png" = "xno"; then
-  AC_DEFINE([HAVE_NOPNGLIB], [], [libpng is not available])
-else
-
-  if test "x$HAVE_ZLIB" != "xyes"; then
-    AC_MSG_ERROR([PNG support requires Zlib, but it's not enabled. Either enable Zlib or disable PNG support.]);
-  fi
-
-  AC_MSG_CHECKING([libpng install prefix])
-
-  if test "x$with_png" = "xyes"; then
-    for i in `echo "$STANDARD_PREFIXES"`; do
-      if test -f "$i/include/png.h"; then
-        LIBPNG_DIR="$i"
-        break;
-      fi
-    done
-  else
-    if test -f "$with_png/include/png.h"; then
-      LIBPNG_DIR="$with_png"
-      break;
-    else
-      AC_MSG_ERROR([Can't find libpng headers under $with_png directory]);
-    fi
-  fi
-
-  if test "x$LIBPNG_DIR" = "x"; then
-    AC_MSG_ERROR([Unable to locate libpng headers, please use --with-png=<DIR>]);
-  fi
-
-  AC_MSG_RESULT([$LIBPNG_DIR])
-  LDFLAGS="$LDFLAGS -L$LIBPNG_DIR/$LIBDIR"
-  CFLAGS="$CFLAGS -I$LIBPNG_DIR/include"
-  LIBS="$LIBS -lpng"
-
-  AC_CHECK_LIB([png], [png_init_io], [], [
-    AC_MSG_ERROR([png_init_io() is missing, check config.log for more details])
-  ])
-fi
-dnl }}}
-
+PKG_CHECK_MODULES(PNGLIB, libpng)
+AC_SUBST(PNGLIB_CFLAGS)
+AC_SUBST(PNGLIB_LIBS)
+  
 case "$host_alias" in
   *cygwin*[)]
     CFLAGS="$CFLAGS -mno-cygwin -DHPDF_DLL_MAKE_CDECL"
