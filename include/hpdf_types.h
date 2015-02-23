@@ -575,6 +575,14 @@ typedef enum _HPDF_NameDictKey {
     HPDF_NAME_EOF
 } HPDF_NameDictKey;
 
+typedef enum _HPDF_PageBoundary {
+    HPDF_PAGE_MEDIABOX = 0,
+    HPDF_PAGE_CROPBOX,
+    HPDF_PAGE_BLEEDBOX,
+    HPDF_PAGE_TRIMBOX,
+    HPDF_PAGE_ARTBOX
+} HPDF_PageBoundary;
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
