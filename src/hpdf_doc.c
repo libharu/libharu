@@ -121,6 +121,13 @@ HPDF_HasDoc  (HPDF_Doc  pdf)
         return HPDF_TRUE;
 }
 
+HPDF_EXPORT(HPDF_MMgr)
+HPDF_GetDocMMgr  (HPDF_Doc doc)
+{
+    HPDF_PTRACE ((" HPDF_GetDocMMgr\n"));
+
+    return doc->mmgr;
+}
 
 HPDF_EXPORT(HPDF_Doc)
 HPDF_New  (HPDF_Error_Handler    user_error_fn,
