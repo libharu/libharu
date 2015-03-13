@@ -78,6 +78,8 @@ if(BUILD_SHARED_LIBS)
   set(LIBHPDF_SHARED ON)
 endif(BUILD_SHARED_LIBS)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 # =======================================================================
 # look for headers and libraries
 # =======================================================================
@@ -110,7 +112,6 @@ endif(PNG_FOUND)
 if(MSVC_VERSION GREATER 1399)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
 endif(MSVC_VERSION GREATER 1399)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
 # these are options
