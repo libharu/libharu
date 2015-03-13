@@ -151,8 +151,6 @@ HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,HPDF_PDFAType pdfatype)
     const char *pdf_Keywords    = NULL;
     const char *pdf_Producer    = NULL;
 
-    const char *info = NULL;
-
     if (!HPDF_HasDoc(pdf)) {
       return HPDF_INVALID_DOCUMENT;
     }

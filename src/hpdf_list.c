@@ -53,7 +53,7 @@ HPDF_List_New  (HPDF_MMgr  mmgr,
         list->error = mmgr->error;
         list->block_siz = 0;
         list->items_per_block =
-            (items_per_block <= 0 ? HPDF_DEF_ITEMS_PER_BLOCK : items_per_block);
+            (items_per_block == 0 ? HPDF_DEF_ITEMS_PER_BLOCK : items_per_block);
         list->count = 0;
         list->obj = NULL;
     }

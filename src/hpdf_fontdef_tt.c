@@ -2209,7 +2209,7 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
         HPDF_UINT siz = sizeof(buf);
 
         ret = HPDF_Stream_Read (tmp_stream, (HPDF_BYTE *)&buf, &siz);
-        if (ret != HPDF_OK || siz <= 0) {
+        if (ret != HPDF_OK || siz == 0) {
             if (ret == HPDF_STREAM_EOF)
                 ret = HPDF_OK;
             break;

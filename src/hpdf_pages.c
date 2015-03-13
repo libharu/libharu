@@ -1955,7 +1955,7 @@ HPDF_Page_CreateURILinkAnnot  (HPDF_Page          page,
 
     attr = (HPDF_PageAttr)page->attr;
 
-    if (HPDF_StrLen (uri, HPDF_LIMIT_MAX_STRING_LEN) <= 0) {
+    if (HPDF_StrLen (uri, HPDF_LIMIT_MAX_STRING_LEN) == 0) {
         HPDF_RaiseError (page->error, HPDF_INVALID_URI, 0);
         return NULL;
     }
