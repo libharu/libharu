@@ -112,7 +112,7 @@ HPDF_STATUS ConvertDateToXMDate(HPDF_Stream stream, const char *pDate)
         return ret;
     pDate+=2;
     /* Write +... */
-    if(pDate[0]==0) {
+    if(pDate[0]==0 || pDate[0]=='Z') {
         ret = HPDF_Stream_Write(stream, (const HPDF_BYTE*)"Z", 1);
         return ret;
     }
