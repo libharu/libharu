@@ -373,7 +373,7 @@ HPDF_PDFA_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdi
     if (intents == NULL) {
         intents = HPDF_Array_New (pdf->mmgr);
         if (intents) {
-            HPDF_STATUS ret = HPDF_Dict_Add (pdf->catalog, "OutputIntents", intents);
+            ret = HPDF_Dict_Add (pdf->catalog, "OutputIntents", intents);
             if (ret != HPDF_OK) {
                 HPDF_CheckError (&pdf->error);
                 return HPDF_Error_GetDetailCode (&pdf->error);
