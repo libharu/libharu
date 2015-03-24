@@ -11,3 +11,5 @@ don't forget to run ./buildconf.sh in order to create
 See more detailed instructions here:
 https://github.com/libharu/libharu/wiki/Installation
 
+On OS X, you can use Homebrew to install libHaru:
+$ brew install libharu
