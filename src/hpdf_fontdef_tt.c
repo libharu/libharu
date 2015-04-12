@@ -1073,7 +1073,7 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
 
     num_read = HPDF_Stream_Tell (attr->stream) - offset;
     if (num_read < 0)
-        return HPDF_Error_GetCode (fontdef->error);
+        return HPDF_Error_GetCode (attr->stream->error);
 
     attr->cmap.glyph_id_array_count = (attr->cmap.length - num_read) / 2;
 
