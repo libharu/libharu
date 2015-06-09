@@ -7,5 +7,4 @@ package for win32(libharu_x_x_x_dll_win32.zip).
 
 Because I don't have Visual Basic, I did not test this interface. If you have 
 any question or suggestion about this interface, please post it to the forum 
-of libharu (http://sourceforge.net/forum/?group_id=83044).
-
+of libharu (https://groups.google.com/forum/#!forum/libharu).
