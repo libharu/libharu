@@ -1,10 +1,10 @@
-***
+# Haru Free PDF Library [![Build Status](https://travis-ci.org/insma/libharu.svg?branch=feature%2FCI)](https://travis-ci.org/insma/libharu)
+
   **URL http://libharu.org/**
 
   **Copyright 2000-2006 (c) Takeshi Kanno**
 
   **Copyright 2007-2009 (c) Antony Dovgal et al.**
-***
 
 See INSTALL for instructions on how to install libHaru.
 
