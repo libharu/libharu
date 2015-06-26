@@ -1,0 +1,10 @@
+language: c
+compiler:
+  - gcc
+before_script:
+  - sudo chmod +x buildconf.sh
+script:
+  - ./buildconf.sh
+  - ./configure
+  - make clean
+  - make
