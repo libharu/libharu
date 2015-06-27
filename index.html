@@ -26,6 +26,47 @@
     </script>
     <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript">
+function formatVersion(versionData) {
+    var releaseDate = new Date(Date.parse(versionData.created_at));
+    var tag = $('<a/>');
+    tag.attr("href", versionData.html_url);
+    tag.text(versionData.name + " (" + releaseDate.toLocaleDateString() + ")");
+    return tag;
+}
+function formatNews(versionData) {
+    var releaseDate = new Date(Date.parse(versionData.created_at));
+    var tag = $('<div />');
+    var relTitle = $('<h3 />');
+    relTitle.text(versionData.name);
+    relTitle.prepend($("<span style='font-size: 75%'>" + releaseDate.toLocaleDateString() + " - </span>"));
+    tag.append(relTitle);
+    if ($.trim(versionData.body).length > 0) {
+        var relChanges = $('<pre />');
+        relChanges.text(versionData.body);
+        tag.append(relChanges);
+    }
+    return tag;
+}
+$(function() {
+    $.get('https://api.github.com/repos/libharu/libharu/releases/latest', function( item ) {
+        var target = item.prerelease ? $("#lastDevVersion") : $("#lastVersion");
+        target.empty();
+        target.append(formatVersion(item));
+        lastDevVersion = item;
+    });
+    $.get('https://api.github.com/repos/libharu/libharu/releases', function( items ) {
+        for (var i = 0, c = items.length; i < c; i++){
+            var item = items[i];
+            var target = item.prerelease ? $("#lastDevVersion") : $("#lastVersion");
+            target.empty();
+            target.append(formatVersion(item));
+
+            $('#news').prepend(formatNews(item));
+        }
+    });
+});
+    </script>
   </head>
   <body>
     <div class="wrapper">
