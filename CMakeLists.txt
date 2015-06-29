@@ -211,9 +211,9 @@ install(FILES ${haru_HDRS} DESTINATION include)
 
 # install various files
 install(FILES README CHANGES INSTALL DESTINATION .)
-if(NOT DEVPAK)
+if(MSVC AND NOT DEVPAK)
   install(DIRECTORY if DESTINATION .)
-endif(NOT DEVPAK)
+endif()
 if(DEVPAK)
   install(FILES ${CMAKE_BINARY_DIR}/libharu.DevPackage DESTINATION .)
 endif(DEVPAK)
