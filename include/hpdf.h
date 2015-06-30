@@ -119,6 +119,8 @@ HPDF_SetErrorHandler  (HPDF_Doc            pdf,
 HPDF_EXPORT(void)
 HPDF_Free  (HPDF_Doc  pdf);
 
+HPDF_EXPORT(HPDF_MMgr)
+HPDF_GetDocMMgr  (HPDF_Doc doc);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_NewDoc  (HPDF_Doc  pdf);
