@@ -110,7 +110,7 @@ endif(PNG_FOUND)
 if(MSVC_VERSION GREATER 1399)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
 endif(MSVC_VERSION GREATER 1399)
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
 # these are options
@@ -149,16 +149,16 @@ endif (NOT ZLIB_FOUND)
 
 # create hpdf_config.h
 configure_file(
-  ${CMAKE_SOURCE_DIR}/include/hpdf_config.h.cmake
-  ${CMAKE_BINARY_DIR}/include/hpdf_config.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/hpdf_config.h.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/include/hpdf_config.h
 )
-include_directories(${CMAKE_BINARY_DIR}/include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 
 # create DevPackage file
 if(DEVPAK)
   configure_file(
-    ${CMAKE_SOURCE_DIR}/libharu.DevPackage.cmake
-    ${CMAKE_BINARY_DIR}/libharu.DevPackage
+    ${CMAKE_CURRENT_SOURCE_DIR}/libharu.DevPackage.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/libharu.DevPackage
   )
 endif(DEVPAK)
 # =======================================================================
@@ -203,7 +203,7 @@ set(
     include/hpdf_pdfa.h
     include/hpdf_3dmeasure.h
     include/hpdf_exdata.h
-    ${CMAKE_BINARY_DIR}/include/hpdf_config.h
+    ${CMAKE_CURRENT_BINARY_DIR}/include/hpdf_config.h
 )
 
 # install header files
@@ -215,7 +215,7 @@ if(NOT DEVPAK)
   install(DIRECTORY if DESTINATION .)
 endif(NOT DEVPAK)
 if(DEVPAK)
-  install(FILES ${CMAKE_BINARY_DIR}/libharu.DevPackage DESTINATION .)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libharu.DevPackage DESTINATION .)
 endif(DEVPAK)
 
 # =======================================================================
