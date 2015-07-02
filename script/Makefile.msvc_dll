@@ -80,6 +80,7 @@ OBJS = \
 	src\hpdf_encoder_kr.obj \
 	src\hpdf_encoder_cns.obj \
 	src\hpdf_encoder_cnt.obj \
+	src\hpdf_encoder_utf.obj \
 	src\hpdf_fontdef_jp.obj \
 	src\hpdf_fontdef_kr.obj \
 	src\hpdf_fontdef_cns.obj \
@@ -91,7 +92,8 @@ OBJS = \
 	src\hpdf_namedict.obj \
 	src\hpdf_3dmeasure.obj \
 	src\hpdf_exdata.obj \
-	src\hpdf_u3d.obj
+	src\hpdf_u3d.obj \
+	src\hpdf_pdfa.obj
 
 PROGRAMS = \
 	demo\encoding_list.exe \
