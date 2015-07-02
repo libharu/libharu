@@ -80,14 +80,14 @@ int main (int argc, char **argv)
     HPDF_UseJPEncodings (pdf);
     HPDF_UseJPFonts (pdf);
 
-    detail_font[0] = HPDF_GetFont (pdf, "MS-Mincyo", "90ms-RKSJ-H");
-    detail_font[1] = HPDF_GetFont (pdf, "MS-Mincyo,Bold", "90ms-RKSJ-H");
-    detail_font[2] = HPDF_GetFont (pdf, "MS-Mincyo,Italic", "90ms-RKSJ-H");
-    detail_font[3] = HPDF_GetFont (pdf, "MS-Mincyo,BoldItalic", "90ms-RKSJ-H");
-    detail_font[4] = HPDF_GetFont (pdf, "MS-PMincyo", "90msp-RKSJ-H");
-    detail_font[5] = HPDF_GetFont (pdf, "MS-PMincyo,Bold", "90msp-RKSJ-H");
-    detail_font[6] = HPDF_GetFont (pdf, "MS-PMincyo,Italic", "90msp-RKSJ-H");
-    detail_font[7] = HPDF_GetFont (pdf, "MS-PMincyo,BoldItalic",
+    detail_font[0] = HPDF_GetFont (pdf, "MS-Mincho", "90ms-RKSJ-H");
+    detail_font[1] = HPDF_GetFont (pdf, "MS-Mincho,Bold", "90ms-RKSJ-H");
+    detail_font[2] = HPDF_GetFont (pdf, "MS-Mincho,Italic", "90ms-RKSJ-H");
+    detail_font[3] = HPDF_GetFont (pdf, "MS-Mincho,BoldItalic", "90ms-RKSJ-H");
+    detail_font[4] = HPDF_GetFont (pdf, "MS-PMincho", "90msp-RKSJ-H");
+    detail_font[5] = HPDF_GetFont (pdf, "MS-PMincho,Bold", "90msp-RKSJ-H");
+    detail_font[6] = HPDF_GetFont (pdf, "MS-PMincho,Italic", "90msp-RKSJ-H");
+    detail_font[7] = HPDF_GetFont (pdf, "MS-PMincho,BoldItalic",
             "90msp-RKSJ-H");
     detail_font[8] = HPDF_GetFont (pdf, "MS-Gothic", "90ms-RKSJ-H");
     detail_font[9] = HPDF_GetFont (pdf, "MS-Gothic,Bold", "90ms-RKSJ-H");
