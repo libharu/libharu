@@ -284,9 +284,6 @@ function HPDF_TextAnnot_SetIcon (annot: HPDF_Annotation; icon: THPDF_AnnotIcon):
 function HPDF_TextAnnot_SetOpened (annot: HPDF_Annotation; opened: HPDF_BOOL):
         HPDF_STATUS; extdecl LIBHPDF_LIB;
 
-{*--------------------------------------------------------------------------*}
-{*----- image data ---------------------------------------------------------*}
-
 function HPDF_LoadPngImageFromMem (pdf: HPDF_Doc; const buffer: HPDF_PBYTE; size: HPDF_UINT):
         HPDF_Image; extdecl LIBHPDF_LIB;
 
@@ -823,8 +820,6 @@ HPDF_TextAnnot_SetIcon: function(annot: HPDF_Annotation; icon: THPDF_AnnotIcon):
         HPDF_STATUS; extdecl;
 HPDF_TextAnnot_SetOpened: function(annot: HPDF_Annotation; opened: HPDF_BOOL):
         HPDF_STATUS; extdecl;
-{*--------------------------------------------------------------------------*}
-{*----- image data ---------------------------------------------------------*}
 HPDF_LoadPngImageFromMem: function(pdf: HPDF_Doc; const buffer: HPDF_PBYTE; size: HPDF_UINT):
         HPDF_Image; extdecl;
 HPDF_LoadPngImageFromFile: function(pdf: HPDF_Doc; filename: HPDF_PCHAR):
