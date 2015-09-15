@@ -46,6 +46,11 @@ if(LIBHPDF_EXAMPLES)
     set(DEMO_C_FLAGS "-D__WIN32__")
   endif(WIN32 AND NOT CYGWIN)
 
+  # On Linux, demos don't build without linking with math library (-lm)
+  if(UNIX)
+	  set(DEMO_LIBS m)
+  endif(UNIX)
+
   # link the examples to the shared library otherwise to the static
   if(LIBHPDF_SHARED)
     set(_LIBHPDF_LIB ${LIBHPDF_NAME})
@@ -61,7 +66,9 @@ if(LIBHPDF_EXAMPLES)
   # =======================================================================
   foreach(demo ${demos_NAMES})
     add_executable(${demo} ${demo}.c)
-    target_link_libraries(${demo} ${_LIBHPDF_LIB})
+    target_link_libraries(${demo}
+		${DEMO_LIBS}
+		${_LIBHPDF_LIB})
     if(DEMO_C_FLAGS)
       set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
     endif(DEMO_C_FLAGS)
@@ -70,7 +77,9 @@ if(LIBHPDF_EXAMPLES)
   # some demos need grid_sheet.c compiled in
   foreach(demo ${demos_with_grid_NAMES})
     add_executable(${demo} ${demo}.c grid_sheet.c)
-    target_link_libraries(${demo} ${_LIBHPDF_LIB})
+    target_link_libraries(${demo}
+		${DEMO_LIBS}
+		${_LIBHPDF_LIB})
     if(DEMO_C_FLAGS)
       set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
     endif(DEMO_C_FLAGS)
