@@ -32,7 +32,7 @@ Public Const HPDF_NOERROR = 0
 '/* buffer size which is required when we convert to character string. */
 Public Const HPDF_TMP_BUF_SIZ = 256
 Public Const HPDF_SHORT_BUF_SIZ = 32
-Public Const HPDF_REAL_LEN = 11
+Public Const HPDF_REAL_LEN = 15
 Public Const HPDF_INT_LEN = 11
 Public Const HPDF_TEXT_DEFAULT_LEN = 256
 Public Const HPDF_UNICODE_HEADER_LEN = 2

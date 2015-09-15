@@ -31,7 +31,7 @@ const
 {* buffer size which is required when we convert to character string. *}
   HPDF_TMP_BUF_SIZ = 256;
   HPDF_SHORT_BUF_SIZ = 32;
-  HPDF_REAL_LEN = 11;
+  HPDF_REAL_LEN = 15;
   HPDF_INT_LEN = 11;
   HPDF_TEXT_DEFAULT_LEN = 256;
   HPDF_UNICODE_HEADER_LEN = 2;
