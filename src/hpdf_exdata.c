@@ -34,7 +34,7 @@ HPDF_3DAnnotExData_New(HPDF_MMgr mmgr,
 	HPDF_STATUS ret = HPDF_OK;
 
 
-	HPDF_PTRACE((" HPDF_ExData_New\n"));
+	HPDF_PTRACE (" HPDF_ExData_New\n");
 
 	exdata = HPDF_Dict_New (mmgr);
 	if (!exdata)

@@ -20,6 +20,9 @@
 
 #include "hpdf_config.h"
 #include "hpdf_types.h"
+#ifdef __ANDROID__
+#include <android/log.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -150,9 +153,19 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value);
 #endif /* LIBHPDF_DEBUG_TRACE */
 
 #ifdef HPDF_PTRACE_ON
-#define HPDF_PTRACE(ARGS)  HPDF_PRINTF ARGS
+#ifdef __ANDROID__
+#define  LOG_TAG   "HPDF_LOG"
+#define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define LOGW(...)  __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
+#define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
+#define HPDF_PTRACE(...)  LOGV(__VA_ARGS__)
 #else
-#define HPDF_PTRACE(ARGS)  /* do nothing */
+#define HPDF_PTRACE(...)  HPDF_PRINTF (__VA_ARGS__)
+#endif
+#else
+#define HPDF_PTRACE(...)   /* do nothing */ 
 #endif /* HPDF_PTRACE */
 
 #ifdef LIBHPDF_DEBUG

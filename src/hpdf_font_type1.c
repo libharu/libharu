@@ -65,7 +65,7 @@ HPDF_Type1Font_New  (HPDF_MMgr        mmgr,
     HPDF_STATUS ret = 0;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_Type1Font_New\n"));
+    HPDF_PTRACE (" HPDF_Type1Font_New\n");
 
     /* check whether the fontdef object and the encoder object is valid. */
     if (encoder->type != HPDF_ENCODER_TYPE_SINGLE_BYTE) {
@@ -159,7 +159,7 @@ Type1Font_CreateDescriptor  (HPDF_MMgr  mmgr,
     HPDF_FontDef def = font_attr->fontdef;
     HPDF_Type1FontDefAttr def_attr = (HPDF_Type1FontDefAttr)def->attr;
 
-    HPDF_PTRACE ((" HPDF_Type1Font_CreateDescriptor\n"));
+    HPDF_PTRACE (" HPDF_Type1Font_CreateDescriptor\n");
 
     if (!font_attr->fontdef->descriptor) {
         HPDF_Dict descriptor = HPDF_Dict_New (mmgr);
@@ -234,7 +234,7 @@ Type1Font_TextWidth  (HPDF_Font        font,
     HPDF_UINT i;
     HPDF_BYTE b = 0;
 
-    HPDF_PTRACE ((" HPDF_Type1Font_TextWidth\n"));
+    HPDF_PTRACE (" HPDF_Type1Font_TextWidth\n");
 
     if (attr->widths) {
         for (i = 0; i < len; i++) {
@@ -276,7 +276,7 @@ Type1Font_MeasureText (HPDF_Font          font,
     HPDF_UINT i;
     HPDF_FontAttr attr = (HPDF_FontAttr)font->attr;
 
-    HPDF_PTRACE ((" HPDF_Type1Font_MeasureText\n"));
+    HPDF_PTRACE (" HPDF_Type1Font_MeasureText\n");
 
     for (i = 0; i < len; i++) {
         HPDF_BYTE b = text[i];
@@ -327,7 +327,7 @@ Type1Font_OnWrite  (HPDF_Dict    obj,
     char buf[HPDF_TMP_BUF_SIZ];
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
 
-    HPDF_PTRACE ((" HPDF_Font_Type1Font_OnWrite\n"));
+    HPDF_PTRACE (" HPDF_Font_Type1Font_OnWrite\n");
 
     /* if font is base14-font these entries is not required */
     if (!fontdef_attr->is_base14font || encoder_attr->has_differences) {
@@ -381,7 +381,7 @@ Type1Font_OnFree  (HPDF_Dict  obj)
 {
     HPDF_FontAttr attr = (HPDF_FontAttr)obj->attr;
 
-    HPDF_PTRACE ((" HPDF_Type1Font_OnFree\n"));
+    HPDF_PTRACE (" HPDF_Type1Font_OnFree\n");
 
     if (attr) {
         if (attr->widths) {

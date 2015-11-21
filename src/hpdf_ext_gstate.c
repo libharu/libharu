@@ -70,7 +70,7 @@ HPDF_ExtGState_New  (HPDF_MMgr   mmgr,
 {
     HPDF_Dict obj = HPDF_Dict_New (mmgr);
 
-    HPDF_PTRACE ((" HPDF_ExtGState_New\n"));
+    HPDF_PTRACE (" HPDF_ExtGState_New\n");
 
     if (!obj)
         return NULL;

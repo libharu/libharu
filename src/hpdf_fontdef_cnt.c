@@ -157,7 +157,7 @@ MingLiU_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_MingLiU_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_MingLiU_Init\n");
 
     fontdef->ascent = 800;
     fontdef->descent = -199;

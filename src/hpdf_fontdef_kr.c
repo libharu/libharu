@@ -1221,7 +1221,7 @@ DotumChe_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_DotumChe_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_DotumChe_Init\n");
 
     fontdef->ascent = 858;
     fontdef->descent = -141;
@@ -1282,7 +1282,7 @@ Dotum_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_Dotum_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_Dotum_Init\n");
 
     fontdef->ascent = 858;
     fontdef->descent = -141;
@@ -1343,7 +1343,7 @@ BatangChe_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_BatangChe_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_BatangChe_Init\n");
 
     fontdef->ascent = 858;
     fontdef->descent = -141;
@@ -1405,7 +1405,7 @@ Batang_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_Batang_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_Batang_Init\n");
 
     fontdef->ascent = 858;
     fontdef->descent = -141;

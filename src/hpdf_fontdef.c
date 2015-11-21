@@ -25,7 +25,7 @@ HPDF_FontDef_Cleanup (HPDF_FontDef  fontdef)
     if (!fontdef)
         return;
 
-    HPDF_PTRACE ((" HPDF_FontDef_Cleanup\n"));
+    HPDF_PTRACE (" HPDF_FontDef_Cleanup\n");
 
     if (fontdef->clean_fn)
         fontdef->clean_fn (fontdef);
@@ -39,7 +39,7 @@ HPDF_FontDef_Free (HPDF_FontDef  fontdef)
     if (!fontdef)
         return;
 
-    HPDF_PTRACE ((" HPDF_FontDef_Free\n"));
+    HPDF_PTRACE (" HPDF_FontDef_Free\n");
 
     if (fontdef->free_fn)
         fontdef->free_fn (fontdef);
@@ -49,7 +49,7 @@ HPDF_FontDef_Free (HPDF_FontDef  fontdef)
 HPDF_BOOL
 HPDF_FontDef_Validate (HPDF_FontDef  fontdef)
 {
-    HPDF_PTRACE ((" HPDF_FontDef_Validate\n"));
+    HPDF_PTRACE (" HPDF_FontDef_Validate\n");
 
     if (!fontdef || fontdef->sig_bytes != HPDF_FONTDEF_SIG_BYTES)
         return HPDF_FALSE;

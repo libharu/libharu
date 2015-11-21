@@ -715,7 +715,7 @@ HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr        mmgr,
     HPDF_STATUS ret = HPDF_OK;
     /* HPDF_UINT size; */
 
-    HPDF_PTRACE ((" HPDF_Image_Load1BitImage\n"));
+    HPDF_PTRACE (" HPDF_Image_Load1BitImage\n");
 
     image = HPDF_DictStream_New (mmgr, xref);
     if (!image)
@@ -765,7 +765,7 @@ HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
 {
     HPDF_Image image;
 
-    HPDF_PTRACE ((" HPDF_Image_Load1BitImageFromMem\n"));
+    HPDF_PTRACE (" HPDF_Image_Load1BitImageFromMem\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;

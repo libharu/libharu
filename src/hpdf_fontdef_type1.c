@@ -49,7 +49,7 @@ FreeWidth  (HPDF_FontDef  fontdef)
 {
     HPDF_Type1FontDefAttr attr = (HPDF_Type1FontDefAttr)fontdef->attr;
 
-    HPDF_PTRACE ((" FreeWidth\n"));
+    HPDF_PTRACE (" FreeWidth\n");
 
     HPDF_FreeMem (fontdef->mmgr, attr->widths);
     attr->widths = NULL;
@@ -63,7 +63,7 @@ HPDF_Type1FontDef_New  (HPDF_MMgr  mmgr)
     HPDF_FontDef fontdef;
     HPDF_Type1FontDefAttr fontdef_attr;
 
-    HPDF_PTRACE ((" HPDF_Type1FontDef_New\n"));
+    HPDF_PTRACE (" HPDF_Type1FontDef_New\n");
 
     if (!mmgr)
         return NULL;
@@ -99,7 +99,7 @@ GetKeyword  (const char  *src,
 {
     HPDF_UINT src_len = HPDF_StrLen (src, -1);
 
-    HPDF_PTRACE ((" GetKeyword\n"));
+    HPDF_PTRACE (" GetKeyword\n");
 
     if (!keyword || src_len == 0 || len == 0)
         return NULL;
@@ -135,7 +135,7 @@ LoadAfm (HPDF_FontDef  fontdef,
     char keyword[HPDF_LIMIT_MAX_NAME_LEN + 1];
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" LoadAfm\n"));
+    HPDF_PTRACE (" LoadAfm\n");
 
     len = HPDF_TMP_BUF_SIZ;
 
@@ -308,7 +308,7 @@ LoadFontData (HPDF_FontDef  fontdef,
     HPDF_STATUS ret;
     HPDF_BOOL end_flg = HPDF_FALSE;
 
-    HPDF_PTRACE ((" LoadFontData\n"));
+    HPDF_PTRACE (" LoadFontData\n");
 
     attr->font_data = HPDF_MemStream_New (fontdef->mmgr, HPDF_STREAM_BUF_SIZ);
 
@@ -385,7 +385,7 @@ HPDF_Type1FontDef_Load  (HPDF_MMgr         mmgr,
     HPDF_FontDef fontdef;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_Type1FontDef_Load\n"));
+    HPDF_PTRACE (" HPDF_Type1FontDef_Load\n");
 
     if (!afm)
         return NULL;
@@ -419,7 +419,7 @@ HPDF_Type1FontDef_Duplicate  (HPDF_MMgr     mmgr,
 {
     HPDF_FontDef fontdef = HPDF_Type1FontDef_New (mmgr);
 
-    HPDF_PTRACE ((" HPDF_Type1FontDef_Duplicate\n"));
+    HPDF_PTRACE (" HPDF_Type1FontDef_Duplicate\n");
 
     fontdef->type = src->type;
     fontdef->valid = src->valid;
@@ -438,7 +438,7 @@ HPDF_Type1FontDef_SetWidths  (HPDF_FontDef          fontdef,
     HPDF_CharData* dst;
     HPDF_UINT i = 0;
 
-    HPDF_PTRACE ((" HPDF_Type1FontDef_SetWidths\n"));
+    HPDF_PTRACE (" HPDF_Type1FontDef_SetWidths\n");
 
     FreeWidth (fontdef);
 
@@ -480,7 +480,7 @@ HPDF_Type1FontDef_GetWidthByName  (HPDF_FontDef      fontdef,
 {
     HPDF_UNICODE unicode = HPDF_GryphNameToUnicode (gryph_name);
 
-    HPDF_PTRACE ((" HPDF_Type1FontDef_GetWidthByName\n"));
+    HPDF_PTRACE (" HPDF_Type1FontDef_GetWidthByName\n");
 
     return HPDF_Type1FontDef_GetWidth (fontdef, unicode);
 }
@@ -494,7 +494,7 @@ HPDF_Type1FontDef_GetWidth  (HPDF_FontDef  fontdef,
     HPDF_CharData *cdata = attr->widths;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_Type1FontDef_GetWidth\n"));
+    HPDF_PTRACE (" HPDF_Type1FontDef_GetWidth\n");
 
     for (i = 0; i < attr->widths_count; i++) {
         if (cdata->unicode == unicode)
@@ -510,7 +510,7 @@ FreeFunc (HPDF_FontDef  fontdef)
 {
     HPDF_Type1FontDefAttr attr = (HPDF_Type1FontDefAttr)fontdef->attr;
 
-    HPDF_PTRACE ((" FreeFunc\n"));
+    HPDF_PTRACE (" FreeFunc\n");
 
     if (attr->char_set)
         HPDF_FreeMem (fontdef->mmgr, attr->char_set);

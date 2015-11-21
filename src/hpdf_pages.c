@@ -98,7 +98,7 @@ HPDF_Pages_New  (HPDF_MMgr   mmgr,
     HPDF_Pages pages;
 
 
-    HPDF_PTRACE((" HPDF_Pages_New\n"));
+    HPDF_PTRACE (" HPDF_Pages_New\n");
 
     pages = HPDF_Dict_New (mmgr);
     if (!pages)
@@ -132,7 +132,7 @@ HPDF_Pages_AddKids  (HPDF_Pages  parent,
     HPDF_Array kids;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE((" HPDF_Pages_AddKids\n"));
+    HPDF_PTRACE (" HPDF_Pages_AddKids\n");
 
     if (HPDF_Dict_GetItem (kid, "Parent", HPDF_OCLASS_DICT))
         return HPDF_SetError (parent->error, HPDF_PAGE_CANNOT_SET_PARENT, 0);
@@ -163,7 +163,7 @@ HPDF_Page_InsertBefore  (HPDF_Page   page,
     HPDF_STATUS ret;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE((" HPDF_Page_InsertBefore\n"));
+    HPDF_PTRACE (" HPDF_Page_InsertBefore\n");
 
     if (!target)
         return HPDF_INVALID_PARAMETER;
@@ -200,7 +200,7 @@ Pages_BeforeWrite  (HPDF_Dict    obj)
                     HPDF_OCLASS_NUMBER);
     HPDF_STATUS ret;
 
-    HPDF_PTRACE((" HPDF_Pages_BeforeWrite\n"));
+    HPDF_PTRACE (" HPDF_Pages_BeforeWrite\n");
 
     if (!kids)
         return HPDF_SetError (obj->error, HPDF_PAGES_MISSING_KIDS_ENTRY, 0);
@@ -227,18 +227,18 @@ Page_BeforeWrite  (HPDF_Dict    obj)
     HPDF_Page page = (HPDF_Page)obj;
     HPDF_PageAttr attr = (HPDF_PageAttr)obj->attr;
 
-    HPDF_PTRACE((" HPDF_Page_BeforeWrite\n"));
+    HPDF_PTRACE (" HPDF_Page_BeforeWrite\n");
 
     if (attr->gmode == HPDF_GMODE_PATH_OBJECT) {
-        HPDF_PTRACE((" HPDF_Page_BeforeWrite warning path object is not"
-                    " end\n"));
+        HPDF_PTRACE (" HPDF_Page_BeforeWrite warning path object is not"
+                    " end\n");
 
         if ((ret = HPDF_Page_EndPath (page)) != HPDF_OK)
            return ret;
     }
 
     if (attr->gmode == HPDF_GMODE_TEXT_OBJECT) {
-        HPDF_PTRACE((" HPDF_Page_BeforeWrite warning text block is not end\n"));
+        HPDF_PTRACE (" HPDF_Page_BeforeWrite warning text block is not end\n");
 
         if ((ret = HPDF_Page_EndText (page)) != HPDF_OK)
             return ret;
@@ -262,7 +262,7 @@ GetPageCount  (HPDF_Dict    pages)
     HPDF_Array kids = (HPDF_Array)HPDF_Dict_GetItem (pages, "Kids",
             HPDF_OCLASS_ARRAY);
 
-    HPDF_PTRACE((" GetPageCount\n"));
+    HPDF_PTRACE (" GetPageCount\n");
 
     if (!kids)
         return 0;
@@ -286,7 +286,7 @@ HPDF_Pages_Validate  (HPDF_Pages  pages)
 {
     HPDF_Obj_Header *header = (HPDF_Obj_Header *)pages;
 
-    HPDF_PTRACE((" HPDF_Pages_Validate\n"));
+    HPDF_PTRACE (" HPDF_Pages_Validate\n");
 
     if (!pages || header->obj_class != (HPDF_OCLASS_DICT |
                 HPDF_OSUBCLASS_PAGES))
@@ -308,7 +308,7 @@ HPDF_Page_New  (HPDF_MMgr   mmgr,
     HPDF_PageAttr attr;
     HPDF_Page page;
 
-    HPDF_PTRACE((" HPDF_Page_New\n"));
+    HPDF_PTRACE (" HPDF_Page_New\n");
 
     page = HPDF_Dict_New (mmgr);
     if (!page)
@@ -360,7 +360,7 @@ HPDF_Page_New  (HPDF_MMgr   mmgr,
 HPDF_EXPORT(HPDF_MMgr)
 HPDF_GetPageMMgr  (HPDF_Page page)
 {
-    HPDF_PTRACE ((" HPDF_GetPageMMgr\n"));
+    HPDF_PTRACE (" HPDF_GetPageMMgr\n");
 
     return page->mmgr;
 }
@@ -371,7 +371,7 @@ Page_OnFree  (HPDF_Dict  obj)
 {
     HPDF_PageAttr attr = (HPDF_PageAttr)obj->attr;
 
-    HPDF_PTRACE((" HPDF_Page_OnFree\n"));
+    HPDF_PTRACE (" HPDF_Page_OnFree\n");
 
     if (attr) {
         if (attr->gstate)
@@ -408,7 +408,7 @@ HPDF_Page_GetInheritableItem  (HPDF_Page          page,
     HPDF_INT i = 0;
     void * obj;
 
-    HPDF_PTRACE((" HPDF_Page_GetInheritableItem\n"));
+    HPDF_PTRACE (" HPDF_Page_GetInheritableItem\n");
 
     /* check whether the specified key is valid */
     while (HPDF_INHERITABLE_ENTRIES[i]) {
@@ -453,7 +453,7 @@ AddResource  (HPDF_Page  page)
     HPDF_Dict resource;
     HPDF_Array procset;
 
-    HPDF_PTRACE((" HPDF_Page_AddResource\n"));
+    HPDF_PTRACE (" HPDF_Page_AddResource\n");
 
     resource = HPDF_Dict_New (page->mmgr);
     if (!resource)
@@ -492,7 +492,7 @@ HPDF_Page_GetLocalFontName  (HPDF_Page  page,
     HPDF_PageAttr attr = (HPDF_PageAttr )page->attr;
     const char *key;
 
-    HPDF_PTRACE((" HPDF_Page_GetLocalFontName\n"));
+    HPDF_PTRACE (" HPDF_Page_GetLocalFontName\n");
 
     /* whether check font-resource exists.  when it does not exists,
      * create font-resource
@@ -545,7 +545,7 @@ HPDF_Page_GetMediaBox  (HPDF_Page   page)
 {
     HPDF_Box media_box = {0, 0, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetMediaBox\n"));
+    HPDF_PTRACE (" HPDF_Page_GetMediaBox\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_Array array = HPDF_Page_GetInheritableItem (page, "MediaBox",
@@ -593,7 +593,7 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
     HPDF_Array array1;
     HPDF_Array array2;
 
-    HPDF_PTRACE((" HPDF_Page_CreateXObjectFromImage\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateXObjectFromImage\n");
 
     fromxobject = HPDF_DictStream_New (pdf->mmgr, pdf->xref);
     if (!fromxobject)
@@ -722,7 +722,7 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
     HPDF_Array array1;
     HPDF_Array array2;
 
-    HPDF_PTRACE((" HPDF_Page_CreateXObjectAsWhiteRect\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateXObjectAsWhiteRect\n");
 
     fromxobject = HPDF_DictStream_New (pdf->mmgr, pdf->xref);
     if (!fromxobject)
@@ -829,7 +829,7 @@ HPDF_Page_GetXObjectName  (HPDF_Page     page,
     HPDF_PageAttr attr = (HPDF_PageAttr )page->attr;
     const char *key;
 
-    HPDF_PTRACE((" HPDF_Page_GetXObjectName\n"));
+    HPDF_PTRACE (" HPDF_Page_GetXObjectName\n");
 
     if (!attr->xobjects) {
         HPDF_Dict resources;
@@ -880,7 +880,7 @@ HPDF_Page_GetExtGStateName  (HPDF_Page       page,
     HPDF_PageAttr attr = (HPDF_PageAttr )page->attr;
     const char *key;
 
-    HPDF_PTRACE((" HPDF_Page_GetExtGStateName\n"));
+    HPDF_PTRACE (" HPDF_Page_GetExtGStateName\n");
 
     if (!attr->ext_gstates) {
         HPDF_Dict resources;
@@ -931,7 +931,7 @@ AddAnnotation  (HPDF_Page        page,
     HPDF_Array array;
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_Pages\n"));
+    HPDF_PTRACE (" HPDF_Pages\n");
 
     /* find "Annots" entry */
     array = HPDF_Dict_GetItem (page, "Annots", HPDF_OCLASS_ARRAY);
@@ -965,7 +965,7 @@ HPDF_Page_TextWidth  (HPDF_Page        page,
     HPDF_REAL ret = 0;
     HPDF_UINT len = HPDF_StrLen(text, HPDF_LIMIT_MAX_STRING_LEN + 1);
 
-    HPDF_PTRACE((" HPDF_Page_TextWidth\n"));
+    HPDF_PTRACE (" HPDF_Page_TextWidth\n");
 
     if (!HPDF_Page_Validate (page) || len == 0)
         return 0;
@@ -1006,7 +1006,7 @@ HPDF_Page_MeasureText  (HPDF_Page          page,
 
     attr = (HPDF_PageAttr )page->attr;
 
-    HPDF_PTRACE((" HPDF_Page_MeasureText\n"));
+    HPDF_PTRACE (" HPDF_Page_MeasureText\n");
 
     /* no font exists */
     if (!attr->gstate->font) {
@@ -1041,7 +1041,7 @@ HPDF_Page_GetHeight  (HPDF_Page    page)
 HPDF_EXPORT(HPDF_Font)
 HPDF_Page_GetCurrentFont  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetFontName\n"));
+    HPDF_PTRACE (" HPDF_Page_GetFontName\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1055,7 +1055,7 @@ HPDF_Page_GetCurrentFont  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetCurrentFontSize  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetCurrentFontSize\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCurrentFontSize\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1071,7 +1071,7 @@ HPDF_Page_GetTransMatrix  (HPDF_Page   page)
 {
     HPDF_TransMatrix DEF_MATRIX = {1, 0, 0, 1, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetTransMatrix\n"));
+    HPDF_PTRACE (" HPDF_Page_GetTransMatrix\n");
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
 
@@ -1084,7 +1084,7 @@ HPDF_Page_GetTransMatrix  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetLineWidth  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetLineWidth\n"));
+    HPDF_PTRACE (" HPDF_Page_GetLineWidth\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1098,7 +1098,7 @@ HPDF_Page_GetLineWidth  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_LineCap)
 HPDF_Page_GetLineCap  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetLineCap\n"));
+    HPDF_PTRACE (" HPDF_Page_GetLineCap\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1112,7 +1112,7 @@ HPDF_Page_GetLineCap  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_LineJoin)
 HPDF_Page_GetLineJoin  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetLineJoin\n"));
+    HPDF_PTRACE (" HPDF_Page_GetLineJoin\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1126,7 +1126,7 @@ HPDF_Page_GetLineJoin  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetMiterLimit  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetMiterLimit\n"));
+    HPDF_PTRACE (" HPDF_Page_GetMiterLimit\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1142,7 +1142,7 @@ HPDF_Page_GetDash  (HPDF_Page   page)
 {
     HPDF_DashMode mode = {{0, 0, 0, 0, 0, 0, 0, 0}, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetDash\n"));
+    HPDF_PTRACE (" HPDF_Page_GetDash\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1157,7 +1157,7 @@ HPDF_Page_GetDash  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetFlat  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetFlat\n"));
+    HPDF_PTRACE (" HPDF_Page_GetFlat\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1171,7 +1171,7 @@ HPDF_Page_GetFlat  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetWordSpace  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetWordSpace\n"));
+    HPDF_PTRACE (" HPDF_Page_GetWordSpace\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1185,7 +1185,7 @@ HPDF_Page_GetWordSpace  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetCharSpace  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetCharSpace\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCharSpace\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1199,7 +1199,7 @@ HPDF_Page_GetCharSpace  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetHorizontalScalling  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetHorizontalScalling\n"));
+    HPDF_PTRACE (" HPDF_Page_GetHorizontalScalling\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1213,7 +1213,7 @@ HPDF_Page_GetHorizontalScalling  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetTextLeading  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetTextLeading\n"));
+    HPDF_PTRACE (" HPDF_Page_GetTextLeading\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1227,7 +1227,7 @@ HPDF_Page_GetTextLeading  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_TextRenderingMode)
 HPDF_Page_GetTextRenderingMode  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GettextRenderingMode\n"));
+    HPDF_PTRACE (" HPDF_Page_GettextRenderingMode\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1247,7 +1247,7 @@ HPDF_Page_GetTextRaise  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetTextRise  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetTextRise\n"));
+    HPDF_PTRACE (" HPDF_Page_GetTextRise\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1263,7 +1263,7 @@ HPDF_Page_GetRGBFill  (HPDF_Page   page)
 {
     HPDF_RGBColor DEF_RGB_COLOR = {0, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetRGBFill\n"));
+    HPDF_PTRACE (" HPDF_Page_GetRGBFill\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1281,7 +1281,7 @@ HPDF_Page_GetRGBStroke  (HPDF_Page   page)
 {
     HPDF_RGBColor DEF_RGB_COLOR = {0, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetRGBStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_GetRGBStroke\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1298,7 +1298,7 @@ HPDF_Page_GetCMYKFill  (HPDF_Page   page)
 {
     HPDF_CMYKColor DEF_CMYK_COLOR = {0, 0, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetCMYKFill\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCMYKFill\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1316,7 +1316,7 @@ HPDF_Page_GetCMYKStroke  (HPDF_Page   page)
 {
     HPDF_CMYKColor DEF_CMYK_COLOR = {0, 0, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetCMYKStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCMYKStroke\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1332,7 +1332,7 @@ HPDF_Page_GetCMYKStroke  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetGrayFill  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetGrayFill\n"));
+    HPDF_PTRACE (" HPDF_Page_GetGrayFill\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1348,7 +1348,7 @@ HPDF_Page_GetGrayFill  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetGrayStroke  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetGrayStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_GetGrayStroke\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1364,7 +1364,7 @@ HPDF_Page_GetGrayStroke  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_ColorSpace)
 HPDF_Page_GetStrokingColorSpace (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetStrokingColorSpace\n"));
+    HPDF_PTRACE (" HPDF_Page_GetStrokingColorSpace\n");
 
     if (HPDF_Page_Validate (page))
         return ((HPDF_PageAttr)page->attr)->gstate->cs_stroke;
@@ -1376,7 +1376,7 @@ HPDF_Page_GetStrokingColorSpace (HPDF_Page   page)
 HPDF_EXPORT(HPDF_ColorSpace)
 HPDF_Page_GetFillingColorSpace (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetFillingColorSpace\n"));
+    HPDF_PTRACE (" HPDF_Page_GetFillingColorSpace\n");
 
     if (HPDF_Page_Validate (page))
         return ((HPDF_PageAttr)page->attr)->gstate->cs_fill;
@@ -1390,7 +1390,7 @@ HPDF_Page_GetTextMatrix  (HPDF_Page   page)
 {
     HPDF_TransMatrix DEF_MATRIX = {1, 0, 0, 1, 0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetTextMatrix\n"));
+    HPDF_PTRACE (" HPDF_Page_GetTextMatrix\n");
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
 
@@ -1403,7 +1403,7 @@ HPDF_Page_GetTextMatrix  (HPDF_Page   page)
 HPDF_EXPORT(HPDF_UINT)
 HPDF_Page_GetGStateDepth  (HPDF_Page    page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetGStateDepth\n"));
+    HPDF_PTRACE (" HPDF_Page_GetGStateDepth\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1428,7 +1428,7 @@ HPDF_Page_GetCurrentPos (HPDF_Page  page)
 {
     HPDF_Point pos = {0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetCurrentPos\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCurrentPos\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1446,7 +1446,7 @@ HPDF_Page_GetCurrentPos2 (HPDF_Page   page,
                           HPDF_Point *pos)
 {
     HPDF_PageAttr attr;
-    HPDF_PTRACE((" HPDF_Page_GetCurrentPos2\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCurrentPos2\n");
 
     pos->x = 0;
     pos->y = 0;
@@ -1467,7 +1467,7 @@ HPDF_Page_GetCurrentTextPos (HPDF_Page  page)
 {
     HPDF_Point pos = {0, 0};
 
-    HPDF_PTRACE((" HPDF_Page_GetCurrentTextPos\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCurrentTextPos\n");
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1486,7 +1486,7 @@ HPDF_Page_GetCurrentTextPos2 (HPDF_Page   page,
 {
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE((" HPDF_Page_GetCurrentTextPos2\n"));
+    HPDF_PTRACE (" HPDF_Page_GetCurrentTextPos2\n");
 
     pos->x = 0;
     pos->y = 0;
@@ -1511,7 +1511,7 @@ HPDF_Page_SetBoxValue (HPDF_Page          page,
     HPDF_Real r;
     HPDF_Array array;
 
-    HPDF_PTRACE((" HPDF_Page_SetBoxValue\n"));
+    HPDF_PTRACE (" HPDF_Page_SetBoxValue\n");
 
     if (!HPDF_Page_Validate (page))
         return HPDF_INVALID_PAGE;
@@ -1536,7 +1536,7 @@ HPDF_Page_SetRotate (HPDF_Page      page,
     HPDF_Number n;
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_Page_SetRotate\n"));
+    HPDF_PTRACE (" HPDF_Page_SetRotate\n");
 
     if (!HPDF_Page_Validate (page))
         return HPDF_INVALID_PAGE;
@@ -1561,7 +1561,7 @@ HPDF_Page_SetZoom  (HPDF_Page   page,
 {
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_Page_SetZoom\n"));
+    HPDF_PTRACE (" HPDF_Page_SetZoom\n");
 
     if (!HPDF_Page_Validate (page)) {
         return HPDF_INVALID_PAGE;
@@ -1579,7 +1579,7 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetWidth  (HPDF_Page    page,
                      HPDF_REAL    value)
 {
-    HPDF_PTRACE((" HPDF_Page_SetWidth\n"));
+    HPDF_PTRACE (" HPDF_Page_SetWidth\n");
 
     if (value < 3 || value > 14400)
         return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE, 0);
@@ -1595,7 +1595,7 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetHeight  (HPDF_Page    page,
                       HPDF_REAL    value)
 {
-    HPDF_PTRACE((" HPDF_Page_SetWidth\n"));
+    HPDF_PTRACE (" HPDF_Page_SetWidth\n");
 
     if (value < 3 || value > 14400)
         return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE, 0);
@@ -1614,7 +1614,7 @@ HPDF_Page_SetSize  (HPDF_Page             page,
 {
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_Page_SetSize\n"));
+    HPDF_PTRACE (" HPDF_Page_SetSize\n");
 
     if (!HPDF_Page_Validate (page))
         return HPDF_INVALID_PAGE;
@@ -1649,7 +1649,7 @@ HPDF_Page_Validate  (HPDF_Page  page)
 {
     HPDF_Obj_Header *header = (HPDF_Obj_Header *)page;
 
-    HPDF_PTRACE((" HPDF_Page_Validate\n"));
+    HPDF_PTRACE (" HPDF_Page_Validate\n");
 
     if (!page || !page->attr)
         return HPDF_FALSE;
@@ -1667,7 +1667,7 @@ HPDF_Page_CreateDestination  (HPDF_Page   page)
     HPDF_PageAttr attr;
     HPDF_Destination dst;
 
-    HPDF_PTRACE((" HPDF_Page_CreateDestination\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateDestination\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1693,7 +1693,7 @@ HPDF_Page_Create3DAnnot    (HPDF_Page       page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_Create3DAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_Create3DAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1721,7 +1721,7 @@ HPDF_Page_CreateTextAnnot  (HPDF_Page          page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateTextAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateTextAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1754,7 +1754,7 @@ HPDF_Page_CreateFreeTextAnnot  (HPDF_Page          page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateFreeTextAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateFreeTextAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1787,7 +1787,7 @@ HPDF_Page_CreateLineAnnot  (HPDF_Page          page,
     HPDF_Annotation annot;
     HPDF_Rect rect = {0,0,0,0};
 
-    HPDF_PTRACE((" HPDF_Page_CreateLineAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateLineAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1818,7 +1818,7 @@ HPDF_Page_CreateWidgetAnnot (HPDF_Page  page,
 	HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateWidgetAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateWidgetAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1850,7 +1850,7 @@ HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint (HPDF_Doc   pdf,
    HPDF_STATUS ret = HPDF_OK;
    HPDF_Array array_bg;
 
-   HPDF_PTRACE((" HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint\n"));
+   HPDF_PTRACE (" HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint\n");
 
    annot = HPDF_Page_CreateWidgetAnnot(page, rect);
 
@@ -1913,7 +1913,7 @@ HPDF_Page_CreateLinkAnnot  (HPDF_Page          page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateLinkAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateLinkAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1948,7 +1948,7 @@ HPDF_Page_CreateURILinkAnnot  (HPDF_Page          page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateURILinkAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateURILinkAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -1981,7 +1981,7 @@ HPDF_Page_CreateCircleAnnot (HPDF_Page          page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateCircleAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateCircleAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -2014,7 +2014,7 @@ HPDF_Page_CreateSquareAnnot (HPDF_Page          page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateCircleAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateCircleAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -2047,7 +2047,7 @@ HPDF_Page_Create3DView    (HPDF_Page       page,
     HPDF_PageAttr attr;
     HPDF_Dict view;
 
-    HPDF_PTRACE((" HPDF_Page_Create3DView\n"));
+    HPDF_PTRACE (" HPDF_Page_Create3DView\n");
     HPDF_UNUSED(annot3d);
 
     if (!HPDF_Page_Validate (page))
@@ -2072,7 +2072,7 @@ HPDF_Page_CreateTextMarkupAnnot (HPDF_Page     page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateTextMarkupAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateTextMarkupAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -2103,7 +2103,7 @@ HPDF_Page_CreateHighlightAnnot  (HPDF_Page          page,
                                 const char   *text,
                                 HPDF_Encoder       encoder)
 {
-    HPDF_PTRACE((" HPDF_Page_CreateHighlightAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateHighlightAnnot\n");
 
     return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_HIGHTLIGHT);
 }
@@ -2114,7 +2114,7 @@ HPDF_Page_CreateSquigglyAnnot  (HPDF_Page          page,
                                 const char   *text,
                                 HPDF_Encoder       encoder)
 {
-    HPDF_PTRACE((" HPDF_Page_CreateSquigglyAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateSquigglyAnnot\n");
 
     return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_SQUIGGLY);
 }
@@ -2125,7 +2125,7 @@ HPDF_Page_CreateUnderlineAnnot  (HPDF_Page          page,
                                 const char   *text,
                                 HPDF_Encoder       encoder)
 {
-    HPDF_PTRACE((" HPDF_Page_CreateUnderlineAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateUnderlineAnnot\n");
 
     return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_UNDERLINE);
 }
@@ -2136,7 +2136,7 @@ HPDF_Page_CreateStrikeOutAnnot  (HPDF_Page          page,
                                 const char   *text,
                                 HPDF_Encoder       encoder)
 {
-    HPDF_PTRACE((" HPDF_Page_CreateStrikeOutAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateStrikeOutAnnot\n");
 
     return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_STRIKE_OUT);
 }
@@ -2149,7 +2149,7 @@ HPDF_Page_CreatePopupAnnot  (    HPDF_Page          page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreatePopupAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreatePopupAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -2178,7 +2178,7 @@ HPDF_Page_CreateStampAnnot  (    HPDF_Page           page,
     HPDF_PageAttr attr;
     HPDF_Annotation annot;
 
-    HPDF_PTRACE((" HPDF_Page_CreateStampAnnot\n"));
+    HPDF_PTRACE (" HPDF_Page_CreateStampAnnot\n");
 
     if (!HPDF_Page_Validate (page))
         return NULL;
@@ -2206,7 +2206,7 @@ HPDF_Page_CreateProjectionAnnot(HPDF_Page page,
 	HPDF_PageAttr attr;
 	HPDF_Annotation annot;
 
-	HPDF_PTRACE((" HPDF_Page_CreateProjectionAnnot\n"));
+	HPDF_PTRACE (" HPDF_Page_CreateProjectionAnnot\n");
 
 	if (!HPDF_Page_Validate (page))
 		return NULL;
@@ -2234,7 +2234,7 @@ HPDF_Page_Create3DC3DMeasure(HPDF_Page page,
 	HPDF_PageAttr attr;
 	HPDF_Annotation measure;
 
-	HPDF_PTRACE((" HPDF_Page_Create3DC3DMeasure\n"));
+	HPDF_PTRACE (" HPDF_Page_Create3DC3DMeasure\n");
 
 	if (!HPDF_Page_Validate (page))
 		return NULL;
@@ -2263,7 +2263,7 @@ HPDF_Page_CreatePD33DMeasure(HPDF_Page       page,
 	HPDF_PageAttr attr;
 	HPDF_Annotation measure;
 
-	HPDF_PTRACE((" HPDF_Page_CreatePD33DMeasure\n"));
+	HPDF_PTRACE (" HPDF_Page_CreatePD33DMeasure\n");
 
 	if (!HPDF_Page_Validate (page))
 		return NULL;
@@ -2294,7 +2294,7 @@ HPDF_Page_Create3DAnnotExData(HPDF_Page page)
 	HPDF_PageAttr attr;
 	HPDF_Annotation exData;
 
-	HPDF_PTRACE((" HPDF_Page_Create3DAnnotExData\n"));
+	HPDF_PTRACE (" HPDF_Page_Create3DAnnotExData\n");
 
 	if (!HPDF_Page_Validate (page))
 		return NULL;
@@ -2316,7 +2316,7 @@ HPDF_Page_SetFilter  (HPDF_Page    page,
 {
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE((" HPDF_Page_SetFilter\n"));
+    HPDF_PTRACE (" HPDF_Page_SetFilter\n");
 
     attr = (HPDF_PageAttr)page->attr;
     attr->contents->filter = filter;

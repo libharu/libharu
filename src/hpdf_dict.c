@@ -204,8 +204,8 @@ HPDF_Dict_Write  (HPDF_Dict     dict,
             return HPDF_SetError (dict->error, HPDF_INVALID_OBJECT, 0);
 
         if  (header->obj_id & HPDF_OTYPE_HIDDEN) {
-            HPDF_PTRACE((" HPDF_Dict_Write obj=%p skipped obj_id=0x%08X\n",
-                    element->value, (HPDF_UINT)header->obj_id));
+            HPDF_PTRACE (" HPDF_Dict_Write obj=%p skipped obj_id=0x%08X\n",
+                    element->value, (HPDF_UINT)header->obj_id);
         } else {
             ret = HPDF_Stream_WriteEscapeName (stream, element->key);
             if (ret != HPDF_OK)
@@ -304,8 +304,8 @@ HPDF_Dict_Add  (HPDF_Dict        dict,
     }
 
     if (dict->list->count >= HPDF_LIMIT_MAX_DICT_ELEMENT) {
-        HPDF_PTRACE((" HPDF_Dict_Add exceed limitatin of dict count(%d)\n",
-                    HPDF_LIMIT_MAX_DICT_ELEMENT));
+        HPDF_PTRACE (" HPDF_Dict_Add exceed limitatin of dict count(%d)\n",
+                    HPDF_LIMIT_MAX_DICT_ELEMENT);
 
         HPDF_Obj_Free (dict->mmgr, obj);
         return HPDF_SetError (dict->error, HPDF_DICT_COUNT_ERR, 0);
@@ -435,8 +435,8 @@ HPDF_Dict_GetItem  (HPDF_Dict        dict,
             obj = element->value;
 
         if ((header->obj_class & HPDF_OCLASS_ANY) != obj_class) {
-            HPDF_PTRACE((" HPDF_Dict_GetItem dict=%p key=%s obj_class=0x%08X\n",
-                    dict, key, (HPDF_UINT)header->obj_class));
+            HPDF_PTRACE (" HPDF_Dict_GetItem dict=%p key=%s obj_class=0x%08X\n",
+                    dict, key, (HPDF_UINT)header->obj_class);
             HPDF_SetError (dict->error, HPDF_DICT_ITEM_UNEXPECTED_TYPE, 0);
 
             return NULL;

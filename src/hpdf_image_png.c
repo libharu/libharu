@@ -387,7 +387,7 @@ HPDF_Image_LoadPngImage  (HPDF_MMgr        mmgr,
     png_byte header[HPDF_PNG_BYTES_TO_CHECK];
     HPDF_UINT len = HPDF_PNG_BYTES_TO_CHECK;
 
-    HPDF_PTRACE ((" HPDF_Image_LoadPngImage\n"));
+    HPDF_PTRACE (" HPDF_Image_LoadPngImage\n");
 
     HPDF_MemSet (header, 0x00, HPDF_PNG_BYTES_TO_CHECK);
     ret = HPDF_Stream_Read (png_data, header, &len);
@@ -427,7 +427,7 @@ LoadPngData  (HPDF_Dict     image,
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
 
-	HPDF_PTRACE ((" HPDF_Image_LoadPngImage\n"));
+	HPDF_PTRACE (" HPDF_Image_LoadPngImage\n");
 
 	/* create read_struct. */
 	png_ptr = png_create_read_struct (PNG_LIBPNG_VER_STRING,
@@ -663,7 +663,7 @@ PngBeforeWrite  (HPDF_Dict obj)
     HPDF_Stream png_data;
     HPDF_String s;
 
-    HPDF_PTRACE ((" PngBeforeWrite\n"));
+    HPDF_PTRACE (" PngBeforeWrite\n");
 
     HPDF_MemStream_FreeData(obj->stream);
 
@@ -697,7 +697,7 @@ PngBeforeWrite  (HPDF_Dict obj)
 static HPDF_STATUS
 PngAfterWrite  (HPDF_Dict obj)
 {
-   HPDF_PTRACE ((" PngAfterWrite\n"));
+   HPDF_PTRACE (" PngAfterWrite\n");
 
    HPDF_MemStream_FreeData(obj->stream);
 

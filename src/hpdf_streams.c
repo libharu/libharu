@@ -154,7 +154,7 @@ HPDF_Stream_ReadLn  (HPDF_Stream  stream,
     HPDF_UINT r_size = *size;
     HPDF_UINT read_size = HPDF_STREAM_BUF_SIZ;
 
-    HPDF_PTRACE((" HPDF_Stream_ReadLn\n"));
+    HPDF_PTRACE (" HPDF_Stream_ReadLn\n");
 
     if (!stream)
         return HPDF_INVALID_PARAMETER;
@@ -237,7 +237,7 @@ HPDF_Stream_Write  (HPDF_Stream      stream,
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE((" HPDF_Stream_Write\n"));
+    HPDF_PTRACE (" HPDF_Stream_Write\n");
 
     if (!(stream->write_fn))
         return HPDF_SetError(stream->error, HPDF_INVALID_OPERATION, 0);
@@ -330,7 +330,7 @@ HPDF_Stream_Seek  (HPDF_Stream      stream,
                    HPDF_INT         pos,
                    HPDF_WhenceMode  mode)
 {
-    HPDF_PTRACE((" HPDF_Stream_Seek\n"));
+    HPDF_PTRACE (" HPDF_Stream_Seek\n");
 
     if (!(stream->seek_fn))
         return HPDF_SetError (stream->error, HPDF_INVALID_OPERATION, 0);
@@ -345,7 +345,7 @@ HPDF_Stream_Seek  (HPDF_Stream      stream,
 HPDF_INT32
 HPDF_Stream_Tell  (HPDF_Stream  stream)
 {
-    HPDF_PTRACE((" HPDF_Stream_Tell\n"));
+    HPDF_PTRACE (" HPDF_Stream_Tell\n");
 
     if (!(stream->tell_fn))
         return HPDF_SetError (stream->error, HPDF_INVALID_OPERATION, 0);
@@ -360,7 +360,7 @@ HPDF_Stream_Tell  (HPDF_Stream  stream)
 HPDF_UINT32
 HPDF_Stream_Size  (HPDF_Stream  stream)
 {
-    HPDF_PTRACE((" HPDF_Stream_Tell\n"));
+    HPDF_PTRACE (" HPDF_Stream_Tell\n");
 
     if (stream->write_fn)
         return stream->size;
@@ -387,7 +387,7 @@ HPDF_Stream_WriteEscapeName  (HPDF_Stream      stream,
     const HPDF_BYTE* pos1;
     char* pos2;
 
-    HPDF_PTRACE((" HPDF_Stream_WriteEscapeName\n"));
+    HPDF_PTRACE (" HPDF_Stream_WriteEscapeName\n");
 
     len = HPDF_StrLen (value, HPDF_LIMIT_MAX_NAME_LEN);
     pos1 = (HPDF_BYTE*)value;
@@ -430,7 +430,7 @@ HPDF_Stream_WriteEscapeText2  (HPDF_Stream    stream,
     const char* p = text;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE((" HPDF_Stream_WriteEscapeText2\n"));
+    HPDF_PTRACE (" HPDF_Stream_WriteEscapeText2\n");
 
    /* The following block is commented out because it violates "PDF Spec 7.3.4.2 Literal Strings". 
 	* It states that the two matching parentheses must still be present to represent an empty 
@@ -481,7 +481,7 @@ HPDF_Stream_WriteEscapeText  (HPDF_Stream    stream,
 {
     HPDF_UINT len;
 
-    HPDF_PTRACE((" HPDF_Stream_WriteEscapeText\n"));
+    HPDF_PTRACE (" HPDF_Stream_WriteEscapeText\n");
 
     len = (text == NULL) ? 0 : HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN);
 
@@ -503,7 +503,7 @@ HPDF_Stream_WriteBinary  (HPDF_Stream      stream,
     const HPDF_BYTE* p;
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_Stream_WriteBinary\n"));
+    HPDF_PTRACE (" HPDF_Stream_WriteBinary\n");
 
     if (e) {
         if (len <= HPDF_TEXT_DEFAULT_LEN)
@@ -574,7 +574,7 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
     Bytef otbuf[DEFLATE_BUF_SIZ];
     HPDF_BYTE ebuf[DEFLATE_BUF_SIZ];
 
-    HPDF_PTRACE((" HPDF_Stream_WriteToStreamWithDeflate\n"));
+    HPDF_PTRACE (" HPDF_Stream_WriteToStreamWithDeflate\n");
 
     /* initialize input stream */
     ret = HPDF_Stream_Seek (src, 0, HPDF_SEEK_SET);
@@ -695,7 +695,7 @@ HPDF_Stream_WriteToStream  (HPDF_Stream  src,
     HPDF_BYTE ebuf[HPDF_STREAM_BUF_SIZ];
     HPDF_BOOL flg;
 
-    HPDF_PTRACE((" HPDF_Stream_WriteToStream\n"));
+    HPDF_PTRACE (" HPDF_Stream_WriteToStream\n");
     HPDF_UNUSED (filter);
 
     if (!dst || !(dst->write_fn)) {
@@ -760,7 +760,7 @@ HPDF_FileReader_New  (HPDF_MMgr   mmgr,
     HPDF_Stream stream;
     HPDF_FILEP fp = HPDF_FOPEN (fname, "rb");
 
-    HPDF_PTRACE((" HPDF_FileReader_New\n"));
+    HPDF_PTRACE (" HPDF_FileReader_New\n");
 
     if (!fp) {
 #ifdef UNDER_CE
@@ -805,7 +805,7 @@ HPDF_FileReader_ReadFunc  (HPDF_Stream  stream,
     HPDF_FILEP fp = (HPDF_FILEP)stream->attr;
     HPDF_UINT rsiz;
 
-    HPDF_PTRACE((" HPDF_FileReader_ReadFunc\n"));
+    HPDF_PTRACE (" HPDF_FileReader_ReadFunc\n");
 
     HPDF_MemSet(ptr, 0, *siz);
     rsiz = HPDF_FREAD(ptr, 1, *siz, fp);
@@ -850,7 +850,7 @@ HPDF_FileReader_SeekFunc  (HPDF_Stream     stream,
     HPDF_FILEP fp = (HPDF_FILEP)stream->attr;
     HPDF_INT whence;
 
-    HPDF_PTRACE((" HPDF_FileReader_SeekFunc\n"));
+    HPDF_PTRACE (" HPDF_FileReader_SeekFunc\n");
 
     switch (mode) {
         case HPDF_SEEK_CUR:
@@ -877,7 +877,7 @@ HPDF_FileStream_TellFunc  (HPDF_Stream   stream)
     HPDF_INT32 ret;
     HPDF_FILEP fp = (HPDF_FILEP)stream->attr;
 
-    HPDF_PTRACE((" HPDF_FileReader_TellFunc\n"));
+    HPDF_PTRACE (" HPDF_FileReader_TellFunc\n");
 
     if ((ret = HPDF_FTELL (fp)) < 0) {
         return HPDF_SetError (stream->error, HPDF_FILE_IO_ERROR,
@@ -895,7 +895,7 @@ HPDF_FileStream_SizeFunc  (HPDF_Stream   stream)
     HPDF_INT ptr;
     HPDF_FILEP fp = (HPDF_FILEP)stream->attr;
 
-    HPDF_PTRACE((" HPDF_FileReader_SizeFunc\n"));
+    HPDF_PTRACE (" HPDF_FileReader_SizeFunc\n");
 
     /* save current file-pointer */
     if ((ptr = HPDF_FTELL (fp)) < 0) {
@@ -936,7 +936,7 @@ HPDF_FileWriter_New  (HPDF_MMgr        mmgr,
     HPDF_Stream stream;
     HPDF_FILEP fp = HPDF_FOPEN (fname, "wb");
 
-    HPDF_PTRACE((" HPDF_FileWriter_New\n"));
+    HPDF_PTRACE (" HPDF_FileWriter_New\n");
 
     if (!fp) {
 #ifdef UNDER_CE
@@ -972,7 +972,7 @@ HPDF_FileWriter_WriteFunc  (HPDF_Stream      stream,
     HPDF_FILEP fp;
     HPDF_UINT ret;
 
-    HPDF_PTRACE((" HPDF_FileWriter_WriteFunc\n"));
+    HPDF_PTRACE (" HPDF_FileWriter_WriteFunc\n");
 
     fp = (HPDF_FILEP)stream->attr;
     ret = HPDF_FWRITE (ptr, 1, siz, fp);
@@ -990,7 +990,7 @@ HPDF_FileStream_FreeFunc  (HPDF_Stream  stream)
 {
     HPDF_FILEP fp;
 
-    HPDF_PTRACE((" HPDF_FileStream_FreeFunc\n"));
+    HPDF_PTRACE (" HPDF_FileStream_FreeFunc\n");
 
     fp = (HPDF_FILEP)stream->attr;
 
@@ -1008,7 +1008,7 @@ HPDF_MemStream_InWrite  (HPDF_Stream      stream,
     HPDF_MemStreamAttr attr = (HPDF_MemStreamAttr)stream->attr;
     HPDF_UINT rsize = attr->buf_siz - attr->w_pos;
 
-    HPDF_PTRACE((" HPDF_MemStream_InWrite\n"));
+    HPDF_PTRACE (" HPDF_MemStream_InWrite\n");
 
     if (*count <= 0)
         return HPDF_OK;
@@ -1048,7 +1048,7 @@ HPDF_MemStream_WriteFunc  (HPDF_Stream      stream,
 {
     HPDF_UINT wsiz = siz;
 
-    HPDF_PTRACE((" HPDF_MemStream_WriteFunc\n"));
+    HPDF_PTRACE (" HPDF_MemStream_WriteFunc\n");
 
     if (HPDF_Error_GetCode (stream->error) != 0)
         return HPDF_THIS_FUNC_WAS_SKIPPED;
@@ -1069,7 +1069,7 @@ HPDF_MemStream_TellFunc  (HPDF_Stream  stream)
     HPDF_INT32 ret;
     HPDF_MemStreamAttr attr = (HPDF_MemStreamAttr)stream->attr;
 
-    HPDF_PTRACE((" HPDF_MemStream_TellFunc\n"));
+    HPDF_PTRACE (" HPDF_MemStream_TellFunc\n");
 
     ret = attr->r_ptr_idx * attr->buf_siz;
     ret += attr->r_pos;
@@ -1081,7 +1081,7 @@ HPDF_MemStream_TellFunc  (HPDF_Stream  stream)
 HPDF_UINT32
 HPDF_MemStream_SizeFunc  (HPDF_Stream  stream)
 {
-    HPDF_PTRACE((" HPDF_MemStream_SizeFunc\n"));
+    HPDF_PTRACE (" HPDF_MemStream_SizeFunc\n");
 
     return stream->size;
 }
@@ -1093,7 +1093,7 @@ HPDF_MemStream_SeekFunc  (HPDF_Stream      stream,
 {
     HPDF_MemStreamAttr attr = (HPDF_MemStreamAttr)stream->attr;
 
-    HPDF_PTRACE((" HPDF_MemStream_SeekFunc\n"));
+    HPDF_PTRACE (" HPDF_MemStream_SeekFunc\n");
 
     if (mode == HPDF_SEEK_CUR) {
         pos += (attr->r_ptr_idx * attr->buf_siz);
@@ -1130,7 +1130,7 @@ HPDF_MemStream_GetBufPtr  (HPDF_Stream  stream,
     HPDF_BYTE *ret;
     HPDF_MemStreamAttr attr;
 
-    HPDF_PTRACE((" HPDF_MemStream_GetBufPtr\n"));
+    HPDF_PTRACE (" HPDF_MemStream_GetBufPtr\n");
 
     if (stream->type != HPDF_STREAM_MEMORY) {
         HPDF_SetError (stream->error, HPDF_INVALID_OBJECT, 0);
@@ -1157,7 +1157,7 @@ HPDF_MemStream_FreeData  (HPDF_Stream  stream)
     HPDF_MemStreamAttr attr;
     HPDF_UINT i;
 
-    HPDF_PTRACE((" HPDF_MemStream_FreeData\n"));
+    HPDF_PTRACE (" HPDF_MemStream_FreeData\n");
 
     if (!stream || stream->type != HPDF_STREAM_MEMORY)
         return;
@@ -1181,7 +1181,7 @@ HPDF_MemStream_FreeFunc  (HPDF_Stream  stream)
 {
     HPDF_MemStreamAttr attr;
 
-    HPDF_PTRACE((" HPDF_MemStream_FreeFunc\n"));
+    HPDF_PTRACE (" HPDF_MemStream_FreeFunc\n");
 
     attr = (HPDF_MemStreamAttr)stream->attr;
     HPDF_MemStream_FreeData (stream);
@@ -1196,7 +1196,7 @@ HPDF_MemStream_New  (HPDF_MMgr  mmgr,
 {
     HPDF_Stream stream;
 
-    HPDF_PTRACE((" HPDF_MemStream_New\n"));
+    HPDF_PTRACE (" HPDF_MemStream_New\n");
 
     /* Create new HPDF_Stream object. */
     stream = (HPDF_Stream)HPDF_GetMem (mmgr, sizeof(HPDF_Stream_Rec));
@@ -1245,7 +1245,7 @@ HPDF_MemStream_GetBufSize  (HPDF_Stream  stream)
 {
     HPDF_MemStreamAttr attr;
 
-    HPDF_PTRACE((" HPDF_MemStream_GetBufSize\n"));
+    HPDF_PTRACE (" HPDF_MemStream_GetBufSize\n");
 
     if (!stream || stream->type != HPDF_STREAM_MEMORY)
         return 0;
@@ -1259,7 +1259,7 @@ HPDF_MemStream_GetBufCount  (HPDF_Stream  stream)
 {
     HPDF_MemStreamAttr attr;
 
-    HPDF_PTRACE((" HPDF_MemStream_GetBufCount\n"));
+    HPDF_PTRACE (" HPDF_MemStream_GetBufCount\n");
 
     if (!stream || stream->type != HPDF_STREAM_MEMORY)
         return 0;
@@ -1277,7 +1277,7 @@ HPDF_MemStream_ReadFunc  (HPDF_Stream  stream,
     HPDF_UINT buf_size;
     HPDF_UINT rlen = *size;
 
-    HPDF_PTRACE((" HPDF_MemStream_ReadFunc\n"));
+    HPDF_PTRACE (" HPDF_MemStream_ReadFunc\n");
 
     *size = 0;
 
@@ -1335,7 +1335,7 @@ HPDF_MemStream_Rewrite  (HPDF_Stream  stream,
     HPDF_UINT buf_size;
     HPDF_UINT rlen = size;
 
-    HPDF_PTRACE((" HPDF_MemStream_Rewrite\n"));
+    HPDF_PTRACE (" HPDF_MemStream_Rewrite\n");
 
     while (rlen > 0) {
         HPDF_UINT tmp_len;
@@ -1398,7 +1398,7 @@ HPDF_CallbackReader_New  (HPDF_MMgr              mmgr,
 {
     HPDF_Stream stream;
 
-    HPDF_PTRACE((" HPDF_CallbackReader_New\n"));
+    HPDF_PTRACE (" HPDF_CallbackReader_New\n");
 
     stream = (HPDF_Stream)HPDF_GetMem (mmgr, sizeof(HPDF_Stream_Rec));
 
@@ -1440,7 +1440,7 @@ HPDF_CallbackWriter_New (HPDF_MMgr               mmgr,
 {
     HPDF_Stream stream;
 
-    HPDF_PTRACE((" HPDF_CallbackWriter_New\n"));
+    HPDF_PTRACE (" HPDF_CallbackWriter_New\n");
 
     stream = (HPDF_Stream)HPDF_GetMem (mmgr, sizeof(HPDF_Stream_Rec));
 

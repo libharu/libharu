@@ -24,7 +24,7 @@ HPDF_Array_New  (HPDF_MMgr  mmgr)
 {
     HPDF_Array obj;
 
-    HPDF_PTRACE((" HPDF_Array_New\n"));
+    HPDF_PTRACE (" HPDF_Array_New\n");
 
     obj = HPDF_GetMem (mmgr, sizeof(HPDF_Array_Rec));
     if (obj) {
@@ -50,7 +50,7 @@ HPDF_Box_Array_New  (HPDF_MMgr  mmgr,
     HPDF_Array  obj;
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_Box_Array_New\n"));
+    HPDF_PTRACE (" HPDF_Box_Array_New\n");
 
     obj = HPDF_Array_New (mmgr);
     if (!obj)
@@ -76,7 +76,7 @@ HPDF_Array_Free  (HPDF_Array  array)
     if (!array)
         return;
 
-    HPDF_PTRACE((" HPDF_Array_Free\n"));
+    HPDF_PTRACE (" HPDF_Array_Free\n");
 
     HPDF_Array_Clear (array);
 
@@ -96,7 +96,7 @@ HPDF_Array_Write  (HPDF_Array    array,
     HPDF_UINT i;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE((" HPDF_Array_Write\n"));
+    HPDF_PTRACE (" HPDF_Array_Write\n");
 
     ret = HPDF_Stream_WriteStr (stream, "[ ");
     if (ret != HPDF_OK)
@@ -126,7 +126,7 @@ HPDF_Array_AddNumber  (HPDF_Array  array,
 {
     HPDF_Number n = HPDF_Number_New (array->mmgr, value);
 
-    HPDF_PTRACE((" HPDF_Array_AddNumber\n"));
+    HPDF_PTRACE (" HPDF_Array_AddNumber\n");
 
     if (!n)
         return HPDF_Error_GetCode (array->error);
@@ -141,7 +141,7 @@ HPDF_Array_AddReal  (HPDF_Array  array,
 {
     HPDF_Real r = HPDF_Real_New (array->mmgr, value);
 
-    HPDF_PTRACE((" HPDF_Array_AddReal\n"));
+    HPDF_PTRACE (" HPDF_Array_AddReal\n");
 
     if (!r)
         return HPDF_Error_GetCode (array->error);
@@ -154,7 +154,7 @@ HPDF_Array_AddNull  (HPDF_Array  array)
 {
     HPDF_Null n = HPDF_Null_New (array->mmgr);
 
-    HPDF_PTRACE((" HPDF_Array_AddNull\n"));
+    HPDF_PTRACE (" HPDF_Array_AddNull\n");
 
     if (!n)
         return HPDF_Error_GetCode (array->error);
@@ -168,7 +168,7 @@ HPDF_Array_AddName  (HPDF_Array       array,
 {
     HPDF_Name n = HPDF_Name_New (array->mmgr, value);
 
-    HPDF_PTRACE((" HPDF_Array_AddName\n"));
+    HPDF_PTRACE (" HPDF_Array_AddName\n");
 
     if (!n)
         return HPDF_Error_GetCode (array->error);
@@ -183,7 +183,7 @@ HPDF_Array_Add  (HPDF_Array  array,
     HPDF_Obj_Header *header;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE((" HPDF_Array_Add\n"));
+    HPDF_PTRACE (" HPDF_Array_Add\n");
 
     if (!obj) {
         if (HPDF_Error_GetCode (array->error) == HPDF_OK)
@@ -198,8 +198,8 @@ HPDF_Array_Add  (HPDF_Array  array,
         return HPDF_SetError (array->error, HPDF_INVALID_OBJECT, 0);
 
     if (array->list->count >= HPDF_LIMIT_MAX_ARRAY) {
-        HPDF_PTRACE((" HPDF_Array_Add exceed limitatin of array count(%d)\n",
-                    HPDF_LIMIT_MAX_ARRAY));
+        HPDF_PTRACE (" HPDF_Array_Add exceed limitatin of array count(%d)\n",
+                    HPDF_LIMIT_MAX_ARRAY);
 
         HPDF_Obj_Free (array->mmgr, obj);
         return HPDF_SetError (array->error, HPDF_ARRAY_COUNT_ERR, 0);
@@ -242,7 +242,7 @@ HPDF_Array_Insert  (HPDF_Array  array,
     HPDF_STATUS ret;
     HPDF_UINT i;
 
-    HPDF_PTRACE((" HPDF_Array_Insert\n"));
+    HPDF_PTRACE (" HPDF_Array_Insert\n");
 
     if (!obj) {
         if (HPDF_Error_GetCode (array->error) == HPDF_OK)
@@ -254,15 +254,19 @@ HPDF_Array_Insert  (HPDF_Array  array,
     header = (HPDF_Obj_Header *)obj;
 
     if (header->obj_id & HPDF_OTYPE_DIRECT) {
-        HPDF_PTRACE((" HPDF_Array_Add this object cannot owned by array "
-                "obj=0x%08X\n", (HPDF_UINT)array));
+        HPDF_PTRACE (" HPDF_Array_Add this object cannot owned by array "
+#ifdef __ANDROID64__
+                "obj=0x%08X\n", (HPDF_UINT)(HPDF_UINTPTR)array);
+#else
+                "obj=0x%08X\n", (HPDF_UINT)array);
+#endif
 
         return HPDF_SetError (array->error, HPDF_INVALID_OBJECT, 0);
     }
 
     if (array->list->count >= HPDF_LIMIT_MAX_ARRAY) {
-        HPDF_PTRACE((" HPDF_Array_Add exceed limitatin of array count(%d)\n",
-                    HPDF_LIMIT_MAX_ARRAY));
+        HPDF_PTRACE (" HPDF_Array_Add exceed limitatin of array count(%d)\n",
+                    HPDF_LIMIT_MAX_ARRAY);
 
         HPDF_Obj_Free (array->mmgr, obj);
 
@@ -318,7 +322,7 @@ HPDF_Array_GetItem  (HPDF_Array   array,
     void *obj;
     HPDF_Obj_Header *header;
 
-    HPDF_PTRACE((" HPDF_Array_GetItem\n"));
+    HPDF_PTRACE (" HPDF_Array_GetItem\n");
 
     obj = HPDF_List_ItemAt (array->list, index);
 
@@ -348,7 +352,7 @@ HPDF_Array_Clear  (HPDF_Array  array)
 {
     HPDF_UINT i;
 
-    HPDF_PTRACE((" HPDF_Array_Clear\n"));
+    HPDF_PTRACE (" HPDF_Array_Clear\n");
 
     if (!array)
         return;

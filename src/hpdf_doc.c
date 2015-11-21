@@ -97,7 +97,7 @@ HPDF_GetVersion (void)
 HPDF_BOOL
 HPDF_Doc_Validate  (HPDF_Doc  pdf)
 {
-    HPDF_PTRACE ((" HPDF_Doc_Validate\n"));
+    HPDF_PTRACE (" HPDF_Doc_Validate\n");
 
     if (!pdf || pdf->sig_bytes != HPDF_SIG_BYTES)
         return HPDF_FALSE;
@@ -109,7 +109,7 @@ HPDF_Doc_Validate  (HPDF_Doc  pdf)
 HPDF_EXPORT(HPDF_BOOL)
 HPDF_HasDoc  (HPDF_Doc  pdf)
 {
-    HPDF_PTRACE ((" HPDF_HasDoc\n"));
+    HPDF_PTRACE (" HPDF_HasDoc\n");
 
     if (!pdf || pdf->sig_bytes != HPDF_SIG_BYTES)
         return HPDF_FALSE;
@@ -126,7 +126,7 @@ HPDF_EXPORT(HPDF_Doc)
 HPDF_New  (HPDF_Error_Handler    user_error_fn,
            void                  *user_data)
 {
-    HPDF_PTRACE ((" HPDF_New\n"));
+    HPDF_PTRACE (" HPDF_New\n");
 
     return HPDF_NewEx (user_error_fn, NULL, NULL, 0, user_data);
 }
@@ -143,7 +143,7 @@ HPDF_NewEx  (HPDF_Error_Handler    user_error_fn,
     HPDF_MMgr mmgr;
     HPDF_Error_Rec tmp_error;
 
-    HPDF_PTRACE ((" HPDF_NewEx\n"));
+    HPDF_PTRACE (" HPDF_NewEx\n");
 
     /* initialize temporary-error object */
     HPDF_Error_Init (&tmp_error, user_data);
@@ -192,7 +192,7 @@ HPDF_NewEx  (HPDF_Error_Handler    user_error_fn,
 HPDF_EXPORT(void)
 HPDF_Free  (HPDF_Doc  pdf)
 {
-    HPDF_PTRACE ((" HPDF_Free\n"));
+    HPDF_PTRACE (" HPDF_Free\n");
 
     if (pdf) {
         HPDF_MMgr mmgr = pdf->mmgr;
@@ -215,7 +215,7 @@ HPDF_NewDoc  (HPDF_Doc  pdf)
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     const char *version;
 
-    HPDF_PTRACE ((" HPDF_NewDoc\n"));
+    HPDF_PTRACE (" HPDF_NewDoc\n");
 
     if (!HPDF_Doc_Validate (pdf))
         return HPDF_DOC_INVALID_OBJECT;
@@ -260,7 +260,7 @@ HPDF_NewDoc  (HPDF_Doc  pdf)
 
     pdf->cur_pages = pdf->root_pages;
 
-    ptr = (char *)HPDF_StrCpy (ptr, (const char *)"Haru Free PDF Library ", eptr);
+    ptr = (char *)HPDF_StrCpy (ptr, (const char *)"RxRelease / Haru", eptr);
     version = HPDF_GetVersion ();
     HPDF_StrCpy (ptr, version, eptr);
 
@@ -274,7 +274,7 @@ HPDF_NewDoc  (HPDF_Doc  pdf)
 HPDF_EXPORT(void)
 HPDF_FreeDoc  (HPDF_Doc  pdf)
 {
-    HPDF_PTRACE ((" HPDF_FreeDoc\n"));
+    HPDF_PTRACE (" HPDF_FreeDoc\n");
 
     if (HPDF_Doc_Validate (pdf)) {
         if (pdf->xref) {
@@ -325,7 +325,7 @@ HPDF_FreeDoc  (HPDF_Doc  pdf)
 HPDF_EXPORT(void)
 HPDF_FreeDocAll  (HPDF_Doc  pdf)
 {
-    HPDF_PTRACE ((" HPDF_FreeDocAll\n"));
+    HPDF_PTRACE (" HPDF_FreeDocAll\n");
 
     if (HPDF_Doc_Validate (pdf)) {
         HPDF_FreeDoc (pdf);
@@ -347,7 +347,7 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_SetPagesConfiguration  (HPDF_Doc    pdf,
                              HPDF_UINT   page_per_pages)
 {
-    HPDF_PTRACE ((" HPDF_SetPagesConfiguration\n"));
+    HPDF_PTRACE (" HPDF_SetPagesConfiguration\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -377,7 +377,7 @@ WriteHeader  (HPDF_Doc      pdf,
 {
     HPDF_UINT idx = (HPDF_INT)pdf->pdf_version;
 
-    HPDF_PTRACE ((" WriteHeader\n"));
+    HPDF_PTRACE (" WriteHeader\n");
 
     if (HPDF_Stream_WriteStr (stream, HPDF_VERSION_STR[idx]) != HPDF_OK)
         return pdf->error.error_no;
@@ -389,7 +389,7 @@ WriteHeader  (HPDF_Doc      pdf,
 static HPDF_STATUS
 PrepareTrailer  (HPDF_Doc    pdf)
 {
-    HPDF_PTRACE ((" PrepareTrailer\n"));
+    HPDF_PTRACE (" PrepareTrailer\n");
 
     if (HPDF_Dict_Add (pdf->trailer, "Root", pdf->catalog) != HPDF_OK)
         return pdf->error.error_no;
@@ -404,7 +404,7 @@ PrepareTrailer  (HPDF_Doc    pdf)
 HPDF_STATUS
 HPDF_Doc_SetEncryptOn  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_Doc_SetEncryptOn\n"));
+    HPDF_PTRACE (" HPDF_Doc_SetEncryptOn\n");
 
     if (pdf->encrypt_on)
         return HPDF_OK;
@@ -430,7 +430,7 @@ HPDF_SetPassword  (HPDF_Doc          pdf,
                    const char  *owner_passwd,
                    const char  *user_passwd)
 {
-    HPDF_PTRACE ((" HPDF_SetPassword\n"));
+    HPDF_PTRACE (" HPDF_SetPassword\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_DOC_INVALID_OBJECT;
@@ -456,7 +456,7 @@ HPDF_SetPermission  (HPDF_Doc    pdf,
 {
     HPDF_Encrypt e;
 
-    HPDF_PTRACE ((" HPDF_SetPermission\n"));
+    HPDF_PTRACE (" HPDF_SetPermission\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_DOC_INVALID_OBJECT;
@@ -480,7 +480,7 @@ HPDF_SetEncryptionMode  (HPDF_Doc           pdf,
 {
     HPDF_Encrypt e;
 
-    HPDF_PTRACE ((" HPDF_SetEncryptionMode\n"));
+    HPDF_PTRACE (" HPDF_SetEncryptionMode\n");
 
     if (!HPDF_Doc_Validate (pdf))
         return HPDF_DOC_INVALID_OBJECT;
@@ -518,7 +518,7 @@ HPDF_SetEncryptionMode  (HPDF_Doc           pdf,
 HPDF_STATUS
 HPDF_Doc_SetEncryptOff  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_Doc_SetEncryptOff\n"));
+    HPDF_PTRACE (" HPDF_Doc_SetEncryptOff\n");
 
     if (!pdf->encrypt_on)
         return HPDF_OK;
@@ -634,7 +634,7 @@ InternalSaveToStream  (HPDF_Doc      pdf,
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_SaveToStream  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_SaveToStream\n"));
+    HPDF_PTRACE (" HPDF_SaveToStream\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -662,7 +662,7 @@ HPDF_GetContents   (HPDF_Doc   pdf,
     HPDF_UINT isize = *size;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_GetContents\n"));
+    HPDF_PTRACE (" HPDF_GetContents\n");
 
     if (!HPDF_HasDoc (pdf)) {
         return HPDF_INVALID_DOCUMENT;
@@ -690,7 +690,7 @@ HPDF_GetContents   (HPDF_Doc   pdf,
 HPDF_EXPORT(HPDF_UINT32)
 HPDF_GetStreamSize  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_GetStreamSize\n"));
+    HPDF_PTRACE (" HPDF_GetStreamSize\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -749,7 +749,7 @@ HPDF_SaveToFile  (HPDF_Doc     pdf,
 {
     HPDF_Stream stream;
 
-    HPDF_PTRACE ((" HPDF_SaveToFile\n"));
+    HPDF_PTRACE (" HPDF_SaveToFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -769,7 +769,7 @@ HPDF_SaveToFile  (HPDF_Doc     pdf,
 HPDF_EXPORT(HPDF_Page)
 HPDF_GetCurrentPage  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_GetCurrentPage\n"));
+    HPDF_PTRACE (" HPDF_GetCurrentPage\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -784,7 +784,7 @@ HPDF_GetPageByIndex  (HPDF_Doc    pdf,
 {
     HPDF_Page ret;
 
-    HPDF_PTRACE ((" HPDF_GetPageByIndex\n"));
+    HPDF_PTRACE (" HPDF_GetPageByIndex\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -802,7 +802,7 @@ HPDF_GetPageByIndex  (HPDF_Doc    pdf,
 HPDF_Pages
 HPDF_Doc_GetCurrentPages  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_GetCurrentPages\n"));
+    HPDF_PTRACE (" HPDF_GetCurrentPages\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -815,7 +815,7 @@ HPDF_STATUS
 HPDF_Doc_SetCurrentPages  (HPDF_Doc     pdf,
                            HPDF_Pages   pages)
 {
-    HPDF_PTRACE ((" HPDF_Doc_SetCurrentPages\n"));
+    HPDF_PTRACE (" HPDF_Doc_SetCurrentPages\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -837,7 +837,7 @@ HPDF_STATUS
 HPDF_Doc_SetCurrentPage  (HPDF_Doc    pdf,
                           HPDF_Page   page)
 {
-    HPDF_PTRACE ((" HPDF_Doc_SetCurrentPage\n"));
+    HPDF_PTRACE (" HPDF_Doc_SetCurrentPage\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -861,7 +861,7 @@ HPDF_AddPage  (HPDF_Doc  pdf)
     HPDF_Page page;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_AddPage\n"));
+    HPDF_PTRACE (" HPDF_AddPage\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -908,7 +908,7 @@ HPDF_Doc_AddPagesTo  (HPDF_Doc     pdf,
 {
     HPDF_Pages pages;
 
-    HPDF_PTRACE ((" HPDF_AddPagesTo\n"));
+    HPDF_PTRACE (" HPDF_AddPagesTo\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -942,7 +942,7 @@ HPDF_InsertPage  (HPDF_Doc    pdf,
     HPDF_Page page;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_InsertPage\n"));
+    HPDF_PTRACE (" HPDF_InsertPage\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1003,7 +1003,7 @@ FreeFontDefList  (HPDF_Doc   pdf)
     HPDF_List list = pdf->fontdef_list;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_Doc_FreeFontDefList\n"));
+    HPDF_PTRACE (" HPDF_Doc_FreeFontDefList\n");
 
     for (i = 0; i < list->count; i++) {
         HPDF_FontDef def = (HPDF_FontDef)HPDF_List_ItemAt (list, i);
@@ -1022,7 +1022,7 @@ CleanupFontDefList  (HPDF_Doc  pdf)
     HPDF_List list = pdf->fontdef_list;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" CleanupFontDefList\n"));
+    HPDF_PTRACE (" CleanupFontDefList\n");
 
     for (i = 0; i < list->count; i++) {
         HPDF_FontDef def = (HPDF_FontDef)HPDF_List_ItemAt (list, i);
@@ -1039,7 +1039,7 @@ HPDF_Doc_FindFontDef  (HPDF_Doc          pdf,
     HPDF_List list = pdf->fontdef_list;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_Doc_FindFontDef\n"));
+    HPDF_PTRACE (" HPDF_Doc_FindFontDef\n");
 
     for (i = 0; i < list->count; i++) {
         HPDF_FontDef def = (HPDF_FontDef)HPDF_List_ItemAt (list, i);
@@ -1065,7 +1065,7 @@ HPDF_Doc_RegisterFontDef  (HPDF_Doc       pdf,
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_Doc_RegisterFontDef\n"));
+    HPDF_PTRACE (" HPDF_Doc_RegisterFontDef\n");
 
     if (!fontdef)
         return HPDF_SetError (&pdf->error, HPDF_INVALID_OBJECT, 0);
@@ -1092,7 +1092,7 @@ HPDF_GetFontDef  (HPDF_Doc          pdf,
     HPDF_STATUS ret;
     HPDF_FontDef def;
 
-    HPDF_PTRACE ((" HPDF_GetFontDef\n"));
+    HPDF_PTRACE (" HPDF_GetFontDef\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1126,7 +1126,7 @@ HPDF_Doc_FindEncoder  (HPDF_Doc         pdf,
     HPDF_List list = pdf->encoder_list;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_Doc_FindEncoder\n"));
+    HPDF_PTRACE (" HPDF_Doc_FindEncoder\n");
 
     for (i = 0; i < list->count; i++) {
         HPDF_Encoder encoder = (HPDF_Encoder)HPDF_List_ItemAt (list, i);
@@ -1179,7 +1179,7 @@ HPDF_GetEncoder  (HPDF_Doc         pdf,
     HPDF_Encoder encoder;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_GetEncoder\n"));
+    HPDF_PTRACE (" HPDF_GetEncoder\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1241,7 +1241,7 @@ FreeEncoderList  (HPDF_Doc  pdf)
     HPDF_List list = pdf->encoder_list;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" FreeEncoderList\n"));
+    HPDF_PTRACE (" FreeEncoderList\n");
 
     for (i = 0; i < list->count; i++) {
         HPDF_Encoder encoder = (HPDF_Encoder)HPDF_List_ItemAt (list, i);
@@ -1266,7 +1266,7 @@ HPDF_Doc_FindFont  (HPDF_Doc          pdf,
     HPDF_UINT i;
     HPDF_Font font;
 
-    HPDF_PTRACE ((" HPDF_Doc_FindFont\n"));
+    HPDF_PTRACE (" HPDF_Doc_FindFont\n");
 
     for (i = 0; i < pdf->font_mgr->count; i++) {
         HPDF_FontAttr attr;
@@ -1292,7 +1292,7 @@ HPDF_GetFont  (HPDF_Doc          pdf,
     HPDF_Encoder encoder = NULL;
     HPDF_Font font;
 
-    HPDF_PTRACE ((" HPDF_GetFont\n"));
+    HPDF_PTRACE (" HPDF_GetFont\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1400,7 +1400,7 @@ HPDF_LoadType1FontFromFile  (HPDF_Doc     pdf,
     HPDF_Stream pfm = NULL;
     const char *ret;
 
-    HPDF_PTRACE ((" HPDF_LoadType1FontFromFile\n"));
+    HPDF_PTRACE (" HPDF_LoadType1FontFromFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1439,7 +1439,7 @@ LoadType1FontFromStream  (HPDF_Doc      pdf,
 {
     HPDF_FontDef def;
 
-    HPDF_PTRACE ((" HPDF_LoadType1FontFromStream\n"));
+    HPDF_PTRACE (" HPDF_LoadType1FontFromStream\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1470,7 +1470,7 @@ HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
 	HPDF_Stream font_data;
 	HPDF_FontDef def;
 
-	HPDF_PTRACE ((" HPDF_GetTTFontDefFromFile\n"));
+	HPDF_PTRACE (" HPDF_GetTTFontDefFromFile\n");
 
 	/* create file stream */
 	font_data = HPDF_FileReader_New (pdf->mmgr, file_name);
@@ -1493,7 +1493,7 @@ HPDF_LoadTTFontFromFile (HPDF_Doc         pdf,
     HPDF_Stream font_data;
     const char *ret;
 
-    HPDF_PTRACE ((" HPDF_LoadTTFontFromFile\n"));
+    HPDF_PTRACE (" HPDF_LoadTTFontFromFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1521,7 +1521,7 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
 {
     HPDF_FontDef def;
 
-    HPDF_PTRACE ((" HPDF_LoadTTFontFromStream\n"));
+    HPDF_PTRACE (" HPDF_LoadTTFontFromStream\n");
     HPDF_UNUSED (file_name);
 
     def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, embedding);
@@ -1570,7 +1570,7 @@ HPDF_LoadTTFontFromFile2 (HPDF_Doc         pdf,
     HPDF_Stream font_data;
     const char *ret;
 
-    HPDF_PTRACE ((" HPDF_LoadTTFontFromFile2\n"));
+    HPDF_PTRACE (" HPDF_LoadTTFontFromFile2\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1599,7 +1599,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
 {
     HPDF_FontDef def;
 
-    HPDF_PTRACE ((" HPDF_LoadTTFontFromStream2\n"));
+    HPDF_PTRACE (" HPDF_LoadTTFontFromStream2\n");
     HPDF_UNUSED (file_name);
 
     def = HPDF_TTFontDef_Load2 (pdf->mmgr, font_data, index, embedding);
@@ -1649,7 +1649,7 @@ HPDF_LoadRawImageFromFile  (HPDF_Doc          pdf,
     HPDF_Stream imagedata;
     HPDF_Image image;
 
-    HPDF_PTRACE ((" HPDF_LoadRawImageFromFile\n"));
+    HPDF_PTRACE (" HPDF_LoadRawImageFromFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1686,7 +1686,7 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
 {
     HPDF_Image image;
 
-    HPDF_PTRACE ((" HPDF_LoadRawImageFromMem\n"));
+    HPDF_PTRACE (" HPDF_LoadRawImageFromMem\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1716,7 +1716,7 @@ HPDF_LoadJpegImageFromFile  (HPDF_Doc     pdf,
     HPDF_Stream imagedata;
     HPDF_Image image;
 
-    HPDF_PTRACE ((" HPDF_LoadJpegImageFromFile\n"));
+    HPDF_PTRACE (" HPDF_LoadJpegImageFromFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -1745,7 +1745,7 @@ HPDF_LoadJpegImageFromMem  (HPDF_Doc    pdf,
 {
 	HPDF_Image image;
 
-	HPDF_PTRACE ((" HPDF_LoadJpegImageFromMem\n"));
+	HPDF_PTRACE (" HPDF_LoadJpegImageFromMem\n");
 
 	if (!HPDF_HasDoc (pdf)) {
 		return NULL;
@@ -1765,7 +1765,7 @@ HPDF_LoadJpegImageFromMem  (HPDF_Doc    pdf,
 HPDF_EXPORT(HPDF_PageLayout)
 HPDF_GetPageLayout  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_GetPageLayout\n"));
+    HPDF_PTRACE (" HPDF_GetPageLayout\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_PAGE_LAYOUT_SINGLE;
@@ -1780,7 +1780,7 @@ HPDF_SetPageLayout  (HPDF_Doc          pdf,
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_GetPageLayout\n"));
+    HPDF_PTRACE (" HPDF_GetPageLayout\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -1802,7 +1802,7 @@ HPDF_SetPageLayout  (HPDF_Doc          pdf,
 HPDF_EXPORT(HPDF_PageMode)
 HPDF_GetPageMode  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_GetPageMode\n"));
+    HPDF_PTRACE (" HPDF_GetPageMode\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_PAGE_MODE_USE_NONE;
@@ -1817,7 +1817,7 @@ HPDF_SetPageMode  (HPDF_Doc        pdf,
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_GetPageMode\n"));
+    HPDF_PTRACE (" HPDF_GetPageMode\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -1840,7 +1840,7 @@ HPDF_SetOpenAction  (HPDF_Doc            pdf,
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_SetOpenAction\n"));
+    HPDF_PTRACE (" HPDF_SetOpenAction\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -1859,7 +1859,7 @@ HPDF_SetOpenAction  (HPDF_Doc            pdf,
 HPDF_EXPORT(HPDF_UINT)
 HPDF_GetViewerPreference  (HPDF_Doc   pdf)
 {
-    HPDF_PTRACE ((" HPDF_Catalog_GetViewerPreference\n"));
+    HPDF_PTRACE (" HPDF_Catalog_GetViewerPreference\n");
 
     if (!HPDF_HasDoc (pdf))
         return 0;
@@ -1874,7 +1874,7 @@ HPDF_SetViewerPreference  (HPDF_Doc     pdf,
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_Catalog_SetViewerPreference\n"));
+    HPDF_PTRACE (" HPDF_Catalog_SetViewerPreference\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -1899,7 +1899,7 @@ HPDF_AddPageLabel  (HPDF_Doc             pdf,
     HPDF_Dict page_label;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_AddPageLabel\n"));
+    HPDF_PTRACE (" HPDF_AddPageLabel\n");
 
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
@@ -1931,7 +1931,7 @@ HPDF_AttachFile  (HPDF_Doc    pdf,
     HPDF_String name;
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE ((" HPDF_AttachFile\n"));
+    HPDF_PTRACE (" HPDF_AttachFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -2000,7 +2000,7 @@ HPDF_SetInfoAttr  (HPDF_Doc          pdf,
     HPDF_STATUS ret;
     HPDF_Dict info = GetInfo (pdf);
 
-    HPDF_PTRACE((" HPDF_SetInfoAttr\n"));
+    HPDF_PTRACE (" HPDF_SetInfoAttr\n");
 
     if (!info)
         return HPDF_CheckError (&pdf->error);
@@ -2020,7 +2020,7 @@ HPDF_GetInfoAttr  (HPDF_Doc        pdf,
     const char *ret = NULL;
     HPDF_Dict info = GetInfo (pdf);
 
-    HPDF_PTRACE((" HPDF_GetInfoAttr\n"));
+    HPDF_PTRACE (" HPDF_GetInfoAttr\n");
 
     if (info)
         ret = HPDF_Info_GetInfoAttr (info, type);
@@ -2039,7 +2039,7 @@ HPDF_SetInfoDateAttr  (HPDF_Doc        pdf,
     HPDF_STATUS ret;
     HPDF_Dict info = GetInfo (pdf);
 
-    HPDF_PTRACE((" HPDF_SetInfoDateAttr\n"));
+    HPDF_PTRACE (" HPDF_SetInfoDateAttr\n");
 
     if (!info)
         return HPDF_CheckError (&pdf->error);
@@ -2183,7 +2183,7 @@ HPDF_OutputIntent_New  (HPDF_Doc  pdf,
     HPDF_OutputIntent intent;
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_OutputIntent_New\n"));
+    HPDF_PTRACE (" HPDF_OutputIntent_New\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -2254,7 +2254,7 @@ HPDF_ICC_LoadIccFromMem (HPDF_Doc   pdf,
    HPDF_OutputIntent icc;
    HPDF_STATUS ret;
 
-   HPDF_PTRACE ((" HPDF_ICC_LoadIccFromMem\n"));
+   HPDF_PTRACE (" HPDF_ICC_LoadIccFromMem\n");
 
    icc = HPDF_DictStream_New (mmgr, xref);
    if (!icc)
@@ -2344,7 +2344,7 @@ HPDF_LoadIccProfileFromFile  (HPDF_Doc pdf,
     HPDF_Stream iccdata;
     HPDF_OutputIntent iccentry;
 
-    HPDF_PTRACE ((" HPDF_LoadIccProfileFromFile\n"));
+    HPDF_PTRACE (" HPDF_LoadIccProfileFromFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
