@@ -27,7 +27,7 @@ HPDF_PageLabel_New  (HPDF_Doc             pdf,
 {
     HPDF_Dict obj = HPDF_Dict_New (pdf->mmgr);
 
-    HPDF_PTRACE ((" HPDF_PageLabel_New\n"));
+    HPDF_PTRACE (" HPDF_PageLabel_New\n");
 
     if (!obj)
         return NULL;

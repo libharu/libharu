@@ -203,7 +203,7 @@ HPDF_Catalog_AddPageLabel  (HPDF_Catalog   catalog,
     HPDF_Dict labels = HPDF_Dict_GetItem (catalog, "PageLabels",
         HPDF_OCLASS_DICT);
 
-    HPDF_PTRACE ((" HPDF_Catalog_AddPageLabel\n"));
+    HPDF_PTRACE (" HPDF_Catalog_AddPageLabel\n");
 
     if (!labels) {
         labels = HPDF_Dict_New (catalog->mmgr);
@@ -240,7 +240,7 @@ HPDF_Catalog_SetViewerPreference  (HPDF_Catalog   catalog,
     HPDF_STATUS ret;
     HPDF_Dict preferences;
 
-    HPDF_PTRACE ((" HPDF_Catalog_SetViewerPreference\n"));
+    HPDF_PTRACE (" HPDF_Catalog_SetViewerPreference\n");
 
     if (!value) {
         ret = HPDF_Dict_RemoveElement (catalog, "ViewerPreferences");
@@ -337,7 +337,7 @@ HPDF_Catalog_GetViewerPreference  (HPDF_Catalog   catalog)
     HPDF_UINT value = 0;
     HPDF_Boolean obj;
 
-    HPDF_PTRACE ((" HPDF_Catalog_GetViewerPreference\n"));
+    HPDF_PTRACE (" HPDF_Catalog_GetViewerPreference\n");
 
     preferences = (HPDF_Dict)HPDF_Dict_GetItem (catalog, "ViewerPreferences",
             HPDF_OCLASS_DICT);

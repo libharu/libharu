@@ -86,7 +86,7 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
     HPDF_STATUS ret = 0;
     HPDF_Array descendant_fonts;
 
-    HPDF_PTRACE ((" HPDF_Type0Font_New\n"));
+    HPDF_PTRACE (" HPDF_Type0Font_New\n");
 
     font = HPDF_Dict_New (mmgr);
     if (!font)
@@ -198,7 +198,7 @@ OnFree_Func  (HPDF_Dict  obj)
 {
     HPDF_FontAttr attr = (HPDF_FontAttr)obj->attr;
 
-    HPDF_PTRACE ((" HPDF_Type0Font_OnFree\n"));
+    HPDF_PTRACE (" HPDF_Type0Font_OnFree\n");
 
     if (attr)
         HPDF_FreeMem (obj->mmgr, attr);
@@ -224,7 +224,7 @@ CIDFontType0_New (HPDF_Font parent, HPDF_Xref xref)
     HPDF_Dict descriptor;
     HPDF_Dict cid_system_info;
 
-    HPDF_PTRACE ((" HPDF_CIDFontType0_New\n"));
+    HPDF_PTRACE (" HPDF_CIDFontType0_New\n");
 
     font = HPDF_Dict_New (parent->mmgr);
     if (!font)
@@ -359,7 +359,7 @@ CIDFontType2_New (HPDF_Font parent, HPDF_Xref xref)
 
     HPDF_UINT16 max = 0;
 
-    HPDF_PTRACE ((" HPDF_CIDFontType2_New\n"));
+    HPDF_PTRACE (" HPDF_CIDFontType2_New\n");
 
     font = HPDF_Dict_New (parent->mmgr);
     if (!font)
@@ -511,7 +511,7 @@ CIDFontType2_BeforeWrite_Func  (HPDF_Dict obj)
     HPDF_TTFontDefAttr def_attr = (HPDF_TTFontDefAttr)def->attr;
     HPDF_STATUS ret = 0;
 
-    HPDF_PTRACE ((" CIDFontType2_BeforeWrite_Func\n"));
+    HPDF_PTRACE (" CIDFontType2_BeforeWrite_Func\n");
 
     if (font_attr->map_stream)
         font_attr->map_stream->filter = obj->filter;
@@ -596,7 +596,7 @@ TextWidth  (HPDF_Font         font,
     HPDF_INT dw2;
     HPDF_BYTE b = 0;
 
-    HPDF_PTRACE ((" HPDF_Type0Font_TextWidth\n"));
+    HPDF_PTRACE (" HPDF_Type0Font_TextWidth\n");
 
     if (attr->fontdef->type == HPDF_FONTDEF_TYPE_CID) {
         HPDF_CIDFontDefAttr cid_fontdef_attr =
@@ -681,7 +681,7 @@ MeasureText  (HPDF_Font          font,
     HPDF_ParseText_Rec  parse_state;
     HPDF_INT dw2;
 
-    HPDF_PTRACE ((" HPDF_Type0Font_MeasureText\n"));
+    HPDF_PTRACE (" HPDF_Type0Font_MeasureText\n");
 
     if (attr->fontdef->type == HPDF_FONTDEF_TYPE_CID) {
         HPDF_CIDFontDefAttr cid_fontdef_attr =

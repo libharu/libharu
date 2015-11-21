@@ -32,7 +32,7 @@ HPDF_EncryptDict_New  (HPDF_MMgr  mmgr,
     HPDF_Encrypt attr;
     HPDF_EncryptDict dict;
 
-    HPDF_PTRACE((" HPDF_EncryptDict_New\n"));
+    HPDF_PTRACE (" HPDF_EncryptDict_New\n");
 
     dict = HPDF_Dict_New (mmgr);
     if (!dict)
@@ -133,7 +133,7 @@ HPDF_EncryptDict_Prepare  (HPDF_EncryptDict  dict,
     HPDF_Binary user_key;
     HPDF_Binary owner_key;
 
-    HPDF_PTRACE((" HPDF_EncryptDict_Prepare\n"));
+    HPDF_PTRACE (" HPDF_EncryptDict_Prepare\n");
 
     HPDF_EncryptDict_CreateID (dict, info, xref);
     HPDF_Encrypt_CreateOwnerKey (attr);
@@ -179,7 +179,7 @@ HPDF_EncryptDict_OnFree  (HPDF_Dict  obj)
 {
     HPDF_Encrypt attr = (HPDF_Encrypt)obj->attr;
 
-    HPDF_PTRACE((" HPDF_EncryptDict_OnFree\n"));
+    HPDF_PTRACE (" HPDF_EncryptDict_OnFree\n");
 
     if (attr)
         HPDF_FreeMem (obj->mmgr, attr);
@@ -193,7 +193,7 @@ HPDF_EncryptDict_SetPassword  (HPDF_EncryptDict  dict,
 {
     HPDF_Encrypt attr = (HPDF_Encrypt)dict->attr;
 
-    HPDF_PTRACE((" HPDF_EncryptDict_SetPassword\n"));
+    HPDF_PTRACE (" HPDF_EncryptDict_SetPassword\n");
 
     if (HPDF_StrLen(owner_passwd, 2) == 0)
         return HPDF_SetError(dict->error, HPDF_ENCRYPT_INVALID_PASSWORD, 0);
@@ -214,7 +214,7 @@ HPDF_EncryptDict_Validate  (HPDF_EncryptDict  dict)
 {
     HPDF_Obj_Header *header = (HPDF_Obj_Header *)dict;
 
-    HPDF_PTRACE((" HPDF_EncryptDict_Validate\n"));
+    HPDF_PTRACE (" HPDF_EncryptDict_Validate\n");
 
     if (!dict || !dict->attr)
         return HPDF_FALSE;
@@ -231,7 +231,7 @@ HPDF_EncryptDict_GetAttr (HPDF_EncryptDict  dict)
 {
     HPDF_Obj_Header *header = (HPDF_Obj_Header *)dict;
 
-    HPDF_PTRACE((" HPDF_EncryptDict_GetAttr\n"));
+    HPDF_PTRACE (" HPDF_EncryptDict_GetAttr\n");
 
     if (dict && dict->attr &&
         (header->obj_class == (HPDF_OCLASS_DICT | HPDF_OSUBCLASS_ENCRYPT)))

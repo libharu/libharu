@@ -32,7 +32,7 @@ HPDF_String_New  (HPDF_MMgr        mmgr,
 {
     HPDF_String obj;
 
-    HPDF_PTRACE((" HPDF_String_New\n"));
+    HPDF_PTRACE (" HPDF_String_New\n");
 
     obj = (HPDF_String)HPDF_GetMem (mmgr, sizeof(HPDF_String_Rec));
     if (obj) {
@@ -62,7 +62,7 @@ HPDF_String_SetValue  (HPDF_String      obj,
     HPDF_UINT len;
     HPDF_STATUS ret = HPDF_OK;
 
-    HPDF_PTRACE((" HPDF_String_SetValue\n"));
+    HPDF_PTRACE (" HPDF_String_SetValue\n");
 
     if (obj->value) {
         HPDF_FreeMem (obj->mmgr, obj->value);
@@ -90,7 +90,7 @@ HPDF_String_Free  (HPDF_String  obj)
     if (!obj)
         return;
 
-    HPDF_PTRACE((" HPDF_String_Free\n"));
+    HPDF_PTRACE (" HPDF_String_Free\n");
 
     HPDF_FreeMem (obj->mmgr, obj->value);
     HPDF_FreeMem (obj->mmgr, obj);
@@ -109,7 +109,7 @@ HPDF_String_Write  (HPDF_String   obj,
      *  and it outputs by HPDF_write_binary method.
      */
 
-    HPDF_PTRACE((" HPDF_String_Write\n"));
+    HPDF_PTRACE (" HPDF_String_Write\n");
 
     if (e)
         HPDF_Encrypt_Reset (e);

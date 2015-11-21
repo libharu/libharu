@@ -31,6 +31,9 @@
 #endif
 
 #include <stdlib.h>
+#ifdef __ANDROID64__
+#include <stdint.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -87,6 +90,11 @@ typedef  signed int          HPDF_BOOL;
  */
 typedef  unsigned long       HPDF_STATUS;
 
+#ifdef __ANDROID64__
+/*  
+ */
+typedef  uintptr_t           HPDF_UINTPTR;
+#endif
 
 /*  charactor-code type (16bit)
  */
@@ -285,7 +293,7 @@ typedef struct _HPDF_CMYKColor {
 typedef enum _HPDF_LineCap {
     HPDF_BUTT_END = 0,
     HPDF_ROUND_END,
-    HPDF_PROJECTING_SCUARE_END,
+    HPDF_PROJECTING_SQUARE_END,
     HPDF_LINECAP_EOF
 } HPDF_LineCap;
 

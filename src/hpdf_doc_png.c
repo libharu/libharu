@@ -35,7 +35,7 @@ HPDF_LoadPngImageFromMem  (HPDF_Doc     pdf,
 	HPDF_Stream imagedata;
 	HPDF_Image image;
 
-	HPDF_PTRACE ((" HPDF_LoadPngImageFromFile\n"));
+	HPDF_PTRACE (" HPDF_LoadPngImageFromFile\n");
 
 	if (!HPDF_HasDoc (pdf)) {
 		return NULL;
@@ -75,7 +75,7 @@ HPDF_LoadPngImageFromFile  (HPDF_Doc     pdf,
     HPDF_Stream imagedata;
     HPDF_Image image;
 
-    HPDF_PTRACE ((" HPDF_LoadPngImageFromFile\n"));
+    HPDF_PTRACE (" HPDF_LoadPngImageFromFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -107,7 +107,7 @@ HPDF_LoadPngImageFromFile2  (HPDF_Doc     pdf,
     HPDF_Image image;
     HPDF_String fname;
 
-    HPDF_PTRACE ((" HPDF_LoadPngImageFromFile\n"));
+    HPDF_PTRACE (" HPDF_LoadPngImageFromFile\n");
 
     if (!HPDF_HasDoc (pdf))
         return NULL;
@@ -156,7 +156,7 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
 {
     HPDF_Image image;
 
-    HPDF_PTRACE ((" HPDF_LoadPngImageFromStream\n"));
+    HPDF_PTRACE (" HPDF_LoadPngImageFromStream\n");
 
     image = HPDF_Image_LoadPngImage (pdf->mmgr, imagedata, pdf->xref,
                 delayed_loading);

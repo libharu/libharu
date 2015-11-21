@@ -57,7 +57,7 @@ HPDF_Info_SetInfoAttr (HPDF_Dict        info,
 {
     const char* name = InfoTypeToName (type);
 
-    HPDF_PTRACE((" HPDF_Info_SetInfoAttr\n"));
+    HPDF_PTRACE (" HPDF_Info_SetInfoAttr\n");
 
     if (type <= HPDF_INFO_MOD_DATE)
         return HPDF_SetError (info->error, HPDF_INVALID_PARAMETER, 0);
@@ -77,7 +77,7 @@ HPDF_Info_GetInfoAttr (HPDF_Dict      info,
     const char* name = InfoTypeToName (type);
     HPDF_String s;
 
-    HPDF_PTRACE((" HPDF_Info_GetInfoAttr\n"));
+    HPDF_PTRACE (" HPDF_Info_GetInfoAttr\n");
 
     if (!info)
         return NULL;
@@ -100,7 +100,7 @@ HPDF_Info_SetInfoDateAttr (HPDF_Dict      info,
     char* ptmp;
     const char* name = InfoTypeToName (type);
 
-    HPDF_PTRACE((" HPDF_Info_SetInfoDateAttr\n"));
+    HPDF_PTRACE (" HPDF_Info_SetInfoDateAttr\n");
 
     if (type > HPDF_INFO_MOD_DATE)
         return HPDF_SetError (info->error, HPDF_INVALID_PARAMETER, 0);

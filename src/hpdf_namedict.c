@@ -34,7 +34,7 @@ HPDF_NameDict_New  (HPDF_MMgr  mmgr,
 {
     HPDF_NameDict ndict;
 
-    HPDF_PTRACE((" HPDF_NameDict_New\n"));
+    HPDF_PTRACE (" HPDF_NameDict_New\n");
 
     ndict = HPDF_Dict_New (mmgr);
     if (!ndict)
@@ -91,7 +91,7 @@ HPDF_NameTree_New  (HPDF_MMgr  mmgr,
     HPDF_NameTree ntree;
     HPDF_Array items;
 
-    HPDF_PTRACE((" HPDF_NameTree_New\n"));
+    HPDF_PTRACE (" HPDF_NameTree_New\n");
 
     ntree = HPDF_Dict_New (mmgr);
     if (!ntree)

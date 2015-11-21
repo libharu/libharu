@@ -36,7 +36,7 @@ HPDF_CIDFontDef_FreeWidth  (HPDF_FontDef  fontdef)
     HPDF_CIDFontDefAttr attr = (HPDF_CIDFontDefAttr)fontdef->attr;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_FontDef_Validate\n"));
+    HPDF_PTRACE (" HPDF_FontDef_Validate\n");
 
     for (i = 0; i < attr->widths->count; i++) {
         HPDF_CID_Width *w =
@@ -60,7 +60,7 @@ HPDF_CIDFontDef_New  (HPDF_MMgr               mmgr,
     HPDF_FontDef fontdef;
     HPDF_CIDFontDefAttr fontdef_attr;
 
-    HPDF_PTRACE ((" HPDF_CIDFontDef_New\n"));
+    HPDF_PTRACE (" HPDF_CIDFontDef_New\n");
 
     if (!mmgr)
         return NULL;
@@ -112,7 +112,7 @@ HPDF_CIDFontDef_GetCIDWidth  (HPDF_FontDef  fontdef,
     HPDF_CIDFontDefAttr attr = (HPDF_CIDFontDefAttr)fontdef->attr;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_CIDFontDef_GetCIDWidth\n"));
+    HPDF_PTRACE (" HPDF_CIDFontDef_GetCIDWidth\n");
 
     for (i = 0; i < attr->widths->count; i++) {
         HPDF_CID_Width *w = (HPDF_CID_Width *)HPDF_List_ItemAt (attr->widths,
@@ -131,7 +131,7 @@ HPDF_CIDFontDef_FreeFunc (HPDF_FontDef  fontdef)
 {
     HPDF_CIDFontDefAttr attr = (HPDF_CIDFontDefAttr)fontdef->attr;
 
-    HPDF_PTRACE ((" HPDF_CIDFontDef_FreeFunc\n"));
+    HPDF_PTRACE (" HPDF_CIDFontDef_FreeFunc\n");
 
     HPDF_CIDFontDef_FreeWidth (fontdef);
     HPDF_FreeMem (fontdef->mmgr, attr);
@@ -144,7 +144,7 @@ HPDF_CIDFontDef_AddWidth  (HPDF_FontDef            fontdef,
 {
     HPDF_CIDFontDefAttr attr = (HPDF_CIDFontDefAttr)fontdef->attr;
 
-    HPDF_PTRACE ((" HPDF_CIDFontDef_AddWidth\n"));
+    HPDF_PTRACE (" HPDF_CIDFontDef_AddWidth\n");
 
     while (widths->cid != 0xFFFF) {
         HPDF_CID_Width *w = HPDF_GetMem (fontdef->mmgr,
@@ -175,7 +175,7 @@ HPDF_CIDFontDef_ChangeStyle  (HPDF_FontDef   fontdef,
                               HPDF_BOOL      bold,
                               HPDF_BOOL      italic)
 {
-    HPDF_PTRACE ((" HPDF_CIDFontDef_ChangeStyle\n"));
+    HPDF_PTRACE (" HPDF_CIDFontDef_ChangeStyle\n");
 
     if (!fontdef || !fontdef->attr)
         return HPDF_INVALID_FONTDEF_DATA;

@@ -292,7 +292,7 @@ SimSun_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_SimSun_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_SimSun_Init\n");
 
     fontdef->ascent = 859;
     fontdef->descent = -140;
@@ -354,7 +354,7 @@ SimHei_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_SimHei_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_SimHei_Init\n");
 
     fontdef->ascent = 859;
     fontdef->descent = -140;

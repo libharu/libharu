@@ -57,7 +57,7 @@ HPDF_3DC3DMeasure_New(HPDF_MMgr mmgr,
 	HPDF_STATUS ret = HPDF_OK;
 
 
-	HPDF_PTRACE((" HPDF_3DC3DMeasure_New\n"));
+	HPDF_PTRACE (" HPDF_3DC3DMeasure_New\n");
 
 	measure = HPDF_Dict_New (mmgr);
 	if (!measure)
@@ -200,7 +200,7 @@ HPDF_PD33DMeasure_New(HPDF_MMgr mmgr,
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_String s;
 
-	HPDF_PTRACE((" HPDF_3DC3DMeasure_New\n"));
+	HPDF_PTRACE (" HPDF_3DC3DMeasure_New\n");
 
 	measure = HPDF_Dict_New (mmgr);
 	if (!measure)

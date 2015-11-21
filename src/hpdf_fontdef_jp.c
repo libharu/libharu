@@ -1553,7 +1553,7 @@ MS_Gothic_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_MS_Gothic_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_MS_Gothic_Init\n");
 
     fontdef->ascent = 859;
     fontdef->descent = -140;
@@ -1614,7 +1614,7 @@ MS_PGothic_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_MS_PGothic_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_MS_PGothic_Init\n");
 
     fontdef->ascent = 859;
     fontdef->descent = -140;
@@ -1675,7 +1675,7 @@ MS_Mincho_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_MS_Mincho_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_MS_Mincho_Init\n");
 
     fontdef->ascent = 859;
     fontdef->descent = -140;
@@ -1737,7 +1737,7 @@ MS_PMincho_Init  (HPDF_FontDef   fontdef)
 {
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" HPDF_FontDef_MS_PMincho_Init\n"));
+    HPDF_PTRACE (" HPDF_FontDef_MS_PMincho_Init\n");
 
     fontdef->ascent = 859;
     fontdef->descent = -140;

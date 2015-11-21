@@ -25,7 +25,7 @@ HPDF_Obj_Free  (HPDF_MMgr    mmgr,
 {
     HPDF_Obj_Header *header;
 
-    HPDF_PTRACE((" HPDF_Obj_Free\n"));
+    HPDF_PTRACE (" HPDF_Obj_Free\n");
 
     if (!obj)
         return;
@@ -43,17 +43,22 @@ HPDF_Obj_ForceFree  (HPDF_MMgr    mmgr,
 {
     HPDF_Obj_Header *header;
 
-    HPDF_PTRACE((" HPDF_Obj_ForceFree\n"));
+    HPDF_PTRACE (" HPDF_Obj_ForceFree\n");
 
     if (!obj)
         return;
 
     header = (HPDF_Obj_Header *)obj;
 
-    HPDF_PTRACE((" HPDF_Obj_ForceFree obj=0x%08X obj_id=0x%08X "
+    HPDF_PTRACE (" HPDF_Obj_ForceFree obj=0x%08X obj_id=0x%08X "
                     "obj_class=0x%08X\n",
+#ifdef __ANDROID64__
+                    (HPDF_UINT)(HPDF_UINTPTR)obj, (HPDF_UINT)(header->obj_id),
+                    (HPDF_UINT)(header->obj_class));
+#else
                     (HPDF_UINT)obj, (HPDF_UINT)(header->obj_id),
-                    (HPDF_UINT)(header->obj_class)));
+                    (HPDF_UINT)(header->obj_class));
+#endif
 
     switch (header->obj_class & HPDF_OCLASS_ANY) {
         case HPDF_OCLASS_STRING:
@@ -80,10 +85,14 @@ HPDF_Obj_Write  (void          *obj,
 {
     HPDF_Obj_Header *header = (HPDF_Obj_Header *)obj;
 
-    HPDF_PTRACE((" HPDF_Obj_Write\n"));
+    HPDF_PTRACE (" HPDF_Obj_Write\n");
 
     if (header->obj_id & HPDF_OTYPE_HIDDEN) {
-         HPDF_PTRACE(("#HPDF_Obj_Write obj=0x%08X skipped\n", (HPDF_UINT)obj));
+#ifdef __ANDROID64__
+         HPDF_PTRACE ("#HPDF_Obj_Write obj=0x%08X skipped\n", (HPDF_UINT)(HPDF_UINTPTR)obj);
+#else
+         HPDF_PTRACE ("#HPDF_Obj_Write obj=0x%08X skipped\n", (HPDF_UINT)obj);
+#endif
          return HPDF_OK;
     }
 
@@ -114,12 +123,16 @@ HPDF_Obj_WriteValue  (void          *obj,
     HPDF_Obj_Header *header;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE((" HPDF_Obj_WriteValue\n"));
+    HPDF_PTRACE (" HPDF_Obj_WriteValue\n");
 
     header = (HPDF_Obj_Header *)obj;
 
-    HPDF_PTRACE((" HPDF_Obj_WriteValue obj=0x%08X obj_class=0x%04X\n",
-            (HPDF_UINT)obj, (HPDF_UINT)header->obj_class));
+    HPDF_PTRACE (" HPDF_Obj_WriteValue obj=0x%08X obj_class=0x%04X\n",
+#ifdef __ANDROID64__
+            (HPDF_UINT)(HPDF_UINTPTR)obj, (HPDF_UINT)header->obj_class);
+#else
+            (HPDF_UINT)obj, (HPDF_UINT)header->obj_class);
+#endif
 
     switch (header->obj_class & HPDF_OCLASS_ANY) {
         case HPDF_OCLASS_NAME:
@@ -162,7 +175,7 @@ HPDF_Proxy_New  (HPDF_MMgr  mmgr,
 {
     HPDF_Proxy p = HPDF_GetMem (mmgr, sizeof(HPDF_Proxy_Rec));
 
-    HPDF_PTRACE((" HPDF_Proxy_New\n"));
+    HPDF_PTRACE (" HPDF_Proxy_New\n");
 
     if (p) {
         HPDF_MemSet (&p->header, 0, sizeof(HPDF_Obj_Header));

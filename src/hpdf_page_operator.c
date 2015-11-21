@@ -57,7 +57,7 @@ HPDF_Page_SetLineWidth  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetLineWidth\n"));
+    HPDF_PTRACE (" HPDF_Page_SetLineWidth\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -87,7 +87,7 @@ HPDF_Page_SetLineCap  (HPDF_Page     page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetLineCap\n"));
+    HPDF_PTRACE (" HPDF_Page_SetLineCap\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -120,7 +120,7 @@ HPDF_Page_SetLineJoin  (HPDF_Page      page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetLineJoin\n"));
+    HPDF_PTRACE (" HPDF_Page_SetLineJoin\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -151,7 +151,7 @@ HPDF_Page_SetMiterLimit  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetMitterLimit\n"));
+    HPDF_PTRACE (" HPDF_Page_SetMitterLimit\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -188,7 +188,7 @@ HPDF_Page_SetDash  (HPDF_Page           page,
     HPDF_PageAttr attr;
     HPDF_UINT i;
 
-    HPDF_PTRACE ((" HPDF_Page_SetDash\n"));
+    HPDF_PTRACE (" HPDF_Page_SetDash\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -253,7 +253,7 @@ HPDF_Page_SetFlat  (HPDF_Page  page,
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
                     HPDF_GMODE_TEXT_OBJECT);
 
-    HPDF_PTRACE ((" HPDF_Page_SetFlat\n"));
+    HPDF_PTRACE (" HPDF_Page_SetFlat\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -283,7 +283,7 @@ HPDF_Page_SetExtGState  (HPDF_Page        page,
     HPDF_PageAttr attr;
     const char *local_name;
 
-    HPDF_PTRACE ((" HPDF_Page_SetExtGState\n"));
+    HPDF_PTRACE (" HPDF_Page_SetExtGState\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -323,7 +323,7 @@ HPDF_Page_GSave  (HPDF_Page  page)
     HPDF_PageAttr attr;
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION);
 
-    HPDF_PTRACE ((" HPDF_Page_GSave\n"));
+    HPDF_PTRACE (" HPDF_Page_GSave\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -350,7 +350,7 @@ HPDF_Page_GRestore  (HPDF_Page  page)
     HPDF_PageAttr attr;
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION);
 
-    HPDF_PTRACE ((" HPDF_Page_GRestore\n"));
+    HPDF_PTRACE (" HPDF_Page_GRestore\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -388,7 +388,7 @@ HPDF_Page_Concat  (HPDF_Page         page,
     HPDF_PageAttr attr;
     HPDF_TransMatrix tm;
 
-    HPDF_PTRACE ((" HPDF_Page_Concat\n"));
+    HPDF_PTRACE (" HPDF_Page_Concat\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -440,7 +440,7 @@ HPDF_Page_MoveTo  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_MoveTo\n"));
+    HPDF_PTRACE (" HPDF_Page_MoveTo\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -477,7 +477,7 @@ HPDF_Page_LineTo  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_LineTo\n"));
+    HPDF_PTRACE (" HPDF_Page_LineTo\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -516,7 +516,7 @@ HPDF_Page_CurveTo  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_CurveTo\n"));
+    HPDF_PTRACE (" HPDF_Page_CurveTo\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -561,7 +561,7 @@ HPDF_Page_CurveTo2  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_CurveTo2\n"));
+    HPDF_PTRACE (" HPDF_Page_CurveTo2\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -602,7 +602,7 @@ HPDF_Page_CurveTo3  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_CurveTo3\n"));
+    HPDF_PTRACE (" HPDF_Page_CurveTo3\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -636,7 +636,7 @@ HPDF_Page_ClosePath  (HPDF_Page  page)
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PATH_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_ClosePath\n"));
+    HPDF_PTRACE (" HPDF_Page_ClosePath\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -666,7 +666,7 @@ HPDF_Page_Rectangle  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Rectangle\n"));
+    HPDF_PTRACE (" HPDF_Page_Rectangle\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -706,7 +706,7 @@ HPDF_Page_Stroke  (HPDF_Page  page)
         HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Stroke\n"));
+    HPDF_PTRACE (" HPDF_Page_Stroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -730,7 +730,7 @@ HPDF_Page_ClosePathStroke  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_ClosePathStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_ClosePathStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -754,7 +754,7 @@ HPDF_Page_Fill  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Fill\n"));
+    HPDF_PTRACE (" HPDF_Page_Fill\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -778,7 +778,7 @@ HPDF_Page_Eofill  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Eofill\n"));
+    HPDF_PTRACE (" HPDF_Page_Eofill\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -802,7 +802,7 @@ HPDF_Page_FillStroke  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_FillStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_FillStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -826,7 +826,7 @@ HPDF_Page_EofillStroke  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_EofillStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_EofillStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -849,7 +849,7 @@ HPDF_Page_ClosePathFillStroke  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_ClosePathFillStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_ClosePathFillStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -873,7 +873,7 @@ HPDF_Page_ClosePathEofillStroke  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_ClosePathEofillStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_ClosePathEofillStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -897,7 +897,7 @@ HPDF_Page_EndPath  (HPDF_Page  page)
             HPDF_GMODE_CLIPPING_PATH);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_PageEndPath\n"));
+    HPDF_PTRACE (" HPDF_PageEndPath\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -923,7 +923,7 @@ HPDF_Page_Clip  (HPDF_Page  page)
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PATH_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Clip\n"));
+    HPDF_PTRACE (" HPDF_Page_Clip\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -945,7 +945,7 @@ HPDF_Page_Eoclip  (HPDF_Page  page)
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PATH_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Eoclip\n"));
+    HPDF_PTRACE (" HPDF_Page_Eoclip\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -971,7 +971,7 @@ HPDF_Page_BeginText  (HPDF_Page  page)
     HPDF_PageAttr attr;
     const HPDF_TransMatrix INIT_MATRIX = {1, 0, 0, 1, 0, 0};
 
-    HPDF_PTRACE ((" HPDF_Page_BeginText\n"));
+    HPDF_PTRACE (" HPDF_Page_BeginText\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -995,7 +995,7 @@ HPDF_Page_EndText  (HPDF_Page  page)
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_EndText\n"));
+    HPDF_PTRACE (" HPDF_Page_EndText\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1022,7 +1022,7 @@ HPDF_Page_SetCharSpace  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetCharSpace\n"));
+    HPDF_PTRACE (" HPDF_Page_SetCharSpace\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1052,7 +1052,7 @@ HPDF_Page_SetWordSpace  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetWordSpace\n"));
+    HPDF_PTRACE (" HPDF_Page_SetWordSpace\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1082,7 +1082,7 @@ HPDF_Page_SetHorizontalScalling  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetHorizontalScalling\n"));
+    HPDF_PTRACE (" HPDF_Page_SetHorizontalScalling\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1113,7 +1113,7 @@ HPDF_Page_SetTextLeading  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetTextLeading\n"));
+    HPDF_PTRACE (" HPDF_Page_SetTextLeading\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1146,7 +1146,7 @@ HPDF_Page_SetFontAndSize  (HPDF_Page  page,
     const char *local_name;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetFontAndSize\n"));
+    HPDF_PTRACE (" HPDF_Page_SetFontAndSize\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1193,7 +1193,7 @@ HPDF_Page_SetTextRenderingMode  (HPDF_Page               page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetTextRenderingMode\n"));
+    HPDF_PTRACE (" HPDF_Page_SetTextRenderingMode\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1232,7 +1232,7 @@ HPDF_Page_SetTextRise  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetTextRaise\n"));
+    HPDF_PTRACE (" HPDF_Page_SetTextRaise\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1265,7 +1265,7 @@ HPDF_Page_MoveTextPos  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_MoveTextPos\n"));
+    HPDF_PTRACE (" HPDF_Page_MoveTextPos\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1302,7 +1302,7 @@ HPDF_Page_MoveTextPos2  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_MoveTextPos2\n"));
+    HPDF_PTRACE (" HPDF_Page_MoveTextPos2\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1344,7 +1344,7 @@ HPDF_Page_SetTextMatrix  (HPDF_Page         page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetTextMatrix\n"));
+    HPDF_PTRACE (" HPDF_Page_SetTextMatrix\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1392,7 +1392,7 @@ HPDF_Page_MoveToNextLine  (HPDF_Page  page)
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_MoveToNextLine\n"));
+    HPDF_PTRACE (" HPDF_Page_MoveToNextLine\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1423,7 +1423,7 @@ HPDF_Page_ShowText  (HPDF_Page    page,
     HPDF_PageAttr attr;
     HPDF_REAL tw;
 
-    HPDF_PTRACE ((" HPDF_Page_ShowText\n"));
+    HPDF_PTRACE (" HPDF_Page_ShowText\n");
 
     if (ret != HPDF_OK || text == NULL || text[0] == 0)
         return ret;
@@ -1466,7 +1466,7 @@ HPDF_Page_ShowTextNextLine  (HPDF_Page    page,
     HPDF_PageAttr attr;
     HPDF_REAL tw;
 
-    HPDF_PTRACE ((" HPDF_Page_ShowTextNextLine\n"));
+    HPDF_PTRACE (" HPDF_Page_ShowTextNextLine\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1520,7 +1520,7 @@ HPDF_Page_ShowTextNextLineEx  (HPDF_Page    page,
     char *pbuf = buf;
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
 
-    HPDF_PTRACE ((" HPDF_Page_ShowTextNextLineEX\n"));
+    HPDF_PTRACE (" HPDF_Page_ShowTextNextLineEX\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1598,7 +1598,7 @@ HPDF_Page_SetGrayFill  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetGrayFill\n"));
+    HPDF_PTRACE (" HPDF_Page_SetGrayFill\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1629,7 +1629,7 @@ HPDF_Page_SetGrayStroke  (HPDF_Page  page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetGrayStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_SetGrayStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1665,7 +1665,7 @@ HPDF_Page_SetRGBFill  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetRGBFill\n"));
+    HPDF_PTRACE (" HPDF_Page_SetRGBFill\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1709,7 +1709,7 @@ HPDF_Page_SetRGBStroke  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetRGBStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_SetRGBStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1754,7 +1754,7 @@ HPDF_Page_SetCMYKFill  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetCMYKFill\n"));
+    HPDF_PTRACE (" HPDF_Page_SetCMYKFill\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1802,7 +1802,7 @@ HPDF_Page_SetCMYKStroke  (HPDF_Page  page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_SetCMYKStroke\n"));
+    HPDF_PTRACE (" HPDF_Page_SetCMYKStroke\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1856,7 +1856,7 @@ HPDF_Page_ExecuteXObject  (HPDF_Page     page,
     HPDF_PageAttr attr;
     const char *local_name;
 
-    HPDF_PTRACE ((" HPDF_Page_ExecuteXObject\n"));
+    HPDF_PTRACE (" HPDF_Page_ExecuteXObject\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -1998,7 +1998,7 @@ HPDF_Page_Circle  (HPDF_Page     page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Circle\n"));
+    HPDF_PTRACE (" HPDF_Page_Circle\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -2131,7 +2131,7 @@ HPDF_Page_Ellipse  (HPDF_Page   page,
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_Ellipse\n"));
+    HPDF_PTRACE (" HPDF_Page_Ellipse\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -2181,7 +2181,7 @@ HPDF_Page_Arc  (HPDF_Page    page,
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION |
                     HPDF_GMODE_PATH_OBJECT);
 
-    HPDF_PTRACE ((" HPDF_Page_Arc\n"));
+    HPDF_PTRACE (" HPDF_Page_Arc\n");
 
     if (fabs(ang2 - ang1) >= 360)
         HPDF_RaiseError (page->error, HPDF_PAGE_OUT_OF_RANGE, 0);
@@ -2240,7 +2240,7 @@ InternalArc  (HPDF_Page    page,
     HPDF_DOUBLE delta_angle;
     HPDF_DOUBLE new_angle;
 
-    HPDF_PTRACE ((" HPDF_Page_InternalArc\n"));
+    HPDF_PTRACE (" HPDF_Page_InternalArc\n");
 
     attr = (HPDF_PageAttr)page->attr;
 
@@ -2333,7 +2333,7 @@ InternalWriteText  (HPDF_PageAttr      attr,
     HPDF_FontAttr font_attr = (HPDF_FontAttr)attr->gstate->font->attr;
     HPDF_STATUS ret;
 
-    HPDF_PTRACE ((" InternalWriteText\n"));
+    HPDF_PTRACE (" InternalWriteText\n");
 
     if (font_attr->type == HPDF_FONT_TYPE0_TT ||
             font_attr->type == HPDF_FONT_TYPE0_CID) {
@@ -2411,7 +2411,7 @@ HPDF_Page_TextOut  (HPDF_Page    page,
     HPDF_REAL y;
     HPDF_PageAttr attr;
 
-    HPDF_PTRACE ((" HPDF_Page_TextOut\n"));
+    HPDF_PTRACE (" HPDF_Page_TextOut\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -2446,7 +2446,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
     HPDF_Box bbox;
     HPDF_BOOL char_space_changed = HPDF_FALSE;
 
-    HPDF_PTRACE ((" HPDF_Page_TextRect\n"));
+    HPDF_PTRACE (" HPDF_Page_TextRect\n");
 
     if (ret != HPDF_OK)
         return ret;
@@ -2616,7 +2616,7 @@ InternalShowTextNextLine  (HPDF_Page    page,
     HPDF_REAL tw;
     HPDF_FontAttr font_attr;
 
-    HPDF_PTRACE ((" ShowTextNextLine\n"));
+    HPDF_PTRACE (" ShowTextNextLine\n");
 
     attr = (HPDF_PageAttr)page->attr;
     font_attr = (HPDF_FontAttr)attr->gstate->font->attr;
@@ -2688,7 +2688,7 @@ HPDF_Page_SetSlideShow  (HPDF_Page            page,
     HPDF_STATUS ret = HPDF_OK;
     HPDF_Dict dict;
 
-    HPDF_PTRACE((" HPDF_Page_SetSlideShow\n"));
+    HPDF_PTRACE (" HPDF_Page_SetSlideShow\n");
 
     if (!HPDF_Page_Validate (page))
         return HPDF_INVALID_PAGE;
@@ -2823,7 +2823,7 @@ HPDF_Page_New_Content_Stream  (HPDF_Page page,
     HPDF_UINT filter;
     HPDF_Array contents_array;
 
-    HPDF_PTRACE((" HPDF_Page_New_Content_Stream\n"));
+    HPDF_PTRACE (" HPDF_Page_New_Content_Stream\n");
 
     attr = (HPDF_PageAttr)page->attr;
     filter = attr->contents->filter;
@@ -2875,7 +2875,7 @@ HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
                     HPDF_GMODE_TEXT_OBJECT);
     HPDF_Array contents_array;
 
-    HPDF_PTRACE((" HPDF_Page_Insert_Shared_Content_Stream\n"));
+    HPDF_PTRACE (" HPDF_Page_Insert_Shared_Content_Stream\n");
 
     /* check if there is already an array of contents */
     contents_array = (HPDF_Array) HPDF_Dict_GetItem(page,"Contents", HPDF_OCLASS_ARRAY);

@@ -47,14 +47,14 @@ HPDF_MMgr_New  (HPDF_Error       error,
 {
     HPDF_MMgr mmgr;
 
-    HPDF_PTRACE((" HPDF_MMgr_New\n"));
+    HPDF_PTRACE (" HPDF_MMgr_New\n");
 
     if (alloc_fn)
         mmgr = (HPDF_MMgr)alloc_fn (sizeof(HPDF_MMgr_Rec));
     else
         mmgr = (HPDF_MMgr)InternalGetMem (sizeof(HPDF_MMgr_Rec));
 
-    HPDF_PTRACE(("+%p mmgr-new\n", mmgr));
+    HPDF_PTRACE ("+%p mmgr-new\n", mmgr);
 
     if (mmgr != NULL) {
         /* initialize mmgr object */
@@ -91,7 +91,7 @@ HPDF_MMgr_New  (HPDF_Error       error,
             node = (HPDF_MPool_Node)mmgr->alloc_fn (sizeof(HPDF_MPool_Node_Rec) +
                     buf_size);
 
-            HPDF_PTRACE(("+%p mmgr-node-new\n", node));
+            HPDF_PTRACE ("+%p mmgr-node-new\n", node);
 
             if (node == NULL) {
                 HPDF_SetError (error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
@@ -127,7 +127,7 @@ HPDF_MMgr_Free  (HPDF_MMgr  mmgr)
 {
     HPDF_MPool_Node node;
 
-    HPDF_PTRACE((" HPDF_MMgr_Free\n"));
+    HPDF_PTRACE (" HPDF_MMgr_Free\n");
 
     if (mmgr == NULL)
         return;
@@ -139,7 +139,7 @@ HPDF_MMgr_Free  (HPDF_MMgr  mmgr)
         HPDF_MPool_Node tmp = node;
         node = tmp->next_node;
 
-        HPDF_PTRACE(("-%p mmgr-node-free\n", tmp));
+        HPDF_PTRACE ("-%p mmgr-node-free\n", tmp);
         mmgr->free_fn (tmp);
 
 #ifdef HPDF_MEM_DEBUG
@@ -156,7 +156,7 @@ HPDF_MMgr_Free  (HPDF_MMgr  mmgr)
         HPDF_PRINTF ("# ERROR #\n");
 #endif
 
-    HPDF_PTRACE(("-%p mmgr-free\n", mmgr));
+    HPDF_PTRACE ("-%p mmgr-free\n", mmgr);
     mmgr->free_fn (mmgr);
 }
 
@@ -184,7 +184,7 @@ HPDF_GetMem  (HPDF_MMgr  mmgr,
 
             node = (HPDF_MPool_Node)mmgr->alloc_fn (sizeof(HPDF_MPool_Node_Rec)
                     + tmp_buf_siz);
-            HPDF_PTRACE(("+%p mmgr-new-node\n", node));
+            HPDF_PTRACE ("+%p mmgr-new-node\n", node);
 
             if (!node) {
                 HPDF_SetError (mmgr->error, HPDF_FAILD_TO_ALLOC_MEM,
@@ -202,7 +202,7 @@ HPDF_GetMem  (HPDF_MMgr  mmgr,
         ptr = node->buf;
     } else {
         ptr = mmgr->alloc_fn (size);
-        HPDF_PTRACE(("+%p mmgr-alloc_fn size=%u\n", ptr, size));
+        HPDF_PTRACE ("+%p mmgr-alloc_fn size=%u\n", ptr, size);
 
         if (ptr == NULL)
             HPDF_SetError (mmgr->error, HPDF_FAILD_TO_ALLOC_MEM, HPDF_NOERROR);
@@ -224,7 +224,7 @@ HPDF_FreeMem  (HPDF_MMgr  mmgr,
         return;
 
     if (!mmgr->mpool) {
-        HPDF_PTRACE(("-%p mmgr-free-mem\n", aptr));
+        HPDF_PTRACE ("-%p mmgr-free-mem\n", aptr);
         mmgr->free_fn(aptr);
 
 #ifdef HPDF_MEM_DEBUG
