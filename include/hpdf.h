@@ -461,7 +461,7 @@ HPDF_Page_CreateXObjectFromImage    (HPDF_Doc       pdf,
                                      HPDF_Page      page,
                                      HPDF_Rect      rect,
                                      HPDF_Image     image,
-                                     HPDF_Boolean   zoom);
+                                     HPDF_BOOL      zoom);
 
 HPDF_EXPORT(HPDF_XObject)
 HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
