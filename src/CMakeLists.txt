@@ -72,6 +72,11 @@ set(
 # =======================================================================
 if(LIBHPDF_STATIC)
   add_library(${LIBHPDF_NAME_STATIC} STATIC ${LIBHPDF_SRCS})
+
+  if( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+      set_target_properties(${LIBHPDF_NAME_STATIC} PROPERTIES COMPILE_FLAGS "-fPIC")
+  endif( CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" )
+
   target_link_libraries(${LIBHPDF_NAME_STATIC} ${ADDITIONAL_LIBRARIES})
   install(
     TARGETS ${LIBHPDF_NAME_STATIC}

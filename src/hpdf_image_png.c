@@ -20,7 +20,7 @@
 #include "hpdf_image.h"
 
 #ifndef LIBHPDF_HAVE_NOPNGLIB
-#include <png.h>
+#include "png.h"
 #include <string.h>
 
 static void

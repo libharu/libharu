@@ -45,6 +45,7 @@ endif(MSVC)
 set(LIBHPDF_NAME ${LIBHPDF_NAME}hpdf)
 set(LIBHPDF_NAME_STATIC ${LIBHPDF_NAME}s)
 
+
 # =======================================================================
 # command line options
 # =======================================================================
@@ -52,6 +53,10 @@ option(LIBHPDF_SHARED "Build shared lib" YES)
 option(LIBHPDF_STATIC "Build static lib" YES)
 option(LIBHPDF_EXAMPLES "Build libharu examples" NO)
 option(DEVPAK "Create DevPackage" NO)
+
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS} -undefined dynamic_lookup")
+endif()
 
 # Enable exceptions on linux if required
 # (eg if you are using libharu in a C++ environment,
@@ -90,7 +95,7 @@ if(ZLIB_FOUND)
   include_directories(${ZLIB_INCLUDE_DIR})
   set(ADDITIONAL_LIBRARIES ${ZLIB_LIBRARIES})
 endif(ZLIB_FOUND)
-  
+
 # check png availibility
 find_package(PNG)
 if(PNG_FOUND)
@@ -110,7 +115,7 @@ endif(PNG_FOUND)
 if(MSVC_VERSION GREATER 1399)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
 endif(MSVC_VERSION GREATER 1399)
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
 # these are options
@@ -149,16 +154,16 @@ endif (NOT ZLIB_FOUND)
 
 # create hpdf_config.h
 configure_file(
-  ${CMAKE_SOURCE_DIR}/include/hpdf_config.h.cmake
-  ${CMAKE_BINARY_DIR}/include/hpdf_config.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/hpdf_config.h.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/include/hpdf_config.h
 )
-include_directories(${CMAKE_BINARY_DIR}/include)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
 
 # create DevPackage file
 if(DEVPAK)
   configure_file(
-    ${CMAKE_SOURCE_DIR}/libharu.DevPackage.cmake
-    ${CMAKE_BINARY_DIR}/libharu.DevPackage
+    ${CMAKE_CURRENT_SOURCE_DIR}/libharu.DevPackage.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/libharu.DevPackage
   )
 endif(DEVPAK)
 # =======================================================================
@@ -174,7 +179,7 @@ set(
   haru_HDRS
     include/hpdf.h
     include/hpdf_types.h
-    include/hpdf_consts.h 
+    include/hpdf_consts.h
     include/hpdf_version.h
     include/hpdf_annotation.h
     include/hpdf_catalog.h
@@ -203,7 +208,7 @@ set(
     include/hpdf_pdfa.h
     include/hpdf_3dmeasure.h
     include/hpdf_exdata.h
-    ${CMAKE_BINARY_DIR}/include/hpdf_config.h
+    ${CMAKE_CURRENT_BINARY_DIR}/include/hpdf_config.h
 )
 
 # install header files
@@ -215,7 +220,7 @@ if(NOT DEVPAK)
   install(DIRECTORY if DESTINATION .)
 endif(NOT DEVPAK)
 if(DEVPAK)
-  install(FILES ${CMAKE_BINARY_DIR}/libharu.DevPackage DESTINATION .)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libharu.DevPackage DESTINATION .)
 endif(DEVPAK)
 
 # =======================================================================
