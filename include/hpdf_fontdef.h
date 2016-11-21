@@ -96,6 +96,9 @@ typedef struct _HPDF_FontDef_Rec {
 
     HPDF_INT16    ascent;
     HPDF_INT16    descent;
+    HPDF_INT16    line_gap;
+    HPDF_INT16    underline_position;
+    HPDF_INT16    underline_thickness;
     HPDF_UINT     flags;
     HPDF_Box      font_bbox;
     HPDF_INT16    italic_angle;
@@ -305,6 +308,15 @@ typedef struct _HPDF_TTFontDefAttr_Rec {
     HPDF_UINT16              fs_type;
     HPDF_BYTE                sfamilyclass[2];
     HPDF_BYTE                panose[10];
+
+    HPDF_INT16               typo_ascender;
+    HPDF_INT16               typo_descender;
+    HPDF_INT16               typo_linegap;
+    HPDF_UINT16              win_ascent;
+    HPDF_UINT16              win_descent;
+    HPDF_INT16               underline_position;
+    HPDF_INT16               underline_thickness;
+
     HPDF_UINT32              code_page_range1;
     HPDF_UINT32              code_page_range2;
 
@@ -312,6 +324,9 @@ typedef struct _HPDF_TTFontDefAttr_Rec {
 
     HPDF_BOOL                embedding;
     HPDF_BOOL                is_cidfont;
+
+    HPDF_UINT                cff_offset;
+    HPDF_UINT                cff_length;
 
     HPDF_Stream              stream;
 } HPDF_TTFontDefAttr_Rec;
