@@ -540,10 +540,10 @@ HPDF_TTFontDef_GetCharBBox  (HPDF_FontDef   fontdef,
     HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid(fontdef, unicode);
     HPDF_STATUS ret;
     HPDF_Box bbox = HPDF_ToBox(0, 0, 0, 0);
-    HPDF_INT16 i;
+    HPDF_INT16 tmpl, tmpb, tmpr, tmpt;
     HPDF_INT m;
 
-    if (gid == 0) {
+    if (gid == 0 || gid > attr->num_glyphs) {
         HPDF_PTRACE ((" GetCharHeight cannot get gid char=0x%04x\n", unicode));
         return bbox;
     }
@@ -559,20 +559,16 @@ HPDF_TTFontDef_GetCharBBox  (HPDF_FontDef   fontdef,
     if (ret != HPDF_OK)
         return bbox;
 
-    ret += GetINT16 (attr->stream, &i);
-    bbox.left = (HPDF_REAL)((HPDF_INT32)i * 1000 / attr->header.units_per_em);
+    if ((ret = GetINT16 (attr->stream, &tmpl)) != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &tmpb)) != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &tmpr)) != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &tmpt)) != HPDF_OK)
+        return bbox;
 
-    ret += GetINT16 (attr->stream, &i);
-    bbox.bottom = (HPDF_REAL)((HPDF_INT32)i * 1000 / attr->header.units_per_em);
-
-    ret += GetINT16 (attr->stream, &i);
-    bbox.right = (HPDF_REAL)((HPDF_INT32)i * 1000 / attr->header.units_per_em);
-
-    ret += GetINT16 (attr->stream, &i);
-    bbox.top = (HPDF_REAL)((HPDF_INT32)i * 1000 / attr->header.units_per_em);
-
-    if (ret != HPDF_OK)
-        return HPDF_ToBox(0, 0, 0, 0);
+    bbox.left = (HPDF_REAL)((HPDF_INT32)tmpl * 1000 / attr->header.units_per_em);
+    bbox.bottom = (HPDF_REAL)((HPDF_INT32)tmpb * 1000 / attr->header.units_per_em);
+    bbox.right = (HPDF_REAL)((HPDF_INT32)tmpr * 1000 / attr->header.units_per_em);
+    bbox.top = (HPDF_REAL)((HPDF_INT32)tmpt * 1000 / attr->header.units_per_em);
 
     HPDF_PTRACE((" PdfTTFontDef_GetCharBBox char=0x%04X, "
             "box=[%f,%f,%f,%f]\n", unicode, bbox.left, bbox.bottom, bbox.right,
@@ -642,16 +638,11 @@ static HPDF_STATUS
 WriteUINT32 (HPDF_Stream   stream,
              HPDF_UINT32   value)
 {
-    HPDF_STATUS ret;
     HPDF_UINT32 tmp = value;
 
     UINT32Swap (&tmp);
 
-    ret = HPDF_Stream_Write (stream, (HPDF_BYTE *)&tmp, sizeof(tmp));
-    if (ret != HPDF_OK)
-        return ret;
-
-    return HPDF_OK;
+    return HPDF_Stream_Write (stream, (HPDF_BYTE *)&tmp, sizeof(tmp));
 }
 
 
@@ -659,16 +650,11 @@ static HPDF_STATUS
 WriteUINT16 (HPDF_Stream   stream,
              HPDF_UINT16   value)
 {
-    HPDF_STATUS ret;
     HPDF_UINT16 tmp = value;
 
     UINT16Swap (&tmp);
 
-    ret = HPDF_Stream_Write (stream, (HPDF_BYTE *)&tmp, sizeof(tmp));
-    if (ret != HPDF_OK)
-        return ret;
-
-    return HPDF_OK;
+    return HPDF_Stream_Write (stream, (HPDF_BYTE *)&tmp, sizeof(tmp));
 }
 
 
@@ -676,16 +662,11 @@ static HPDF_STATUS
 WriteINT16 (HPDF_Stream   stream,
             HPDF_INT16    value)
 {
-    HPDF_STATUS ret;
     HPDF_INT16 tmp = value;
 
     INT16Swap (&tmp);
 
-    ret = HPDF_Stream_Write (stream, (HPDF_BYTE *)&tmp, sizeof(tmp));
-    if (ret != HPDF_OK)
-        return ret;
-
-    return HPDF_OK;
+    return HPDF_Stream_Write (stream, (HPDF_BYTE *)&tmp, sizeof(tmp));
 }
 
 
@@ -699,14 +680,12 @@ LoadTTFTable (HPDF_FontDef  fontdef)
 
     HPDF_PTRACE ((" HPDF_TTFontDef_LoadTTFTable\n"));
 
-    ret += GetUINT32 (attr->stream, &attr->offset_tbl.sfnt_version);
-    ret += GetUINT16 (attr->stream, &attr->offset_tbl.num_tables);
-    ret += GetUINT16 (attr->stream, &attr->offset_tbl.search_range);
-    ret += GetUINT16 (attr->stream, &attr->offset_tbl.entry_selector);
-    ret += GetUINT16 (attr->stream, &attr->offset_tbl.range_shift);
-
-    if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+    if ((ret = GetUINT32 (attr->stream, &attr->offset_tbl.sfnt_version))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->offset_tbl.num_tables))     != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->offset_tbl.search_range))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->offset_tbl.entry_selector)) != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->offset_tbl.range_shift))    != HPDF_OK)
+        return ret;
 
     if (attr->offset_tbl.num_tables * sizeof(HPDF_TTFTable) >
             HPDF_TTF_MAX_MEM_SIZ)
@@ -721,18 +700,18 @@ LoadTTFTable (HPDF_FontDef  fontdef)
     for (i = 0; i < attr->offset_tbl.num_tables; i++) {
         HPDF_UINT siz = 4;
 
-        ret += HPDF_Stream_Read (attr->stream, (HPDF_BYTE *)tbl->tag, &siz);
-        ret += GetUINT32 (attr->stream, &tbl->check_sum);
-        ret += GetUINT32 (attr->stream, &tbl->offset);
-        ret += GetUINT32 (attr->stream, &tbl->length);
+        if ((ret = HPDF_Stream_Read (attr->stream, (HPDF_BYTE *)tbl->tag, &siz)) != HPDF_OK)
+            return ret;
+
+        if ((ret = GetUINT32 (attr->stream, &tbl->check_sum)) != HPDF_OK ||
+            (ret = GetUINT32 (attr->stream, &tbl->offset)) != HPDF_OK ||
+            (ret = GetUINT32 (attr->stream, &tbl->length)) != HPDF_OK)
+            return ret;
 
         HPDF_PTRACE((" [%d] tag=[%c%c%c%c] check_sum=%u offset=%u length=%u\n",
                     i, tbl->tag[0], tbl->tag[1], tbl->tag[2], tbl->tag[3],
                     (HPDF_UINT)tbl->check_sum, (HPDF_UINT)tbl->offset,
                     (HPDF_UINT)tbl->length));
-
-        if (ret != HPDF_OK)
-            return HPDF_Error_GetCode (fontdef->error);;
 
         tbl++;
     }
@@ -759,31 +738,38 @@ ParseHead (HPDF_FontDef  fontdef)
         return ret;
 
     siz = 4;
-    ret += HPDF_Stream_Read (attr->stream,
-            (HPDF_BYTE *)&attr->header.version_number, &siz);
-    ret += GetUINT32 (attr->stream, &attr->header.font_revision);
-    ret += GetUINT32 (attr->stream, &attr->header.check_sum_adjustment);
-    ret += GetUINT32 (attr->stream, &attr->header.magic_number);
-    ret += GetUINT16 (attr->stream, &attr->header.flags);
-    ret += GetUINT16 (attr->stream, &attr->header.units_per_em);
+    if ((ret = HPDF_Stream_Read (attr->stream,
+            (HPDF_BYTE *)&attr->header.version_number, &siz)) != HPDF_OK)
+        return ret;
+
+    if ((ret = GetUINT32 (attr->stream, &attr->header.font_revision))        != HPDF_OK ||
+        (ret = GetUINT32 (attr->stream, &attr->header.check_sum_adjustment)) != HPDF_OK ||
+        (ret = GetUINT32 (attr->stream, &attr->header.magic_number))         != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->header.flags))                != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->header.units_per_em))         != HPDF_OK)
+        return ret;
 
     siz = 8;
-    ret += HPDF_Stream_Read (attr->stream, attr->header.created, &siz);
+    if ((ret = HPDF_Stream_Read (attr->stream, attr->header.created, &siz)) != HPDF_OK)
+        return ret;
+
     siz = 8;
-    ret += HPDF_Stream_Read (attr->stream, attr->header.modified, &siz);
+    if ((ret = HPDF_Stream_Read (attr->stream, attr->header.modified, &siz)) != HPDF_OK)
+        return ret;
 
-    ret += GetINT16 (attr->stream, &attr->header.x_min);
-    ret += GetINT16 (attr->stream, &attr->header.y_min);
-    ret += GetINT16 (attr->stream, &attr->header.x_max);
-    ret += GetINT16 (attr->stream, &attr->header.y_max);
-    ret += GetUINT16 (attr->stream, &attr->header.mac_style);
-    ret += GetUINT16 (attr->stream, &attr->header.lowest_rec_ppem);
-    ret += GetINT16 (attr->stream, &attr->header.font_direction_hint);
-    ret += GetINT16 (attr->stream, &attr->header.index_to_loc_format);
-    ret += GetINT16 (attr->stream, &attr->header.glyph_data_format);
+    if ((ret = GetINT16 (attr->stream, &attr->header.x_min))               != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &attr->header.y_min))               != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &attr->header.x_max))               != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &attr->header.y_max))               != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->header.mac_style))          != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->header.lowest_rec_ppem))    != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &attr->header.font_direction_hint)) != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &attr->header.index_to_loc_format)) != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &attr->header.glyph_data_format))   != HPDF_OK)
+        return ret;
 
-    if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+    if (attr->header.units_per_em == 0)
+        return HPDF_SetError (fontdef->error, HPDF_TTF_INVALID_FOMAT, 0);
 
     fontdef->font_bbox. left = (HPDF_REAL)((HPDF_INT32)attr->header.x_min * 1000 /
                 attr->header.units_per_em);
@@ -814,12 +800,13 @@ ParseMaxp (HPDF_FontDef  fontdef)
     if (ret != HPDF_OK)
         return ret;
 
-    ret = GetUINT16 (attr->stream, &attr->num_glyphs);
+    if ((ret = GetUINT16 (attr->stream, &attr->num_glyphs)) != HPDF_OK)
+        return ret;
 
     HPDF_PTRACE((" HPDF_TTFontDef_ParseMaxp num_glyphs=%u\n",
             attr->num_glyphs));
 
-    return ret;
+    return HPDF_OK;
 }
 
 
@@ -839,15 +826,14 @@ ParseHhea (HPDF_FontDef  fontdef)
     if (ret != HPDF_OK)
         return ret;
 
-    ret += GetINT16 (attr->stream, &fontdef->ascent);
+    if ((ret = GetINT16 (attr->stream, &fontdef->ascent))  != HPDF_OK ||
+        (ret = GetINT16 (attr->stream, &fontdef->descent)) != HPDF_OK)
+        return ret;
+
     fontdef->ascent = (HPDF_INT16)((HPDF_INT32)fontdef->ascent * 1000 /
                 attr->header.units_per_em);
-    ret += GetINT16 (attr->stream, &fontdef->descent);
     fontdef->descent = (HPDF_INT16)((HPDF_INT32)fontdef->descent * 1000 /
                 attr->header.units_per_em);
-
-    if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
 
     ret = HPDF_Stream_Seek (attr->stream, tbl->offset + 34, HPDF_SEEK_SET);
     if (ret != HPDF_OK)
@@ -855,7 +841,7 @@ ParseHhea (HPDF_FontDef  fontdef)
 
     ret = GetUINT16 (attr->stream, &attr->num_h_metric);
     if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+        return ret;
 
     HPDF_PTRACE((" HPDF_TTFontDef_ParseHhea num_h_metric=%u\n",
             attr->num_h_metric));
@@ -885,16 +871,16 @@ ParseCMap (HPDF_FontDef  fontdef)
     if (ret != HPDF_OK)
         return ret;
 
-    ret += GetUINT16 (attr->stream, &version);
+    ret = GetUINT16 (attr->stream, &version);
     if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+        return ret;
 
     if (version != 0)
         return HPDF_SetError (fontdef->error, HPDF_TTF_INVALID_FOMAT, 0);
 
-    ret += GetUINT16 (attr->stream, &num_cmap);
+    ret = GetUINT16 (attr->stream, &num_cmap);
     if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+        return ret;
 
     for (i = 0; i < num_cmap; i++) {
         HPDF_UINT16 platformID;
@@ -903,15 +889,14 @@ ParseCMap (HPDF_FontDef  fontdef)
         HPDF_UINT32 offset;
         HPDF_INT32 save_offset;
 
-        ret += GetUINT16 (attr->stream, &platformID);
-        ret += GetUINT16 (attr->stream, &encodingID);
-        ret += GetUINT32 (attr->stream, &offset);
-        if (ret != HPDF_OK)
-            return HPDF_Error_GetCode (fontdef->error);
+        if ((ret = GetUINT16 (attr->stream, &platformID)) != HPDF_OK ||
+            (ret = GetUINT16 (attr->stream, &encodingID)) != HPDF_OK ||
+            (ret = GetUINT32 (attr->stream, &offset))     != HPDF_OK)
+                return ret;
 
         save_offset = HPDF_Stream_Tell (attr->stream);
         if (save_offset < 0)
-           return HPDF_Error_GetCode (fontdef->error);
+           return HPDF_Error_GetCode (attr->stream->error);
 
         ret = HPDF_Stream_Seek (attr->stream, tbl->offset + offset,
                 HPDF_SEEK_SET);
@@ -974,12 +959,10 @@ ParseCMAP_format0  (HPDF_FontDef  fontdef,
     if (ret != HPDF_OK)
         return ret;
 
-    ret += GetUINT16 (attr->stream, &attr->cmap.format);
-    ret += GetUINT16 (attr->stream, &attr->cmap.length);
-    ret += GetUINT16 (attr->stream, &attr->cmap.language);
-
-    if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+    if ((ret = GetUINT16 (attr->stream, &attr->cmap.format))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->cmap.length))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->cmap.language)) != HPDF_OK)
+        return ret;
 
     if (attr->cmap.format != 0)
         return HPDF_SetError (fontdef->error, HPDF_TTF_INVALID_FOMAT, 0);
@@ -1027,23 +1010,19 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
             HPDF_OK)
         return ret;
 
-    ret += GetUINT16 (attr->stream, &attr->cmap.format);
-    ret += GetUINT16 (attr->stream, &attr->cmap.length);
-    ret += GetUINT16 (attr->stream, &attr->cmap.language);
-
-    if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+    if ((ret = GetUINT16 (attr->stream, &attr->cmap.format))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->cmap.length))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->cmap.language)) != HPDF_OK)
+        return ret;
 
     if (attr->cmap.format != 4)
         return HPDF_SetError (fontdef->error, HPDF_TTF_INVALID_FOMAT, 0);
 
-    ret += GetUINT16 (attr->stream, &attr->cmap.seg_count_x2);
-    ret += GetUINT16 (attr->stream, &attr->cmap.search_range);
-    ret += GetUINT16 (attr->stream, &attr->cmap.entry_selector);
-    ret += GetUINT16 (attr->stream, &attr->cmap.range_shift);
-
-    if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+    if ((ret = GetUINT16 (attr->stream, &attr->cmap.seg_count_x2))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->cmap.search_range))   != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->cmap.entry_selector)) != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->cmap.range_shift))    != HPDF_OK)
+        return ret;
 
     /* end_count */
     attr->cmap.end_count = HPDF_GetMem (fontdef->mmgr,
@@ -1094,7 +1073,7 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
 
     num_read = HPDF_Stream_Tell (attr->stream) - offset;
     if (num_read < 0)
-        return HPDF_Error_GetCode (fontdef->error);
+        return HPDF_Error_GetCode (attr->stream->error);
 
     attr->cmap.glyph_id_array_count = (attr->cmap.length - num_read) / 2;
 
@@ -1140,7 +1119,12 @@ HPDF_TTFontDef_GetGlyphid  (HPDF_FontDef   fontdef,
     /* format 0 */
     if (attr->cmap.format == 0) {
         unicode &= 0xFF;
-        return attr->cmap.glyph_id_array[unicode];
+        if (attr->cmap.glyph_id_array_count > unicode) { // Sanity check
+            return attr->cmap.glyph_id_array[unicode];
+        } else {
+            HPDF_SetError (fontdef->error, HPDF_TTF_INVALID_CMAP, 0);
+            return 0;
+        }
     }
 
     /* format 4 */
@@ -1359,8 +1343,8 @@ ParseHmtx  (HPDF_FontDef  fontdef)
     attr->h_metric = HPDF_GetMem (fontdef->mmgr,
         sizeof (HPDF_TTF_LongHorMetric) * attr->num_glyphs);
 
-    if (!attr->h_metric)
-        return HPDF_Error_GetCode (fontdef->error);
+    if (!attr->h_metric || attr->num_h_metric > attr->num_glyphs)
+        return HPDF_SetError (fontdef->error, HPDF_TTF_INVALID_FOMAT, 0);
 
     pmetric = attr->h_metric;
     for (i = 0; i < attr->num_h_metric; i++) {
@@ -1527,11 +1511,10 @@ ParseName  (HPDF_FontDef  fontdef)
     if (ret != HPDF_OK)
         return ret;
 
-    ret += GetUINT16 (attr->stream, &attr->name_tbl.format);
-    ret += GetUINT16 (attr->stream, &attr->name_tbl.count);
-    ret += GetUINT16 (attr->stream, &attr->name_tbl.string_offset);
-    if (ret != HPDF_OK)
-        return HPDF_Error_GetCode (fontdef->error);
+    if ((ret = GetUINT16 (attr->stream, &attr->name_tbl.format))        != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->name_tbl.count))         != HPDF_OK ||
+        (ret = GetUINT16 (attr->stream, &attr->name_tbl.string_offset)) != HPDF_OK)
+        return ret;
 
     HPDF_PTRACE((" ParseName() format=%u, count=%u, string_offset=%u\n",
                 attr->name_tbl.format, attr->name_tbl.count,
@@ -1546,15 +1529,13 @@ ParseName  (HPDF_FontDef  fontdef)
     name_rec = attr->name_tbl.name_records;
 
    for (i = 0; i < attr->name_tbl.count; i++) {
-        ret += GetUINT16 (attr->stream, &name_rec->platform_id);
-        ret += GetUINT16 (attr->stream, &name_rec->encoding_id);
-        ret += GetUINT16 (attr->stream, &name_rec->language_id);
-        ret += GetUINT16 (attr->stream, &name_rec->name_id);
-        ret += GetUINT16 (attr->stream, &name_rec->length);
-        ret += GetUINT16 (attr->stream, &name_rec->offset);
-
-        if (ret != HPDF_OK)
-            return HPDF_Error_GetCode (fontdef->error);
+        if ((ret = GetUINT16 (attr->stream, &name_rec->platform_id)) != HPDF_OK ||
+            (ret = GetUINT16 (attr->stream, &name_rec->encoding_id)) != HPDF_OK ||
+            (ret = GetUINT16 (attr->stream, &name_rec->language_id)) != HPDF_OK ||
+            (ret = GetUINT16 (attr->stream, &name_rec->name_id))     != HPDF_OK ||
+            (ret = GetUINT16 (attr->stream, &name_rec->length))      != HPDF_OK ||
+            (ret = GetUINT16 (attr->stream, &name_rec->offset))      != HPDF_OK)
+                return ret;
 
         HPDF_PTRACE((" ParseName() platformID=%u, encodingID=%d, nameID=%d\n",
                     name_rec->platform_id, name_rec->encoding_id,
