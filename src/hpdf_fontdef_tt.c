@@ -2109,7 +2109,7 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
             ret = RecreateName (fontdef, tmp_stream);
         } else if (HPDF_MemCmp ((HPDF_BYTE *)tbl->tag, (HPDF_BYTE *)"post", 4) == 0) {
             value=0x00030000;
-            ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4);
+            ret += WriteUINT32 (tmp_stream, value);
             HPDF_MemSet (&value, 0, 4);
             ret = HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // italicAngle
             ret += HPDF_Stream_Write (tmp_stream, (HPDF_BYTE *)&value, 4); // underlinePosition + underlineThickness
@@ -2209,7 +2209,7 @@ HPDF_TTFontDef_SaveFontData  (HPDF_FontDef   fontdef,
         HPDF_UINT siz = sizeof(buf);
 
         ret = HPDF_Stream_Read (tmp_stream, (HPDF_BYTE *)&buf, &siz);
-        if (ret != HPDF_OK || siz == 0) {
+        if (ret != HPDF_OK || siz <= 0) {
             if (ret == HPDF_STREAM_EOF)
                 ret = HPDF_OK;
             break;
