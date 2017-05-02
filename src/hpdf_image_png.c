@@ -460,7 +460,7 @@ LoadPngData  (HPDF_Dict     image,
 	/* 16bit images are not supported. */
 	if (bit_depth == 16) {
 		png_set_strip_16(png_ptr);
-    bit_depth = 8;
+		bit_depth = 8;
 	}
 
 	png_read_update_info(png_ptr, info_ptr);
