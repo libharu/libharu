@@ -2541,7 +2541,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                 }
 
                 /* Do not justify last line of paragraph or text. */
-                if (LineBreak || num_rest <= 0) {
+                if (LineBreak || num_rest == 0) {
                     if ((ret = HPDF_Page_SetCharSpace (page, save_char_space))
                                     != HPDF_OK)
                         return ret;
@@ -2583,7 +2583,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
         if (InternalShowTextNextLine (page, ptr, tmp_len) != HPDF_OK)
             return HPDF_CheckError (page->error);
 
-        if (num_rest <= 0)
+        if (num_rest == 0)
             break;
 
         if (attr->text_pos.y - attr->gstate->text_leading < bottom) {
