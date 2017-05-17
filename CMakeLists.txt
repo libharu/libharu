@@ -90,7 +90,7 @@ if(ZLIB_FOUND)
   include_directories(${ZLIB_INCLUDE_DIR})
   set(ADDITIONAL_LIBRARIES ${ZLIB_LIBRARIES})
 endif(ZLIB_FOUND)
-  
+
 # check png availibility
 find_package(PNG)
 if(PNG_FOUND)
@@ -98,6 +98,9 @@ if(PNG_FOUND)
   add_definitions(${PNG_DEFINITIONS})
   set(ADDITIONAL_LIBRARIES ${ADDITIONAL_LIBRARIES} ${PNG_LIBRARIES})
 endif(PNG_FOUND)
+
+find_library(M_LIB m)
+set(ADDITIONAL_LIBRARIES ${ADDITIONAL_LIBRARIES} ${M_LIB})
 
 
 # =======================================================================
@@ -174,7 +177,7 @@ set(
   haru_HDRS
     include/hpdf.h
     include/hpdf_types.h
-    include/hpdf_consts.h 
+    include/hpdf_consts.h
     include/hpdf_version.h
     include/hpdf_annotation.h
     include/hpdf_catalog.h
