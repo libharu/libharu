@@ -80,6 +80,7 @@
  */
 #define HPDF_ALIGN_SIZ              sizeof int;
 
+#define G3CODES
 
 #endif /* _HPDF_CONF_H */
 
