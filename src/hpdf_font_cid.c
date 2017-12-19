@@ -473,7 +473,7 @@ CIDFontType2_BeforeWrite_Func  (HPDF_Dict obj)
         for (i = 0; i < max; i++, ptmp_map++) {
             HPDF_INT w = HPDF_TTFontDef_GetGidWidth (def, *ptmp_map);
 
-            if (w != dw) {
+            if (def_attr->glyph_tbl.flgs[*ptmp_map] && w != dw) {
                 if (!tmp_array) {
                     if (HPDF_Array_AddNumber (array, i) != HPDF_OK)
                         return HPDF_FAILD_TO_ALLOC_MEM;
