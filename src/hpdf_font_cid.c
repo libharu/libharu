@@ -442,17 +442,21 @@ CIDFontType2_BeforeWrite_Func  (HPDF_Dict obj)
 		    HPDF_UNICODE unicode = encoder_attr->unicode_map[i][j];
 		    HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (def,
 								 unicode);
-		    tmp_map[cid] = gid;
-		    if (max < cid)
-			max = cid;
+		    if (def_attr->glyph_tbl.flgs[gid]) {
+			tmp_map[cid] = gid;
+			if (max < cid)
+			    max = cid;
+		    }
 		}
 	    } else {
 		HPDF_UNICODE unicode = (i << 8) | j;
 		HPDF_UINT16 gid = HPDF_TTFontDef_GetGlyphid (def,
 							     unicode);
-		tmp_map[unicode] = gid;
-		if (max < unicode)
-		    max = unicode;
+		if (def_attr->glyph_tbl.flgs[gid]) {
+		    tmp_map[unicode] = gid;
+		    if (max < unicode)
+			max = unicode;
+		}
 	    }
 	}
     }
