@@ -149,16 +149,16 @@ endif (NOT ZLIB_FOUND)
 
 # create hpdf_config.h
 configure_file(
-  ${CMAKE_SOURCE_DIR}/include/hpdf_config.h.cmake
-  ${CMAKE_BINARY_DIR}/include/hpdf_config.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/hpdf_config.h.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/include/hpdf_config.h
 )
 include_directories(${CMAKE_BINARY_DIR}/include)
 
 # create DevPackage file
 if(DEVPAK)
   configure_file(
-    ${CMAKE_SOURCE_DIR}/libharu.DevPackage.cmake
-    ${CMAKE_BINARY_DIR}/libharu.DevPackage
+    ${CMAKE_CURRENT_SOURCE_DIR}/libharu.DevPackage.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/libharu.DevPackage
   )
 endif(DEVPAK)
 # =======================================================================
