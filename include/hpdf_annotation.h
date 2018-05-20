@@ -59,6 +59,7 @@ HPDF_3DAnnot_New  (HPDF_MMgr        mmgr,
                    HPDF_Rect        rect,
                    HPDF_BOOL        tb,
                    HPDF_BOOL        np,
+                   HPDF_BOOL        tr,
                    HPDF_U3D         u3d,
                    HPDF_Image       ap);
 
