@@ -1687,6 +1687,7 @@ HPDF_Page_Create3DAnnot    (HPDF_Page       page,
                             HPDF_Rect       rect,
                             HPDF_BOOL       tb,
                             HPDF_BOOL       np,
+                            HPDF_BOOL       tr,
                             HPDF_U3D        u3d,
                             HPDF_Image      ap)
 {
@@ -1700,7 +1701,7 @@ HPDF_Page_Create3DAnnot    (HPDF_Page       page,
 
     attr = (HPDF_PageAttr)page->attr;
 
-    annot = HPDF_3DAnnot_New (page->mmgr, attr->xref, rect, tb, np, u3d, ap);
+    annot = HPDF_3DAnnot_New (page->mmgr, attr->xref, rect, tb, np, tr, u3d, ap);
     if (annot) {
         if (AddAnnotation (page, annot) != HPDF_OK) {
             HPDF_CheckError (page->error);

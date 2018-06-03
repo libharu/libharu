@@ -416,6 +416,7 @@ HPDF_3DAnnot_New    (HPDF_MMgr        mmgr,
                      HPDF_Rect        rect,
                      HPDF_BOOL        tb,
                      HPDF_BOOL        np,
+                     HPDF_BOOL        tr,
                      HPDF_U3D         u3d,
                      HPDF_Image       ap)
 {
@@ -457,6 +458,9 @@ HPDF_3DAnnot_New    (HPDF_MMgr        mmgr,
 
     // enable visibility of Navigation Panel
     ret += HPDF_Dict_AddBoolean(action, "NP", np);
+
+    // enable transparent background
+    ret += HPDF_Dict_AddBoolean(action, "Transparent", tr);
 
     // Set behavior of Annotation on Disabling
     ret += HPDF_Dict_AddName(action, "DIS", "U");

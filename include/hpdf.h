@@ -476,6 +476,7 @@ HPDF_Page_Create3DAnnot    (HPDF_Page       page,
 							HPDF_Rect       rect,
                             HPDF_BOOL       tb,
                             HPDF_BOOL       np,
+                            HPDF_BOOL       tr,
                             HPDF_U3D        u3d,
                             HPDF_Image      ap);
 
