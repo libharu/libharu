@@ -41,7 +41,8 @@ HPDF_Image
 HPDF_Image_LoadPngImage  (HPDF_MMgr        mmgr,
                           HPDF_Stream      png_data,
                           HPDF_Xref        xref,
-                          HPDF_BOOL        delayed_loading);
+                          HPDF_BOOL        delayed_loading,
+                          HPDF_BOOL        compression);
 
 #endif
 
