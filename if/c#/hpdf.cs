@@ -1,4 +1,4 @@
-/*
+﻿/*
  * << Haru Free PDF Library 2.0.6 >> -- hpdf.cs
  *
  * C# wrapper for libhpdf.dll
@@ -15,6 +15,7 @@
  */
 
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 
@@ -336,200 +337,212 @@ public class HPdfDoc: IDisposable {
     public const uint HPDF_ENABLE_EDIT = 32;
 
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_GetVersion();
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+    private extern static IntPtr HPDF_GetVersion();
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_New(HPDF_ErrorHandler user_error_fn,
             IntPtr user_data);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static void HPDF_Free(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_NewDoc(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_FreeDoc(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_FreeDocAll(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_HasDoc(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static uint HPDF_GetContents(IntPtr pdf, byte[] buf, ref uint size);
+
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static uint HPDF_GetStreamSize(IntPtr pdf);
+
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static uint HPDF_SaveToStream(IntPtr pdf);
+
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SaveToFile(IntPtr pdf, string file_name);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_GetError(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_GetErrorDetail(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static void HPDF_ResetError(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetPagesConfiguration(IntPtr pdf,
             uint page_per_pages);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_GetPageByIndex(IntPtr pdf,
             uint index);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfPageLayout HPDF_GetPageLayout(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetPageLayout(IntPtr pdf,
             HPdfPageLayout layout);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfPageMode HPDF_GetPageMode(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetPageMode(IntPtr pdf, HPdfPageMode mode);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetOpenAction(IntPtr pdf,
             IntPtr open_action);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_GetViewerPreference(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetViewerPreference(IntPtr pdf, uint value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_GetCurrentPage(IntPtr  pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_AddPage(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_InsertPage(IntPtr pdf,
                     IntPtr  page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_GetFont(IntPtr pdf, string font_name,
                     string encoding_name);
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_LoadType1FontFromFile(IntPtr pdf,
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_LoadType1FontFromFile(IntPtr pdf,
                     string afmfilename, string pfmfilename);
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_LoadTTFontFromFile(IntPtr pdf,
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_LoadTTFontFromFile(IntPtr pdf,
                     string file_name, int embedding);
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_LoadTTFontFromFile2(IntPtr pdf,
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_LoadTTFontFromFile2(IntPtr pdf,
                     string file_name, uint index, int embedding);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_AddPageLabel(IntPtr pdf, uint page_num,
                   HPdfPageNumStyle style, uint first_page, string prefix);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseJPFonts(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseKRFonts(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseCNSFonts(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseCNTFonts(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_CreateOutline(IntPtr pdf, IntPtr parent,
                     string title, IntPtr encoder);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_GetEncoder(IntPtr pdf,
                     string encoding_name);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_GetCurrentEncoder(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetCurrentEncoder(IntPtr pdf,
                     string encoding_name);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseJPEncodings(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseKREncodings(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseCNSEncodings(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_UseCNTEncodings(IntPtr pdf);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_LoadPngImageFromMem(IntPtr pdf, byte[] buffer, uint size);
+
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_LoadPngImageFromFile(IntPtr pdf,
                     string filename);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_LoadPngImageFromFile2(IntPtr pdf,
                     string filename);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_LoadJpegImageFromFile(IntPtr pdf,
                     string filename);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_LoadRawImageFromFile(IntPtr pdf,
                     string filename, uint width, uint height,
                     HPdfColorSpace color_space);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_LoadRawImageFromMem(IntPtr pdf,
-                    byte[] data, int width, int height,
+                    byte[] data, uint width, uint height,
                     HPdfColorSpace color_space,
                     uint bits_per_component);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetInfoAttr(IntPtr pdf,
                     HPdfInfoType type, string value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetInfoDateAttr(IntPtr pdf,
                     HPdfInfoType type, HPdfDate value);
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_GetInfoAttr(IntPtr pdf,
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_GetInfoAttr(IntPtr pdf,
                     HPdfInfoType type);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetPassword(IntPtr pdf,
                     string owner_passwd, string user_passwd);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetPermission(IntPtr pdf,
                     uint permission);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetEncryptionMode(IntPtr pdf,
                     HPdfEncryptMode mode, uint key_len);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_SetCompressionMode(IntPtr pdf,
                     uint mode);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_CreateExtGState(IntPtr pdf);
 
     // handle to an instance of a HPdfDoc object.
     private IntPtr hpdf;
 
-    public HPdfDoc() {
+    public HPdfDoc(HPDF_ErrorHandler exceptionHandler = null) {
         HPDF_ErrorHandler error_handler =
-                new HPDF_ErrorHandler(HPdfDoc.ErrorProc);
+                exceptionHandler ?? ErrorProc;
         hpdf = HPDF_New(error_handler, IntPtr.Zero);
         if (hpdf == IntPtr.Zero) {
             throw new Exception("cannot create HPdfDoc object.");
@@ -551,7 +564,7 @@ public class HPdfDoc: IDisposable {
     }
 
     public static string HPdfGetVersion() {
-        return HPDF_GetVersion();
+        return Marshal.PtrToStringAnsi(HPDF_GetVersion());
     }
 
     public static void ErrorProc(uint error_no, uint detail_no,
@@ -574,6 +587,19 @@ public class HPdfDoc: IDisposable {
 
     public bool HasDoc() {
         return (HPDF_HasDoc(hpdf) != 0);
+    }
+
+    public void SaveToStream(Stream stream) {
+        HPDF_SaveToStream(hpdf);
+        var size = HPDF_GetStreamSize(hpdf);
+        var buff = new byte[size];
+
+        HPDF_GetContents(hpdf, buff, ref size);
+
+        if (stream.CanWrite)
+            stream.Write(buff, 0, (int)size);
+        else
+            throw new InvalidOperationException("Can't write content to a stream.");
     }
 
     public void SaveToFile(string file_name) {
@@ -667,7 +693,7 @@ public class HPdfDoc: IDisposable {
             string pfmfilename) {
         string font_name;
 
-        font_name = HPDF_LoadType1FontFromFile(hpdf, afmfilename, pfmfilename);
+        font_name = Marshal.PtrToStringAnsi(HPDF_LoadType1FontFromFile(hpdf, afmfilename, pfmfilename));
         return font_name;
     }
 
@@ -680,7 +706,7 @@ public class HPdfDoc: IDisposable {
         else
             emb = HPDF_FALSE;
 
-        font_name = HPDF_LoadTTFontFromFile(hpdf, file_name, emb);
+        font_name = Marshal.PtrToStringAnsi(HPDF_LoadTTFontFromFile(hpdf, file_name, emb));
         return font_name;
     }
 
@@ -694,13 +720,13 @@ public class HPdfDoc: IDisposable {
         else
             emb = HPDF_FALSE;
 
-        font_name = HPDF_LoadTTFontFromFile2(hpdf, file_name, index, emb);
+        font_name = Marshal.PtrToStringAnsi(HPDF_LoadTTFontFromFile2(hpdf, file_name, index, emb));
         return font_name;
     }
 
-    public void AddPageLabel(uint page_num, HPdfPageNumStyle style,
+    public uint AddPageLabel(uint page_num, HPdfPageNumStyle style,
             uint first_page, string prefix) {
-        HPDF_AddPageLabel(hpdf, page_num, style, first_page, prefix);
+        return HPDF_AddPageLabel(hpdf, page_num, style, first_page, prefix);
     }
 
     public uint UseJPFonts() {
@@ -775,6 +801,14 @@ public class HPdfDoc: IDisposable {
         return HPDF_UseCNTEncodings(hpdf);
     }
 
+    public HPdfImage LoadPngImageFromMem(byte[] buffer, uint size) {
+        IntPtr hobj;
+
+        hobj = HPDF_LoadPngImageFromMem(hpdf, buffer, size);
+
+        return new HPdfImage(hobj);
+    }
+
     public HPdfImage LoadPngImageFromFile(string filename) {
         IntPtr hobj;
 
@@ -810,7 +844,7 @@ public class HPdfDoc: IDisposable {
         return new HPdfImage(hobj);
     }
 
-    public HPdfImage LoadRawImageFromMem(byte[] data, int width, int height,
+    public HPdfImage LoadRawImageFromMem(byte[] data, uint width, uint height,
                     HPdfColorSpace color_space, uint bits_per_component) {
         if (width * height < data.Length) {
             string s = "error-code=0x1030 detail-code=0";
@@ -833,7 +867,7 @@ public class HPdfDoc: IDisposable {
     }
 
     public string GetInfoAttr(HPdfInfoType type) {
-        return HPDF_GetInfoAttr(hpdf, type);
+        return Marshal.PtrToStringAnsi(HPDF_GetInfoAttr(hpdf, type));
     }
 
     public void SetPassword(string owner_passwd, string user_passwd) {
@@ -865,367 +899,367 @@ public class HPdfPage{
     public const int HPDF_TRUE = 1;
     public const int HPDF_FALSE = 0;
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetWidth(IntPtr page, float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetHeight(IntPtr page, float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetSize(IntPtr page,
             HPdfPageSizes size, HPdfPageDirection direction);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetRotate(IntPtr page, ushort angle);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_Page_CreateDestination(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_Page_CreateTextAnnot(IntPtr page,
         HPdfRect rect, string text, IntPtr encoder);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_Page_CreateLinkAnnot(IntPtr page,
         HPdfRect rect, IntPtr dst);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_Page_CreateURILinkAnnot(IntPtr page,
         HPdfRect rect, string url);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_TextWidth(IntPtr page,
         string text);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_MeasureText(IntPtr page,
         string text, float width, int wordwrap, ref float real_width);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetWidth(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetHeight(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static ushort HPDF_Page_GetGMode(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfPoint HPDF_Page_GetCurrentPos(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfPoint HPDF_Page_GetCurrentTextPos(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static IntPtr HPDF_Page_GetCurrentFont(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetCurrentFontSize(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfTransMatrix HPDF_Page_GetTransMatrix(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetLineWidth(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfLineCap HPDF_Page_GetLineCap(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfLineJoin HPDF_Page_GetLineJoin(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetMiterLimit(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfDashMode_Internal HPDF_Page_GetDash(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetFlat(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetCharSpace(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetWordSpace(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetHorizontalScalling(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetTextLeading(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfTextRenderingMode HPDF_Page_GetTextRenderingMode(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetTextRaise(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfRGBColor HPDF_Page_GetRGBFill(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfRGBColor HPDF_Page_GetRGBStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfCMYKColor HPDF_Page_GetCMYKFill(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfCMYKColor HPDF_Page_GetCMYKStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetGrayFill(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static float HPDF_Page_GetGrayStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfColorSpace HPDF_Page_GetStrokingColorSpace(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfColorSpace HPDF_Page_GetFillingColorSpace(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfTransMatrix HPDF_Page_GetTextMatrix(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_GetGStateDepth(IntPtr page);
 
 /*--- General graphics state -----------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetLineWidth(IntPtr page,
                 float line_width);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetLineCap(IntPtr page,
                 HPdfLineCap line_cap);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetLineJoin(IntPtr page,
                 HPdfLineJoin line_join);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetMiterLimit(IntPtr page,
                 float miter_limit);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetDash(IntPtr page,
                 ushort[] array, uint num_param, uint phase);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetFlat(IntPtr page,
                 float flatness);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetExtGState(IntPtr page,
                 IntPtr ext_gstate);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_GSave(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_GRestore(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Concat(IntPtr page,
             float a, float b, float c, float d, float x, float y);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_MoveTo(IntPtr page,
             float x, float y);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_LineTo(IntPtr page,
             float x, float y);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_CurveTo(IntPtr page,
             float x1, float y1, float x2, float y2, float x3, float y3);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_CurveTo2(IntPtr page,
             float x2, float y2, float x3, float y3);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_CurveTo3(IntPtr page,
             float x1, float y1, float x3, float y3);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ClosePath(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Rectangle(IntPtr page,
             float x, float y, float width, float height);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Stroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ClosePathStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Fill(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Eofill(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_FillStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_EofillStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ClosePathFillStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ClosePathEofillStroke(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_EndPath(IntPtr page);
 
 /*--- Clipping paths operator --------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Clip(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Eoclip(IntPtr page);
 
 /*--- Text object operator -----------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_BeginText(IntPtr page);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_EndText(IntPtr page);
 
 /*--- Text state ---------------------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetCharSpace(IntPtr page,
                 float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetWordSpace(IntPtr page,
                 float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetHorizontalScalling(IntPtr page,
                 float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetTextLeading(IntPtr page,
                 float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetFontAndSize(IntPtr page,
                 IntPtr hfont, float size);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetTextRenderingMode(IntPtr page,
                 HPdfTextRenderingMode  mode);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetTextRaise(IntPtr page,
                 float value);
 
 /*--- Text positioning ---------------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_MoveTextPos(IntPtr page,
             float x, float y);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_MoveTextPos2(IntPtr page,
             float x, float y);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetTextMatrix(IntPtr page,
             float a, float b, float c, float d, float x, float y);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_MoveToNextLine(IntPtr page);
 
 /*--- Text showing -------------------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ShowText(IntPtr page,
                 string text);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ShowTextNextLine(IntPtr page,
                 string text);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ShowTextNextLineEx(IntPtr page,
                 float word_space, float char_space, string text);
 
 /*--- Color showing ------------------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetGrayFill(IntPtr page,
                 float gray);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetGrayStroke(IntPtr page,
                 float gray);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetRGBFill(IntPtr page,
                 float r, float g, float b);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetRGBStroke(IntPtr page,
                 float r, float g, float b);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetCMYKFill(IntPtr page,
                 float c, float m, float y, float k);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetCMYKStroke(IntPtr page,
                 float c, float m, float y, float k);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_ExecuteXObject(IntPtr page,
                 IntPtr obj);
 
 /*---------------------------------------------------------------------*/
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_DrawImage(IntPtr page,
                 IntPtr image, float x, float y, float width, float height);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Circle(IntPtr page,
                 float x, float y, float ray);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Arc(IntPtr page,
                 float x, float y, float ray, float ang1, float ang2);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_Ellipse(IntPtr page,
                 float x, float y, float xray, float yray);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_TextOut(IntPtr page,
                 float xpos, float ypos, string text);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_TextRect(IntPtr page,
                 float left, float top, float right, float bottom,
                 string text, HPdfTextAlignment align, ref uint len);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Page_SetSlideShow(IntPtr page,
                 HPdfTransitionStyle type, float disp_time, float trans_time);
 
 
     // handle to an instance of a HPDF_Doc object.
-    private IntPtr hpage;
+    private readonly IntPtr hpage;
 
     public HPdfPage(IntPtr hpage) {
         if (hpage == IntPtr.Zero) {
@@ -1657,8 +1691,8 @@ public class HPdfPage{
         HPDF_Page_SetRGBFill(hpage, r, g, b);
     }
 
-    public void SetRGBStroke(float r, float g, float b) {
-        HPDF_Page_SetRGBStroke(hpage, r, g, b);
+    public uint SetRGBStroke(float r, float g, float b) {
+        return HPDF_Page_SetRGBStroke(hpage, r, g, b);
     }
 
     public void SetCMYKFill(float c, float m, float y, float k) {
@@ -1707,43 +1741,43 @@ public class HPdfPage{
 }
 
 public class HPdfFont {
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_Font_GetFontName(IntPtr hfont);
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_Font_GetFontName(IntPtr hfont);
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_Font_GetEncodingName(IntPtr hfont);
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_Font_GetEncodingName(IntPtr hfont);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static int HPDF_Font_GetUnicodeWidth(IntPtr hfont,
             ushort code);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfBox HPDF_Font_GetBBox(IntPtr hfont);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static int HPDF_Font_GetAscent(IntPtr hfont);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static int HPDF_Font_GetDescent(IntPtr hfont);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Font_GetXHeight(IntPtr hfont);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Font_GetCapHeight(IntPtr hfont);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfTextWidth HPDF_Font_TextWidth(IntPtr hfont,
             string text, uint len);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Font_MeasureText(IntPtr hfont,
             string text, uint len, float width, float font_size,
             float char_space, float word_space, int wordwrap,
             ref float real_width);
 
 
-    IntPtr hfont;
+    private readonly IntPtr hfont;
 
     public HPdfFont(IntPtr hfont) {
         if (hfont == IntPtr.Zero) {
@@ -1758,11 +1792,11 @@ public class HPdfFont {
     }
 
     public string GetFontName() {
-        return HPDF_Font_GetFontName(hfont);
+        return Marshal.PtrToStringAnsi(HPDF_Font_GetFontName(hfont));
     }
 
     public string GetEncodingName() {
-        return HPDF_Font_GetEncodingName(hfont);
+        return Marshal.PtrToStringAnsi(HPDF_Font_GetEncodingName(hfont));
     }
 
     public int GetUnicodeWidth(ushort code) {
@@ -1803,15 +1837,15 @@ public class HPdfFont {
 }
 
 public class HPdfOutline {
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Outline_SetOpened(IntPtr houtline,
         int opened);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Outline_SetDestination(IntPtr houtline,
         IntPtr hdest);
 
-    IntPtr houtline;
+    private readonly IntPtr houtline;
 
     public HPdfOutline(IntPtr houtline) {
         if (houtline == IntPtr.Zero) {
@@ -1842,7 +1876,7 @@ public class HPdfOutline {
 }
 
 public class HPdfEncoder {
-    IntPtr hencoder;
+    private readonly IntPtr hencoder;
 
     public HPdfEncoder(IntPtr hencoder) {
         if (hencoder == IntPtr.Zero) {
@@ -1852,19 +1886,19 @@ public class HPdfEncoder {
         this.hencoder = hencoder;
     }
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfEncoderType HPDF_Encoder_GetType(IntPtr
                 hencoder);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfByteType HPDF_Encoder_GetByteType(IntPtr
                 hencoder, string text, uint index);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static ushort HPDF_Encoder_GetUnicode(IntPtr
                 hencoder, ushort code);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfWritingMode HPDF_Encoder_GetWritingMode(IntPtr
                 hencoder);
 
@@ -1892,37 +1926,37 @@ public class HPdfEncoder {
 }
 
 public class HPdfDestination {
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetXYZ(IntPtr hdest,
         float left, float top, float zoom);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetFit(IntPtr hdest);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetFitH(IntPtr hdest,
         float top);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetFitV(IntPtr hdest,
         float left);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetFitR(IntPtr hdest,
         float left, float bottom, float right, float top);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetFitB(IntPtr hdest);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetFitBH(IntPtr hdest,
         float top);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Destination_SetFitBV(IntPtr hdest,
         float left);
 
-    IntPtr hdest;
+    private readonly IntPtr hdest;
 
     public HPdfDestination(IntPtr hdest) {
         if (hdest == IntPtr.Zero) {
@@ -1970,21 +2004,21 @@ public class HPdfDestination {
 }
 
 public class HPdfAnnotation {
-    IntPtr hannot;
+    private readonly IntPtr hannot;
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_LinkAnnot_SetHighlightMode(IntPtr hannot,
         HPdfAnnotHighlightMode mode);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_LinkAnnot_SetBorderStyle(IntPtr hannot,
         float width, ushort dash_on, ushort dash_off);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_TextAnnot_SetIcon(IntPtr hannot,
         HPdfAnnotIcon icon);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_TextAnnot_SetOpened(IntPtr hannot,
         int opened);
 
@@ -2044,27 +2078,27 @@ public class HPdfXObject {
 
 public class HPdfImage: HPdfXObject {
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static HPdfPoint HPDF_Image_GetSize(IntPtr image);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Image_GetWidth(IntPtr image);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Image_GetHeight(IntPtr image);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Image_GetBitsPerComponent(IntPtr image);
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_Image_GetColorSpace(IntPtr image);
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_Image_GetColorSpace(IntPtr image);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_Image_SetColorMask(IntPtr image,
         uint rmin, uint rmax, uint gmin, uint gmax, uint bmin, uint bmax);
 
-    [DllImport("libhpdf.dll")]
-    private extern static string HPDF_Image_SetMaskImage(IntPtr image,
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+    private extern static IntPtr HPDF_Image_SetMaskImage(IntPtr image,
         IntPtr mask_image);
 
     public HPdfImage(IntPtr hobj): base (hobj)  {
@@ -2087,7 +2121,7 @@ public class HPdfImage: HPdfXObject {
     }
 
     public string GetColorSpace() {
-        return HPDF_Image_GetColorSpace(hobj);
+        return Marshal.PtrToStringAnsi(HPDF_Image_GetColorSpace(hobj));
     }
 
     public void SetColorMask(uint rmin, uint rmax, uint gmin, uint gmax,
@@ -2104,15 +2138,15 @@ public class HPdfImage: HPdfXObject {
 public class HPdfExtGState {
     protected IntPtr hgstate;
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_ExtGState_SetAlphaStroke(IntPtr gstate,
         float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_ExtGState_SetAlphaFill(IntPtr gstate,
         float value);
 
-    [DllImport("libhpdf.dll")]
+    [DllImport("libhpdf.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     private extern static uint HPDF_ExtGState_SetBlendMode(IntPtr gstate,
         HPdfBlendMode mode);
 
