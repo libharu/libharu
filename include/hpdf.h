@@ -26,7 +26,14 @@
 #    define HPDF_EXPORT(A)  __declspec(dllexport) A  __stdcall
 #else
 #    ifdef HPDF_DLL_MAKE_CDECL
+#     ifdef _MSC_VER
 #        define HPDF_EXPORT(A)  __declspec(dllexport) A
+#     elif defined(__GNUC__)
+#        define HPDF_EXPORT(A) A __attribute__((visibility("default")))
+#     else
+#        define HPDF_EXPORT(A) A
+#        pragma warning Unknown dynamic link import/export semantics.
+#     endif
 #    else
 #        ifdef HPDF_SHARED_MAKE
 #            define HPDF_EXPORT(A)  extern A
