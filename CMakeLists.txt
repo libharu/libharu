@@ -99,6 +99,9 @@ if(PNG_FOUND)
   set(ADDITIONAL_LIBRARIES ${ADDITIONAL_LIBRARIES} ${PNG_LIBRARIES})
 endif(PNG_FOUND)
 
+if(UNIX)
+  list(APPEND ADDITIONAL_LIBRARIES m)
+endif(UNIX)
 
 # =======================================================================
 # configure header files, add compiler flags
