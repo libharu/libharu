@@ -149,16 +149,16 @@ endif (NOT ZLIB_FOUND)
 
 # create hpdf_config.h
 configure_file(
-  ${CMAKE_SOURCE_DIR}/include/hpdf_config.h.cmake
-  ${CMAKE_BINARY_DIR}/include/hpdf_config.h
+  ${PROJECT_SOURCE_DIR}/include/hpdf_config.h.cmake
+  ${PROJECT_BINARY_DIR}/include/hpdf_config.h
 )
 include_directories(${CMAKE_BINARY_DIR}/include)
 
 # create DevPackage file
 if(DEVPAK)
   configure_file(
-    ${CMAKE_SOURCE_DIR}/libharu.DevPackage.cmake
-    ${CMAKE_BINARY_DIR}/libharu.DevPackage
+    ${PROJECT_SOURCE_DIR}/libharu.DevPackage.cmake
+    ${PROJECT_BINARY_DIR}/libharu.DevPackage
   )
 endif(DEVPAK)
 # =======================================================================
@@ -203,7 +203,7 @@ set(
     include/hpdf_pdfa.h
     include/hpdf_3dmeasure.h
     include/hpdf_exdata.h
-    ${CMAKE_BINARY_DIR}/include/hpdf_config.h
+    ${PROJECT_BINARY_DIR}/include/hpdf_config.h
 )
 
 # install header files
@@ -215,7 +215,7 @@ if(NOT DEVPAK)
   install(DIRECTORY if DESTINATION .)
 endif(NOT DEVPAK)
 if(DEVPAK)
-  install(FILES ${CMAKE_BINARY_DIR}/libharu.DevPackage DESTINATION .)
+  install(FILES ${PROJECT_BINARY_DIR}/libharu.DevPackage DESTINATION .)
 endif(DEVPAK)
 
 # =======================================================================
@@ -228,7 +228,7 @@ summary()
 # =======================================================================
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${LIBHPDF_DESCRIPTION})
 set(CPACK_PACKAGE_VENDOR "Werner Smekal")
-set(CPACK_PACKAGE_DESCRIPTION_FILE ${CMAKE_CURRENT_SOURCE_DIR}/README)
+set(CPACK_PACKAGE_DESCRIPTION_FILE ${PROJECT_SOURCE_DIR}/README)
 set(CPACK_PACKAGE_VERSION_MAJOR "${LIBHPDF_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${LIBHPDF_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${LIBHPDF_PATCH}")
