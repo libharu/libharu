@@ -112,7 +112,7 @@ HPDF_FileStream_FreeFunc  (HPDF_Stream  stream);
  *  ptr : Pointer to a buffer to copy read data.
  *  size : Pointer to a variable which indecates buffer size.
  *
- *  HPDF_Stream_read returns HPDF_OK when success. On failer, it returns
+ *  HPDF_Stream_read returns HPDF_OK when success. On failure, it returns
  *  error-code returned by reading function of this stream.
  *
  */
@@ -141,7 +141,7 @@ HPDF_Stream_Read  (HPDF_Stream  stream,
  *  s : Pointer to a buffer to copy read data.
  *  size : buffer-size of s.
  *
- *  Read from stream until the buffer is exhausted or line-feed charactor is
+ *  Read from stream until the buffer is exhausted or line-feed character is
  *  read.
  *
  */
@@ -226,7 +226,7 @@ HPDF_Stream_ReadLn  (HPDF_Stream  stream,
  *  ptr : Pointer to a buffer to write.
  *  siz : The size of buffer to write.
  *
- *  HPDF_Stream_Write returns HPDF_OK when success. On failer, it returns
+ *  HPDF_Stream_Write returns HPDF_OK when success. On failure, it returns
  *  error-code returned by writing function of this stream.
  *
  */
@@ -836,7 +836,7 @@ HPDF_FileReader_ReadFunc  (HPDF_Stream  stream,
  *                     HPDF_SEEK_CUR : Relative to the current file position
  *                     HPDF_SEEK_END : Relative to the current end of file.
  *
- *  HPDF_FileReader_seek_fn returns HPDF_OK when successful. On failer
+ *  HPDF_FileReader_seek_fn returns HPDF_OK when successful. On failure
  *  the result is HPDF_FILE_IO_ERROR and HPDF_Error_GetCode2() returns the
  *  error which returned by file seeking function of platform.
  *
@@ -1375,7 +1375,7 @@ HPDF_MemStream_Rewrite  (HPDF_Stream  stream,
 /*
  *  HPDF_CallbackReader_new
  *
- *  Constractor for HPDF_CallbackReader.
+ *  Constructor for HPDF_CallbackReader.
  *
  *  mmgr : Pointer to a HPDF_MMgr object.
  *  read_fn : Pointer to a user function for reading data.
@@ -1421,7 +1421,7 @@ HPDF_CallbackReader_New  (HPDF_MMgr              mmgr,
 /*
  *  HPDF_CallbackWriter_new
  *
- *  Constractor for HPDF_CallbackWriter.
+ *  Constructor for HPDF_CallbackWriter.
  *
  *  mmgr : Pointer to a HPDF_MMgr object.
  *  read_fn : Pointer to a user function for writing data.

@@ -64,7 +64,7 @@ Public Const HPDF_DEF_PAGE_NUM = 1
 
 Public Const HPDF_BS_DEF_WIDTH = 1
 
-'/* defalt page-size */
+'/* default page-size */
 Public Const HPDF_DEF_PAGE_WIDTH = 595.276
 Public Const HPDF_DEF_PAGE_HEIGHT = 841.89
 
@@ -534,7 +534,7 @@ Public Const HPDF_LANG_ZU = "zu"       '/* Zulu */
 
 
 '/*----------------------------------------------------------------------------*/
-'/*----- Graphis mode ---------------------------------------------------------*/
+'/*----- Graphics mode --------------------------------------------------------*/
 
 Public Const HPDF_GMODE_PAGE_DESCRIPTION = &H1
 Public Const HPDF_GMODE_PATH_OBJECT = &H2

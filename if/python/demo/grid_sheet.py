@@ -77,7 +77,7 @@ def print_grid  (pdf, page):
 
 
 
-    # Draw virtical lines
+    # Draw vertical lines
     x = 0
     while (x < width):
         if (x % 10 == 0):
@@ -124,7 +124,7 @@ def print_grid  (pdf, page):
         y += 5
 
 
-    # Draw virtical text
+    # Draw vertical text
     x = 0
     while (x < width):
         if (x % 50 == 0 and x > 0):

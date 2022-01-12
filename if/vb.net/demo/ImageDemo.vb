@@ -115,7 +115,7 @@ Module ImageDemo
 
             ' Rotating image 
             Dim angle As Single = 30                        ' rotation of 30 degrees.
-            Dim rad As Single = angle / 180 * 3.141592F     ' Calcurate the radian value.
+            Dim rad As Single = angle / 180 * 3.141592F     ' Calculate the radian value.
 
             page.GSave()
 

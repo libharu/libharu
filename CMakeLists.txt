@@ -84,14 +84,14 @@ endif(BUILD_SHARED_LIBS)
 include(haru)
 include(summary)
 
-# check zlib availibility
+# check zlib availability
 find_package(ZLIB)
 if(ZLIB_FOUND)
   include_directories(${ZLIB_INCLUDE_DIR})
   set(ADDITIONAL_LIBRARIES ${ZLIB_LIBRARIES})
 endif(ZLIB_FOUND)
   
-# check png availibility
+# check png availability
 find_package(PNG)
 if(PNG_FOUND)
   include_directories(${PNG_INCLUDE_DIR})
@@ -127,7 +127,7 @@ set (LIBHPDF_PACKAGE_TARNAME "TODO")
 
 # Just set to 1, we'll assume they are always available.
 # If not, then someone will have to add some tests in here to correctly determine
-# the headers existance.
+# the headers existence.
 set (LIBHPDF_STDC_HEADERS 1)
 
 # Don't do anything with this, it doesn't seem to be used anywhere anyhow

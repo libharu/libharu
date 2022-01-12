@@ -59,7 +59,7 @@ error_detail={
 
 0x102B: 'An Invalid encoding name is specified.',
 
-0x102C: 'The lengh of the key of encryption is invalid.',
+0x102C: 'The length of the key of encryption is invalid.',
 
 0x102D: '1. An invalid font handle was set.\n2. Unsupported font format.',
 
@@ -78,7 +78,7 @@ error_detail={
 
 0x1037: 'An invalid page-handle was specified.',
 
-0x1038: 'An invalid pages-handle was specified. (internel error)',
+0x1038: 'An invalid pages-handle was specified. (internal error)',
 
 0x1039: 'An invalid value is set.',
 
@@ -106,7 +106,7 @@ error_detail={
 0x104D: 'Internal error. The consistency of the data was lost.',
 0x104E: 'The current font is not set.',
 
-0x104F: 'An invalid font-handle was spacified.',
+0x104F: 'An invalid font-handle was specified.',
 
 0x1050: 'An invalid font-size was set.',
 

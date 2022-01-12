@@ -15,7 +15,7 @@ one, Traceback (most recent call last):
     c = HPDF_Page_GetRGBFill (page)
 ValueError: Procedure called with not enough arguments (4 bytes missing) or wrong calling convention
 
-Often, that msg happends when we load a Cdll with Windll method, vice versa. But why here?
+Often, that msg happens when we load a Cdll with Windll method, vice versa. But why here?
 
 two, if I comment out "c = HPDF_Page_GetRGBFill (page)", the yieled pdf has a unexpected layout
 

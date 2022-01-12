@@ -135,7 +135,7 @@ public class ImageDemo {
 
             /* Rotating image */
             float angle = 30;     /* rotation of 30 degrees. */
-            float rad = angle / 180 * 3.141592f; /* Calcurate the radian value. */
+            float rad = angle / 180 * 3.141592f; /* Calculate the radian value. */
 
             page.GSave();
 
