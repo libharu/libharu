@@ -70,7 +70,7 @@ UTF8_Encoder_ByteType_Func  (HPDF_Encoder        encoder,
     // When HPDF_BYTE_TYPE_SINGLE is returned, the current byte is the
     //   CODE argument in call ToUnicode_Func
     // When HPDF_BYTE_TYPE_LEAD is returned, the current byte (msb) and the
-    //   next byte (lsb) is the CODE arguement in call ToUnicodeFunc
+    //   next byte (lsb) is the CODE argument in call ToUnicodeFunc
     // When HPDF_BYTE_TYPE_TRIAL is returned, the current byte is ignored
 
     HPDF_CMapEncoderAttr  encoder_attr;
@@ -133,7 +133,7 @@ UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
                               HPDF_UINT16    code)
 {
     // Supposed to convert CODE to unicode.
-    // This function is allways called after ByteType_Func.
+    // This function is always called after ByteType_Func.
     // ByteType_Func recognizes the utf-8 bytes belonging to one character.
 
     HPDF_CMapEncoderAttr encoder_attr;

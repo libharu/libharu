@@ -159,7 +159,7 @@ def main ():
 
     # Rotating image
     angle = 30;     # rotation of 30 degrees.
-    rad = angle / 180 * 3.141592; # Calcurate the radian value.
+    rad = angle / 180 * 3.141592; # Calculate the radian value.
 
     HPDF_Page_GSave (page)
 

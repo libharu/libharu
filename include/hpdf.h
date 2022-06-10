@@ -54,6 +54,7 @@
 #include "hpdf_types.h"
 
 typedef void         *HPDF_HANDLE;
+typedef HPDF_HANDLE   HPDF_Boolean;
 typedef HPDF_HANDLE   HPDF_Doc;
 typedef HPDF_HANDLE   HPDF_Page;
 typedef HPDF_HANDLE   HPDF_Pages;
@@ -977,7 +978,7 @@ HPDF_Font_MeasureText (HPDF_Font          font,
 
 
 /*--------------------------------------------------------------------------*/
-/*----- attachements -------------------------------------------------------*/
+/*----- attachments -------------------------------------------------------*/
 
 HPDF_EXPORT(HPDF_EmbeddedFile)
 HPDF_AttachFile  (HPDF_Doc    pdf,

@@ -134,9 +134,5 @@ to the following restrictions:
    Riccardo Cohen, sea_sbs, Andrew. 
    They gave me very useful advices.
 
-3. Sourceforge.net
-   We would like to thank sourceForge.net for project hosting.
-
-4. Adobe Systems Inc.
+3. Adobe Systems Inc.
    We thank Adobe Systems Inc. for publishing PDF specification.
-

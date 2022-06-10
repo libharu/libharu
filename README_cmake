@@ -11,7 +11,7 @@ CMake is available in most of Linux repositories and can
 be therefore easily installed. In Cygwin just use the 
 usual method with setup.exe to get the latest version of CMake.
 For Windows and Mac OS X go to http://www.cmake.org and 
-download the appropriate binary packge. Make sure that the
+download the appropriate binary package. Make sure that the
 bin directory of the extracted CMake package is in the 
 PATH environment variable. Check in the CLI with
 
@@ -58,7 +58,7 @@ where Make Generator is one of the following (most important listed)
   Visual Studio 6             = Generates Visual Studio 6 project files.
   Visual Studio 9 2008        = Generates Visual Studio 9 2008 project files.
 
-You get a complete list of all available generators for your platfrom
+You get a complete list of all available generators for your platform
 with "cmake --help". I'll go into details for one specific compiler toolset.
 The other generators work similar.
 
@@ -93,7 +93,7 @@ More options can be found here: http://www.cmake.org/Wiki/CMake_Useful_Variables
 X How does CMake find libraries
 ===============================
 CMake searches usually in the standard locations to find libraries, which
-works well on Linux und Mac OS X. This is not the case for Windows (where
+works well on Linux and Mac OS X. This is not the case for Windows (where
 there are simply no standard locations for libraries) or if you want to
 use a library at a non-standard location. You can help CMake to find
 libraries via two environment variables, e.g. for Windows:

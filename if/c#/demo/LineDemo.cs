@@ -80,7 +80,7 @@ public class LineDemo {
 
             page.SetFontAndSize(font, 10);
 
-            /* Draw verious widths of lines. */
+            /* Draw various widths of lines. */
             page.SetLineWidth(0);
             DrawLine(page, 60, 770, "line width = 0");
 

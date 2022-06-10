@@ -1254,7 +1254,7 @@ CheckCompositGryph  (HPDF_FontDef   fontdef,
         if (num_of_contours != -1)
             return HPDF_OK;
 
-        HPDF_PTRACE ((" CheckCompositGryph composit font gid=%u\n", gid));
+        HPDF_PTRACE ((" CheckCompositGryph composite font gid=%u\n", gid));
 
         if ((ret = HPDF_Stream_Seek (attr->stream, 8, HPDF_SEEK_CUR))
             != HPDF_OK)

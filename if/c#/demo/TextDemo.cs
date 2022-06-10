@@ -230,7 +230,7 @@ public class TextDemo {
              * Rotating text
              */
             float angle1 = 30;                   /* A rotation of 30 degrees. */
-            float rad1 = angle1 / 180 * 3.141592f; /* Calcurate the radian value. */
+            float rad1 = angle1 / 180 * 3.141592f; /* Calculate the radian value. */
 
             ShowDescription(page, 320, ypos - 60, "Rotating text");
             page.BeginText();
