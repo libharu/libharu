@@ -51,7 +51,7 @@ type
   HPDF_UINT8 = Byte;
 
 
-{*  8bit charactor types
+{*  8bit character types
  *}
   HPDF_CHAR = char;
 

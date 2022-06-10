@@ -75,7 +75,7 @@ page.end_text
 
 page.set_font_and_size(font, 10)
 
-#Draw verious widths of lines.#
+#Draw various widths of lines.#
 page.set_line_width(0)
 draw_line(page, 60, 770, 'line width = 0')
 

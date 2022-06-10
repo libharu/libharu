@@ -975,7 +975,7 @@ HPDF_Font_MeasureText (HPDF_Font          font,
 
 
 /*--------------------------------------------------------------------------*/
-/*----- attachements -------------------------------------------------------*/
+/*----- attachments -------------------------------------------------------*/
 
 HPDF_EXPORT(HPDF_EmbeddedFile)
 HPDF_AttachFile  (HPDF_Doc    pdf,

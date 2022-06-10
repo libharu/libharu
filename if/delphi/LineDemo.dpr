@@ -126,7 +126,7 @@ begin
 
     HPDF_Page_SetFontAndSize (page, font, 10);
 
-    {* Draw verious widths of lines. *}
+    {* Draw various widths of lines. *}
     HPDF_Page_SetLineWidth (page, 0);
     draw_line (page, 60, 770, 'line width := 0');
 

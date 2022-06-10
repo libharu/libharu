@@ -62,7 +62,7 @@ const
 
   HPDF_BS_DEF_WIDTH = 1;
 
-{* defalt page-size *}
+{* default page-size *}
   HPDF_DEF_PAGE_WIDTH = 595.276;
   HPDF_DEF_PAGE_HEIGHT = 841.89;
 
@@ -529,7 +529,7 @@ const
 
 
 {*----------------------------------------------------------------------------*}
-{*----- Graphis mode ---------------------------------------------------------*}
+{*----- Graphics mode --------------------------------------------------------*}
 
   HPDF_GMODE_PAGE_DESCRIPTION = $0001;
   HPDF_GMODE_PATH_OBJECT = $0002;

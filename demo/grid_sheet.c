@@ -80,7 +80,7 @@ print_grid  (HPDF_Doc     pdf,
     }
 
 
-    /* Draw virtical lines */
+    /* Draw vertical lines */
     x = 0;
     while (x < width) {
         if (x % 10 == 0)
@@ -132,7 +132,7 @@ print_grid  (HPDF_Doc     pdf,
     }
 
 
-    /* Draw virtical text */
+    /* Draw vertical text */
     x = 0;
     while (x < width) {
         if (x % 50 == 0 && x > 0) {

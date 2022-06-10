@@ -2,7 +2,7 @@
 Pyharu is a pure python interface to haru(Haru Free PDF Library,
 http://libharu.org/). All of the C API is usable.
 No OO interface yet, but maybe in the feature, or you can write one by
-yourself and send me to be inculded in pyharu ;)
+yourself and send me to be included in pyharu ;)
 Pyharu runs on different python versions, and even in different OS
 without recompilation.
 
@@ -59,7 +59,7 @@ one, Traceback (most recent call last):
     c = HPDF_Page_GetRGBFill (page)
 ValueError: Procedure called with not enough arguments (4 bytes missing) or wrong calling convention
 
-Often, that msg happends when we load a Cdll with Windll method, vice versa. But why here?
+Often, that msg happens when we load a Cdll with Windll method, vice versa. But why here?
 
 two, if I comment out "c = HPDF_Page_GetRGBFill (page)", the yieled pdf has a unexpected layout
 
@@ -94,7 +94,7 @@ on your PC with the new one.
 
 8. What does the pyharu version number means?
 Well, I just use the version number of haru that I am using.
-That helps me to rember my development progress.
+That helps me to remember my development progress.
 
 9. License
 pyharu has a same license as haru, ie,  ZLIB/LIBPNG License.
