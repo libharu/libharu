@@ -22,6 +22,7 @@
 #include "hpdf_image.h"
 
 
+#ifdef LIBHPDF_HAVE_LIBPNG
 static HPDF_Image
 LoadPngImageFromStream (HPDF_Doc      pdf,
                         HPDF_Stream   imagedata,
@@ -148,7 +149,6 @@ HPDF_LoadPngImageFromFile2  (HPDF_Doc     pdf,
     return image;
 }
 
-#ifndef LIBHPDF_HAVE_NOPNGLIB
 static HPDF_Image
 LoadPngImageFromStream (HPDF_Doc      pdf,
                         HPDF_Stream   imagedata,
@@ -186,5 +186,4 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
     return NULL;
 }
 
-#endif /* LIBHPDF_HAVE_NOPNGLIB */
-
+#endif /* LIBHPDF_HAVE_PNGLIB */
