@@ -62,6 +62,7 @@ extern "C" {
 #define  HPDF_OSUBCLASS_EXT_GSTATE_R  0x0B00  /* read only object */
 #define  HPDF_OSUBCLASS_NAMEDICT      0x0C00
 #define  HPDF_OSUBCLASS_NAMETREE      0x0D00
+#define  HPDF_OSUBCLASS_SHADING       0x0E00
 
 
 
@@ -598,6 +599,7 @@ typedef HPDF_Array HPDF_Destination;
 typedef HPDF_Dict  HPDF_U3D;
 typedef HPDF_Dict  HPDF_OutputIntent;
 typedef HPDF_Dict  HPDF_JavaScript;
+typedef HPDF_Dict  HPDF_Shading;
 
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Direct ---------------------------------------------------------*/
