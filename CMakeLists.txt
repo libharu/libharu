@@ -5,14 +5,9 @@ project(libharu
     DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
     LANGUAGES C)
 
-# determine compiler name
-set(COMPILER_LABEL "unknown")
-if(CMAKE_COMPILER_IS_GNUCC)
-  set(COMPILER_LABEL "gcc")
-endif(CMAKE_COMPILER_IS_GNUCC)
-if(MSVC)
-  set(COMPILER_LABEL "vc")
-endif(MSVC)
+if (UNIX)
+    include(GNUInstallDirs)
+endif()
 
 # Location where the haru cmake build system first looks for cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
@@ -131,7 +126,7 @@ set(
 )
 
 # install header files
-install(FILES ${haru_HDRS} DESTINATION include)
+install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # install various files
 install(FILES README.md CHANGES INSTALL DESTINATION .)
