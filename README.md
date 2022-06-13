@@ -1,4 +1,4 @@
-# Haru Free PDF Library [![Build Status](https://travis-ci.org/insma/libharu.svg?branch=feature%2FCI)](https://travis-ci.org/insma/libharu)
+# Haru Free PDF Library [![Build Status](https://github.com/libharu/libharu/actions/workflows/cmake.yml/badge.svg)](https://github.com/libharu/libharu/actions/workflows/cmake.yml)
 
   **URL http://libharu.org/**
 
