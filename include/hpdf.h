@@ -19,6 +19,7 @@
 
 #include "hpdf_config.h"
 #include "hpdf_version.h"
+#include "hpdf_objects.h"
 
 #define HPDF_UNUSED(a) ((void)(a))
 
@@ -56,28 +57,29 @@
 typedef void         *HPDF_HANDLE;
 typedef HPDF_HANDLE   HPDF_Boolean;
 typedef HPDF_HANDLE   HPDF_Doc;
-typedef HPDF_HANDLE   HPDF_Page;
-typedef HPDF_HANDLE   HPDF_Pages;
-typedef HPDF_HANDLE   HPDF_Stream;
-typedef HPDF_HANDLE   HPDF_Image;
+// following types are redefined in hpdf_objects.h and couse compiler error of the samples
+//typedef HPDF_HANDLE   HPDF_Page;
+//typedef HPDF_HANDLE   HPDF_Pages;
+//typedef HPDF_HANDLE   HPDF_Stream;
+//typedef HPDF_HANDLE   HPDF_Image;
 typedef HPDF_HANDLE   HPDF_Font;
-typedef HPDF_HANDLE   HPDF_Outline;
-typedef HPDF_HANDLE   HPDF_Encoder;
-typedef HPDF_HANDLE   HPDF_3DMeasure;
-typedef HPDF_HANDLE   HPDF_ExData;
-typedef HPDF_HANDLE   HPDF_Destination;
-typedef HPDF_HANDLE   HPDF_XObject;
-typedef HPDF_HANDLE   HPDF_Annotation;
-typedef HPDF_HANDLE   HPDF_ExtGState;
+//typedef HPDF_HANDLE   HPDF_Outline;
+//typedef HPDF_HANDLE   HPDF_Encoder;
+//typedef HPDF_HANDLE   HPDF_3DMeasure;
+//typedef HPDF_HANDLE   HPDF_ExData;
+//typedef HPDF_HANDLE   HPDF_Destination;
+//typedef HPDF_HANDLE   HPDF_XObject;
+//typedef HPDF_HANDLE   HPDF_Annotation;
+//typedef HPDF_HANDLE   HPDF_ExtGState;
 typedef HPDF_HANDLE   HPDF_FontDef;
-typedef HPDF_HANDLE   HPDF_U3D;
-typedef HPDF_HANDLE   HPDF_JavaScript;
-typedef HPDF_HANDLE   HPDF_Error;
-typedef HPDF_HANDLE   HPDF_MMgr;
-typedef HPDF_HANDLE   HPDF_Dict;
-typedef HPDF_HANDLE   HPDF_EmbeddedFile;
-typedef HPDF_HANDLE   HPDF_OutputIntent;
-typedef HPDF_HANDLE   HPDF_Xref;
+//typedef HPDF_HANDLE   HPDF_U3D;
+//typedef HPDF_HANDLE   HPDF_JavaScript;
+//typedef HPDF_HANDLE   HPDF_Error;
+//typedef HPDF_HANDLE   HPDF_MMgr;
+//typedef HPDF_HANDLE   HPDF_Dict;
+//typedef HPDF_HANDLE   HPDF_EmbeddedFile;
+//typedef HPDF_HANDLE   HPDF_OutputIntent;
+//typedef HPDF_HANDLE   HPDF_Xref;
 
 #else
 
