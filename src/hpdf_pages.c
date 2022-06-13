@@ -582,7 +582,7 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
                                  HPDF_Page      page,
                                  HPDF_Rect      rect,
                                  HPDF_Image     image,
-                                 HPDF_Boolean   zoom)
+                                 HPDF_BOOL      zoom)
 {
     HPDF_Dict resource;
     HPDF_Dict fromxobject;
