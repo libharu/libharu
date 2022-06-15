@@ -2587,7 +2587,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                     HPDF_Encoder_SetParseText (encoder, &state, (HPDF_BYTE *)tmp_ptr, tmp_len);
                     while (*tmp_ptr) {
                         HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &state);
-                        if (btype != HPDF_BYTE_TYPE_TRIAL)
+                        if (btype != HPDF_BYTE_TYPE_TRAIL)
                             num_char++;
                         i++;
                         if (i >= tmp_len)

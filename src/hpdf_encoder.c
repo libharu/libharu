@@ -2713,7 +2713,7 @@ HPDF_CMapEncoder_ByteType  (HPDF_Encoder        encoder,
 
     if (state->byte_type == HPDF_BYTE_TYPE_LEAD) {
         if (attr->is_trial_byte_fn (encoder, state->text[state->index]))
-            state->byte_type = HPDF_BYTE_TYPE_TRIAL;
+            state->byte_type = HPDF_BYTE_TYPE_TRAIL;
         else
             state->byte_type = HPDF_BYTE_TYPE_UNKNOWN;
    } else {
