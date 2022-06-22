@@ -949,6 +949,18 @@ HPDF_EXPORT(HPDF_INT)
 HPDF_Font_GetDescent  (HPDF_Font  font);
 
 
+HPDF_EXPORT(HPDF_INT)
+HPDF_Font_GetLeading  (HPDF_Font  font);
+
+
+HPDF_EXPORT(HPDF_INT)
+HPDF_Font_GetUnderlinePosition  (HPDF_Font  font);
+
+
+HPDF_EXPORT(HPDF_INT)
+HPDF_Font_GetUnderlineThickness  (HPDF_Font  font);
+
+
 HPDF_EXPORT(HPDF_UINT)
 HPDF_Font_GetXHeight  (HPDF_Font  font);
 
