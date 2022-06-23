@@ -159,10 +159,7 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
     HPDF_PTRACE ((" HPDF_LoadPngImageFromStream\n"));
 
     image = HPDF_Image_LoadPngImage (pdf->mmgr, imagedata, pdf->xref,
-                delayed_loading);
-
-    if (image && (pdf->compression_mode & HPDF_COMP_IMAGE))
-        image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
+                delayed_loading, (pdf->compression_mode & HPDF_COMP_IMAGE) != 0);
 
     return image;
 }
