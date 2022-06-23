@@ -545,8 +545,10 @@ no_transparent_color_in_palette:
 			ret = HPDF_FAILD_TO_ALLOC_MEM;
 			goto Exit;
 		}
-
+		
+		smask->filter = image->filter;
 		smask->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
+		
 		ret = HPDF_Dict_AddName (smask, "Type", "XObject");
 		ret += HPDF_Dict_AddName (smask, "Subtype", "Image");
 		ret += HPDF_Dict_AddNumber (smask, "Width", (HPDF_UINT)width);
