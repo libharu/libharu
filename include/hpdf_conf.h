@@ -80,5 +80,7 @@
  */
 #define HPDF_ALINMENT_SIZ              sizeof(int)
 
+#define G3CODES
+
 #endif /* _HPDF_CONF_H */
 
