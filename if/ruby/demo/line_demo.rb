@@ -109,8 +109,8 @@ draw_line2(page, 60, 570, 'HPDF_BUTT_END')
 page.set_line_cap(HPDFDoc::HPDF_ROUND_END)
 draw_line2(page, 60, 505, 'HPDF_ROUND_END')
 
-page.set_line_cap(HPDFDoc::HPDF_PROJECTING_SCUARE_END)
-draw_line2(page, 60, 440, 'HPDF_PROJECTING_SCUARE_END')
+page.set_line_cap(HPDFDoc::HPDF_PROJECTING_SQUARE_END)
+draw_line2(page, 60, 440, 'HPDF_PROJECTING_SQUARE_END')
 
 #Line Join Style#
 page.set_line_width(30)

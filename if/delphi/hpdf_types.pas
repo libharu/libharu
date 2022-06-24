@@ -233,7 +233,7 @@ type
   THPDF_LineCap = (
     HPDF_BUTT_END,
     HPDF_ROUND_END,
-    HPDF_PROJECTING_SCUARE_END
+    HPDF_PROJECTING_SQUARE_END
   );
 
 {*----------------------------------------------------------------------------*}

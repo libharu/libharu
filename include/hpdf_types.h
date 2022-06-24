@@ -291,7 +291,7 @@ typedef struct _HPDF_CMYKColor {
 typedef enum _HPDF_LineCap {
     HPDF_BUTT_END = 0,
     HPDF_ROUND_END,
-    HPDF_PROJECTING_SCUARE_END,
+    HPDF_PROJECTING_SQUARE_END,
     HPDF_LINECAP_EOF
 } HPDF_LineCap;
 

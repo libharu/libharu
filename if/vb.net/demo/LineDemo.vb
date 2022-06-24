@@ -100,8 +100,8 @@ Module LineDemo
             page.SetLineCap(HPdfLineCap.HPDF_ROUND_END)
             DrawLine2(page, 60, 505, "HPDF_ROUND_END")
 
-            page.SetLineCap(HPdfLineCap.HPDF_PROJECTING_SCUARE_END)
-            DrawLine2(page, 60, 440, "HPDF_PROJECTING_SCUARE_END")
+            page.SetLineCap(HPdfLineCap.HPDF_PROJECTING_SQUARE_END)
+            DrawLine2(page, 60, 440, "HPDF_PROJECTING_SQUARE_END")
 
             ' Line Join Style
             page.SetLineWidth(30)

@@ -3677,7 +3677,7 @@ Init_hpdf()
     rb_define_const(rb_cHPDFDoc, "HPDF_CS_DEVICE_CMYK", INT2FIX(HPDF_CS_DEVICE_CMYK));
     rb_define_const(rb_cHPDFDoc, "HPDF_BUTT_END", INT2FIX(HPDF_BUTT_END));
     rb_define_const(rb_cHPDFDoc, "HPDF_ROUND_END", INT2FIX(HPDF_ROUND_END));
-    rb_define_const(rb_cHPDFDoc, "HPDF_PROJECTING_SCUARE_END", INT2FIX(HPDF_PROJECTING_SCUARE_END));
+    rb_define_const(rb_cHPDFDoc, "HPDF_PROJECTING_SQUARE_END", INT2FIX(HPDF_PROJECTING_SQUARE_END));
     rb_define_const(rb_cHPDFDoc, "HPDF_MITER_JOIN", INT2FIX(HPDF_MITER_JOIN));
     rb_define_const(rb_cHPDFDoc, "HPDF_ROUND_JOIN", INT2FIX(HPDF_ROUND_JOIN));
     rb_define_const(rb_cHPDFDoc, "HPDF_BEVEL_JOIN", INT2FIX(HPDF_BEVEL_JOIN));

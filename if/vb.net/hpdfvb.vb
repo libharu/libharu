@@ -140,7 +140,7 @@ Namespace HPdf
     Public Enum HPdfLineCap As Integer
         HPDF_BUTT_END = 0
         HPDF_ROUND_END = 1
-        HPDF_PROJECTING_SCUARE_END = 2
+        HPDF_PROJECTING_SQUARE_END = 2
         HPDF_LINECAP_EOF = 3
     End Enum
     Public Enum HPdfLineJoin As Integer
