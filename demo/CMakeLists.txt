@@ -75,7 +75,7 @@ endforeach(demo)
 add_executable(grid_sheet grid_sheet.c)
 target_link_libraries(grid_sheet PUBLIC haru)
   if(UNIX AND NOT APPLE)
-    target_link_libraries(${demo} PUBLIC m)
+    target_link_libraries(grid_sheet PUBLIC m)
   endif() 
 set_target_properties(grid_sheet PROPERTIES COMPILE_FLAGS "${DEMO_C_FLAGS} -DSTAND_ALONE")
 

@@ -32,7 +32,7 @@ if (CMAKE_COMPILER_IS_GNUCC OR ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang"))
    endif (LIBHPDF_ENABLE_EXCEPTIONS)
 endif ()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # =======================================================================
 # look for headers and libraries
@@ -76,10 +76,10 @@ set (LIBHPDF_HAVE_LIBZ ${ZLIB_FOUND})
 
 # create hpdf_config.h
 configure_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/hpdf_config.h.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/include/hpdf_config.h
+  ${PROJECT_SOURCE_DIR}/include/hpdf_config.h.cmake
+  ${PROJECT_BINARY_DIR}/include/hpdf_config.h
 )
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/include)
+include_directories(${PROJECT_BINARY_DIR}/include)
 
 # =======================================================================
 # create library and demos
@@ -125,7 +125,7 @@ set(
     include/hpdf_pdfa.h
     include/hpdf_3dmeasure.h
     include/hpdf_exdata.h
-    ${CMAKE_CURRENT_BINARY_DIR}/include/hpdf_config.h
+    ${PROJECT_BINARY_DIR}/include/hpdf_config.h
 )
 
 # install header files
@@ -133,7 +133,7 @@ install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # install various files
 install(FILES README.md CHANGES INSTALL DESTINATION .)
-install(DIRECTORY if DESTINATION .)
+install(DIRECTORY bindings DESTINATION .)
 
 # =======================================================================
 # print out some information
