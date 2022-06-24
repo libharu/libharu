@@ -16,7 +16,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 # command line options
 # =======================================================================
 option(BUILD_SHARED_LIBS "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" ON)
-option(LIBHPDF_EXAMPLES "Build libharu examples" NO)
+option(LIBHPDF_EXAMPLES "Build libharu examples" OFF)
 option(LIBHPDF_DEBUG "Enable HPDF Debug")
 option(LIBHPDF_DEBUG_TRACE "Enable HPDF Debug trace")
 
@@ -59,6 +59,9 @@ find_library(M_LIB m)
 if(MSVC_VERSION GREATER 1399)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_DEPRECATE)
 endif(MSVC_VERSION GREATER 1399)
+
+# Will export symbols to a .lib file on Windows
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS 1)
 
 # Just set to 1, we'll assume they are always available.
 # If not, then someone will have to add some tests in here to correctly determine
