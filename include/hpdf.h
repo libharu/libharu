@@ -1189,9 +1189,9 @@ HPDF_Page_SetMiterLimit  (HPDF_Page  page,
 /* d */
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetDash  (HPDF_Page           page,
-                    const HPDF_UINT16  *dash_ptn,
+                    const HPDF_REAL  *dash_ptn,
                     HPDF_UINT           num_param,
-                    HPDF_UINT           phase);
+                    HPDF_REAL           phase);
 
 
 

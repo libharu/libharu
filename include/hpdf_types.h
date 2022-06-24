@@ -213,9 +213,9 @@ typedef struct _HPDF_TextWidth {
 /*------ dash mode ----------------------------------------------------------*/
 
 typedef struct _HPDF_DashMode {
-    HPDF_UINT16  ptn[8];
-    HPDF_UINT    num_ptn;
-    HPDF_UINT    phase;
+    HPDF_REAL  ptn[8];
+    HPDF_UINT  num_ptn;
+    HPDF_REAL  phase;
 } HPDF_DashMode;
 
 
