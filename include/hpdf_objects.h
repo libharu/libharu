@@ -81,7 +81,7 @@ extern "C" {
  *  3       reserved
  *  4       shadow-object
  *  5-8     reserved
- *  9-32    object-idÅi0-8388607Åj
+ *  9-32    object-id
  *
  *  the real Object-ID is described "obj_id & 0x00FFFFFF"
  */
