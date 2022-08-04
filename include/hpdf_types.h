@@ -94,7 +94,7 @@ typedef  signed int          HPDF_BOOL;
 typedef  unsigned long       HPDF_STATUS;
 
 
-/*  charactor-code type (16bit)
+/*  character-code type (16bit)
  */
 typedef  HPDF_UINT16         HPDF_CID;
 typedef  HPDF_UINT16         HPDF_UNICODE;

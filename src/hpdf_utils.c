@@ -33,7 +33,7 @@ HPDF_AToI  (const char  *s)
     }
 
     /* increment pointer until the character of 's' is not
-     * white-space-charactor.
+     * white-space-character.
      */
     while (*s) {
         if (HPDF_IS_WHITE_SPACE(*s))
@@ -69,7 +69,7 @@ HPDF_AToF  (const char  *s)
     HPDF_INT tmp = 1;
 
     /* increment pointer until the character of 's' is not
-     * white-space-charactor.
+     * white-space-character.
      */
     while (*s) {
         if (HPDF_IS_WHITE_SPACE(*s))
