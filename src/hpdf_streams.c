@@ -30,10 +30,10 @@
 #include "hpdf_utils.h"
 #include "hpdf_streams.h"
 
-#ifndef LIBHPDF_HAVE_NOZLIB
+#ifdef LIBHPDF_HAVE_ZLIB
 #include <zlib.h>
 #include <zconf.h>
-#endif /* LIBHPDF_HAVE_NOZLIB */
+#endif /* LIBHPDF_HAVE_ZLIB */
 
 HPDF_STATUS
 HPDF_MemStream_WriteFunc  (HPDF_Stream      stream,
@@ -562,7 +562,7 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
                                        HPDF_Stream  dst,
                                        HPDF_Encrypt  e)
 {
-#ifndef LIBHPDF_HAVE_NOZLIB
+#ifdef LIBHPDF_HAVE_ZLIB
 
 #define DEFLATE_BUF_SIZ  ((HPDF_INT)(HPDF_STREAM_BUF_SIZ * 1.1) + 13)
 
@@ -676,12 +676,12 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
 
     deflateEnd(&strm);
     return HPDF_OK;
-#else /* LIBHPDF_HAVE_NOZLIB */
+#else /* LIBHPDF_HAVE_ZLIB */
     HPDF_UNUSED (e);
     HPDF_UNUSED (dst);
     HPDF_UNUSED (src);
     return HPDF_UNSUPPORTED_FUNC;
-#endif /* LIBHPDF_HAVE_NOZLIB */
+#endif /* LIBHPDF_HAVE_ZLIB */
 }
 
 HPDF_STATUS
@@ -711,10 +711,10 @@ HPDF_Stream_WriteToStream  (HPDF_Stream  src,
     if (HPDF_Stream_Size (src) == 0)
         return HPDF_OK;
 
-#ifndef LIBHPDF_HAVE_NOZLIB
+#ifdef LIBHPDF_HAVE_ZLIB
     if (filter & HPDF_STREAM_FILTER_FLATE_DECODE)
         return HPDF_Stream_WriteToStreamWithDeflate (src, dst, e);
-#endif /* LIBHPDF_HAVE_NOZLIB */
+#endif /* LIBHPDF_HAVE_ZLIB */
 
     ret = HPDF_Stream_Seek (src, 0, HPDF_SEEK_SET);
     if (ret != HPDF_OK)

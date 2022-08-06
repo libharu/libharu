@@ -78,6 +78,7 @@ typedef HPDF_HANDLE   HPDF_Dict;
 typedef HPDF_HANDLE   HPDF_EmbeddedFile;
 typedef HPDF_HANDLE   HPDF_OutputIntent;
 typedef HPDF_HANDLE   HPDF_Xref;
+typedef HPDF_HANDLE   HPDF_Shading;
 
 #else
 
@@ -120,6 +121,8 @@ HPDF_SetErrorHandler  (HPDF_Doc            pdf,
 HPDF_EXPORT(void)
 HPDF_Free  (HPDF_Doc  pdf);
 
+HPDF_EXPORT(HPDF_MMgr)
+HPDF_GetDocMMgr  (HPDF_Doc doc);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_NewDoc  (HPDF_Doc  pdf);
@@ -462,7 +465,7 @@ HPDF_Page_CreateXObjectFromImage    (HPDF_Doc       pdf,
                                      HPDF_Page      page,
                                      HPDF_Rect      rect,
                                      HPDF_Image     image,
-                                     HPDF_Boolean   zoom);
+                                     HPDF_BOOL      zoom);
 
 HPDF_EXPORT(HPDF_XObject)
 HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
@@ -1186,9 +1189,9 @@ HPDF_Page_SetMiterLimit  (HPDF_Page  page,
 /* d */
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetDash  (HPDF_Page           page,
-                    const HPDF_UINT16  *dash_ptn,
+                    const HPDF_REAL  *dash_ptn,
                     HPDF_UINT           num_param,
-                    HPDF_UINT           phase);
+                    HPDF_REAL           phase);
 
 
 
@@ -1204,6 +1207,11 @@ HPDF_Page_SetFlat  (HPDF_Page    page,
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetExtGState  (HPDF_Page        page,
                          HPDF_ExtGState   ext_gstate);
+
+/* sh */
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetShading  (HPDF_Page    page,
+                       HPDF_Shading shading);
 
 
 /*--- Special graphic state operator --------------------------------------*/
@@ -1484,7 +1492,23 @@ HPDF_Page_SetCMYKStroke  (HPDF_Page  page,
 
 /*--- Shading patterns ---------------------------------------------------*/
 
-/* sh --not implemented yet */
+/* Notes for docs:
+ * - ShadingType must be HPDF_SHADING_FREE_FORM_TRIANGLE_MESH (the only
+ *   defined option...)
+ * - colorSpace must be HPDF_CS_DEVICE_RGB for now.
+ */
+HPDF_EXPORT(HPDF_Shading)
+HPDF_Shading_New  (HPDF_Doc         pdf,
+                   HPDF_ShadingType type,
+                   HPDF_ColorSpace  colorSpace,
+                   HPDF_REAL xMin, HPDF_REAL xMax,
+                   HPDF_REAL yMin, HPDF_REAL yMax);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Shading_AddVertexRGB(HPDF_Shading shading,
+                          HPDF_Shading_FreeFormTriangleMeshEdgeFlag edgeFlag,
+                          HPDF_REAL x, HPDF_REAL y,
+                          HPDF_UINT8 r, HPDF_UINT8 g, HPDF_UINT8 b);
 
 /*--- In-line images -----------------------------------------------------*/
 

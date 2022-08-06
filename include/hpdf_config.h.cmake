@@ -42,13 +42,6 @@
 /* debug trace enabled */
 #cmakedefine LIBHPDF_DEBUG_TRACE
 
-/* libpng is not available */
-#cmakedefine LIBHPDF_HAVE_NOPNGLIB
-#cmakedefine HPDF_NOPNGLIB
-
-/* zlib is not available */
-#cmakedefine LIBHPDF_HAVE_NOZLIB
-
 /* Define to the address where bug reports for this package should be sent. */
 #cmakedefine LIBHPDF_PACKAGE_BUGREPORT "@LIBHPDF_PACKAGE_BUGREPORT@"
 
