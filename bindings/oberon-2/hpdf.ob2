@@ -78,7 +78,7 @@ TYPE
 
 
 (*
-  8bit charactor types
+  8bit character types
 *)
   HPDF_CHAR * = Windows.PSTR;
 
@@ -115,7 +115,7 @@ TYPE
 
 
 (*  
-  charactor-code type (16bit)
+  character-code type (16bit)
  *)
   HPDF_CID * = Windows.WCHAR;
   HPDF_UNICODE * = Windows.WCHAR;
@@ -539,7 +539,7 @@ CONST
 
   HPDF_BS_DEF_WIDTH            * = 1;
 
-(* defalt page-size *)
+(* default page-size *)
   HPDF_DEF_PAGE_WIDTH          * = 595.276;
   HPDF_DEF_PAGE_HEIGHT         * = 841.89;
 

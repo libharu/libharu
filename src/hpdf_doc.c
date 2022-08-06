@@ -619,7 +619,7 @@ InternalSaveToStream  (HPDF_Doc      pdf,
     if ((ret = PrepareTrailer (pdf)) != HPDF_OK)
         return ret;
 
-    /* prepare encription */
+    /* prepare encryption */
     if (pdf->encrypt_on) {
         HPDF_Encrypt e= HPDF_EncryptDict_GetAttr (pdf->encrypt_dict);
 

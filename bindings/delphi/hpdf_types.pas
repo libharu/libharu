@@ -83,7 +83,7 @@ type
   HPDF_STATUS = Cardinal;
 
 
-{*  charactor-code type (16bit)
+{*  character-code type (16bit)
  *}
   HPDF_CID = Word;
   HPDF_UNICODE = Word;

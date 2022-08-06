@@ -68,7 +68,7 @@ Attribute VB_Name = "Module3"
 'typedef  unsigned long       HPDF_STATUS
 
 
-'/*  charactor-code type (16bit)
+'/*  character-code type (16bit)
 ' */
 'typedef  long16         HPDF_CID
 'typedef  long16         HPDF_UNICODE

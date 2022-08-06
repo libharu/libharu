@@ -62,7 +62,7 @@ HPDF_BOOL=c_int
 HPDF_STATUS=c_ulong
 
 
-#  charactor-code type (16bit)
+#  character-code type (16bit)
 HPDF_CID=HPDF_UINT16
 HPDF_UNICODE=HPDF_UINT16
 

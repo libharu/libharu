@@ -74,7 +74,7 @@ But when you use it as shared-library, it can be used by many development
 languages which support shared library.
 So far, Haru provides bindings for Ruby, Delphi/Free Pascal and C#.
 
-If you write bindings for other programing languages, please notice me!
+If you write bindings for other programming languages, please notice me!
 
 
 # Runtime environment of programs using Haru
