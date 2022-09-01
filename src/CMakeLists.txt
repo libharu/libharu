@@ -72,23 +72,23 @@ set(
 # =======================================================================
 # create haru library
 # =======================================================================
-add_library(haru ${LIBHPDF_SRCS})
+add_library(hpdf ${LIBHPDF_SRCS})
 if (PNG_FOUND)
     include_directories (${PNG_INCLUDE_DIRS})
-    target_link_libraries (haru ${PNG_LIBRARIES})
+    target_link_libraries (hpdf ${PNG_LIBRARIES})
 endif()
 if (ZLIB_FOUND)
     include_directories (${ZLIB_INCLUDE_DIRS})
-    target_link_libraries (haru ${ZLIB_LIBRARIES})
+    target_link_libraries (hpdf ${ZLIB_LIBRARIES})
 endif()
 
 # Math library
 if(UNIX AND NOT APPLE)
-    target_link_libraries (haru ${M_LIB})
+    target_link_libraries (hpdf ${M_LIB})
 endif()
 
 install(
-   TARGETS
+   TARGETS hpdf
    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
