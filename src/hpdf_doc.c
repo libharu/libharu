@@ -17,6 +17,7 @@
 
 
 #include "hpdf_conf.h"
+#include "hpdf_config.h"
 #include "hpdf_utils.h"
 #include "hpdf_encryptdict.h"
 #include "hpdf_namedict.h"
@@ -90,7 +91,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
 HPDF_EXPORT(const char *)
 HPDF_GetVersion (void)
 {
-    return HPDF_VERSION_TEXT;
+    return LIBHPDF_VERSION_TEXT;
 }
 
 

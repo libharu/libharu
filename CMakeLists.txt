@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(libharu
-    VERSION 2.4.0
+    VERSION 2.4.1
     DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
     LANGUAGES C)
 
@@ -95,8 +95,7 @@ set(
   haru_HDRS
     include/hpdf.h
     include/hpdf_types.h
-    include/hpdf_consts.h 
-    include/hpdf_version.h
+    include/hpdf_consts.h
     include/hpdf_annotation.h
     include/hpdf_catalog.h
     include/hpdf_conf.h
