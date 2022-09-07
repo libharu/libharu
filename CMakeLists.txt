@@ -73,6 +73,13 @@ set (LIBHPDF_HAVE_LIBPNG ${PNG_FOUND})
 # support different zlib defines
 set (LIBHPDF_HAVE_LIBZ ${ZLIB_FOUND})
 
+# Set version id
+math(EXPR PROJECT_VERSION_ID "
+    10000 * ${PROJECT_VERSION_MAJOR} +
+    100 * ${PROJECT_VERSION_MINOR} +
+    ${PROJECT_VERSION_PATCH}
+")
+
 # create hpdf_config.h
 configure_file(
   ${PROJECT_SOURCE_DIR}/include/hpdf_config.h.cmake

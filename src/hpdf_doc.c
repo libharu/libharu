@@ -91,7 +91,7 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
 HPDF_EXPORT(const char *)
 HPDF_GetVersion (void)
 {
-    return LIBHPDF_VERSION_TEXT;
+    return HPDF_VERSION_TEXT;
 }
 
 
