@@ -5,7 +5,7 @@ project(libharu
     DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
     LANGUAGES C)
 
-set(PROJECT_VERSION_EXTRA "dev")
+set(PROJECT_VERSION_EXTRA "")
 if (PROJECT_VERSION_EXTRA)
     set(PROJECT_VERSION_TEXT "${PROJECT_VERSION}-${PROJECT_VERSION_EXTRA}")
 else()
