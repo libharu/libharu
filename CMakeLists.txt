@@ -5,6 +5,20 @@ project(libharu
     DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
     LANGUAGES C)
 
+set(PROJECT_VERSION_EXTRA "dev")
+if (PROJECT_VERSION_EXTRA)
+    set(PROJECT_VERSION_TEXT "${PROJECT_VERSION}-${PROJECT_VERSION_EXTRA}")
+else()
+    set(PROJECT_VERSION_TEXT ${PROJECT_VERSION})
+endif()
+
+# Set version id
+math(EXPR PROJECT_VERSION_ID "
+    10000 * ${PROJECT_VERSION_MAJOR} +
+    100 * ${PROJECT_VERSION_MINOR} +
+    ${PROJECT_VERSION_PATCH}
+")
+
 include(GNUInstallDirs)
 
 
@@ -73,12 +87,11 @@ set (LIBHPDF_HAVE_LIBPNG ${PNG_FOUND})
 # support different zlib defines
 set (LIBHPDF_HAVE_LIBZ ${ZLIB_FOUND})
 
-# Set version id
-math(EXPR PROJECT_VERSION_ID "
-    10000 * ${PROJECT_VERSION_MAJOR} +
-    100 * ${PROJECT_VERSION_MINOR} +
-    ${PROJECT_VERSION_PATCH}
-")
+# create hpdf_version.h
+configure_file(
+  ${PROJECT_SOURCE_DIR}/include/hpdf_version.h.cmake
+  ${PROJECT_BINARY_DIR}/include/hpdf_version.h
+)
 
 # create hpdf_config.h
 configure_file(
@@ -131,6 +144,7 @@ set(
     include/hpdf_3dmeasure.h
     include/hpdf_exdata.h
     ${PROJECT_BINARY_DIR}/include/hpdf_config.h
+    ${PROJECT_BINARY_DIR}/include/hpdf_version.h
 )
 
 # install header files

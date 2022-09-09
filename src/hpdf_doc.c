@@ -24,6 +24,7 @@
 #include "hpdf_destination.h"
 #include "hpdf_info.h"
 #include "hpdf_page_label.h"
+#include "hpdf_version.h"
 #include "hpdf.h"
 
 

@@ -40,13 +40,6 @@
 /* debug trace enabled */
 #cmakedefine LIBHPDF_DEBUG_TRACE
 
-/* Version numbers */
-#define HPDF_MAJOR_VERSION "@PROJECT_VERSION_MAJOR@"
-#define HPDF_MINOR_VERSION "@PROJECT_VERSION_MINOR@"
-#define HPDF_BUGFIX_VERSION "@PROJECT_VERSION_PATCH@"
-#define HPDF_VERSION_TEXT "@PROJECT_VERSION@"
-#define HPDF_VERSION_ID "@PROJECT_VERSION_ID@"
-
 /* Define to the address where bug reports for this package should be sent. */
 #cmakedefine LIBHPDF_PACKAGE_BUGREPORT "@LIBHPDF_PACKAGE_BUGREPORT@"
 
