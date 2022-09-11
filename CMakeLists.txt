@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(libharu
-    VERSION 2.4.1
+    VERSION 2.4.2
     DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
     LANGUAGES C)
 
