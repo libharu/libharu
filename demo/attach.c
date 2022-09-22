@@ -18,7 +18,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 
-const char *text = "This PDF should have an attachment named attach.c";
+const char *text = "This PDF should have an attachment named basn3p08.png";
 
 jmp_buf env;
 
@@ -76,8 +76,7 @@ main (int argc, char **argv)
     HPDF_Page_EndText (page);
 
     /* attach a file to the document */
-    HPDF_AttachFile (pdf, "attach.c");
-    HPDF_AttachFile (pdf, "jpeg_demo.c");
+    HPDF_AttachFile (pdf, "pngsuite/basn3p08.png");
 
     /* save the document to a file */
     HPDF_SaveToFile (pdf, fname);
