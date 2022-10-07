@@ -79,7 +79,7 @@ set (LIBHPDF_STDC_HEADERS 1)
 set (LIBHPDF_HAVE_LIBPNG ${PNG_FOUND})
 
 # support different zlib defines
-set (LIBHPDF_HAVE_LIBZ ${ZLIB_FOUND})
+set (LIBHPDF_HAVE_ZLIB ${ZLIB_FOUND})
 
 # create hpdf_config.h
 configure_file(

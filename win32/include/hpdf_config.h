@@ -10,7 +10,7 @@
 #define LIBHPDF_HAVE_LIBPNG 1
 
 /* Define to 1 if you have the `z' library (-lz). */
-#define LIBHPDF_HAVE_LIBZ 1
+#define LIBHPDF_HAVE_ZLIB 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef LIBHPDF_HAVE_MEMORY_H
