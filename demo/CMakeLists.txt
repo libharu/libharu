@@ -9,6 +9,7 @@
   # =======================================================================
 set(
   demos_NAMES
+  	attach
   	character_map
   	encoding_list
   	encryption
@@ -57,7 +58,7 @@ foreach(demo ${demos_NAMES})
   if(DEMO_C_FLAGS)
     set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
   endif(DEMO_C_FLAGS)
-endforeach(demo)
+endforeach()
   
 # some demos need grid_sheet.c compiled in
 foreach(demo ${demos_with_grid_NAMES})
@@ -69,7 +70,7 @@ foreach(demo ${demos_with_grid_NAMES})
   if(DEMO_C_FLAGS)
     set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
   endif(DEMO_C_FLAGS)
-endforeach(demo)
+endforeach()
   
 # the grid_sheet demo needs extra defines
 add_executable(grid_sheet grid_sheet.c)
@@ -88,7 +89,7 @@ install(
 )
 foreach(demo ${demos_NAMES} ${demos_with_grid_NAMES} grid_sheet)
   install(FILES ${demo}.c DESTINATION demo)
-endforeach(demo)
+endforeach()
 
 # install demo files
 install(

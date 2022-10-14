@@ -1,23 +1,17 @@
 cmake_minimum_required(VERSION 3.10)
 
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/include/hpdf_version.h HPDF_VERSION_H_CONTENTS REGEX " HPDF_(MAJOR|MINOR|BUGFIX)_VERSION ")
+string(REGEX MATCH "MAJOR_VERSION [0-9]+"  HPDF_MAJOR_VERSION  ${HPDF_VERSION_H_CONTENTS})
+string(REGEX MATCH "MINOR_VERSION [0-9]+"  HPDF_MINOR_VERSION  ${HPDF_VERSION_H_CONTENTS})
+string(REGEX MATCH "BUGFIX_VERSION [0-9]+" HPDF_BUGFIX_VERSION ${HPDF_VERSION_H_CONTENTS})
+string(REGEX MATCH "[0-9]+" HPDF_MAJOR_VERSION  ${HPDF_MAJOR_VERSION})
+string(REGEX MATCH "[0-9]+" HPDF_MINOR_VERSION  ${HPDF_MINOR_VERSION})
+string(REGEX MATCH "[0-9]+" HPDF_BUGFIX_VERSION ${HPDF_BUGFIX_VERSION})
+
 project(libharu
-    VERSION 2.4.2
+    VERSION ${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION}
     DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
     LANGUAGES C)
-
-set(PROJECT_VERSION_EXTRA "")
-if (PROJECT_VERSION_EXTRA)
-    set(PROJECT_VERSION_TEXT "${PROJECT_VERSION}-${PROJECT_VERSION_EXTRA}")
-else()
-    set(PROJECT_VERSION_TEXT ${PROJECT_VERSION})
-endif()
-
-# Set version id
-math(EXPR PROJECT_VERSION_ID "
-    10000 * ${PROJECT_VERSION_MAJOR} +
-    100 * ${PROJECT_VERSION_MINOR} +
-    ${PROJECT_VERSION_PATCH}
-")
 
 include(GNUInstallDirs)
 
@@ -55,7 +49,7 @@ include(summary)
 
 # check zlib availability
 find_package(ZLIB)
-  
+
 # check png availability
 find_package(PNG)
 
@@ -85,13 +79,7 @@ set (LIBHPDF_STDC_HEADERS 1)
 set (LIBHPDF_HAVE_LIBPNG ${PNG_FOUND})
 
 # support different zlib defines
-set (LIBHPDF_HAVE_LIBZ ${ZLIB_FOUND})
-
-# create hpdf_version.h
-configure_file(
-  ${PROJECT_SOURCE_DIR}/include/hpdf_version.h.cmake
-  ${PROJECT_BINARY_DIR}/include/hpdf_version.h
-)
+set (LIBHPDF_HAVE_ZLIB ${ZLIB_FOUND})
 
 # create hpdf_config.h
 configure_file(
@@ -143,8 +131,8 @@ set(
     include/hpdf_pdfa.h
     include/hpdf_3dmeasure.h
     include/hpdf_exdata.h
+    include/hpdf_version.h
     ${PROJECT_BINARY_DIR}/include/hpdf_config.h
-    ${PROJECT_BINARY_DIR}/include/hpdf_version.h
 )
 
 # install header files

@@ -18,6 +18,7 @@
 #define _HPDF_H
 
 #include "hpdf_config.h"
+#include "hpdf_version.h"
 
 #define HPDF_UNUSED(a) ((void)(a))
 
