@@ -18,7 +18,7 @@ BLOCK "StringFileInfo"
 		VALUE "ProductName", ""
 		VALUE "ProductVersion", "_VERSION2"
 		VALUE "Comments", ""
-		VALUE "Aditional Notes", ""
+		VALUE "Additional Notes", ""
 	}
 }
 

@@ -17,12 +17,14 @@
 
 
 #include "hpdf_conf.h"
+#include "hpdf_config.h"
 #include "hpdf_utils.h"
 #include "hpdf_encryptdict.h"
 #include "hpdf_namedict.h"
 #include "hpdf_destination.h"
 #include "hpdf_info.h"
 #include "hpdf_page_label.h"
+#include "hpdf_version.h"
 #include "hpdf.h"
 
 
@@ -121,6 +123,13 @@ HPDF_HasDoc  (HPDF_Doc  pdf)
         return HPDF_TRUE;
 }
 
+HPDF_EXPORT(HPDF_MMgr)
+HPDF_GetDocMMgr  (HPDF_Doc doc)
+{
+    HPDF_PTRACE ((" HPDF_GetDocMMgr\n"));
+
+    return doc->mmgr;
+}
 
 HPDF_EXPORT(HPDF_Doc)
 HPDF_New  (HPDF_Error_Handler    user_error_fn,
@@ -612,7 +621,7 @@ InternalSaveToStream  (HPDF_Doc      pdf,
     if ((ret = PrepareTrailer (pdf)) != HPDF_OK)
         return ret;
 
-    /* prepare encription */
+    /* prepare encryption */
     if (pdf->encrypt_on) {
         HPDF_Encrypt e= HPDF_EncryptDict_GetAttr (pdf->encrypt_dict);
 
@@ -2127,16 +2136,16 @@ HPDF_SetCompressionMode  (HPDF_Doc    pdf,
     if (mode != (mode & HPDF_COMP_MASK))
         return HPDF_RaiseError (&pdf->error, HPDF_INVALID_COMPRESSION_MODE, 0);
 
-#ifndef LIBHPDF_HAVE_NOZLIB
+#ifdef LIBHPDF_HAVE_ZLIB
     pdf->compression_mode = mode;
 
     return HPDF_OK;
 
-#else /* LIBHPDF_HAVE_NOZLIB */
+#else /* LIBHPDF_HAVE_ZLIB */
 
     return HPDF_INVALID_COMPRESSION_MODE;
 
-#endif /* LIBHPDF_HAVE_NOZLIB */
+#endif /* LIBHPDF_HAVE_ZLIB */
 }
 
 

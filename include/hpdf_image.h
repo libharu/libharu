@@ -44,7 +44,7 @@ HPDF_Image_LoadCcittImageFromMemory  (HPDF_MMgr mmgr,
                           HPDF_BOOL black_is1
                           );
 
-#ifndef LIBHPDF_HAVE_NOPNGLIB
+#ifdef LIBHPDF_HAVE_LIBPNG
 
 HPDF_Image
 HPDF_Image_LoadPngImage  (HPDF_MMgr        mmgr,

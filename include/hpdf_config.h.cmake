@@ -1,5 +1,3 @@
-/* include/hpdf_config.h.in.  Generated from configure.in by autoheader.  */
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #cmakedefine LIBHPDF_HAVE_DLFCN_H
 
@@ -10,7 +8,7 @@
 #cmakedefine LIBHPDF_HAVE_LIBPNG
 
 /* Define to 1 if you have the `z' library (-lz). */
-#cmakedefine LIBHPDF_HAVE_LIBZ
+#cmakedefine LIBHPDF_HAVE_ZLIB
 
 /* Define to 1 if you have the <memory.h> header file. */
 #cmakedefine LIBHPDF_HAVE_MEMORY_H
@@ -41,13 +39,6 @@
 
 /* debug trace enabled */
 #cmakedefine LIBHPDF_DEBUG_TRACE
-
-/* libpng is not available */
-#cmakedefine LIBHPDF_HAVE_NOPNGLIB
-#cmakedefine HPDF_NOPNGLIB
-
-/* zlib is not available */
-#cmakedefine LIBHPDF_HAVE_NOZLIB
 
 /* Define to the address where bug reports for this package should be sent. */
 #cmakedefine LIBHPDF_PACKAGE_BUGREPORT "@LIBHPDF_PACKAGE_BUGREPORT@"

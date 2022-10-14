@@ -3,7 +3,7 @@ type 1 font collection, repackaged for distribution with Ghostscript.
 
 Cyrillized free URW fonts.
 
-These fonts were made from the free URW fonts distributed with ghostcript.
+These fonts were made from the free URW fonts distributed with ghostscript.
 There are NO changes in the latin part of them (I hope).
 Cyrillic glyphs were added by copying suitable latin ones
 and painting oulines of unique cyrillic glyphs in same style as the others.

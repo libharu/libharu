@@ -141,7 +141,7 @@ int main (int argc, char **argv)
 
     HPDF_Page_SetFontAndSize (page, font, 10);
 
-    /* Draw verious widths of lines. */
+    /* Draw various widths of lines. */
     HPDF_Page_SetLineWidth (page, 0);
     draw_line (page, 60, 770, "line width = 0");
 
@@ -177,7 +177,7 @@ int main (int argc, char **argv)
     HPDF_Page_SetLineCap (page, HPDF_ROUND_END);
     draw_line2 (page, 60, 505, "PDF_ROUND_END");
 
-    HPDF_Page_SetLineCap (page, HPDF_PROJECTING_SCUARE_END);
+    HPDF_Page_SetLineCap (page, HPDF_PROJECTING_SQUARE_END);
     draw_line2 (page, 60, 440, "PDF_PROJECTING_SCUARE_END");
 
     /* Line Join Style */

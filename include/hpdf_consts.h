@@ -32,7 +32,7 @@
 /* buffer size which is required when we convert to character string. */
 #define HPDF_TMP_BUF_SIZ            512
 #define HPDF_SHORT_BUF_SIZ          32
-#define HPDF_REAL_LEN               11
+#define HPDF_REAL_LEN               64
 #define HPDF_INT_LEN                11
 #define HPDF_TEXT_DEFAULT_LEN       256
 #define HPDF_UNICODE_HEADER_LEN     2
@@ -64,7 +64,7 @@
 
 #define HPDF_BS_DEF_WIDTH           1
 
-/* defalt page-size */
+/* default page-size */
 #define HPDF_DEF_PAGE_WIDTH         595.276F
 #define HPDF_DEF_PAGE_HEIGHT        841.89F
 
@@ -533,7 +533,7 @@
 
 
 /*----------------------------------------------------------------------------*/
-/*----- Graphis mode ---------------------------------------------------------*/
+/*----- Graphics mode --------------------------------------------------------*/
 
 #define   HPDF_GMODE_PAGE_DESCRIPTION       0x0001
 #define   HPDF_GMODE_PATH_OBJECT            0x0002
