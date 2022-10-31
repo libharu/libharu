@@ -20,6 +20,8 @@
 #include "hpdf_pages.h"
 #include "hpdf.h"
 
+#include "hpdf_textlinelist.h"
+
 static const HPDF_Point INIT_POS = {0, 0};
 static const HPDF_DashMode INIT_MODE = {{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, 0.0f, 0.0f};
 
@@ -2459,7 +2461,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                      HPDF_REAL            right,
                      HPDF_REAL            bottom,
                      const char          *text,
-                     HPDF_TextAlignment   align,
+                     HPDF_UINT   align,
                      HPDF_UINT           *len
                      )
 {
@@ -2500,17 +2502,15 @@ HPDF_Page_TextRect  (HPDF_Page            page,
         HPDF_Page_SetTextLeading (page, (bbox.top - bbox.bottom) / 1000 *
                 attr->gstate->font_size);
 
-    top = top - bbox.top / 1000 * attr->gstate->font_size +
-                attr->gstate->text_leading;
-    bottom = bottom - bbox.bottom / 1000 * attr->gstate->font_size;
-
     if (align == HPDF_TALIGN_JUSTIFY) {
         save_char_space = attr->gstate->char_space;
         attr->gstate->char_space = 0;
     }
 
+    /* Create LinkedList of Text lines */
+    LinkedList list = createLinkedList();
+
     for (;;) {
-        HPDF_REAL x, y;
         HPDF_UINT line_len, tmp_len;
         HPDF_REAL rw;
         HPDF_BOOL LineBreak;
@@ -2534,6 +2534,48 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                 LineBreak = HPDF_TRUE;
             }
         }
+        list.Append(&list, ptr, tmp_len, num_rest, rw, LineBreak);
+        ptr += line_len;
+    }
+
+    HPDF_REAL total_height = list.size * attr->gstate->text_leading;
+
+    HPDF_REAL correction =  bbox.bottom / 1000 * attr->gstate->font_size;
+
+    if ((align & HPDF_TALIGN_MIDDLE) == HPDF_TALIGN_MIDDLE)
+    {
+            HPDF_REAL adjustment = 0.5 * (top - bottom - total_height);
+            top = top - adjustment - correction;
+            bottom = bottom + adjustment - correction;
+    }
+    else if ((align & HPDF_TALIGN_BOTTOM) == HPDF_TALIGN_BOTTOM)
+    {
+        bottom = bottom - correction;
+        top = bottom + total_height;
+    }
+    else // HPDF_TALIGN_TOP or default
+    {
+        top = top - correction;
+        bottom = top - total_height;
+    }
+    // remove vertical alignment flags
+    align &= ~(HPDF_TALIGN_TOP|HPDF_TALIGN_MIDDLE|HPDF_TALIGN_BOTTOM);
+
+
+    TextLine* textline = list.getFirst(&list);
+
+    while (textline != NULL)
+    {
+        HPDF_REAL x, y;
+        HPDF_UINT tmp_len;
+        HPDF_REAL rw;
+        HPDF_BOOL LineBreak;
+
+        const char* _ptr = textline->item;
+        tmp_len = textline->len;
+        num_rest = textline->num_rest;
+        rw = textline->rw;
+        LineBreak = textline->LineBreak;
 
         switch (align) {
 
@@ -2579,7 +2621,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                     HPDF_UINT i = 0;
                     HPDF_UINT num_char = 0;
                     HPDF_Encoder encoder = ((HPDF_FontAttr)attr->gstate->font->attr)->encoder;
-                    const char *tmp_ptr = ptr;
+                    const char *tmp_ptr = _ptr;
                     HPDF_Encoder_SetParseText (encoder, &state, (HPDF_BYTE *)tmp_ptr, tmp_len);
                     while (*tmp_ptr) {
                         HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &state);
@@ -2607,19 +2649,21 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                 }
         }
 
-        if (InternalShowTextNextLine (page, ptr, tmp_len) != HPDF_OK)
+        if (InternalShowTextNextLine (page, _ptr, tmp_len) != HPDF_OK)
             return HPDF_CheckError (page->error);
 
         if (num_rest <= 0)
             break;
 
-        if (attr->text_pos.y - attr->gstate->text_leading < bottom) {
+        if (attr->text_pos.y - attr->gstate->text_leading - bottom < -1e-4)  {
             is_insufficient_space = HPDF_TRUE;
             break;
         }
 
-        ptr += line_len;
+        textline = textline->next;
     }
+
+    list.Delete(&list);
 
     if (char_space_changed && save_char_space != attr->gstate->char_space) {
         if ((ret = HPDF_Page_SetCharSpace (page, save_char_space)) != HPDF_OK)
