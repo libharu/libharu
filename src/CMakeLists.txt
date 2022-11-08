@@ -73,6 +73,10 @@ set(
 # create hpdf library
 # =======================================================================
 add_library(hpdf ${LIBHPDF_SRCS})
+set_target_properties(hpdf PROPERTIES
+    SOVERSION ${HPDF_MAJOR_VERSION}
+    VERSION ${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION}
+)
 if (PNG_FOUND)
     include_directories (${PNG_INCLUDE_DIRS})
     target_link_libraries (hpdf ${PNG_LIBRARIES})
