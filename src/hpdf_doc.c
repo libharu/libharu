@@ -774,6 +774,27 @@ HPDF_SaveToFile  (HPDF_Doc     pdf,
     return HPDF_CheckError (&pdf->error);
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_SaveToFileW  (HPDF_Doc     pdf,
+                  const wchar_t  *file_name)
+{
+    HPDF_Stream stream;
+
+    HPDF_PTRACE ((" HPDF_SaveToFileW\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return HPDF_INVALID_DOCUMENT;
+
+    stream = HPDF_FileWriter_NewW (pdf->mmgr, file_name);
+    if (!stream)
+        return HPDF_CheckError (&pdf->error);
+
+    InternalSaveToStream (pdf, stream);
+
+    HPDF_Stream_Free (stream);
+
+    return HPDF_CheckError (&pdf->error);
+}
 
 HPDF_EXPORT(HPDF_Page)
 HPDF_GetCurrentPage  (HPDF_Doc   pdf)
@@ -1732,6 +1753,35 @@ HPDF_LoadJpegImageFromFile  (HPDF_Doc     pdf,
 
     /* create file stream */
     imagedata = HPDF_FileReader_New (pdf->mmgr, filename);
+
+    if (HPDF_Stream_Validate (imagedata))
+        image = HPDF_Image_LoadJpegImage (pdf->mmgr, imagedata, pdf->xref);
+    else
+        image = NULL;
+
+    /* destroy file stream */
+    HPDF_Stream_Free (imagedata);
+
+    if (!image)
+        HPDF_CheckError (&pdf->error);
+
+    return image;
+}
+
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadJpegImageFromFileW  (HPDF_Doc     pdf,
+                             const wchar_t  *filename)
+{
+    HPDF_Stream imagedata;
+    HPDF_Image image;
+
+    HPDF_PTRACE ((" HPDF_LoadJpegImageFromFileW\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    /* create file stream */
+    imagedata = HPDF_FileReader_NewW (pdf->mmgr, filename);
 
     if (HPDF_Stream_Validate (imagedata))
         image = HPDF_Image_LoadJpegImage (pdf->mmgr, imagedata, pdf->xref);

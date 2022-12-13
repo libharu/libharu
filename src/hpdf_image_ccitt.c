@@ -794,3 +794,64 @@ HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
 
     return image;
 }
+
+/*
+ * Load CCITT 4 image from buffer
+ * line_width - width of the line in bytes
+ * top_is_first - image orientation:
+ *      TRUE if image is oriented TOP-BOTTOM;
+ *      FALSE if image is oriented BOTTOM-TOP
+ */
+HPDF_EXPORT(HPDF_Image)
+HPDF_Image_LoadEncoded1BitImageFromMem(HPDF_Doc           pdf,
+                                       const HPDF_BYTE   *buf,
+                                       HPDF_UINT          length,
+                                       HPDF_UINT          width,
+                                       HPDF_UINT          height,
+                                       HPDF_BOOL          black_is1)
+{
+    HPDF_Image image;
+    HPDF_STATUS ret = HPDF_OK;
+
+    HPDF_PTRACE((" %s\n", __FUNCTION__));
+
+    if (!HPDF_HasDoc(pdf))
+        return NULL;
+
+    image = HPDF_DictStream_New(pdf->mmgr, pdf->xref);
+    if (!image) {
+        HPDF_CheckError(&pdf->error);
+        return NULL;
+    }
+
+    image->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
+    ret += HPDF_Dict_AddName(image, "Type", "XObject");
+    ret += HPDF_Dict_AddName(image, "Subtype", "Image");
+    ret += HPDF_Dict_AddName(image, "ColorSpace", "DeviceGray");
+    /* size = width * height; */
+    ret += HPDF_Dict_AddNumber(image, "Width", width);
+    ret += HPDF_Dict_AddNumber(image, "Height", height);
+    ret += HPDF_Dict_AddNumber(image, "BitsPerComponent", 1);
+    ret += HPDF_Stream_Write(image->stream, buf, length);
+
+    image->filter = HPDF_STREAM_FILTER_CCITT_DECODE;
+    image->filterParams = HPDF_Dict_New(pdf->mmgr);
+    if (image->filterParams)
+    {
+        /* pure 2D encoding, default is 0 */
+        ret += HPDF_Dict_AddNumber(image->filterParams, "K", -1);
+        /* default is 1728 */
+        ret += HPDF_Dict_AddNumber(image->filterParams, "Columns", width);
+        /* default is 0 */
+        ret += HPDF_Dict_AddNumber(image->filterParams, "Rows", height);
+        if (black_is1)
+            ret += HPDF_Dict_AddBoolean(image->filterParams, "BlackIs1", black_is1);
+    }
+    else
+        ret = 1;
+
+    if (ret != HPDF_OK)
+        return NULL;
+
+    return image;
+}

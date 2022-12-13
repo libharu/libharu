@@ -2352,6 +2352,68 @@ HPDF_Page_DrawImage  (HPDF_Page    page,
     return HPDF_Page_GRestore (page);
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_DrawImageEx(HPDF_Page    page,
+                    HPDF_Image   image,
+                    HPDF_REAL    x,
+                    HPDF_REAL    y,
+                    HPDF_REAL    width,
+                    HPDF_REAL    height,
+                    HPDF_REAL    rot,
+                    HPDF_REAL    skew_a,
+                    HPDF_REAL    skew_b)
+{
+    HPDF_STATUS ret = HPDF_Page_GSave(page);
+
+    if (ret != HPDF_OK)
+        return ret;
+    //translate
+    if (x || y)
+    {
+        ret = HPDF_Page_Concat(page, 1, 0, 0, 1, x, y);
+    }
+    // rotate
+    if ((ret == HPDF_OK) && rot)
+    {
+        HPDF_REAL rad = rot * (float)M_PI / 180.0f;
+        ret = HPDF_Page_Concat(page, cosf(rad), sinf(rad), -sinf(rad), cosf(rad), 0.0f, 0.0f);
+    }
+    //scale
+    if ((ret == HPDF_OK) && (width || height))
+    {
+        ret = HPDF_Page_Concat(page, width, 0.0f, 0.0f, height, 0.0f, 0.0f);
+    }
+    //skew
+    while ((ret == HPDF_OK) && (skew_a || skew_b))
+    {
+        HPDF_REAL fracp, intp;
+
+        skew_a /= 360.0f;
+        skew_b /= 360.0f;
+
+        fracp = modff(skew_a, &intp);
+        if ((intp == 90.0 || intp == 270.0) && fracp < 0.001)
+            break;
+
+        fracp = modff(skew_b, &intp);
+        if ((intp == 90.0f || intp == 270.0f) && fracp < 0.001f)
+            break;
+
+        HPDF_REAL rada = skew_a * (float)M_PI / 180.0f;
+        HPDF_REAL radb = skew_b * (float)M_PI / 180.0f;
+        ret = HPDF_Page_Concat(page, 1.0f, tanf(rada), tanf(radb), 1.0f, 0.0f, 0.0f);
+
+        break;
+    }
+    if (ret == HPDF_OK)
+    {
+        ret = HPDF_Page_ExecuteXObject(page, image);
+        if (ret == HPDF_OK)
+            ret = HPDF_Page_GRestore(page);
+    }
+    return ret;
+}
+
 
 static HPDF_STATUS
 InternalWriteText  (HPDF_PageAttr      attr,

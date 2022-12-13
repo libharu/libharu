@@ -752,26 +752,13 @@ HPDF_Stream_WriteToStream  (HPDF_Stream  src,
 
     return HPDF_OK;
 }
-
-HPDF_Stream
-HPDF_FileReader_New  (HPDF_MMgr   mmgr,
-                      const char  *fname)
+static HPDF_Stream
+HPDF_SetReaderStream(HPDF_MMgr        mmgr,
+                     HPDF_FILEP       fp)
 {
-    HPDF_Stream stream;
-    HPDF_FILEP fp = HPDF_FOPEN (fname, "rb");
-
-    HPDF_PTRACE((" HPDF_FileReader_New\n"));
-
-    if (!fp) {
-#ifdef UNDER_CE
-        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, GetLastError());
-#else
-        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
-#endif
-        return NULL;
-    }
-
-    stream = (HPDF_Stream)HPDF_GetMem(mmgr, sizeof(HPDF_Stream_Rec));
+    if (mmgr)
+    {
+        HPDF_Stream stream = (HPDF_Stream)HPDF_GetMem(mmgr, sizeof(HPDF_Stream_Rec));
 
     if (stream) {
         HPDF_MemSet(stream, 0, sizeof(HPDF_Stream_Rec));
@@ -788,6 +775,37 @@ HPDF_FileReader_New  (HPDF_MMgr   mmgr,
     }
 
     return stream;
+}
+    return NULL;
+}
+HPDF_Stream
+HPDF_FileReader_New  (HPDF_MMgr   mmgr,
+                      const char  *fname)
+{
+    HPDF_FILEP fp = HPDF_FOPEN (fname, "rb", _SH_DENYRW);
+
+    HPDF_PTRACE((" HPDF_FileReader_New\n"));
+
+    if (!fp) {
+        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
+        return NULL;
+    }
+    return HPDF_SetReaderStream(mmgr, fp);
+}
+
+HPDF_Stream
+HPDF_FileReader_NewW  (HPDF_MMgr   mmgr,
+                      const wchar_t  *fname)
+{
+    HPDF_FILEP fp = _wfsopen(fname, L"rb", _SH_DENYRW);
+
+    HPDF_PTRACE((" HPDF_FileReader_NewW\n"));
+
+    if (!fp) {
+        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
+        return NULL;
+    }
+    return HPDF_SetReaderStream(mmgr, fp);
 }
 
 /*
@@ -928,41 +946,61 @@ HPDF_FileStream_SizeFunc  (HPDF_Stream   stream)
     return (HPDF_UINT32)size;
 }
 
+static HPDF_Stream
+HPDF_SetWritterStream(HPDF_MMgr        mmgr,
+                      HPDF_FILEP       fp)
+{
+    if (mmgr)
+    {
+        HPDF_Stream stream = (HPDF_Stream)HPDF_GetMem (mmgr, sizeof(HPDF_Stream_Rec));
+
+        if (stream && mmgr) {
+            HPDF_MemSet (stream, 0, sizeof(HPDF_Stream_Rec));
+            stream->sig_bytes = HPDF_STREAM_SIG_BYTES;
+            stream->error = mmgr->error;
+            stream->mmgr = mmgr;
+            stream->write_fn = HPDF_FileWriter_WriteFunc;
+            stream->free_fn = HPDF_FileStream_FreeFunc;
+            stream->tell_fn = HPDF_FileStream_TellFunc;
+            stream->attr = fp;
+            stream->type = HPDF_STREAM_FILE;
+        }
+
+        return stream;
+    } 
+    return NULL;
+}
 
 HPDF_Stream
 HPDF_FileWriter_New  (HPDF_MMgr        mmgr,
                       const char  *fname)
 {
-    HPDF_Stream stream;
-    HPDF_FILEP fp = HPDF_FOPEN (fname, "wb");
+    HPDF_FILEP fp = HPDF_FOPEN (fname, "wb", _SH_DENYRW);
 
     HPDF_PTRACE((" HPDF_FileWriter_New\n"));
 
     if (!fp) {
-#ifdef UNDER_CE
-        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, GetLastError());
-#else
         HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
-#endif
         return NULL;
     }
+    return HPDF_SetWritterStream(mmgr, fp);
+}
 
-    stream = (HPDF_Stream)HPDF_GetMem (mmgr, sizeof(HPDF_Stream_Rec));
+HPDF_Stream
+HPDF_FileWriter_NewW  (HPDF_MMgr        mmgr,
+                      const wchar_t  *fname)
+{
+    HPDF_FILEP fp = _wfsopen (fname, L"wb", _SH_DENYRW);
 
-    if (stream) {
-        HPDF_MemSet (stream, 0, sizeof(HPDF_Stream_Rec));
-        stream->sig_bytes = HPDF_STREAM_SIG_BYTES;
-        stream->error = mmgr->error;
-        stream->mmgr = mmgr;
-        stream->write_fn = HPDF_FileWriter_WriteFunc;
-        stream->free_fn = HPDF_FileStream_FreeFunc;
-        stream->tell_fn = HPDF_FileStream_TellFunc;
-        stream->attr = fp;
-        stream->type = HPDF_STREAM_FILE;
+    HPDF_PTRACE((" HPDF_FileWriter_NewW\n"));
+
+    if (!fp) {
+        HPDF_SetError (mmgr->error, HPDF_FILE_OPEN_ERROR, errno);
+        return NULL;
+    }
+    return HPDF_SetWritterStream(mmgr, fp);
     }
 
-    return stream;
-}
 
 HPDF_STATUS
 HPDF_FileWriter_WriteFunc  (HPDF_Stream      stream,
