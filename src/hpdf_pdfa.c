@@ -33,6 +33,10 @@
 #define DC_CREATOR_ENDTAG        "</rdf:li></rdf:Seq></dc:creator>"
 #define DC_DESCRIPTION_STARTTAG  "<dc:description><rdf:Alt><rdf:li xml:lang=\"x-default\">"
 #define DC_DESCRIPTION_ENDTAG    "</rdf:li></rdf:Alt></dc:description>"
+
+#define DC_SUBJECT_STARTTAG      "<dc:subject><rdf:Bag><rdf:li>"
+#define DC_SUBJECT_ENDTAG        "</rdf:li></rdf:Bag></dc:subject>"
+
 #define DC_FOOTER                "</rdf:Description>"
 #define XMP_HEADER               "<rdf:Description xmlns:xmp='http://ns.adobe.com/xap/1.0/' rdf:about=''>"
 #define XMP_CREATORTOOL_STARTTAG "<xmp:CreatorTool>"
@@ -50,6 +54,10 @@
 #define PDF_FOOTER               "</rdf:Description>"
 #define PDFAID_PDFA1A            "<rdf:Description rdf:about='' xmlns:pdfaid='http://www.aiim.org/pdfa/ns/id/' pdfaid:part='1' pdfaid:conformance='A'/>"
 #define PDFAID_PDFA1B            "<rdf:Description rdf:about='' xmlns:pdfaid='http://www.aiim.org/pdfa/ns/id/' pdfaid:part='1' pdfaid:conformance='B'/>"
+#define PDFAID_PDFA2A            "<rdf:Description rdf:about='' xmlns:pdfaid='http://www.aiim.org/pdfa/ns/id/' pdfaid:part='2' pdfaid:conformance='A'/>"
+#define PDFAID_PDFA2B            "<rdf:Description rdf:about='' xmlns:pdfaid='http://www.aiim.org/pdfa/ns/id/' pdfaid:part='2' pdfaid:conformance='B'/>"
+#define PDFAID_PDFA3A            "<rdf:Description rdf:about='' xmlns:pdfaid='http://www.aiim.org/pdfa/ns/id/' pdfaid:part='3' pdfaid:conformance='A'/>"
+#define PDFAID_PDFA3B            "<rdf:Description rdf:about='' xmlns:pdfaid='http://www.aiim.org/pdfa/ns/id/' pdfaid:part='3' pdfaid:conformance='B'/>"
 #define FOOTER                   "</rdf:RDF></x:xmpmeta><?xpacket end='w'?>"
 
 
@@ -179,6 +187,8 @@ HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,HPDF_PDFAType pdfatype)
 
         /* Update the PDF number version */
         pdf->pdf_version = HPDF_VER_14;
+            if (pdfatype > HPDF_PDFA_1B)
+                pdf->pdf_version = HPDF_VER_17;
 
         HPDF_Dict_AddName(xmp,"Type","Metadata");
         HPDF_Dict_AddName(xmp,"SubType","XML");
@@ -207,6 +217,12 @@ HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,HPDF_PDFAType pdfatype)
                 ret += HPDF_Stream_WriteStr(xmp->stream, dc_description);
                 ret += HPDF_Stream_WriteStr(xmp->stream, DC_DESCRIPTION_ENDTAG);
             }
+
+                if (pdf_Keywords != NULL) {
+                    ret += HPDF_Stream_WriteStr(xmp->stream, DC_SUBJECT_STARTTAG);
+                    ret += HPDF_Stream_WriteStr(xmp->stream, pdf_Keywords);
+                    ret += HPDF_Stream_WriteStr(xmp->stream, DC_SUBJECT_ENDTAG);
+                }
 
             ret += HPDF_Stream_WriteStr(xmp->stream, DC_FOOTER);
         }
@@ -265,6 +281,18 @@ HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,HPDF_PDFAType pdfatype)
           case HPDF_PDFA_1B:
             ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA1B);
             break;
+              case HPDF_PDFA_2A:
+                  ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA2A);
+                  break;
+              case HPDF_PDFA_2B:
+                  ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA2B);
+                  break;
+              case HPDF_PDFA_3A:
+                  ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA3A);
+                  break;
+              case HPDF_PDFA_3B:
+                  ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA3B);
+                  break;
         }
 
         ret += HPDF_Stream_WriteStr(xmp->stream, FOOTER);
