@@ -672,7 +672,10 @@ HPDF_Stream_CcittToStream( const HPDF_BYTE   *buf,
 	data.tif_rawcp = data.tif_rawdata;
 
 	if(HPDF_InitCCITTFax3(&data)!=HPDF_OK)
+	{
+		HPDF_FreeCCITTFax3(&data);
 		return 1;
+	}
 
 	if(HPDF_Fax3SetupState(&data, width, height, line_width)!=HPDF_OK)
 	{
