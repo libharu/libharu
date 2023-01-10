@@ -1537,6 +1537,11 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_ExecuteXObject  (HPDF_Page     page,
                            HPDF_XObject  obj);
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_ExecuteXObjectEx(HPDF_Page     page,
+                           HPDF_XObject  obj,
+                           const char*   xobj_prefix);
+
 /*--- Content streams ----------------------------------------------------*/
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1579,7 +1584,8 @@ HPDF_Page_DrawImageEx(HPDF_Page    page,
                       HPDF_REAL    height,
                       HPDF_REAL    rot,
                       HPDF_REAL    skew_a,
-                      HPDF_REAL    skew_b
+                      HPDF_REAL    skew_b,
+                      const char*  image_name
                       );
 
 
@@ -1643,6 +1649,11 @@ HPDF_EXPORT(HPDF_OutputIntent)
 HPDF_LoadIccProfileFromFile  (HPDF_Doc  pdf,
                             const char* icc_file_name,
                                    int  numcomponent);
+
+/*----- comment   ------------------------------------------------------------*/
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Doc_AddComment(HPDF_Doc  pdf, const char* comment);
 
 #ifdef __cplusplus
 }

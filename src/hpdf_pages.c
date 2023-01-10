@@ -824,7 +824,8 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
 
 const char*
 HPDF_Page_GetXObjectName  (HPDF_Page     page,
-                           HPDF_XObject  xobj)
+                           HPDF_XObject  xobj,
+                           const char*   xobj_prefix)
 {
     HPDF_PageAttr attr = (HPDF_PageAttr )page->attr;
     const char *key;
@@ -859,9 +860,11 @@ HPDF_Page_GetXObjectName  (HPDF_Page     page,
         char xobj_name[HPDF_LIMIT_MAX_NAME_LEN + 1];
         char *ptr;
         char *end_ptr = xobj_name + HPDF_LIMIT_MAX_NAME_LEN;
+        if (!xobj_prefix)
+            xobj_prefix = "X";
 
-        ptr = (char *)HPDF_StrCpy (xobj_name, "X", end_ptr);
-        HPDF_IToA (ptr, attr->xobjects->list->count + 1, end_ptr);
+        ptr = (char *)HPDF_StrCpy (xobj_name, xobj_prefix, end_ptr);
+        HPDF_IToA (ptr, attr->xobjects->list->count, end_ptr);
 
         if (HPDF_Dict_Add (attr->xobjects, xobj_name, xobj) != HPDF_OK)
             return NULL;

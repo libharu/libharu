@@ -547,6 +547,7 @@ typedef struct _HPDF_Xref_Rec {
       HPDF_UINT    addr;
       HPDF_Xref    prev;
       HPDF_Dict    trailer;
+      char*        comment;
 } HPDF_Xref_Rec;
 
 

@@ -2426,3 +2426,23 @@ HPDF_LoadIccProfileFromFile  (HPDF_Doc pdf,
     return iccentry;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Doc_AddComment(HPDF_Doc      pdf,
+                    const char*   comment)
+{
+    if (!HPDF_HasDoc(pdf))
+        return HPDF_INVALID_DOCUMENT;
+
+    if (pdf->xref && comment)
+    {
+        auto l2 = HPDF_StrLen(comment, 1024);
+        HPDF_FreeMem(pdf->mmgr, pdf->xref->comment);
+        pdf->xref->comment = HPDF_GetMem(pdf->mmgr, l2 + 1);
+        if (pdf->xref->comment)
+        {
+            HPDF_StrCpy(pdf->xref->comment, comment, pdf->xref->comment + l2);
+            return HPDF_OK;
+        }
+    }
+    return HPDF_INVALID_PARAMETER;
+}

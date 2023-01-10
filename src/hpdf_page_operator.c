@@ -1876,8 +1876,9 @@ HPDF_Page_SetCMYKStroke  (HPDF_Page  page,
 
 /* Do */
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_ExecuteXObject  (HPDF_Page     page,
-                           HPDF_XObject  obj)
+HPDF_Page_ExecuteXObjectEx(HPDF_Page     page,
+    HPDF_XObject  obj,
+    const char*   xobj_prefix)
 {
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_PAGE_DESCRIPTION);
     HPDF_PageAttr attr;
@@ -1896,7 +1897,7 @@ HPDF_Page_ExecuteXObject  (HPDF_Page     page,
         return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_XOBJECT, 0);
 
     attr = (HPDF_PageAttr)page->attr;
-    local_name = HPDF_Page_GetXObjectName (page, obj);
+    local_name = HPDF_Page_GetXObjectName(page, obj, xobj_prefix);
 
     if (!local_name)
         return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_XOBJECT, 0);
@@ -1908,6 +1909,15 @@ HPDF_Page_ExecuteXObject  (HPDF_Page     page,
         return HPDF_CheckError (page->error);
 
     return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_ExecuteXObject(HPDF_Page     page,
+                         HPDF_XObject  obj)
+{
+    HPDF_PTRACE((" HPDF_Page_ExecuteXObject\n"));
+
+    return HPDF_Page_ExecuteXObjectEx(page, obj, NULL);
 }
 
 /*--- Marked content -----------------------------------------------------*/
@@ -2361,7 +2371,8 @@ HPDF_Page_DrawImageEx(HPDF_Page    page,
                     HPDF_REAL    height,
                     HPDF_REAL    rot,
                     HPDF_REAL    skew_a,
-                    HPDF_REAL    skew_b)
+                    HPDF_REAL    skew_b,
+                    const char*  image_name)
 {
     HPDF_STATUS ret = HPDF_Page_GSave(page);
 
@@ -2407,7 +2418,7 @@ HPDF_Page_DrawImageEx(HPDF_Page    page,
     }
     if (ret == HPDF_OK)
     {
-        ret = HPDF_Page_ExecuteXObject(page, image);
+        ret = HPDF_Page_ExecuteXObjectEx(page, image, image_name);
         if (ret == HPDF_OK)
             ret = HPDF_Page_GRestore(page);
     }
