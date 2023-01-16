@@ -121,6 +121,7 @@ set(
     include/hpdf_info.h
     include/hpdf_list.h
     include/hpdf_mmgr.h
+    include/hpdf_namedict.h
     include/hpdf_objects.h
     include/hpdf_outline.h
     include/hpdf_pages.h
