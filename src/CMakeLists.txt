@@ -22,6 +22,7 @@ set(
   	hpdf_encoder_cnt.c
   	hpdf_encoder_jp.c
   	hpdf_encoder_kr.c
+  	hpdf_encoder_utf.c
   	hpdf_encoder.c
   	hpdf_encrypt.c
   	hpdf_encryptdict.c
