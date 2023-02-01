@@ -775,7 +775,7 @@ HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
     if (!image)
         HPDF_CheckError (&pdf->error);
 
-    if (pdf->compression_mode & HPDF_COMP_IMAGE)
+    if (HPDF_COMP_IMAGE)
 	{
 		image->filter = HPDF_STREAM_FILTER_CCITT_DECODE;
 		image->filterParams = HPDF_Dict_New(pdf->mmgr);
