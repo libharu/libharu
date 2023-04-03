@@ -148,6 +148,9 @@ extern "C" {
 /*                                                0x1086 */
 /*                                                0x1087 */
 #define HPDF_INVALID_SHADING_TYPE                 0x1088
+#define HPDF_INVALID_PROFILE                      0x1089
+#define HPDF_PAGE_SPACE_NOT_FOUND                 0x108A
+
 
 /*---------------------------------------------------------------------------*/
 

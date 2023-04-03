@@ -318,6 +318,112 @@ HPDF_Image_LoadRawImage (HPDF_MMgr          mmgr,
 }
 
 
+static HPDF_STATUS
+ReadCallbackData(HPDF_Dict            image,
+                 HPDF_ImageCallback  *img_data,
+                 HPDF_UINT            line_len)
+{
+  unsigned char *buf_ptr = HPDF_GetMem(image->mmgr, line_len);
+  if (buf_ptr) {
+    HPDF_UINT i;
+    img_data->seek_line(img_data->private_data, 0);
+    for (i = 0; i < img_data->height; i++) {
+      if (!img_data->read_line(img_data->private_data, buf_ptr, 1))
+        return HPDF_INVALID_STREAM;
+      if (HPDF_Stream_Write(image->stream, buf_ptr, line_len) != HPDF_OK)
+        break;
+    }
+    HPDF_FreeMem(image->mmgr, buf_ptr);
+  }
+  return image->error->error_no;
+}
+
+
+HPDF_Image
+HPDF_Image_LoadFromCallback(HPDF_MMgr           mmgr,
+                            HPDF_ImageCallback *img_data,
+                            HPDF_Xref          xref)
+{
+  HPDF_Dict image;
+  HPDF_STATUS ret = HPDF_OK;
+  HPDF_UINT size;
+  HPDF_UINT line_len;
+  HPDF_PTRACE((" HPDF_Image_LoadFromCallback\n"));
+  if (!img_data || !img_data->private_data ||
+      (img_data->bits_per_sample != 1 &&
+       img_data->bits_per_sample != 8 &&
+       img_data->bits_per_sample != 16)) {
+    HPDF_SetError(mmgr->error, HPDF_INVALID_IMAGE, 0);
+    return NULL;
+  }
+  if (img_data->color_space != HPDF_CS_DEVICE_GRAY &&
+      img_data->color_space != HPDF_CS_DEVICE_RGB &&
+      img_data->color_space != HPDF_CS_DEVICE_CMYK) {
+    HPDF_SetError(mmgr->error, HPDF_INVALID_COLOR_SPACE, 0);
+    return NULL;
+  }
+  image = HPDF_DictStream_New(mmgr, xref);
+  if (!image)
+    return NULL;
+  image->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
+  ret += HPDF_Dict_AddName(image, "Type", "XObject");
+  ret += HPDF_Dict_AddName(image, "Subtype", "Image");
+  if (ret != HPDF_OK)
+    return NULL;
+  if (img_data->icc_space) {
+    if (img_data->color_space == HPDF_CS_DEVICE_GRAY) {
+      line_len = (HPDF_UINT)((img_data->width * img_data->bits_per_sample + 7) / 8);
+    }
+    else if (img_data->color_space == HPDF_CS_DEVICE_CMYK) {
+      line_len = (HPDF_UINT)((img_data->width * 4 * img_data->bits_per_sample + 7) / 8);
+    }
+    else if (img_data->color_space == HPDF_CS_DEVICE_RGB) {
+      line_len = (HPDF_UINT)((img_data->width * 3 * img_data->bits_per_sample + 7) / 8);
+    }
+    else {
+      HPDF_SetError(mmgr->error, HPDF_INVALID_COLOR_SPACE, 0);
+      return NULL;
+    }
+    if (HPDF_Dict_Add(image, "ColorSpace", img_data->icc_space) != HPDF_OK) {
+      HPDF_SetError(mmgr->error, HPDF_INVALID_COLOR_SPACE, 0);
+      return NULL;
+    }
+  }
+  else if (img_data->color_space == HPDF_CS_DEVICE_GRAY) {
+    line_len = (HPDF_UINT)((img_data->width * img_data->bits_per_sample + 7) / 8);
+    ret = HPDF_Dict_AddName(image, "ColorSpace", COL_GRAY);
+  }
+  else if (img_data->color_space == HPDF_CS_DEVICE_CMYK) {
+    line_len = (HPDF_UINT)((img_data->width * 4 * img_data->bits_per_sample + 7) / 8);
+    ret = HPDF_Dict_AddName(image, "ColorSpace", COL_CMYK);
+  }
+  else if (img_data->color_space == HPDF_CS_DEVICE_RGB) {
+    line_len = (HPDF_UINT)((img_data->width * 3 * img_data->bits_per_sample + 7) / 8);
+    ret = HPDF_Dict_AddName(image, "ColorSpace", COL_RGB);
+  }
+  else {
+    HPDF_SetError(mmgr->error, HPDF_INVALID_COLOR_SPACE, 0);
+    return NULL;
+  }
+  size = line_len * img_data->height;
+  if (ret != HPDF_OK)
+    return NULL;
+  if (HPDF_Dict_AddNumber(image, "Width", img_data->width) != HPDF_OK)
+    return NULL;
+  if (HPDF_Dict_AddNumber(image, "Height", img_data->height) != HPDF_OK)
+    return NULL;
+  if (HPDF_Dict_AddNumber(image, "BitsPerComponent", img_data->bits_per_sample) != HPDF_OK)
+    return NULL;
+  if (ReadCallbackData(image, img_data, line_len) != HPDF_OK)
+    return NULL;
+  if (image->stream->size != size) {
+    HPDF_SetError(image->error, HPDF_INVALID_IMAGE, 0);
+    return NULL;
+  }
+  return image;
+}
+
+
 HPDF_Image
 HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
                                  const HPDF_BYTE   *buf,

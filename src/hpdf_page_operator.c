@@ -1608,12 +1608,82 @@ HPDF_Page_ShowTextNextLineEx  (HPDF_Page    page,
 
 /*--- Color showing ------------------------------------------------------*/
 
-/* cs --not implemented yet */
-/* CS --not implemented yet */
+/* cs --not fully implemented yet */
+/* CS --not fully implemented yet */
 /* sc --not implemented yet */
-/* scn --not implemented yet */
 /* SC --not implemented yet */
-/* SCN --not implemented yet */
+/* scn --not fully implemented yet */
+/* SCN --not fully implemented yet */
+
+
+/* scn with separation space*/
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetSepFill  (HPDF_Page            page,
+                       HPDF_ColorSpaceObj   sep_space,
+                       HPDF_REAL            tint)
+{
+  HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION |
+                                         HPDF_GMODE_TEXT_OBJECT);
+  HPDF_PageAttr attr;
+  const char* space_name;
+  HPDF_PTRACE((" HPDF_Page_SetSepFill\n"));
+  if (ret != HPDF_OK)
+    return ret;
+  attr = (HPDF_PageAttr)page->attr;
+  if (tint < 0 || tint > 1)
+    return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, 0);
+  space_name = HPDF_Page_GetColorSpaceName(page, sep_space);
+  if (!space_name)
+    return HPDF_RaiseError(page->error, HPDF_PAGE_SPACE_NOT_FOUND, 0);
+  if ((ret = HPDF_Stream_WriteEscapeName(attr->stream, space_name)) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  if ((ret = HPDF_Stream_WriteStr(attr->stream, " cs ")) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  if ((ret = HPDF_Stream_WriteReal(attr->stream, tint)) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  if ((ret = HPDF_Stream_WriteStr(attr->stream, " scn\012")) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  attr->gstate->sep_fill = tint;
+  attr->gstate->sep_fill_cs_obj = sep_space;
+  attr->gstate->cs_fill = HPDF_CS_SEPARATION;
+  return ret;
+}
+
+
+/* SCN with separation space */
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetSepStroke  (HPDF_Page           page,
+                         HPDF_ColorSpaceObj  sep_space,
+                         HPDF_REAL           tint)
+{
+  HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION |
+                                         HPDF_GMODE_TEXT_OBJECT);
+  HPDF_PageAttr attr;
+  const char* space_name;
+  HPDF_PTRACE((" HPDF_Page_SetSepStroke\n"));
+  if (ret != HPDF_OK)
+    return ret;
+  attr = (HPDF_PageAttr)page->attr;
+  if (tint < 0 || tint > 1)
+    return HPDF_RaiseError(page->error, HPDF_PAGE_OUT_OF_RANGE, 0);
+  space_name = HPDF_Page_GetColorSpaceName(page, sep_space);
+  if (!space_name)
+    return HPDF_RaiseError(page->error, HPDF_PAGE_SPACE_NOT_FOUND, 0);
+  if ((ret = HPDF_Stream_WriteEscapeName(attr->stream, space_name)) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  if ((ret = HPDF_Stream_WriteStr(attr->stream, " CS ")) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  if ((ret = HPDF_Stream_WriteReal(attr->stream, tint)) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  if ((ret = HPDF_Stream_WriteStr(attr->stream, " SCN\012")) != HPDF_OK)
+    return HPDF_CheckError(page->error);
+  attr->gstate->sep_stroke = tint;
+  attr->gstate->sep_stroke_cs_obj = sep_space;
+  attr->gstate->cs_stroke = HPDF_CS_SEPARATION;
+  return ret;
+}
 
 /* g */
 

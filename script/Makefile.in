@@ -59,6 +59,7 @@ OBJS = \
 	src_SEP_hpdf_doc_OBJ_EXT \
 	src_SEP_hpdf_info_OBJ_EXT \
 	src_SEP_hpdf_catalog_OBJ_EXT \
+	src_SEP_hpdf_color_spaces_OBJ_EXT \
 	src_SEP_hpdf_page_label_OBJ_EXT\
 	src_SEP_hpdf_gstate_OBJ_EXT \
 	src_SEP_hpdf_pages_OBJ_EXT \

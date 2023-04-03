@@ -24,6 +24,20 @@
 extern "C" {
 #endif
 
+typedef  HPDF_UINT(*HPDF_CALLBACK_READLINE)(void	*private_data, unsigned char	*buf, HPDF_UINT num_lines);
+typedef  HPDF_UINT(*HPDF_CALLBACK_SEEKLINE)(void	*private_data, HPDF_UINT line_from_start);
+typedef struct {
+  void              *private_data;
+  HPDF_UINT          width;
+  HPDF_UINT          height;
+  HPDF_UINT          bits_per_sample;
+  HPDF_ColorSpace    color_space;
+  HPDF_ColorSpaceObj icc_space;
+  HPDF_CALLBACK_READLINE read_line;
+  HPDF_CALLBACK_SEEKLINE seek_line;
+} HPDF_ImageCallback;
+
+
 HPDF_Image
 HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr  mmgr,
                           const HPDF_BYTE   *buf,
@@ -55,6 +69,11 @@ HPDF_Image_LoadJpegImageFromMem  (HPDF_MMgr        mmgr,
                             const HPDF_BYTE       *buf,
                                   HPDF_UINT        size,
                                   HPDF_Xref        xref);
+
+HPDF_Image
+HPDF_Image_LoadFromCallback  (HPDF_MMgr            mmgr,
+                              HPDF_ImageCallback  *img_data,
+                              HPDF_Xref            xref);
 
 HPDF_Image
 HPDF_Image_LoadRawImage  (HPDF_MMgr          mmgr,

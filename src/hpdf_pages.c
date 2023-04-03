@@ -874,6 +874,46 @@ HPDF_Page_GetXObjectName  (HPDF_Page     page,
 
 
 const char*
+HPDF_Page_GetColorSpaceName  (HPDF_Page           page,
+                              HPDF_ColorSpaceObj  space)
+{
+  HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+  const char* key;
+  HPDF_PTRACE((" HPDF_Page_GetColorSpaceName\n"));
+  if (!attr->color_spaces) {
+    HPDF_Dict resources;
+    HPDF_Dict color_spaces;
+    resources = HPDF_Page_GetInheritableItem(page, "Resources",
+      HPDF_OCLASS_DICT);
+    if (!resources)
+      return NULL;
+    color_spaces = HPDF_Dict_New(page->mmgr);
+    if (!color_spaces)
+      return NULL;
+    if (HPDF_Dict_Add(resources, "ColorSpace", color_spaces) != HPDF_OK)
+      return NULL;
+    attr->color_spaces = color_spaces;
+  }
+  /* search color_spaces-object from color_space-resource */
+  key = HPDF_Dict_GetKeyByObj(attr->color_spaces, space);
+  if (!key) {
+    /* if the space is not registered in color_spaces-resource, register
+     * space to color_spaces-resource.
+     */
+    char space_name[HPDF_LIMIT_MAX_NAME_LEN + 1];
+    char* ptr;
+    char* end_ptr = space_name + HPDF_LIMIT_MAX_NAME_LEN;
+    ptr = HPDF_StrCpy(space_name, "CS", end_ptr);
+    HPDF_IToA(ptr, attr->color_spaces->list->count + 1, end_ptr);
+    if (HPDF_Dict_Add(attr->color_spaces, space_name, space) != HPDF_OK)
+      return NULL;
+    key = HPDF_Dict_GetKeyByObj(attr->color_spaces, space);
+  }
+  return key;
+}
+
+
+const char*
 HPDF_Page_GetExtGStateName  (HPDF_Page       page,
                              HPDF_ExtGState  state)
 {
@@ -1399,6 +1439,58 @@ HPDF_Page_GetGrayStroke  (HPDF_Page   page)
     }
 
     return 0;
+}
+
+
+HPDF_EXPORT(HPDF_REAL)
+HPDF_Page_GetSepFill(HPDF_Page   page)
+{
+  HPDF_PTRACE((" HPDF_Page_GetSepFill\n"));
+  if (HPDF_Page_Validate(page)) {
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+    if (attr->gstate->cs_fill == HPDF_CS_SEPARATION)
+      return attr->gstate->sep_fill;
+  }
+  return 0;
+}
+
+
+HPDF_EXPORT(HPDF_REAL)
+HPDF_Page_GetSepStroke(HPDF_Page   page)
+{
+  HPDF_PTRACE((" HPDF_Page_GetSepStroke\n"));
+  if (HPDF_Page_Validate(page)) {
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+    if (attr->gstate->cs_stroke == HPDF_CS_SEPARATION)
+      return attr->gstate->sep_stroke;
+  }
+  return 0;
+}
+
+
+HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_Page_GetSepFillSpaceObj(HPDF_Page   page)
+{
+  HPDF_PTRACE((" HPDF_Page_GetSepFillSpaceObj\n"));
+  if (HPDF_Page_Validate(page)) {
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+    if (attr->gstate->cs_fill == HPDF_CS_SEPARATION)
+      return attr->gstate->sep_fill_cs_obj;
+  }
+  return NULL;
+}
+
+
+HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_Page_GetSepStrokeSpaceObj(HPDF_Page   page)
+{
+  HPDF_PTRACE((" HPDF_Page_GetSepStrokeSpaceObj\n"));
+  if (HPDF_Page_Validate(page)) {
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+    if (attr->gstate->cs_stroke == HPDF_CS_SEPARATION)
+      return attr->gstate->sep_stroke_cs_obj;
+  }
+  return NULL;
 }
 
 

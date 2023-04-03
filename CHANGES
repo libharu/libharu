@@ -1,6 +1,12 @@
 libHaru news
 -------------------------------------------------------------------------------
 
+(2023.04.03) (Max Derhak)
+- Added limited support for separation, CIELAB, and ICC color spaces
+- Addes support for fill and spot operations with separate color spaces
+- Added interface to place images using callback mechanism with support
+  for an associated ICC color space
+
 Version 2.3.0 RC2 (2011.10.12)
 - Changed package naming, no other changes.
 
