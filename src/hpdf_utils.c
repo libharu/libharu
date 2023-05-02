@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include "hpdf_utils.h"
 #include "hpdf_consts.h"
+#include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
 
@@ -198,6 +199,8 @@ HPDF_FToA  (char       *s,
     if (val < HPDF_LIMIT_MIN_REAL)
         val = HPDF_LIMIT_MIN_REAL;
 
+    t = buf;
+    *t++ = 0;
 
     if (val < 0) {
         *s++ = '-';
@@ -217,7 +220,6 @@ HPDF_FToA  (char       *s,
     fpart_val = modff(val, &int_val);
 
     /* process integer part */
-    *t++ = 0;
     do {
         dig = modff(int_val/10.0, &int_val);
         *t++ = (char)(dig*10.0 + 0.5) + '0';
@@ -229,8 +231,8 @@ HPDF_FToA  (char       *s,
         *s++ = *t--;
 
    /* process fractional part */
+   *s++ = '.';
    if(fpart_val != 0.0) {
-       *s++ = '.';
        for (HPDF_UINT32 i = 0; i < prec; i++) {
           fpart_val = modff(fpart_val*10.0, &int_val);
           *s++ = (char)(int_val + 0.5) + '0';
