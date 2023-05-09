@@ -54,6 +54,7 @@ typedef struct _HPDF_PageAttr_Rec {
     HPDF_Pages         parent;
     HPDF_Dict          fonts;
     HPDF_Dict          xobjects;
+    HPDF_Dict          color_spaces;
     HPDF_Dict          ext_gstates;
     HPDF_Dict          shadings;
     HPDF_GState        gstate;
@@ -91,6 +92,11 @@ HPDF_Page_GetInheritableItem  (HPDF_Page      page,
 const char*
 HPDF_Page_GetXObjectName  (HPDF_Page     page,
                            HPDF_XObject  xobj);
+
+
+const char*
+HPDF_Page_GetColorSpaceName  (HPDF_Page           page,
+                              HPDF_ColorSpaceObj  space);
 
 
 const char*

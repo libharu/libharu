@@ -59,6 +59,7 @@ OBJS = \
 	src\hpdf_doc.obj \
 	src\hpdf_info.obj \
 	src\hpdf_catalog.obj \
+	src\hpdf_color_spaces.obj \
 	src\hpdf_page_label.obj\
 	src\hpdf_gstate.obj \
 	src\hpdf_pages.obj \

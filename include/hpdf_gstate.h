@@ -55,6 +55,11 @@ typedef struct _HPDF_GState_Rec {
     HPDF_REAL               gray_fill;
     HPDF_REAL               gray_stroke;
 
+    HPDF_REAL               sep_fill;
+    HPDF_REAL               sep_stroke;
+    HPDF_ColorSpaceObj      sep_fill_cs_obj;
+    HPDF_ColorSpaceObj      sep_stroke_cs_obj;
+
     HPDF_Font               font;
     HPDF_REAL               font_size;
     HPDF_WritingMode        writing_mode;

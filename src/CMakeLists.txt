@@ -13,6 +13,7 @@ set(
   	hpdf_binary.c
   	hpdf_boolean.c
   	hpdf_catalog.c
+  	hpdf_color_spaces.c
   	hpdf_destination.c
   	hpdf_dict.c
   	hpdf_direct.c

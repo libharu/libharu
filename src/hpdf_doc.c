@@ -25,6 +25,7 @@
 #include "hpdf_info.h"
 #include "hpdf_page_label.h"
 #include "hpdf_version.h"
+#include "hpdf_color_spaces.h"
 #include "hpdf.h"
 
 
@@ -1645,6 +1646,88 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
     }
 
     return def->base_font;
+}
+
+
+HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_NewIccBasedSpace  (HPDF_Doc             pdf,
+                        HPDF_UINT            profile_size,
+                        const unsigned char* profile_buf,
+                        HPDF_ColorSpace*     color_space,
+                        HPDF_UINT*           num_samples)
+{
+  HPDF_ColorSpaceObj icc_space;
+  HPDF_PTRACE((" HPDF_LoadIccSpace\n"));
+  if (!HPDF_HasDoc(pdf))
+    return NULL;
+  icc_space = HPDF_New_IccBasedSpace(pdf->mmgr, profile_size, profile_buf, color_space, num_samples, pdf->xref);
+  return icc_space;
+}
+
+
+HPDF_EXPORT(HPDF_LabSpace)
+HPDF_NewLabSpace  (HPDF_Doc    pdf,
+                   HPDF_REAL   white_x,
+                   HPDF_REAL   white_y,
+                   HPDF_REAL   white_z)
+{
+  HPDF_LabSpace lab_space;
+  HPDF_PTRACE((" HPDF_NewLabSpace\n"));
+  if (!HPDF_HasDoc(pdf))
+    return NULL;
+  lab_space = HPDF_New_LabSpace(pdf->mmgr, white_x, white_y, white_z, pdf->xref);
+  return lab_space;
+}
+
+
+HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_NewSepLabSpace  (HPDF_Doc        pdf,
+                      const char *    sep_name,
+                      HPDF_LabSpace   lab_space,
+                      HPDF_REAL       sep_L,
+                      HPDF_REAL       sep_a,
+                      HPDF_REAL       sep_b)
+{
+  HPDF_ColorSpaceObj sep_space;
+  HPDF_PTRACE((" HPDF_NewSepLabSpace\n"));
+  if (!HPDF_HasDoc(pdf))
+    return NULL;
+  sep_space = HPDF_New_SepLabSpace(pdf->mmgr, sep_name, lab_space, sep_L, sep_a, sep_b, pdf->xref);
+  return sep_space;
+}
+
+
+HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_NewSepCmykSpace  (HPDF_Doc     pdf,
+                       const char*  sep_name,
+                       HPDF_REAL    sep_C,
+                       HPDF_REAL    sep_M,
+                       HPDF_REAL    sep_Y,
+                       HPDF_REAL    sep_K)
+{
+  HPDF_ColorSpaceObj sep_space;
+  HPDF_PTRACE((" HPDF_NewSepCmykSpace\n"));
+  if (!HPDF_HasDoc(pdf))
+    return NULL;
+  sep_space = HPDF_New_SepCmykSpace(pdf->mmgr, sep_name, sep_C, sep_M, sep_Y, sep_K, pdf->xref);
+  return sep_space;
+}
+
+
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadImageFromCallback(HPDF_Doc            pdf,
+                           HPDF_ImageCallback *img_data)
+{
+  HPDF_Image image;
+  HPDF_PTRACE((" HPDF_LoadImageFromCallback\n"));
+  if (!HPDF_HasDoc(pdf))
+    return NULL;
+  image = HPDF_Image_LoadFromCallback(pdf->mmgr, img_data, pdf->xref);
+  if (!image)
+    return NULL;
+  if (pdf->compression_mode & HPDF_COMP_IMAGE)
+    image->filter = HPDF_STREAM_FILTER_FLATE_DECODE;
+  return image;
 }
 
 

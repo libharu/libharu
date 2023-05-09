@@ -106,6 +106,7 @@ set(
     include/hpdf_consts.h
     include/hpdf_annotation.h
     include/hpdf_catalog.h
+    include/hpdf_color_spaces.h
     include/hpdf_conf.h
     include/hpdf_destination.h
     include/hpdf_doc.h
