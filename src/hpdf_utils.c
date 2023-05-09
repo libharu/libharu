@@ -19,7 +19,6 @@
 #include <stdlib.h>
 #include "hpdf_utils.h"
 #include "hpdf_consts.h"
-#include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
 
