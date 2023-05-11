@@ -45,7 +45,7 @@ type
   HPDF_XObject = HPDF_HANDLE;
   HPDF_Annotation = HPDF_HANDLE;
   HPDF_ExtGState = HPDF_HANDLE;
-  HPDF_CHAR = PChar;
+  HPDF_CHAR = PAnsiChar;
   HPDF_STATUS = Cardinal;
 
 function HPDF_NewEx (user_error_fn: THPDF_ErrorFunc;
@@ -480,11 +480,11 @@ function HPDF_Font_GetCapHeight (font: HPDF_Font): HPDF_UINT;
          stdcall external LIBHPDF_DLL;
 
 
-function HPDF_Font_TextWidth  (font: HPDF_Font; const text: PChar; len: HPDF_UINT): THPDF_TextWidth;
+function HPDF_Font_TextWidth  (font: HPDF_Font; const text: HDPF_Char; len: HPDF_UINT): THPDF_TextWidth;
          stdcall external LIBHPDF_DLL;
 
 
-function HPDF_Font_MeasureText (font: HPDF_Font; const text: PChar; len: HPDF_UINT;
+function HPDF_Font_MeasureText (font: HPDF_Font; const text: HPDF_Char; len: HPDF_UINT;
          width: HPDF_REAL; font_size: HPDF_REAL; char_space: HPDF_REAL; 
          word_space: HPDF_REAL; wordwrap: HPDF_BOOL; real_width: HPDF_PREAL) : HPDF_UINT;
          stdcall external LIBHPDF_DLL;
