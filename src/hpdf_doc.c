@@ -18,6 +18,8 @@
 
 #include "hpdf_conf.h"
 #include "hpdf_config.h"
+#include "hpdf_objects.h"
+#include "hpdf_streams.h"
 #include "hpdf_utils.h"
 #include "hpdf_encryptdict.h"
 #include "hpdf_namedict.h"
@@ -751,6 +753,90 @@ HPDF_ResetStream  (HPDF_Doc     pdf)
     return HPDF_Stream_Seek (pdf->stream, 0, HPDF_SEEK_SET);
 }
 
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_BeginIncrementalWriteToFile(HPDF_Doc pdf, const char* file_name) {
+    HPDF_STATUS ret;
+
+    pdf->stream = HPDF_FileWriter_New (pdf->mmgr, file_name);
+    if (!pdf->stream) {
+        return HPDF_FILE_OPEN_ERROR;
+    }
+
+    if ((ret = WriteHeader (pdf, pdf->stream)) != HPDF_OK)
+        return ret;
+
+    /* prepare trailer */
+    if ((ret = PrepareTrailer (pdf)) != HPDF_OK)
+        return ret;
+
+    /* prevent writing the page list until the very end */
+    HPDF_Xref_GetEntryByObjectId(pdf->xref, pdf->root_pages->header.obj_id)->written = HPDF_TRUE;
+
+    return HPDF_OK;
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_IncrementalWriteToFile(HPDF_Doc pdf) {
+    HPDF_STATUS ret = HPDF_OK;
+
+    // TODO: PDF password protection (encryption)
+    if ((ret = HPDF_Xref_WriteObjectsToStream (pdf->xref, pdf->stream, NULL)) !=
+            HPDF_OK)
+        return ret;
+
+    for (HPDF_UINT i = 1; i < pdf->xref->entries->count; i++) {
+        HPDF_XrefEntry  entry =
+                    (HPDF_XrefEntry)HPDF_List_ItemAt (pdf->xref->entries, i);
+        if (!entry->obj) {
+            continue;
+        }
+
+        HPDF_Obj_Header* header = (HPDF_Obj_Header*)entry->obj;
+
+        if (header->obj_class == (HPDF_OCLASS_DICT | HPDF_OSUBCLASS_PAGES)
+            || header->obj_class == (HPDF_OCLASS_DICT | HPDF_OSUBCLASS_PAGE)
+            || header->obj_class == (HPDF_OCLASS_DICT | HPDF_OSUBCLASS_FONT)
+            || entry->obj == pdf->catalog
+            || entry->obj == pdf->info)
+        {
+            continue;
+        }
+
+        HPDF_Obj_ForceFree(pdf->mmgr, entry->obj);
+        entry->obj = NULL;
+    }
+
+    return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EndIncrementalWriteToFile(HPDF_Doc pdf) {
+    HPDF_STATUS ret = HPDF_OK;
+
+    /* re-enable writing of the page list */
+    HPDF_Xref_GetEntryByObjectId(pdf->xref, pdf->root_pages->header.obj_id)->written = HPDF_FALSE;
+
+    ret = HPDF_IncrementalWriteToFile(pdf);
+    if (ret != HPDF_OK) {
+        return ret;
+    }
+
+    ret = HPDF_Xref_WriteEntryTableToStream(pdf->xref, pdf->stream);
+    if (ret != HPDF_OK) {
+        return ret;
+    }
+
+    ret = HPDF_Xref_WriteTrailerToStream(pdf->xref, pdf->stream);
+    if (ret != HPDF_OK) {
+        return ret;
+    }
+
+    HPDF_Stream_Free(pdf->stream);
+    pdf->stream = NULL;
+
+    return ret;
+}
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_SaveToFile  (HPDF_Doc     pdf,
