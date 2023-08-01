@@ -18,6 +18,7 @@
 #ifndef _HPDF_OBJECTS_H
 #define _HPDF_OBJECTS_H
 
+#include <hpdf_types.h>
 #include "hpdf_encoder.h"
 
 #ifdef __cplusplus
@@ -536,6 +537,7 @@ typedef struct _HPDF_XrefEntry_Rec {
       HPDF_UINT    byte_offset;
       HPDF_UINT16  gen_no;
       void*        obj;
+      HPDF_BOOL    written;
 } HPDF_XrefEntry_Rec;
 
 
@@ -568,6 +570,20 @@ HPDF_XrefEntry
 HPDF_Xref_GetEntry  (HPDF_Xref  xref,
                      HPDF_UINT  index);
 
+
+HPDF_STATUS
+HPDF_Xref_WriteObjectsToStream  (HPDF_Xref     xref,
+                                 HPDF_Stream   stream,
+                                 HPDF_Encrypt  e);
+
+HPDF_STATUS
+HPDF_Xref_WriteEntryTableToStream  (HPDF_Xref     xref,
+                                    HPDF_Stream   stream);
+
+                                
+HPDF_STATUS
+HPDF_Xref_WriteTrailerToStream  (HPDF_Xref     xref,
+                                 HPDF_Stream   stream);
 
 HPDF_STATUS
 HPDF_Xref_WriteToStream  (HPDF_Xref     xref,
