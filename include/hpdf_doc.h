@@ -71,7 +71,7 @@ typedef struct _HPDF_Doc_Rec {
     HPDF_UINT         page_per_pages;
     HPDF_UINT         cur_page_num;
 
-    /* buffer for saving into memory stream */
+    /* buffer for saving into memory stream or incremental mode */
     HPDF_Stream       stream;
 } HPDF_Doc_Rec;
 

@@ -188,6 +188,7 @@ HPDF_XrefEntry
 HPDF_Xref_GetEntryByObjectId  (HPDF_Xref  xref,
                                HPDF_UINT  obj_id)
 {
+    obj_id &= 0x00FFFFFF;
     HPDF_Xref tmp_xref = xref;
 
     HPDF_PTRACE((" HPDF_Xref_GetEntryByObjectId\n"));
@@ -195,7 +196,7 @@ HPDF_Xref_GetEntryByObjectId  (HPDF_Xref  xref,
     while (tmp_xref) {
         HPDF_UINT i;
 
-        if (tmp_xref->entries->count + tmp_xref->start_offset > obj_id) {
+        if (tmp_xref->entries->count + tmp_xref->start_offset <= obj_id) {
             HPDF_SetError (xref->error, HPDF_INVALID_OBJ_ID, 0);
             return NULL;
         }
@@ -218,21 +219,21 @@ HPDF_Xref_GetEntryByObjectId  (HPDF_Xref  xref,
 
 
 HPDF_STATUS
-HPDF_Xref_WriteToStream  (HPDF_Xref    xref,
-                          HPDF_Stream  stream,
-                          HPDF_Encrypt e)
+HPDF_Xref_WriteObjectsToStream  (HPDF_Xref     xref,
+                                 HPDF_Stream   stream,
+                                 HPDF_Encrypt  e)
 {
     HPDF_STATUS ret;
-    HPDF_UINT i;
     char buf[HPDF_SHORT_BUF_SIZ];
     char* pbuf;
     char* eptr = buf + HPDF_SHORT_BUF_SIZ - 1;
+    HPDF_UINT i;
     HPDF_UINT str_idx;
     HPDF_Xref tmp_xref = xref;
 
     /* write each objects of xref to the specified stream */
 
-    HPDF_PTRACE((" HPDF_Xref_WriteToStream\n"));
+    HPDF_PTRACE((" HPDF_Xref_WriteObjectsToStream\n"));
 
     while (tmp_xref) {
         if (tmp_xref->start_offset == 0)
@@ -243,6 +244,10 @@ HPDF_Xref_WriteToStream  (HPDF_Xref    xref,
         for (i = str_idx; i < tmp_xref->entries->count; i++) {
             HPDF_XrefEntry  entry =
                         (HPDF_XrefEntry)HPDF_List_ItemAt (tmp_xref->entries, i);
+            if (entry->written) {
+                continue;
+            }
+
             HPDF_UINT obj_id = tmp_xref->start_offset + i;
             HPDF_UINT16 gen_no = entry->gen_no;
 
@@ -266,10 +271,27 @@ HPDF_Xref_WriteToStream  (HPDF_Xref    xref,
             if ((ret = HPDF_Stream_WriteStr (stream, "\012endobj\012"))
                     != HPDF_OK)
                 return ret;
+
+            entry->written = HPDF_TRUE;
        }
 
        tmp_xref = tmp_xref->prev;
     }
+
+    return HPDF_OK;
+}
+
+HPDF_STATUS
+HPDF_Xref_WriteEntryTableToStream  (HPDF_Xref     xref,
+                                    HPDF_Stream   stream)
+{
+    HPDF_STATUS ret;
+
+    HPDF_Xref tmp_xref = xref;
+    HPDF_UINT i;
+    char buf[HPDF_SHORT_BUF_SIZ];
+    char* pbuf;
+    char* eptr = buf + HPDF_SHORT_BUF_SIZ - 1;
 
     /* start to write cross-reference table */
 
@@ -307,14 +329,33 @@ HPDF_Xref_WriteToStream  (HPDF_Xref    xref,
         tmp_xref = tmp_xref->prev;
     }
 
+    return HPDF_OK;
+}
+
+
+HPDF_STATUS
+HPDF_Xref_WriteToStream  (HPDF_Xref    xref,
+                          HPDF_Stream  stream,
+                          HPDF_Encrypt e)
+{
+    HPDF_STATUS ret;
+
+    ret = HPDF_Xref_WriteObjectsToStream (xref, stream, e);
+    if (ret != HPDF_OK)
+        return ret;
+
+    ret = HPDF_Xref_WriteEntryTableToStream (xref, stream);
+    if (ret != HPDF_OK)
+        return ret;
+
     /* write trailer dictionary */
-    ret = WriteTrailer (xref, stream);
+    ret = HPDF_Xref_WriteTrailerToStream (xref, stream);
 
     return ret;
 }
 
-static HPDF_STATUS
-WriteTrailer  (HPDF_Xref     xref,
+HPDF_STATUS
+HPDF_Xref_WriteTrailerToStream  (HPDF_Xref     xref,
                HPDF_Stream   stream)
 {
     HPDF_UINT max_obj_id = xref->entries->count + xref->start_offset;
