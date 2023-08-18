@@ -162,6 +162,7 @@ HPDF_Xref_Add  (HPDF_Xref  xref,
     entry->byte_offset = 0;
     entry->gen_no = 0;
     entry->obj = obj;
+    entry->written = HPDF_FALSE;
     header->obj_id = xref->start_offset + xref->entries->count - 1 +
                     HPDF_OTYPE_INDIRECT;
 
@@ -389,4 +390,3 @@ HPDF_Xref_WriteTrailerToStream  (HPDF_Xref     xref,
 
     return HPDF_OK;
 }
-
