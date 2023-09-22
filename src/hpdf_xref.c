@@ -110,6 +110,9 @@ HPDF_Xref_Free  (HPDF_Xref  xref)
         if (xref->trailer)
             HPDF_Dict_Free (xref->trailer);
 
+        if (xref->comment)
+            HPDF_FreeMem(xref->mmgr, xref->comment);
+
         tmp_xref = xref->prev;
         HPDF_FreeMem (xref->mmgr, xref);
         xref = tmp_xref;
@@ -341,7 +344,11 @@ WriteTrailer  (HPDF_Xref     xref,
 
     if ((ret = HPDF_Dict_Write (xref->trailer, stream, NULL)) != HPDF_OK)
         return ret;
-
+    if (xref->comment)
+    {
+        HPDF_Stream_WriteStr(stream, "\012%");
+        HPDF_Stream_WriteStr(stream, xref->comment);
+    }
     if ((ret = HPDF_Stream_WriteStr (stream, "\012startxref\012")) != HPDF_OK)
         return ret;
 

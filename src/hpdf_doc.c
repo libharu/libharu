@@ -774,6 +774,27 @@ HPDF_SaveToFile  (HPDF_Doc     pdf,
     return HPDF_CheckError (&pdf->error);
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_SaveToFileW  (HPDF_Doc     pdf,
+                  const wchar_t  *file_name)
+{
+    HPDF_Stream stream;
+
+    HPDF_PTRACE ((" HPDF_SaveToFileW\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return HPDF_INVALID_DOCUMENT;
+
+    stream = HPDF_FileWriter_NewW (pdf->mmgr, file_name);
+    if (!stream)
+        return HPDF_CheckError (&pdf->error);
+
+    InternalSaveToStream (pdf, stream);
+
+    HPDF_Stream_Free (stream);
+
+    return HPDF_CheckError (&pdf->error);
+}
 
 HPDF_EXPORT(HPDF_Page)
 HPDF_GetCurrentPage  (HPDF_Doc   pdf)
@@ -1748,6 +1769,35 @@ HPDF_LoadJpegImageFromFile  (HPDF_Doc     pdf,
 }
 
 HPDF_EXPORT(HPDF_Image)
+HPDF_LoadJpegImageFromFileW  (HPDF_Doc     pdf,
+                             const wchar_t  *filename)
+{
+    HPDF_Stream imagedata;
+    HPDF_Image image;
+
+    HPDF_PTRACE ((" HPDF_LoadJpegImageFromFileW\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    /* create file stream */
+    imagedata = HPDF_FileReader_NewW (pdf->mmgr, filename);
+
+    if (HPDF_Stream_Validate (imagedata))
+        image = HPDF_Image_LoadJpegImage (pdf->mmgr, imagedata, pdf->xref);
+    else
+        image = NULL;
+
+    /* destroy file stream */
+    HPDF_Stream_Free (imagedata);
+
+    if (!image)
+        HPDF_CheckError (&pdf->error);
+
+    return image;
+}
+
+HPDF_EXPORT(HPDF_Image)
 HPDF_LoadJpegImageFromMem  (HPDF_Doc    pdf,
                      const HPDF_BYTE   *buffer,
                            HPDF_UINT    size)
@@ -1794,7 +1844,7 @@ HPDF_SetPageLayout  (HPDF_Doc          pdf,
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
 
-    if (layout < 0 || layout >= HPDF_PAGE_LAYOUT_EOF)
+    if (layout < HPDF_PAGE_LAYOUT_SINGLE || layout >= HPDF_PAGE_LAYOUT_EOF)
         return HPDF_RaiseError (&pdf->error, HPDF_PAGE_LAYOUT_OUT_OF_RANGE,
                 (HPDF_STATUS)layout);
 
@@ -1831,7 +1881,7 @@ HPDF_SetPageMode  (HPDF_Doc        pdf,
     if (!HPDF_HasDoc (pdf))
         return HPDF_INVALID_DOCUMENT;
 
-    if (mode < 0 || mode >= HPDF_PAGE_MODE_EOF)
+    if (mode < HPDF_PAGE_MODE_USE_NONE || mode >= HPDF_PAGE_MODE_EOF)
         return HPDF_RaiseError (&pdf->error, HPDF_PAGE_MODE_OUT_OF_RANGE,
                 (HPDF_STATUS)mode);
 
@@ -1918,7 +1968,7 @@ HPDF_AddPageLabel  (HPDF_Doc             pdf,
     if (!page_label)
         return HPDF_CheckError (&pdf->error);
 
-    if (style < 0 || style >= HPDF_PAGE_NUM_STYLE_EOF)
+    if (style < HPDF_PAGE_NUM_STYLE_DECIMAL || style >= HPDF_PAGE_NUM_STYLE_EOF)
         return HPDF_RaiseError (&pdf->error, HPDF_PAGE_NUM_STYLE_OUT_OF_RANGE,
                     (HPDF_STATUS)style);
 
@@ -2376,3 +2426,23 @@ HPDF_LoadIccProfileFromFile  (HPDF_Doc pdf,
     return iccentry;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Doc_AddComment(HPDF_Doc      pdf,
+                    const char*   comment)
+{
+    if (!HPDF_HasDoc(pdf))
+        return HPDF_INVALID_DOCUMENT;
+
+    if (pdf->xref && comment)
+    {
+        auto l2 = HPDF_StrLen(comment, 1024);
+        HPDF_FreeMem(pdf->mmgr, pdf->xref->comment);
+        pdf->xref->comment = HPDF_GetMem(pdf->mmgr, l2 + 1);
+        if (pdf->xref->comment)
+        {
+            HPDF_StrCpy(pdf->xref->comment, comment, pdf->xref->comment + l2);
+            return HPDF_OK;
+        }
+    }
+    return HPDF_INVALID_PARAMETER;
+}

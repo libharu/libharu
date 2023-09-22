@@ -36,7 +36,7 @@ HPDF_LoadPngImageFromMem  (HPDF_Doc     pdf,
 	HPDF_Stream imagedata;
 	HPDF_Image image;
 
-	HPDF_PTRACE ((" HPDF_LoadPngImageFromFile\n"));
+    HPDF_PTRACE ((" HPDF_LoadPngImageFromMem\n"));
 
 	if (!HPDF_HasDoc (pdf)) {
 		return NULL;
@@ -104,48 +104,28 @@ HPDF_EXPORT(HPDF_Image)
 HPDF_LoadPngImageFromFile2  (HPDF_Doc     pdf,
                              const char  *filename)
 {
-    HPDF_Stream imagedata;
-    HPDF_Image image;
     HPDF_String fname;
-
-    HPDF_PTRACE ((" HPDF_LoadPngImageFromFile\n"));
-
-    if (!HPDF_HasDoc (pdf))
-        return NULL;
-
-    /* check whether file name is valid or not. */
-    imagedata = HPDF_FileReader_New (pdf->mmgr, filename);
-
-    if (HPDF_Stream_Validate (imagedata))
-        image = LoadPngImageFromStream (pdf, imagedata, HPDF_TRUE);
-    else
-        image = NULL;
-
-    /* destroy file stream */
-    if (imagedata)
-        HPDF_Stream_Free (imagedata);
-
-    if (!image) {
-        HPDF_CheckError (&pdf->error);
-        return NULL;
+    HPDF_Image image;
+    HPDF_PTRACE ((" HPDF_LoadPngImageFromFile2\n"));
+    image = HPDF_LoadPngImageFromFile(pdf, filename);
+    if (image)
+    {
+        /* add file-name to image dictionary as a hidden entry.
+         * it is used when the image data is needed.
+         */
+        fname = HPDF_String_New (pdf->mmgr, filename, NULL);
+        if (!fname) {
+            HPDF_CheckError (&pdf->error);
+            return NULL;
+        }
+    
+        fname->header.obj_id |= HPDF_OTYPE_HIDDEN;
+    
+        if ((HPDF_Dict_Add (image, "_FILE_NAME", fname)) != HPDF_OK) {
+            HPDF_CheckError (&pdf->error);
+            return NULL;
+        }
     }
-
-    /* add file-name to image dictionary as a hidden entry.
-     * it is used when the image data is needed.
-     */
-    fname = HPDF_String_New (pdf->mmgr, filename, NULL);
-    if (!fname) {
-        HPDF_CheckError (&pdf->error);
-        return NULL;
-    }
-
-    fname->header.obj_id |= HPDF_OTYPE_HIDDEN;
-
-    if ((HPDF_Dict_Add (image, "_FILE_NAME", fname)) != HPDF_OK) {
-        HPDF_CheckError (&pdf->error);
-        return NULL;
-    }
-
     return image;
 }
 

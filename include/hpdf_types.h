@@ -161,7 +161,11 @@ typedef enum _HPDF_InfoType {
 typedef enum _HPDF_PDFA_TYPE
 {
     HPDF_PDFA_1A = 0,
-    HPDF_PDFA_1B = 1
+    HPDF_PDFA_1B = 1,
+    HPDF_PDFA_2A = 2,
+    HPDF_PDFA_2B = 3,
+    HPDF_PDFA_3A = 4,
+    HPDF_PDFA_3B = 5
 } HPDF_PDFAType;
 
 

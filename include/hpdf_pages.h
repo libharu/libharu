@@ -90,7 +90,8 @@ HPDF_Page_GetInheritableItem  (HPDF_Page      page,
 
 const char*
 HPDF_Page_GetXObjectName  (HPDF_Page     page,
-                           HPDF_XObject  xobj);
+                           HPDF_XObject  xobj,
+                           const char*   xobj_prefix);
 
 
 const char*

@@ -166,6 +166,9 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_SaveToFile  (HPDF_Doc     pdf,
                   const char  *file_name);
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_SaveToFileW (HPDF_Doc     pdf,
+                  const wchar_t  *file_name);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_GetError  (HPDF_Doc   pdf);
@@ -801,6 +804,10 @@ HPDF_LoadJpegImageFromFile (HPDF_Doc      pdf,
                             const char    *filename);
 
 HPDF_EXPORT(HPDF_Image)
+HPDF_LoadJpegImageFromFileW (HPDF_Doc      pdf,
+                             const wchar_t    *filename);
+
+HPDF_EXPORT(HPDF_Image)
 HPDF_LoadJpegImageFromMem   (HPDF_Doc      pdf,
                       const HPDF_BYTE     *buffer,
                             HPDF_UINT      size);
@@ -823,6 +830,13 @@ HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
                           HPDF_BOOL          black_is1,
                           HPDF_BOOL          top_is_first);
 
+HPDF_EXPORT(HPDF_Image)
+HPDF_Image_LoadEncoded1BitImageFromMem(HPDF_Doc           pdf,
+                                       const HPDF_BYTE   *buf,
+                                       HPDF_UINT          length,
+                                       HPDF_UINT          width,
+                                       HPDF_UINT          height,
+                                       HPDF_BOOL          black_is1);
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadRawImageFromFile  (HPDF_Doc           pdf,
@@ -1530,6 +1544,11 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_ExecuteXObject  (HPDF_Page     page,
                            HPDF_XObject  obj);
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_ExecuteXObjectEx(HPDF_Page     page,
+                           HPDF_XObject  obj,
+                           const char*   xobj_prefix);
+
 /*--- Content streams ----------------------------------------------------*/
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1561,6 +1580,20 @@ HPDF_Page_DrawImage  (HPDF_Page    page,
                       HPDF_REAL    y,
                       HPDF_REAL    width,
                       HPDF_REAL    height);
+
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_DrawImageEx(HPDF_Page    page,
+                      HPDF_Image   image,
+                      HPDF_REAL    x,
+                      HPDF_REAL    y,
+                      HPDF_REAL    width,
+                      HPDF_REAL    height,
+                      HPDF_REAL    rot,
+                      HPDF_REAL    skew_a,
+                      HPDF_REAL    skew_b,
+                      const char*  image_name
+                      );
 
 
 HPDF_EXPORT(HPDF_STATUS)
@@ -1623,6 +1656,11 @@ HPDF_EXPORT(HPDF_OutputIntent)
 HPDF_LoadIccProfileFromFile  (HPDF_Doc  pdf,
                             const char* icc_file_name,
                                    int  numcomponent);
+
+/*----- comment   ------------------------------------------------------------*/
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Doc_AddComment(HPDF_Doc  pdf, const char* comment);
 
 #ifdef __cplusplus
 }
