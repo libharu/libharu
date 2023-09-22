@@ -29,6 +29,7 @@ set(
   	text_annotation
   	ttfont_demo
   	ttfont_demo_jp
+  	utf8_demo
 )
 
 set(
