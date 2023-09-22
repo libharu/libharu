@@ -41,6 +41,8 @@ endif ()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
 # =======================================================================
 # look for headers and libraries
 # =======================================================================
