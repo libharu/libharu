@@ -18,6 +18,7 @@
 #include <math.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "utils.h"
 
 #ifndef HPDF_NOPNGLIB
 
@@ -56,11 +57,7 @@ show_description (HPDF_Page    page,
 
     HPDF_Page_BeginText (page);
 
-#ifdef __WIN32__
-    _snprintf(buf, 255, "(x=%d,y=%d)", (int)x, (int)y);
-#else
-    snprintf(buf, 255, "(x=%d,y=%d)", (int)x, (int)y);
-#endif /* __WIN32__ */
+    HPDF_snprintf(buf, 255, "(x=%d,y=%d)", (int)x, (int)y);
     HPDF_Page_MoveTextPos (page, x - HPDF_Page_TextWidth (page, buf) - 5,
             y - 10);
     HPDF_Page_ShowText (page, buf);

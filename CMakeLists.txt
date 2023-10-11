@@ -39,6 +39,8 @@ if (CMAKE_COMPILER_IS_GNUCC OR ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang"))
    endif (LIBHPDF_ENABLE_EXCEPTIONS)
 endif ()
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # =======================================================================

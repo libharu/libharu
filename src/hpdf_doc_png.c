@@ -186,4 +186,4 @@ LoadPngImageFromStream (HPDF_Doc      pdf,
     return NULL;
 }
 
-#endif /* LIBHPDF_HAVE_PNGLIB */
+#endif /* LIBHPDF_HAVE_LIBPNG */

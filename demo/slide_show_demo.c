@@ -39,9 +39,9 @@ void
 print_page  (HPDF_Page  page, const char *caption, HPDF_Font font, 
     HPDF_TransitionStyle style, HPDF_Page prev, HPDF_Page next)
 {
-    float r = (float)rand() / RAND_MAX;
-    float g = (float)rand() / RAND_MAX;
-    float b = (float)rand() / RAND_MAX;
+    float r = (float)rand() / (float)RAND_MAX;
+    float g = (float)rand() / (float)RAND_MAX;
+    float b = (float)rand() / (float)RAND_MAX;
     HPDF_Rect rect;
     HPDF_Destination dst;
     HPDF_Annotation annot;

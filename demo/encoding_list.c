@@ -17,6 +17,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "utils.h"
 
 jmp_buf env;
 
@@ -38,7 +39,6 @@ static const int PAGE_WIDTH = 420;
 static const int PAGE_HEIGHT = 400;
 static const int CELL_WIDTH = 20;
 static const int CELL_HEIGHT = 20;
-static const int CELL_HEADER = 10;
 
 void
 draw_graph (HPDF_Page   page);
@@ -69,11 +69,7 @@ draw_graph (HPDF_Page   page)
         if (i > 0 && i <= 16) {
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, x + 5, PAGE_HEIGHT - 75);
-#ifdef __WIN32__
-            _snprintf(buf, 5, "%X", i - 1);
-#else
-            snprintf(buf, 5, "%X", i - 1);
-#endif
+            HPDF_snprintf(buf, 5, "%X", i - 1);
             HPDF_Page_ShowText (page, buf);
             HPDF_Page_EndText (page);
         }
@@ -90,11 +86,7 @@ draw_graph (HPDF_Page   page)
         if (i < 14) {
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, 45, y + 5);
-#ifdef __WIN32__
-            _snprintf(buf, 5, "%X", 15 - i);
-#else
-            snprintf(buf, 5, "%X", 15 - i);
-#endif
+            HPDF_snprintf(buf, 5, "%X", 15 - i);
             HPDF_Page_ShowText (page, buf);
             HPDF_Page_EndText (page);
         }

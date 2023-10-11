@@ -587,7 +587,7 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
     HPDF_Dict resource;
     HPDF_Dict fromxobject;
     HPDF_Dict xobject;
-    HPDF_STATUS ret = HPDF_OK;
+    HPDF_STATUS ret;
     HPDF_Array procset;
     HPDF_REAL tmp;
     HPDF_Array array1;
@@ -608,10 +608,11 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
    if (!resource)
       return NULL;
 
-   /* althoth ProcSet-entry is obsolete, add it to resource for
-    * compatibility*/
+   /* Although ProcSet entry is obsolete, add it to resource
+    * for compatibility.
+    */
 
-   ret += HPDF_Dict_Add (fromxobject, "Resources", resource);
+   ret = HPDF_Dict_Add (fromxobject, "Resources", resource);
 
    procset = HPDF_Array_New (page->mmgr);
    if (!procset)
@@ -620,6 +621,9 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
    ret += HPDF_Dict_Add (resource, "ProcSet", procset);
    ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "PDF"));
    ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageC"));
+
+   if (ret != HPDF_OK)
+       return NULL;
 
     xobject = HPDF_Dict_New (page->mmgr);
     if (!xobject)
@@ -716,7 +720,7 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
     HPDF_Dict resource;
     HPDF_Dict fromxobject;
     HPDF_Dict xobject;
-    HPDF_STATUS ret = HPDF_OK;
+    HPDF_STATUS ret;
     HPDF_Array procset;
     HPDF_REAL tmp;
     HPDF_Array array1;
@@ -737,10 +741,11 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
    if (!resource)
       return NULL;
 
-   /* althoth ProcSet-entry is obsolete, add it to resource for
-    * compatibility*/
+   /* Although ProcSet entry is obsolete, add it to resource
+    * for compatibility
+    */
 
-   ret += HPDF_Dict_Add (fromxobject, "Resources", resource);
+   ret = HPDF_Dict_Add (fromxobject, "Resources", resource);
 
    procset = HPDF_Array_New (page->mmgr);
    if (!procset)
@@ -749,6 +754,9 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
    ret += HPDF_Dict_Add (resource, "ProcSet", procset);
    ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "PDF"));
    ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageC"));
+
+   if (ret != HPDF_OK)
+       return NULL;
 
     xobject = HPDF_Dict_New (page->mmgr);
     if (!xobject)

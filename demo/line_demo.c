@@ -89,9 +89,9 @@ int main (int argc, char **argv)
     HPDF_Page page;
     char fname[256];
 
-    const HPDF_UINT16 DASH_MODE1[] = {3};
-    const HPDF_UINT16 DASH_MODE2[] = {3, 7};
-    const HPDF_UINT16 DASH_MODE3[] = {8, 7, 2, 7};
+    const HPDF_REAL DASH_MODE1[] = {3};
+    const HPDF_REAL DASH_MODE2[] = {3, 7};
+    const HPDF_REAL DASH_MODE3[] = {8, 7, 2, 7};
 
     double x;
     double y;

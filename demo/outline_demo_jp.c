@@ -45,11 +45,7 @@ print_page  (HPDF_Page   page,  int page_num)
 
     HPDF_Page_BeginText (page);
     HPDF_Page_MoveTextPos (page, 50, 250);
-#ifdef __WIN32__
-    _snprintf(buf, 50, "Page:%d", page_num);
-#else
-    snprintf(buf, 50, "Page:%d", page_num);
-#endif
+    HPDF_snprintf(buf, 50, "Page:%d", page_num);
     HPDF_Page_ShowText (page, buf);
     HPDF_Page_EndText (page);
 }
