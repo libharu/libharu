@@ -33,7 +33,6 @@ demo_error_handler  (HPDF_STATUS   error_no,
                      HPDF_STATUS   detail_no,
                      void         *user_data);
 
-
 // Same as ÓÔŐÖ×ŘŮ, but in ISO8859-2 codepage
 static const char iso8859_2_text[7] = {0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9};
 static jmp_buf env;
