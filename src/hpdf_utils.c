@@ -209,7 +209,7 @@ HPDF_FToA  (char       *s,
     }
 
     /* Compute the decimal precision to write at least 5 significant figures */
-    logVal = (HPDF_INT32)(val > 1e-20 ? log10(val) : 0.);
+    logVal = (HPDF_INT32)(val > 1e-13 ? log10(val) : 0.);
     if (logVal >= 0) {
         prec = 5;
     }
@@ -459,4 +459,3 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value)
     HPDF_MemCpy (u, (HPDF_BYTE*)value, 2);
     *value = (HPDF_UINT16)((HPDF_UINT16)u[0] << 8 | (HPDF_UINT16)u[1]);
 }
-
