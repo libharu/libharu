@@ -1,0 +1,73 @@
+/**
+
+\page roadmap Roadmap towards version 3.0.0
+
+Below is a list of things to be added, fixed or clarified in Haru library to create version 3.0.0 of it.
+
+\section rm-doc Documentation
+Best libraries have excellent documentation.
+- Complete Doxygen documentation by adding documentation strings for all library items
+- Check documentation consistency
+  + Grammar correctness
+  + Periods usage
+  + Camel case and snake case usage in parameters
+  + Native English speaker documentation check
+- Write conceptual pages about library topics (Fonts, Embedding, Security, UTF-8 and so on)
+- Create full-fledged language tutorial, covering all library topics
+- Translate documentation to other languages
+- Translate tutorial to other languages
+
+\section rm-user-features User library features
+This library can be best in the class.
+
+Several features should be added:
+- More paper formats
+- RTL writing
+- More image format support
+- Bar codes support
+- Footer/header management
+- No-write page regions
+- Text hyphenation
+- Table of contents generation
+- Pattern fill
+- Page breaks
+- Page compression
+
+\section rm-features PDF compliance
+PDF generation is expected to be as close as possible to PDF standard.
+- Check which PDF features are covered
+- Propose separate roadmap to cover PDF features missed
+- Decide whether PDF 2.0 generation should be created
+
+\section rm-coverage Code coverage
+Every part of best libraries has some attention.
+- Cross-link functions (add links <b>See ...</b> wherever possible) in documentation
+- Create demo programs for all library topics and (ideally) for every single function of a library
+- Cross-link functions to demo programs in documentation
+- Check documentation topics <b>Error codes</b> for every function, possibly with some kind of nesting
+- (Ideally) Make previous check automatic and put it to CI/CD
+
+\section rm-test Testing
+Best libraries have excessive testing.
+- Introduce library self-testing features
+  + add unit-testing framework
+  + add tests with memory pressure (check \c OOM error codes)
+- Create test for all error codes for each function in a library
+
+\section rm-bench Benchmarks
+Library is written in C, so it should be performant.
+- Create benchmarks for library
+- Create benchmarks report for CI/CD integration
+
+\section rm-infra Infrastructure
+Best libraries are predictable and are well integrated.
+- Propose language binding generator, similar to https://gi.readthedocs.io/en/latest/
+- Create pkg-config file for library for *nix systems
+- Create `FindHPDF` module to CMake
+- Make CMake build system more configurable
+- Fix *.deb package creation to move header files from `include/` to `include/hpdf-x.y.z/` on *nix systems
+- Port library to different OS, like Haiku OS or Kaspersky OS
+- Integrate testing framework to CI/CD
+- Integrate benchmarks to CI/CD
+
+*/

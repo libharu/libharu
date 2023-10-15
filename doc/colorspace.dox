@@ -1,0 +1,50 @@
+/**
+  \page colorspaces Color spaces
+  \section grayscale-space 8-bit grayscale image
+
+  \ref HPDF_CS_DEVICE_GRAY
+
+  Grayscale describes each pixel with one byte. For each byte, `0x00` is maximum dark, `0xFF` maximum light.
+
+  Image data size is `width * height` bytes.
+
+  The sequence of bytes for an 8-pixel 8-bit image with 2 rows and 4 columns would be:
+
+\code
+  1   2   3   4
+  5   6   7   8
+\endcode
+
+  \section rgb-space 24-bit RGB color image
+
+  \ref HPDF_CS_DEVICE_RGB
+
+  The 24-bit RGB color image describes each pixel with three bytes (`Red`, `Green`, `Blue`).
+  For each byte, `0x00` is maximum dark, `0xFF` maximum light.
+
+  Image data size is `width * height * 3` bytes.
+
+  The sequence of bytes for an 8-pixel 24-bit image with 2 rows and 4 columns would be:
+
+\code
+  1R 1G 1B  2R 2G 2B  3R 3G 3B  4R 4G 4B
+  5R 5G 5B  6R 6G 6B  7R 7G 7B  8R 8G 8B
+\endcode
+
+  \section cmyk-space 32-bit CMYK color image
+
+  \ref HPDF_CS_DEVICE_CMYK
+
+  The 32-bit CMYK color image describes each pixel with four bytes (`Cyan`, `Magenta`, `Yellow`, `Black`).
+  For each byte, `0x00` is maximum dark, `0xFF` maximum light.
+
+  Image data size is `width * height * 4` bytes.
+
+  The sequence of bytes for an 8-pixel 32-bit image with 2 rows and 4 columns would be:
+
+\code
+  1C 1M 1Y 1K  2C 2M 2Y 2K  3C 3M 3Y 3K  4C 4M 4Y 4K
+  5C 5M 5Y 5K  6C 6M 6Y 6K  7C 7M 7Y 7K  8C 8M 8Y 8K
+\endcode
+
+*/
