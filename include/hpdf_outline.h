@@ -34,31 +34,31 @@ HPDF_OutlineRoot_New  (HPDF_MMgr   mmgr,
 
 
 HPDF_Outline
-HPDF_Outline_New  (HPDF_MMgr          mmgr,
-                   HPDF_Outline       parent,
-                   const char   *title,
-                   HPDF_Encoder       encoder,
-                   HPDF_Xref          xref);
+HPDF_Outline_New  (HPDF_MMgr      mmgr,
+                   HPDF_Outline   parent,
+                   const char    *title,
+                   HPDF_Encoder   encoder,
+                   HPDF_Xref      xref);
 
 
 HPDF_Outline
-HPDF_Outline_GetFirst (HPDF_Outline outline);
+HPDF_Outline_GetFirst  (HPDF_Outline outline);
 
 
 HPDF_Outline
-HPDF_Outline_GetLast (HPDF_Outline outline);
+HPDF_Outline_GetLast  (HPDF_Outline outline);
 
 
 HPDF_Outline
-HPDF_Outline_GetPrev(HPDF_Outline outline);
+HPDF_Outline_GetPrev  (HPDF_Outline outline);
 
 
 HPDF_Outline
-HPDF_Outline_GetNext (HPDF_Outline outline);
+HPDF_Outline_GetNext  (HPDF_Outline outline);
 
 
 HPDF_Outline
-HPDF_Outline_GetParent (HPDF_Outline outline);
+HPDF_Outline_GetParent  (HPDF_Outline outline);
 
 
 HPDF_BOOL
