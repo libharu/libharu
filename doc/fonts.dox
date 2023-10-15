@@ -1,0 +1,145 @@
+/**
+  \page fonts Fonts
+
+  \section font-types Font types
+  There are several types of fonts available in `libHaru`.
+
+  Font type     | Description
+  ---------     | -----------
+  Base14 Font   | The built-in font of PDF. Can be used for all viewer applications.
+  Type1 Font    | A font format used by PostScript.
+  TrueType Font | Widely used outline font format.
+  CID Font      | Font format for multi-byte characters. Developed by Adobe. 
+
+  The application has to call HPDF_GetFont() to get font handle.
+
+  Except for Base14 fonts, one of the following functions must be used to load the font before calling HPDF_GetFont():
+
+  - HPDF_LoadType1FontFromFile()
+  - HPDF_LoadTTFontFromFile()
+  - HPDF_LoadTTFontFromFile2()
+  - HPDF_UseCNSFonts()
+  - HPDF_UseCNTFonts()
+  - HPDF_UseJPFonts()
+  - HPDF_UseKRFonts()
+
+  \section base-14-fonts Base-14 Fonts
+
+  Base14 fonts are built into PDF and all viewer applications can display these fonts.
+  Collectively, those fonts are known as the Base 14 fonts. 
+
+  Application can get a base14 font handle any time by calling HPDF_GetFont().
+  PDF files which use base14 fonts are smaller than those which use other types of fonts.
+
+  Moreover, PDF processing is faster because there is no need to load external fonts. 
+  However, base14 fonts are only able to display the `latin1` character set. 
+  To use other character sets, application must use other fonts.
+
+  \par Built-in base14 fonts
+
+  - `Courier`
+  - `Courier-Bold`
+  - `Courier-Oblique`
+  - `Courier-BoldOblique`
+  - `Helvetica`
+  - `Helvetica-Bold`
+  - `Helvetica-Oblique`
+  - `Helvetica-BoldOblique`
+  - `Times-Roman`
+  - `Times-Bold`
+  - `Times-Italic`
+  - `Times-BoldItalic`
+  - `Symbol`
+  - `ZapfDingbats`
+
+  \code{.c}
+  hfont = HPDF_GetFont (pdf, "Courier", NULL);
+  HPDF_Page_SetFontAndSize (page, hfont, 10.5);
+  \endcode
+
+  \section type1-fonts Type1 Fonts
+
+  Type1 is a outline fonts format developed by Adobe.
+  AFM file is required to use external Type1 font with `libHaru`.
+
+  When application uses an external Type1 font, it has to call
+  HPDF_LoadType1FontFromFile() before calling HPDF_GetFont().
+
+  Return value of HPDF_LoadType1FontFromFile() is used as font
+  name parameter of HPDF_GetFont(). 
+
+  If a PFA/PFB file is specified
+  at HPDF_LoadType1FontFromFile() call, `glyf` data of the font is 
+  embedded to PDF file. Otherwise, only metrics data of AFM file 
+  is embedded.
+
+  \code
+  const char *font_name = HPDF_LoadType1FontFromFile (pdf, "a010013l.afm", "a010013l.pfb");
+  HPDF_Font hfont = HPDF_GetFont (pdf, font_name, "CP1250");
+  HPDF_Page_SetFontAndSize (page, hfont, 10.5);
+  \endcode
+
+  \section true-type-fonts TrueType Fonts
+
+  `libHaru` can use TrueType fonts. There are two types of TrueType fonts.
+
+  The first format, with `.ttf` extension, contains only one font data in file.
+  This type of font is loaded by HPDF_LoadTTFontFromFile(). 
+
+  The second format, with `.ttc` extension, contains multiple font data in file.
+  This type of font is loaded by HPDF_LoadTTFontFromFile2().
+
+  Function HPDF_LoadTTFontFromFile2() has parameter `index` to specify which font to load.
+
+  If the parameter `embedding` is set to \ref HPDF_TRUE when HPDF_LoadTTFontFromFile() 
+  or HPDF_LoadTTFontFromFile2() get called, the font subset is embedded into PDF file. 
+
+  If not, only the marix data is stored into a PDF file. In this case viewer application 
+  may use an alternative font if it cannot find requestd font.
+
+  \code
+  const char *font_name = HPDF_LoadTTFontFromFile (pdf, "/usr/local/fonts/arial.ttf", HPDF_TRUE);
+  HPDF_Font hfont = HPDF_GetFont (pdf, font_name, "CP1250");
+  HPDF_Page_SetFontAndSize (page, hfont, 10.5);
+  \endcode
+
+  \note `libHaru` can use only TrueType fonts with Unicode `cmap` and the following tables:
+  - "OS/2",
+  - "cmap"
+  - "cvt "
+  - "fpgm"
+  - "glyf"
+  - "head"
+  - "hhea"
+  - "hmtx"
+  - "loca"
+  - "maxp"
+  - "name"
+  - "post"
+  - "prep"
+
+  \section cid-fonts CID Fonts
+
+  CIDFont is a font for multibyte character developed by Adobe.
+
+  Two simplified Chinese fonts, one traditional Chinese fonts, four Japanese fonts, and four Korean fonts are available in `libHaru`.
+
+  Application has to call following functions once before using CID fonts.
+
+  Function           | Description
+  --------           | -----------
+  HPDF_UseCNSFonts() | Enables simplified Chinese fonts `SimSun` and `SimHei`
+  HPDF_UseCNTFonts() | Enables traditional Chinese font `MingLiU`
+  HPDF_UseJPFonts()  | Enables Japanese fonts `MS-Mincyo`, `MS-Gothic`, `MS-PMincyo` and `MS-PGothic`
+  HPDF_UseKRFonts()  | Enables Korean fonts `Batang`, `Dotum`, `BatangChe` and `DotumChe`
+
+
+  \code
+  HPDF_UseJPFonts (pdf);
+  HPDF_UseJPEncodings (pdf);
+
+  hfont = HPDF_GetFont (pdf, "MS-Mincyo", "90ms-RKSJ-H");
+  HPDF_Page_SetFontAndSize (page, hfont, 10.5);
+  \endcode
+
+*/

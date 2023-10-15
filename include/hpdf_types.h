@@ -117,24 +117,39 @@ typedef  struct _HPDF_Rect {
 /*  HPDF_Point3D struct
 */
 typedef  struct  _HPDF_Point3D {
-	HPDF_REAL  x;
-	HPDF_REAL  y;
-	HPDF_REAL  z;
+    HPDF_REAL  x;
+    HPDF_REAL  y;
+    HPDF_REAL  z;
 } HPDF_Point3D;
 
 typedef struct _HPDF_Rect HPDF_Box;
 
-/* HPDF_Date struct
+/**
+  \brief Date structure
+
+  Represents date values in \c info dictionary of PDF file.
+
+  \see \ref _HPDF_Date
+
  */
 typedef  struct  _HPDF_Date {
+    /// Year of the date. Does not imply restrictions.
     HPDF_INT    year;
+    /// Month of the date. Value from range 1 to 12 is accepted.
     HPDF_INT    month;
+    /// Day of the date. Values from range 1 to 28, 29, 30, or 31 is accepted (depends on the month)
     HPDF_INT    day;
+    /// Hour of date. Value from range 0 to 23 is accepted.
     HPDF_INT    hour;
+    /// Minutes of date. Value from range 0 to 59 is accepted.
     HPDF_INT    minutes;
+    /// Seconds of date. Value from range 0 to 59 is accepted.
     HPDF_INT    seconds;
+    /// Relationship between local time and Universal time (' ', '+', '−', or 'Z')
     char        ind;
+    /// If \c ind is not ' ' (space), value from range 0 to 23 is accepted, otherwise ignored.
     HPDF_INT    off_hour;
+    /// If \c ind is not ' ' (space), value from range 0 to 59 is accepted, otherwise ignored.
     HPDF_INT    off_minutes;
 } HPDF_Date;
 
@@ -322,8 +337,11 @@ typedef enum _HPDF_TextRenderingMode {
 
 
 typedef enum _HPDF_WritingMode {
+    /// Horizontal writing mode
     HPDF_WMODE_HORIZONTAL = 0,
+    /// Vertical writing mode
     HPDF_WMODE_VERTICAL,
+    /// Last writing mode in enumeration
     HPDF_WMODE_EOF
 } HPDF_WritingMode;
 
@@ -390,9 +408,9 @@ typedef enum _HPDF_AnnotType {
     HPDF_ANNOT_POPUP,
     HPDF_ANNOT_3D,
     HPDF_ANNOT_SQUIGGLY,
-	HPDF_ANNOT_LINE,
-	HPDF_ANNOT_PROJECTION,
-	HPDF_ANNOT_WIDGET
+    HPDF_ANNOT_LINE,
+    HPDF_ANNOT_PROJECTION,
+    HPDF_ANNOT_WIDGET
 } HPDF_AnnotType;
 
 
@@ -408,22 +426,39 @@ typedef enum _HPDF_AnnotFlgs {
 
 
 typedef enum _HPDF_AnnotHighlightMode {
+    /// No highlighting.
     HPDF_ANNOT_NO_HIGHTLIGHT = 0,
+    /// Invert annotation area contents.
     HPDF_ANNOT_INVERT_BOX,
+    /// Invert annotation border.
     HPDF_ANNOT_INVERT_BORDER,
+    /// Dent annotation.
     HPDF_ANNOT_DOWN_APPEARANCE,
+    /// Last annotation highlight mode at enumeration.
     HPDF_ANNOT_HIGHTLIGHT_MODE_EOF
 } HPDF_AnnotHighlightMode;
 
+/**
+  Default types of annotation icon
 
+  PDF book, table 172
+*/
 typedef enum _HPDF_AnnotIcon {
+    /// "Comment"
     HPDF_ANNOT_ICON_COMMENT = 0,
+    /// "Key"
     HPDF_ANNOT_ICON_KEY,
+    /// "Note"
     HPDF_ANNOT_ICON_NOTE,
+    /// "Help"
     HPDF_ANNOT_ICON_HELP,
+    /// "NewParagraph"
     HPDF_ANNOT_ICON_NEW_PARAGRAPH,
+    /// "Paragraph"
     HPDF_ANNOT_ICON_PARAGRAPH,
+    /// "Insert"
     HPDF_ANNOT_ICON_INSERT,
+    /// Last icon type at enumeration
     HPDF_ANNOT_ICON_EOF
 } HPDF_AnnotIcon;
 
@@ -476,10 +511,15 @@ typedef enum _HPDF_StampAnnotName{
 /*------ border stype --------------------------------------------------------*/
 
 typedef enum _HPDF_BSSubtype {
+    /// Solid rectangle
     HPDF_BS_SOLID,
+    /// Dashed rectangle
     HPDF_BS_DASHED,
+    /// Embossed rectangle
     HPDF_BS_BEVELED,
+    /// Engraved rectangle
     HPDF_BS_INSET,
+    /// Single line under the bottom of the annotation
     HPDF_BS_UNDERLINED
 } HPDF_BSSubtype;
 
@@ -551,17 +591,24 @@ typedef enum _HPDF_PageDirection {
 
 
 typedef enum  _HPDF_EncoderType {
+    /// Single-byte character encoder
     HPDF_ENCODER_TYPE_SINGLE_BYTE,
+    /// Multi-byte character encoder
     HPDF_ENCODER_TYPE_DOUBLE_BYTE,
+    /// Encoder is not yet initialized
     HPDF_ENCODER_TYPE_UNINITIALIZED,
+    /// Encoder was not properly constructed
     HPDF_ENCODER_UNKNOWN
 } HPDF_EncoderType;
 
-
 typedef enum _HPDF_ByteType {
+    /// Single byte character.
     HPDF_BYTE_TYPE_SINGLE = 0,
+    /// Lead byte of a double-byte character.
     HPDF_BYTE_TYPE_LEAD,
+    /// Trailing byte of a double-byte character.
     HPDF_BYTE_TYPE_TRAIL,
+    /// Invalid encoder or cannot judge the byte type.
     HPDF_BYTE_TYPE_UNKNOWN
 } HPDF_ByteType;
 
