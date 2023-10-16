@@ -19,22 +19,6 @@
 #include "hpdf.h"
 #include "utils.h"
 
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
-
 static const int PAGE_WIDTH = 420;
 static const int PAGE_HEIGHT = 400;
 static const int CELL_WIDTH = 20;
@@ -160,7 +144,7 @@ int main (int argc, char **argv)
             NULL
     };
 
-    pdf = HPDF_NewEx (error_handler, NULL, NULL, 0, NULL);
+    pdf = HPDF_NewEx (demo_error_handler, NULL, NULL, 0, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;

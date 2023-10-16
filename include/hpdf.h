@@ -38,11 +38,13 @@
 #ifdef HPDF_DLL
 #    define HPDF_SHARED
 #    define HPDF_EXPORT(A)  __declspec(dllimport) A  __stdcall
+#    define HPDF_HANDLER(A) A __stdcall
 #else
 #    ifdef HPDF_DLL_CDECL
 #        define HPDF_SHARED
 #        define HPDF_EXPORT(A)  __declspec(dllimport) A
 #    endif /* HPDF_DLL_CDECL */
+#    define HPDF_HANDLER(A) A
 #endif /* HPDF_DLL */
 
 #ifdef HPDF_SHARED
