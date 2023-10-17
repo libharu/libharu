@@ -12,6 +12,19 @@
  *
  */
 
+/**
+  \par Text demo
+
+  This demo app shows various ways to create text using \c libHaru:
+  - Font sizes
+  - Text color
+  - Fill mode
+  - Text rotation
+  - Text skewing
+  - Character spacing
+  - Word spacing
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

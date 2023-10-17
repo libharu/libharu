@@ -1,0 +1,51 @@
+/**
+\example arc_demo.c
+  \par Arc demo
+
+  This demo show HPDF_Page_Arc() and HPDF_Page_Circle() functions usage.
+
+  Pie chart is created using filled circle segments and central circle.
+\example attach.c
+  \par Attach demo
+
+  This demo shows HPDF_AttachFile() function and ability to include files into resulting PDF document.
+  Application expects file `pngsuite/basn3p08.png` next to binary.
+
+  One can see attachment in Adobe Reader or in Firefox browser.
+\example character_map.c
+\example chfont_demo.c
+\example encoding_list.c
+\example encryption.c
+\example ext_gstate_demo.c
+\example font_demo.c
+\example grid_demo.c
+\example grid_sheet.c
+\example handler.c
+\example image_demo.c
+\example jpeg_demo.c
+\example jpfont_demo.c
+\example line_demo.c
+\example link_annotation.c
+\example make_rawimage.c
+\example outline_demo.c
+\example outline_demo_jp.c
+\example permission.c
+\example png_demo.c
+\example raw_image_demo.c
+\example slide_show_demo.c
+\example text_annotation.c
+\example text_demo.c
+  \par Text demo
+
+  This demo app shows various ways to create text using \c libHaru:
+  - Font sizes
+  - Text color
+  - Fill mode
+  - Text rotation
+  - Text skewing
+  - Character spacing
+  - Word spacing
+\example text_demo2.c
+\example ttfont_demo.c
+\example ttfont_demo_jp.c
+*/

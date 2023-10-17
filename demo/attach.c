@@ -12,6 +12,15 @@
  *
  */
 
+/**
+  \par Attach demo
+
+  This demo shows HPDF_AttachFile() function and ability to include files into resulting PDF document.
+  Application expects file `pngsuite/basn3p08.png` next to binary.
+
+  One can see attachment in Adobe Reader or in Firefox browser.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

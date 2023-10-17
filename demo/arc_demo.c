@@ -12,6 +12,14 @@
  *
  */
 
+/**
+  \par Arc demo
+
+  This demo show HPDF_Page_Arc() and HPDF_Page_Circle() functions usage.
+
+  Pie chart is created using filled circle segments and central circle.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
