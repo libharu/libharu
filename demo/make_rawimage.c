@@ -17,8 +17,9 @@
 #include <string.h>
 #include <math.h>
 #include "hpdf.h"
+#include "handler.h"
 
-#ifdef HPDF_HAVE_LIBPNG
+#ifdef LIBHPDF_HAVE_LIBPNG
 
 int main (int argc, char **argv)
 {
@@ -80,8 +81,8 @@ int main (int argc, char **argv)
 
 int main()
 {
-    printf("WARNING: if you want to run this example, \n"
-           "make libhpdf with HPDF_USE_PNGLIB option.\n");
+    printf("WARNING: make_rawimage app was not built correctly. \n"
+           "Make sure libpng is installed and CMake is able to find it.\n");
     return 0;
 }
 
