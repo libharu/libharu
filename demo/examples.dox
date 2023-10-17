@@ -27,6 +27,14 @@
 \example line_demo.c
 \example link_annotation.c
 \example make_rawimage.c
+\example minimal.c
+  \par Minimal HPDF program demo
+
+  This is bare minimum program, creating PDF document.
+  It creates \ref HPDF_Doc object, adds \ref HPDF_Page object into it,
+  sets added page size and orientation and saves document to a file.
+
+  Last action is to clean up everything.
 \example outline_demo.c
 \example outline_demo_jp.c
 \example permission.c
@@ -34,6 +42,7 @@
 \example raw_image_demo.c
 \example slide_show_demo.c
 \example text_annotation.c
+\example text_demo2.c
 \example text_demo.c
   \par Text demo
 
@@ -45,7 +54,6 @@
   - Text skewing
   - Character spacing
   - Word spacing
-\example text_demo2.c
 \example ttfont_demo.c
 \example ttfont_demo_jp.c
 */

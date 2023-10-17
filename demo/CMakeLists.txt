@@ -21,6 +21,7 @@ set(
     line_demo
     link_annotation
     make_rawimage
+    minimal
     outline_demo
     #outline_demo_jp
     permission
