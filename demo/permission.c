@@ -17,6 +17,7 @@
 #include <string.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
+#include "handler.h"
 #include "utils.h"
 
 static const char* text = "User cannot print and copy this document.";

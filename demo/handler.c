@@ -14,11 +14,10 @@
  *
  */
 
-#ifndef __UTILS_H
-#define __UTILS_H
+#ifndef __HANDLER_H
+#define __HANDLER_H
 
 #include "hpdf.h"
-#include "utils.h"
 #include <setjmp.h>
 #include <stdio.h>
 
@@ -33,4 +32,4 @@ demo_error_handler  (HPDF_STATUS   error_no,
     longjmp(env, 1);
 }
 
-#endif /* __UTILS_H */
+#endif /* __HANDLER_H */

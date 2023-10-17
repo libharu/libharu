@@ -18,7 +18,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
-#include "utils.h"
+#include "handler.h"
 
 int
 main (int argc, char **argv)

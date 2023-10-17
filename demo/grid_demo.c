@@ -1,5 +1,5 @@
 /*
- * << Haru Free PDF Library 2.0.0 >> -- attach.c
+ * << Haru Free PDF Library 2.0.0 >> -- grid_sheet.c
  *
  * Copyright (c) 1999-2006 Takeshi Kanno <takeshi_kanno@est.hi-ho.ne.jp>
  *
@@ -17,18 +17,15 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "grid_sheet.h"
 #include "handler.h"
-
-const char *text = "This PDF should have an attachment named basn3p08.png";
 
 int
 main (int argc, char **argv)
 {
     HPDF_Doc  pdf;
-    HPDF_Font font;
     HPDF_Page page;
     char fname[256];
-    HPDF_REAL tw;
 
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
@@ -44,24 +41,13 @@ main (int argc, char **argv)
         return 1;
     }
 
-    /* create default-font */
-    font = HPDF_GetFont (pdf, "Helvetica", NULL);
-
     /* add a new page object. */
     page = HPDF_AddPage (pdf);
 
-    HPDF_Page_SetSize (page, HPDF_PAGE_SIZE_LETTER, HPDF_PAGE_PORTRAIT);
+    HPDF_Page_SetHeight (page, 600);
+    HPDF_Page_SetWidth (page, 400);
 
-    HPDF_Page_BeginText (page);
-    HPDF_Page_SetFontAndSize (page, font, 20);
-    tw = HPDF_Page_TextWidth (page, text);
-    HPDF_Page_MoveTextPos (page, (HPDF_Page_GetWidth (page) - tw) / 2,
-                (HPDF_Page_GetHeight (page)  - 20) / 2);
-    HPDF_Page_ShowText (page, text);
-    HPDF_Page_EndText (page);
-
-    /* attach a file to the document */
-    HPDF_AttachFile (pdf, "pngsuite/basn3p08.png");
+    print_grid  (pdf, page);
 
     /* save the document to a file */
     HPDF_SaveToFile (pdf, fname);
@@ -71,4 +57,6 @@ main (int argc, char **argv)
 
     return 0;
 }
+
+
 

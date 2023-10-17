@@ -35,6 +35,7 @@ set(
   demos_with_grid_NAMES
     arc_demo
     chfont_demo
+    grid_demo
     raw_image_demo
     text_demo
     text_demo2
@@ -50,7 +51,7 @@ endif(WIN32 AND NOT CYGWIN)
 # create demos
 # =======================================================================
 foreach(demo ${demos_NAMES})
-  add_executable(${demo} ${demo}.c utils.c)
+  add_executable(${demo} ${demo}.c handler.c)
   target_link_libraries(${demo} PUBLIC hpdf)
   if(UNIX AND NOT APPLE)
     target_link_libraries(${demo} PUBLIC m)
@@ -62,7 +63,7 @@ endforeach()
 
 # some demos need grid_sheet.c compiled in
 foreach(demo ${demos_with_grid_NAMES})
-  add_executable(${demo} ${demo}.c grid_sheet.c utils.c)
+  add_executable(${demo} ${demo}.c grid_sheet.c handler.c)
   target_link_libraries(${demo} PUBLIC hpdf)
   if(UNIX AND NOT APPLE)
     target_link_libraries(${demo} PUBLIC m)
@@ -72,22 +73,14 @@ foreach(demo ${demos_with_grid_NAMES})
   endif(DEMO_C_FLAGS)
 endforeach()
 
-# the grid_sheet demo needs extra defines
-add_executable(grid_sheet grid_sheet.c utils.c)
-target_link_libraries(grid_sheet PUBLIC hpdf)
-  if(UNIX AND NOT APPLE)
-    target_link_libraries(grid_sheet PUBLIC m)
-  endif() 
-set_target_properties(grid_sheet PROPERTIES COMPILE_FLAGS "${DEMO_C_FLAGS} -DSTANDALONE")
-
 # =======================================================================
 # install demo source, demo executables and other files
 # =======================================================================
 install(
-  TARGETS ${demos_NAMES} ${demos_with_grid_NAMES} grid_sheet
+  TARGETS ${demos_NAMES} ${demos_with_grid_NAMES}
   DESTINATION demo
 )
-foreach(demo ${demos_NAMES} ${demos_with_grid_NAMES} grid_sheet)
+foreach(demo ${demos_NAMES} ${demos_with_grid_NAMES})
   install(FILES ${demo}.c DESTINATION demo)
 endforeach()
 

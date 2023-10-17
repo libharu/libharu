@@ -18,7 +18,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
-#include "utils.h"
+#include "handler.h"
 
 static const char* text = "This is an encrypt document example.";
 static const char* owner_passwd = "owner";

@@ -18,6 +18,7 @@
 #include <math.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "handler.h"
 #include "utils.h"
 
 #ifdef LIBHPDF_HAVE_LIBPNG

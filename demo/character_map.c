@@ -21,6 +21,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "handler.h"
 #include "utils.h"
 
 void

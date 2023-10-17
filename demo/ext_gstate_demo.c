@@ -18,7 +18,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
-#include "utils.h"
+#include "handler.h"
 
 void
 draw_circles (HPDF_Page page, const char *description, HPDF_REAL x, HPDF_REAL y)

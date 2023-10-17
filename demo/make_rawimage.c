@@ -18,7 +18,7 @@
 #include <math.h>
 #include "hpdf.h"
 
-#ifdef HPDF_USE_PNGLIB
+#ifdef HPDF_HAVE_LIBPNG
 
 int main (int argc, char **argv)
 {

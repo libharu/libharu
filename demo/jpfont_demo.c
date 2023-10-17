@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "hpdf.h"
-#include "utils.h"
+#include "handler.h"
 
 int main (int argc, char **argv)
 {

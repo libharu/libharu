@@ -18,6 +18,7 @@
 #include <math.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
+#include "handler.h"
 #include "utils.h"
 
 int no = 0;

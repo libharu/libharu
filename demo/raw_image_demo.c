@@ -17,7 +17,7 @@
 #include <string.h>
 #include <math.h>
 #include "hpdf.h"
-#include "utils.h"
+#include "handler.h"
 
 const HPDF_BYTE RAW_IMAGE_DATA[128] = {
     0xff, 0xff, 0xff, 0xfe, 0xff, 0xff, 0xff, 0xfc,

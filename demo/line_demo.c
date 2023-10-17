@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "hpdf.h"
-#include "utils.h"
+#include "handler.h"
 
 void
 draw_line  (HPDF_Page    page,

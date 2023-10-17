@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "hpdf.h"
+#include "handler.h"
 #include "utils.h"
 
 void
