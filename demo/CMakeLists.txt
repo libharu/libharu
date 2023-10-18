@@ -11,6 +11,7 @@ set(
   demos_NAMES
     attach
     character_map
+    clip_hatch
     encoding_list
     encryption
     ext_gstate_demo
