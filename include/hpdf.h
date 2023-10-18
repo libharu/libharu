@@ -3411,11 +3411,6 @@ HPDF_Page_GetGStateDepth  (HPDF_Page   page);
 
   \copydoc dox_return_ok
 
-  \par Example
-
-  A miter limit of 1.414 converts miters to bevels for \c angle less than \c 90 degrees,
-  a limit of \c 2.0 converts them for \c angle less than 60 degrees, and a limit of 10.0
-  converts them for angle less than approximately 11.5 degrees.
 
   \copydoc dox_pdf_cmd
   \c w
@@ -3503,6 +3498,10 @@ HPDF_Page_SetLineJoin  (HPDF_Page      page,
   \arg After \ref HPDF_GMODE_PAGE_DESCRIPTION or \ref HPDF_GMODE_TEXT_OBJECT
 
   \copydoc dox_return_ok
+
+  \note A miter limit of 1.414 converts miters to bevels for \c angle less than \c 90 degrees,
+  a limit of \c 2.0 converts them for \c angle less than 60 degrees, and a limit of 10.0
+  converts them for angle less than approximately 11.5 degrees.
 
   \copydoc dox_pdf_cmd
   \c M
