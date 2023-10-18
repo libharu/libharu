@@ -14,6 +14,14 @@
   One can see attachment in Adobe Reader or in Firefox browser.
 \example character_map.c
 \example chfont_demo.c
+\example clip_hatch.c
+  \par Clipping path demo program
+
+  This program create hatch pattern using lines, page transform (rotation) and clipping path.
+
+  Clipping path is created using HPDF_Page_Rectangle() function. In order to make clipping work
+  properly, HPDF_Page_EndPath() function \a must be called right after clip.
+
 \example encoding_list.c
 \example encryption.c
 \example ext_gstate_demo.c
