@@ -19,6 +19,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
+#include "utils.h"
 
 jmp_buf env;
 
@@ -45,11 +46,7 @@ PrintText(HPDF_Page page)
     HPDF_Point pos = HPDF_Page_GetCurrentTextPos (page);
 
     no++;
-    #ifdef __WIN32__
-    _snprintf (buf, 512, ".[%d]%0.2f %0.2f", no, pos.x, pos.y);
-    #else
-    snprintf (buf, 512, ".[%d]%0.2f %0.2f", no, pos.x, pos.y);
-    #endif
+    HPDF_snprintf (buf, 512, ".[%d]%0.2f %0.2f", no, pos.x, pos.y);
     HPDF_Page_ShowText(page, buf);
 }
 
@@ -65,7 +62,6 @@ main (int argc, char **argv)
     float angle2;
     float rad1;
     float rad2;
-    HPDF_REAL page_height;
     HPDF_Rect rect;
     int i;
 
@@ -90,8 +86,6 @@ main (int argc, char **argv)
     HPDF_Page_SetSize (page, HPDF_PAGE_SIZE_A5, HPDF_PAGE_PORTRAIT);
 
     print_grid  (pdf, page);
-
-    page_height = HPDF_Page_GetHeight (page);
 
     font = HPDF_GetFont (pdf, "Helvetica", NULL);
     HPDF_Page_SetTextLeading (page, 20);

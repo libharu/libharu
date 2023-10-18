@@ -21,6 +21,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "utils.h"
 
 jmp_buf env;
 
@@ -232,7 +233,7 @@ main  (int      argc,
             buf[1] = j;
             buf[2] = 0;
 
-            btype = HPDF_Encoder_GetByteType (encoder, buf, 0);
+            btype = HPDF_Encoder_GetByteType (encoder, (char*)buf, 0);
             unicode = HPDF_Encoder_GetUnicode (encoder, code);
 
             if (btype == HPDF_BYTE_TYPE_LEAD &&
@@ -268,30 +269,18 @@ main  (int      argc,
             HPDF_Font title_font = HPDF_GetFont (pdf, "Helvetica", NULL);
             HPDF_Outline outline;
             HPDF_Destination dst;
-#ifdef __WIN32__
-            _snprintf (buf, 256, "0x%04X-0x%04X",
+            HPDF_snprintf (buf, 256, "0x%04X-0x%04X",
                     (unsigned int)(i * 256 + min_l),
                     (unsigned int)(i * 256 + max_l));
-#else
-            snprintf (buf, 256, "0x%04X-0x%04X",
-                    (unsigned int)(i * 256 + min_l),
-                    (unsigned int)(i * 256 + max_l));
-#endif
     outline = HPDF_CreateOutline (pdf, root, buf, NULL);
             dst = HPDF_Page_CreateDestination (page);
             HPDF_Outline_SetDestination(outline, dst);
 
             draw_page (pdf, page, title_font, font, (HPDF_BYTE)i, (HPDF_BYTE)min_l);
 
-#ifdef __WIN32__
-            _snprintf (buf, 256, "%s (%s) 0x%04X-0x%04X", argv[1], argv[2],
-                        (unsigned int)(i * 256 + min_l),
-                        (unsigned int)(i * 256 + max_l));
-#else
-            snprintf (buf, 256, "%s (%s) 0x%04X-0x%04X", argv[1], argv[2],
-                        (unsigned int)(i * 256 + min_l),
-                        (unsigned int)(i * 256 + max_l));
-#endif
+            HPDF_snprintf (buf, 256, "%s (%s) 0x%04X-0x%04X", argv[1], argv[2],
+                    (unsigned int)(i * 256 + min_l),
+                    (unsigned int)(i * 256 + max_l));
             HPDF_Page_SetFontAndSize (page, title_font, 10);
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, 40, HPDF_Page_GetHeight (page) - 35);

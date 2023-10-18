@@ -17,6 +17,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "utils.h"
 
 jmp_buf env;
 
@@ -34,7 +35,6 @@ error_handler  (HPDF_STATUS   error_no,
     longjmp(env, 1);
 }
 
-
 void
 print_page  (HPDF_Page   page,  int page_num)
 {
@@ -45,11 +45,7 @@ print_page  (HPDF_Page   page,  int page_num)
 
     HPDF_Page_BeginText (page);
     HPDF_Page_MoveTextPos (page, 30, 740);
-#ifdef __WIN32__
-    _snprintf(buf, 50, "Page:%d", page_num);
-#else
-    snprintf(buf, 50, "Page:%d", page_num);
-#endif
+    HPDF_snprintf(buf, 50, "Page:%d", page_num);
     HPDF_Page_ShowText (page, buf);
     HPDF_Page_EndText (page);
 }
@@ -105,8 +101,13 @@ int main(int argc, char **argv)
     outline[1] = HPDF_CreateOutline (pdf, root, "page2", NULL);
 
     /* create outline with test which is ISO8859-2 encoding */
-    outline[2] = HPDF_CreateOutline (pdf, root, "ISO8859-2 text гдежзий",
-                    HPDF_GetEncoder (pdf, "ISO8859-2"));
+
+    const char *outline_text = "ISO8859-2 text %s";
+    char buf[50] = {0};
+
+    HPDF_snprintf(buf, 50, outline_text, iso8859_2_text);
+
+    outline[2] = HPDF_CreateOutline (pdf, root, buf, HPDF_GetEncoder (pdf, "ISO8859-2"));
 
     /* create destination objects on each pages
      * and link it to outline items.

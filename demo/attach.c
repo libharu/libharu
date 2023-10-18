@@ -17,6 +17,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "utils.h"
 
 const char *text = "This PDF should have an attachment named basn3p08.png";
 

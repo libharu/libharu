@@ -18,6 +18,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
+#include "utils.h"
 
 #ifdef STAND_ALONE
 jmp_buf env;
@@ -119,11 +120,7 @@ print_grid  (HPDF_Doc     pdf,
 
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, 5, y - 2);
-#ifdef __WIN32__
-            _snprintf (buf, 12, "%u", y);
-#else
-            snprintf (buf, 12, "%u", y);
-#endif
+            HPDF_snprintf (buf, 12, "%u", y);
             HPDF_Page_ShowText (page, buf);
             HPDF_Page_EndText (page);
         }
@@ -140,11 +137,7 @@ print_grid  (HPDF_Doc     pdf,
 
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, x, 5);
-#ifdef __WIN32__
-            _snprintf (buf, 12, "%u", x);
-#else
-            snprintf (buf, 12, "%u", x);
-#endif
+            HPDF_snprintf (buf, 12, "%u", x);
             HPDF_Page_ShowText (page, buf);
             HPDF_Page_EndText (page);
 

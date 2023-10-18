@@ -19,6 +19,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
+#include "utils.h"
 
 jmp_buf env;
 
@@ -173,11 +174,7 @@ int main (int argc, char **argv)
         /* print the description. */
         HPDF_Page_MoveTextPos (page, 0, -10);
         HPDF_Page_SetFontAndSize(page, font, 8);
-        #ifdef __WIN32__
-        _snprintf(buf, 50, "Fontsize=%.0f", fsize);
-        #else
-        snprintf(buf, 50, "Fontsize=%.0f", fsize);
-        #endif
+        HPDF_snprintf(buf, 50, "Fontsize=%.0f", fsize);
         HPDF_Page_ShowText (page, buf);
 
         fsize *= 1.5;

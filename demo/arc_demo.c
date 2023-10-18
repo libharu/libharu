@@ -18,6 +18,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
+#include "utils.h"
 
 jmp_buf env;
 

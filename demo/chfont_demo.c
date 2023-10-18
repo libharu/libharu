@@ -54,7 +54,6 @@ main (int argc, char **argv)
     const char *fcp932_name;
     HPDF_Font fcp936;
     HPDF_Font fcp932;
-    int y;
 
     if (argc < 4) {
         printf ("chfont_demo <cp936-ttc-font-file-name> "

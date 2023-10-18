@@ -37,9 +37,9 @@ static const char * const HPDF_ANNOT_TYPE_NAMES[] = {
                                         "Popup",
                                         "3D",
                                         "Squiggly",
-					"Line",
-					"Projection",
-					"Widget"
+                                        "Line",
+                                        "Projection",
+                                        "Widget"
                                         };
 
 static const char * const HPDF_ANNOT_ICON_NAMES_NAMES[] = {
@@ -318,7 +318,7 @@ HPDF_LinkAnnot_SetJavaScript(HPDF_Annotation annot, HPDF_JavaScript javascript)
     if (ret != HPDF_OK)
         return HPDF_CheckError (annot->error);
 
-	ret += HPDF_Dict_Add (action, "JS", javascript);
+    ret += HPDF_Dict_Add (action, "JS", javascript);
     ret += HPDF_Dict_AddName (action, "S", "JavaScript");
 
     if (ret != HPDF_OK)
@@ -889,12 +889,12 @@ HPDF_PopupAnnot_New (HPDF_MMgr         mmgr,
 }
 
 HPDF_Annotation
-HPDF_StampAnnot_New (HPDF_MMgr         mmgr,
-                     HPDF_Xref         xref,
-                     HPDF_Rect         rect,
-                     HPDF_StampAnnotName name,
-                     const char*       text,
-                     HPDF_Encoder       encoder)
+HPDF_StampAnnot_New (HPDF_MMgr             mmgr,
+                     HPDF_Xref             xref,
+                     HPDF_Rect             rect,
+                     HPDF_StampAnnotName   name,
+                     const char           *text,
+                     HPDF_Encoder          encoder)
 {
     HPDF_Annotation annot;
     HPDF_String s;
@@ -919,27 +919,27 @@ HPDF_StampAnnot_New (HPDF_MMgr         mmgr,
 
 HPDF_Annotation
 HPDF_ProjectionAnnot_New(HPDF_MMgr         mmgr,
-						 HPDF_Xref         xref,
-						 HPDF_Rect         rect,
-						 const char*       text,
-						 HPDF_Encoder       encoder)
+                         HPDF_Xref         xref,
+                         HPDF_Rect         rect,
+                         const char       *text,
+                         HPDF_Encoder      encoder)
 {
-	HPDF_Annotation annot;
-	HPDF_String s;
-	HPDF_PTRACE((" HPDF_StampAnnot_New\n"));
+    HPDF_Annotation annot;
+    HPDF_String s;
+    HPDF_PTRACE((" HPDF_StampAnnot_New\n"));
+    annot = HPDF_Annotation_New (mmgr, xref, HPDF_ANNOT_PROJECTION, rect);
 
-	annot = HPDF_Annotation_New (mmgr, xref, HPDF_ANNOT_PROJECTION, rect);
-	if (!annot)
-		return NULL;
+    if (!annot)
+        return NULL;
 
-	s = HPDF_String_New (mmgr, text, encoder);
-	if (!s)
-		return NULL;
+    s = HPDF_String_New (mmgr, text, encoder);
+    if (!s)
+        return NULL;
 
-	if (HPDF_Dict_Add (annot, "Contents", s) != HPDF_OK)
-		return NULL;
+    if (HPDF_Dict_Add (annot, "Contents", s) != HPDF_OK)
+        return NULL;
 
-	return annot;
+    return annot;
 }
 
 
@@ -1007,7 +1007,7 @@ HPDF_MarkupAnnot_SetRectDiff (HPDF_Annotation  annot, HPDF_Rect  rect) /* RD ent
     HPDF_PTRACE((" HPDF_MarkupAnnot_SetRectDiff\n"));
 
     array = HPDF_Array_New ( annot->mmgr);
-    if ( !array)
+    if (!array)
         return HPDF_Error_GetCode ( annot->error);
 
     if ((ret = HPDF_Dict_Add ( annot, "RD", array)) != HPDF_OK)
@@ -1217,9 +1217,7 @@ HPDF_LineAnnot_SetCaption (HPDF_Annotation annot, HPDF_BOOL showCaption, HPDF_Li
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata)
 {
-	HPDF_STATUS ret = HPDF_OK;
+    HPDF_STATUS ret = HPDF_Dict_Add(annot, "ExData", exdata);
 
-	ret = HPDF_Dict_Add(annot, "ExData", exdata);
-
-	return ret;
+    return ret;
 }

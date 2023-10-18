@@ -677,7 +677,8 @@ MeasureText  (HPDF_Font          font,
     HPDF_UINT tmp_len = 0;
     HPDF_UINT i;
     HPDF_FontAttr attr = (HPDF_FontAttr)font->attr;
-    HPDF_ByteType last_btype = HPDF_BYTE_TYPE_TRAIL;
+    // Comment to make compiler happy
+    // HPDF_ByteType last_btype = HPDF_BYTE_TYPE_TRAIL;
     HPDF_Encoder encoder = attr->encoder;
     HPDF_ParseText_Rec  parse_state;
     HPDF_INT dw2;
@@ -724,8 +725,9 @@ MeasureText  (HPDF_Font          font,
                 tmp_len = i + 1;
                 if (real_width)
                     *real_width = w;
-            } /* else
-			//Commenting this out fixes problem with HPDF_Text_Rect() splitting the words
+            }
+            /* else
+            // Commenting this out fixes problem with HPDF_Text_Rect() splitting the words
             if (last_btype == HPDF_BYTE_TYPE_TRAIL ||
                     (btype == HPDF_BYTE_TYPE_LEAD &&
                     last_btype == HPDF_BYTE_TYPE_SINGLE)) {
@@ -734,7 +736,8 @@ MeasureText  (HPDF_Font          font,
                     if (real_width)
                         *real_width = w;
                 }
-            }*/
+            }
+            */
         }
 
         if (HPDF_IS_WHITE_SPACE(b)) {
@@ -767,10 +770,13 @@ MeasureText  (HPDF_Font          font,
         if (w > width || b == 0x0A)
             return tmp_len;
 
+        /*
+        // Commented alongside of previous commented items
         if (HPDF_IS_WHITE_SPACE(b))
             last_btype = HPDF_BYTE_TYPE_TRAIL;
         else
             last_btype = btype;
+        */
     }
 
     /* all of text can be put in the specified width */

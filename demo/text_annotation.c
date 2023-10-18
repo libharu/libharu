@@ -17,6 +17,7 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "utils.h"
 
 jmp_buf env;
 
@@ -33,7 +34,6 @@ error_handler  (HPDF_STATUS   error_no,
                 (HPDF_UINT)detail_no);
     longjmp(env, 1);
 }
-
 
 int main(int argc, char **argv)
 {
@@ -115,8 +115,12 @@ int main(int argc, char **argv)
 
     encoding = HPDF_GetEncoder (pdf, "ISO8859-2");
 
+    const char *annotation_text = "Annotation with ISO8859 text %s";
+    char buf[50] = {0};
+    HPDF_snprintf(buf, 50, annotation_text, iso8859_2_text);
+
     HPDF_Page_CreateTextAnnot (page, rect8,
-                "Annotation with ISO8859 text гдежзий", encoding);
+                buf, encoding);
 
     HPDF_Page_SetFontAndSize (page, font, 11);
 

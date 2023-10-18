@@ -708,4 +708,4 @@ PngAfterWrite  (HPDF_Dict obj)
 }
 
 
-#endif /* LIBHPDF_HAVE_PNGLIB */
+#endif /* LIBHPDF_HAVE_LIBPNG */
