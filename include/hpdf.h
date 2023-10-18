@@ -4631,6 +4631,8 @@ HPDF_Page_ShowTextNextLineEx  (HPDF_Page    page,
 
   \copydoc dox_return_ok
 
+  \see HPDF_Page_GetGrayFill()
+
   \copydoc dox_pdf_cmd
   \c g
 
@@ -4654,6 +4656,8 @@ HPDF_Page_SetGrayFill  (HPDF_Page   page,
 
   \copydoc dox_return_ok
 
+  \see HPDF_Page_GetGrayStroke()
+
   \copydoc dox_pdf_cmd
   \c G
 
@@ -4676,6 +4680,8 @@ HPDF_Page_SetGrayStroke  (HPDF_Page   page,
   \arg After \ref HPDF_GMODE_PAGE_DESCRIPTION or \ref HPDF_GMODE_TEXT_OBJECT.
 
   \copydoc dox_return_ok
+
+  \see HPDF_Page_GetRGBFill()
 
   \copydoc dox_pdf_cmd
   \c rg
@@ -4701,6 +4707,8 @@ HPDF_Page_SetRGBFill  (HPDF_Page  page,
   \arg After \ref HPDF_GMODE_PAGE_DESCRIPTION or \ref HPDF_GMODE_TEXT_OBJECT.
 
   \copydoc dox_return_ok
+
+  \see HPDF_Page_GetRGBStroke()
 
   \copydoc dox_pdf_cmd
   \c RG
@@ -4754,6 +4762,8 @@ HPDF_Page_SetRGBStrokeHex  (HPDF_Page  page,
 
   \copydoc dox_return_ok
 
+  \see HPDF_Page_GetCMYKFill()
+
   \copydoc dox_pdf_cmd
   \c k
 
@@ -4779,6 +4789,8 @@ HPDF_Page_SetCMYKFill  (HPDF_Page  page,
   \arg After \ref HPDF_GMODE_PAGE_DESCRIPTION or \ref HPDF_GMODE_TEXT_OBJECT.
 
   \copydoc dox_return_ok
+
+  \see HPDF_Page_GetCMYKStroke()
 
   \copydoc dox_pdf_cmd
   \c K
