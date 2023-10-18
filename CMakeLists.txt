@@ -77,7 +77,7 @@ set (LIBHPDF_STDC_HEADERS 1)
 
 # support all of the different variations of LIBPNG defines in HARU
 if (${PNG_FOUND})
-set (LIBHPDF_HAVE_LIBPNG TRUE)
+  set (LIBHPDF_HAVE_LIBPNG ${PNG_FOUND})
 endif(${PNG_FOUND})
 
 # support different zlib defines
