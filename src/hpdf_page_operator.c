@@ -1770,6 +1770,19 @@ HPDF_Page_SetRGBStroke  (HPDF_Page  page,
     return ret;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetRGBStrokeHex  (HPDF_Page  page,
+                            HPDF_UINT8  r,
+                            HPDF_UINT8  g,
+                            HPDF_UINT8  b)
+{
+    HPDF_REAL rr = (HPDF_REAL)r / 255.0;
+    HPDF_REAL rg = (HPDF_REAL)g / 255.0;
+    HPDF_REAL rb = (HPDF_REAL)b / 255.0;
+
+    return HPDF_Page_SetRGBStroke(page, rr, rg, rb);
+}
+
 /* k */
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetCMYKFill  (HPDF_Page  page,

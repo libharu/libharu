@@ -4715,6 +4715,33 @@ HPDF_Page_SetRGBStroke  (HPDF_Page  page,
 /**
 
   \ingroup graphics
+  \brief Set stroke color (RGB) using \ref HPDF_UINT8 values.
+
+  \copydoc dox_param_page
+  \param r, g, b Level of each color element. They must be between \c 0x00 and \c 0xFF.
+
+  \copydoc dox_graphics_mode
+
+  \arg Before \ref HPDF_GMODE_PAGE_DESCRIPTION or \ref HPDF_GMODE_TEXT_OBJECT.
+  \arg After \ref HPDF_GMODE_PAGE_DESCRIPTION or \ref HPDF_GMODE_TEXT_OBJECT.
+
+  \copydoc dox_return_ok
+
+  \see HPDF_Page_GetRGBStroke(), HPDF_Page_SetRGBStroke()
+
+  \copydoc dox_pdf_cmd
+  \c RG
+
+*/
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetRGBStrokeHex  (HPDF_Page  page,
+                            HPDF_UINT8  r,
+                            HPDF_UINT8  g,
+                            HPDF_UINT8  b);
+
+/**
+
+  \ingroup graphics
   \brief Set filling color (CMYK).
 
   \copydoc dox_param_page
