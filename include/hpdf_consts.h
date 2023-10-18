@@ -545,5 +545,14 @@
 
 
 /*----------------------------------------------------------------------------*/
+/**
+  \brief Predefined value for calculations with millimeters
+*/
+#define HPDF_MM                             2.834646
+
+/**
+  \brief Predefined value for calculations with inches
+*/
+#define HPDF_IN                             72.00000
 
 #endif /* _HPDF_CONSTS_H */
