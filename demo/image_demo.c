@@ -252,10 +252,9 @@ int main (int argc, char **argv)
 
 int main()
 {
-    printf("WARNING: image_demo app was not built correctly. \n"
+    printf("WARNING: image_demo was not built correctly. \n"
            "Make sure libpng is installed and CMake is able to find it.\n");
     return 0;
 }
 
 #endif /* LIBHPDF_HAVE_LIBPNG */
-
