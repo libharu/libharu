@@ -64,4 +64,10 @@
   - Word spacing
 \example ttfont_demo.c
 \example ttfont_demo_jp.c
+\example utf8.c
+  \par Multi-byte UTF-8 example.
+
+  This is an UTF-8 example for multi-byte encoded text.
+  It is important to have font with appropriate characters (Chinese in this example).
+  <a href="https://fonts.google.com/noto/specimen/Noto+Sans">Noto Sans</a> font is used here.
 */
