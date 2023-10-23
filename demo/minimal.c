@@ -23,6 +23,7 @@
   Last action is to clean up everything.
 */ 
 #include <stdio.h>
+#include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
 #include "handler.h"
@@ -32,7 +33,10 @@ main (int argc, char **argv)
 {
     HPDF_Doc  pdf;
     HPDF_Page page;
-    char fname[11] = "minimal.pdf";
+    char fname[256];
+
+    strcpy (fname, argv[0]);
+    strcat (fname, ".pdf");
 
     /* create document object*/
     pdf = HPDF_New (demo_error_handler, NULL);

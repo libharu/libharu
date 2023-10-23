@@ -21,6 +21,7 @@
   <a href="https://fonts.google.com/noto/specimen/Noto+Sans">Noto Sans</a> font is used here.
 */
 #include <stdio.h>
+#include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
 #include "handler.h"
@@ -31,7 +32,10 @@ main (int argc, char **argv)
     HPDF_Doc  pdf;
     HPDF_Page page;
     HPDF_ExtGState gstate;
-    char fname[8] = "utf8.pdf";
+    char fname[256];
+
+    strcpy (fname, argv[0]);
+    strcat (fname, ".pdf");
 
     /* create document object*/
     pdf = HPDF_New (demo_error_handler, NULL);
