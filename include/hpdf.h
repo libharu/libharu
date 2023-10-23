@@ -4128,7 +4128,7 @@ HPDF_Page_EndPath  (HPDF_Page  page);
 
   \copydoc dox_return_ok
 
-  \see HPDF_Page_EndPath(), HPDF_Page_GSave(), HPDF_Page_GRestore()
+  \see HPDF_Page_EndPath(), HPDF_Page_GSave(), HPDF_Page_GRestore(), HPDF_Page_Eoclip()
 
   \copydoc dox_pdf_cmd
   \c W

@@ -19,8 +19,9 @@
   This program create hatch pattern using lines, page transform (rotation) and clipping path.
 
   Clipping path is created using HPDF_Page_Rectangle() function. In order to make clipping work
-  properly, HPDF_Page_EndPath() function \a must be called right after HPDF_Page_Clip().
+  properly, HPDF_Page_EndPath() function \a must be called right after HPDF_Page_Eoclip().
 
+  In this example clipping path is complex, constructed as intersections of two rectangles.
 */
 #include <stdio.h>
 #include <string.h>
@@ -37,12 +38,24 @@ hatch (HPDF_Doc    pdf,
     HPDF_REAL width = HPDF_Page_GetWidth (page);
     HPDF_REAL x = 0.0;
 
+    /* start clipping */
     HPDF_Page_GSave (page);
 
+    /* prepare clipping path (rectangle with a hole) */
     HPDF_Page_Rectangle (page, 0, 0, width, 15 * HPDF_MM);
-    HPDF_Page_Clip (page);
+    HPDF_Page_Rectangle (page, 5*HPDF_MM, 5*HPDF_MM, width-10*HPDF_MM, 5 * HPDF_MM);
+
+    /* use created path as clipping path (even-odd rule) */
+    HPDF_Page_Eoclip (page);
+
+    /* Finish path.
+       This action instructs viewer that path is created and can be used as clipping path.
+       It is required since it is possible to create complicated clipping path.
+       For example, we can add another rectangle and its union will be used as clipping path.
+       */
     HPDF_Page_EndPath (page);
 
+    /* start hatch drawing */
     HPDF_Page_GSave (page);
 
     HPDF_Page_SetRGBStrokeHex (page, 0x55, 0x77, 0x22);
@@ -50,6 +63,7 @@ hatch (HPDF_Doc    pdf,
     HPDF_REAL angle1 = -45;
     HPDF_REAL rad1 = angle1 / 180 * 3.141592;
 
+    /* rotate hatch */
     HPDF_Page_Concat (page, cos(rad1), sin(rad1), -sin(rad1), cos(rad1), -15*HPDF_MM, 0);
 
     while (x < width) {
@@ -59,7 +73,12 @@ hatch (HPDF_Doc    pdf,
         x += HPDF_MM;
     }
 
+    /* end of hatch drawing */
     HPDF_Page_GRestore (page);
+
+    
+
+    /* end of clipping */
     HPDF_Page_GRestore (page);
 }
 

@@ -20,8 +20,17 @@
   This program create hatch pattern using lines, page transform (rotation) and clipping path.
 
   Clipping path is created using HPDF_Page_Rectangle() function. In order to make clipping work
-  properly, HPDF_Page_EndPath() function \a must be called right after clip.
+  properly, HPDF_Page_EndPath() function \a must be called right after HPDF_Page_Clip().
 
+\example clip_hatch2.c
+  \par Clipping path demo program
+
+  This program create hatch pattern using lines, page transform (rotation) and clipping path.
+
+  Clipping path is created using HPDF_Page_Rectangle() function. In order to make clipping work
+  properly, HPDF_Page_EndPath() function \a must be called right after HPDF_Page_Eoclip().
+
+  In this example clipping path is complex, constructed as intersections of two rectangles.
 \example encoding_list.c
 \example encryption.c
 \example ext_gstate_demo.c
@@ -50,7 +59,6 @@
 \example raw_image_demo.c
 \example slide_show_demo.c
 \example text_annotation.c
-\example text_demo2.c
 \example text_demo.c
   \par Text demo
 
@@ -62,6 +70,7 @@
   - Text skewing
   - Character spacing
   - Word spacing
+\example text_demo2.c
 \example ttfont_demo.c
 \example ttfont_demo_jp.c
 \example utf8.c

@@ -12,6 +12,7 @@ set(
     attach
     character_map
     clip_hatch
+    clip_hatch2
     encoding_list
     encryption
     ext_gstate_demo
