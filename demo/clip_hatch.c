@@ -23,6 +23,7 @@
 
 */
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 #include <setjmp.h>
 #include "hpdf.h"
@@ -67,7 +68,10 @@ main (int argc, char **argv)
 {
     HPDF_Doc  pdf;
     HPDF_Page page;
-    char fname[14] = "clip_hatch.pdf";
+    char fname[256];
+
+    strcpy (fname, argv[0]);
+    strcat (fname, ".pdf");
 
     /* create document object*/
     pdf = HPDF_New (demo_error_handler, NULL);
