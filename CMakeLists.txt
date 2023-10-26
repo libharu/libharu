@@ -8,10 +8,14 @@ string(REGEX MATCH "[0-9]+" HPDF_MAJOR_VERSION  ${HPDF_MAJOR_VERSION})
 string(REGEX MATCH "[0-9]+" HPDF_MINOR_VERSION  ${HPDF_MINOR_VERSION})
 string(REGEX MATCH "[0-9]+" HPDF_BUGFIX_VERSION ${HPDF_BUGFIX_VERSION})
 
+set(HPDF_VERSION ${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION})
+
 project(libharu
-    VERSION ${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION}
-    DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
-    LANGUAGES C)
+    VERSION ${HPDF_VERSION}
+        DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
+    LANGUAGES
+        C
+    )
 
 include(GNUInstallDirs)
 
@@ -22,7 +26,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 # =======================================================================
 # command line options
 # =======================================================================
-option(BUILD_SHARED_LIBS "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" ON)
+option(LIBHPDF_SHARED_LIB "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" ON)
 option(LIBHPDF_EXAMPLES "Build libharu examples" OFF)
 option(LIBHPDF_DEBUG "Enable HPDF Debug")
 option(LIBHPDF_DEBUG_TRACE "Enable HPDF Debug trace")
@@ -41,7 +45,17 @@ endif ()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 
+set(HPDF_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include" CACHE INTERNAL "")
 include_directories(${PROJECT_SOURCE_DIR}/include)
+set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
+
+if (${LIBHPDF_SHARED_LIB})
+  set(LIB_TYPE SHARED)
+else()
+  set(LIB_TYPE STATIC)
+endif()
+
+message(${LIB_TYPE})
 
 # =======================================================================
 # look for headers and libraries
