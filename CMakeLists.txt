@@ -153,7 +153,7 @@ set(
 )
 
 # install header files
-install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpdf-${HPDF_VERSION})
 
 # install various files
 install(FILES README.md CHANGES INSTALL DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libharu)
