@@ -159,6 +159,14 @@ install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpdf-${HPDF_V
 install(FILES README.md CHANGES INSTALL DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libharu)
 install(DIRECTORY bindings DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libharu)
 
+# pkg-config file
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/hpdf.pc.in
+               ${CMAKE_CURRENT_BINARY_DIR}/hpdf.pc @ONLY IMMEDIATE )
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/hpdf.pc"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+        COMPONENT "libhpdf_dev")
+
+
 # =======================================================================
 # print out some information
 # =======================================================================
