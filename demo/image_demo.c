@@ -19,7 +19,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 
-#ifndef HPDF_NOPNGLIB
+#ifdef LIBHPDF_HAVE_LIBPNG
 
 jmp_buf env;
 
@@ -267,14 +267,14 @@ int main (int argc, char **argv)
     return 0;
 }
 
-#else
+#else /* LIBHPDF_HAVE_LIBPNG */
 
 int main()
 {
-    printf("WARNING: if you want to run this demo, \n"
-           "make libhpdf with HPDF_USE_PNGLIB option.\n");
+    printf("WARNING: image_demo was not built correctly. \n"
+           "Make sure libpng is installed and CMake is able to find it.\n");
     return 0;
 }
 
-#endif /* HPDF_NOPNGLIB */
+#endif /* LIBHPDF_HAVE_LIBPNG */
 
