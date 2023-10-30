@@ -9,35 +9,35 @@
   # =======================================================================
 set(
   demos_NAMES
-  	attach
-  	character_map
-  	encoding_list
-  	encryption
-  	ext_gstate_demo
-  	font_demo
-  	image_demo
-  	jpeg_demo
-  	jpfont_demo
-  	line_demo
-  	link_annotation
+    attach
+    character_map
+    encoding_list
+    encryption
+    ext_gstate_demo
+    font_demo
+    jpeg_demo
+    jpfont_demo
+    image_demo
+    line_demo
+    link_annotation
     make_rawimage
-  	outline_demo
+    outline_demo
     #outline_demo_jp
-  	permission
-  	png_demo
-  	slide_show_demo
-  	text_annotation
-  	ttfont_demo
-  	ttfont_demo_jp
+    permission
+    png_demo
+    slide_show_demo
+    text_annotation
+    ttfont_demo
+    ttfont_demo_jp
 )
 
 set(
   demos_with_grid_NAMES
-  	arc_demo
+    arc_demo
     chfont_demo
-  	raw_image_demo
-  	text_demo
-  	text_demo2
+    raw_image_demo
+    text_demo
+    text_demo2
 )
 
 # we need to add some definitions for win 32
