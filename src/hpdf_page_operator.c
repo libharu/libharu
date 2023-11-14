@@ -2463,7 +2463,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                      HPDF_REAL            right,
                      HPDF_REAL            bottom,
                      const char          *text,
-                     HPDF_TextAlignment   align,
+                     HPDF_UINT            align,
                      HPDF_UINT           *len
                      )
 {
@@ -2600,6 +2600,72 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                         return ret;
                     char_space_changed = HPDF_TRUE;
                 }
+                break;
+
+            case HPDF_TALIGN_BOTTOM:
+                TextPos_AbsToRel (attr->text_matrix, left, bottom + attr->gstate->font_size, &x, &y);
+                if (!pos_initialized) {
+                    pos_initialized = HPDF_TRUE;
+                } else {
+                    y = 0;
+                }
+                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+                    return ret;
+                break;
+
+            case HPDF_TALIGN_MIDDLE:
+                TextPos_AbsToRel (attr->text_matrix, left, bottom + (top - bottom + attr->gstate->font_size) / 2, &x, &y);
+                if (!pos_initialized) {
+                    pos_initialized = HPDF_TRUE;
+                } else {
+                    y = 0;
+                }
+                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+                    return ret;
+                break;
+
+            case HPDF_TALIGN_CENTER | HPDF_TALIGN_BOTTOM:
+                TextPos_AbsToRel (attr->text_matrix, left + (right - left - rw) / 2, bottom + attr->gstate->font_size, &x, &y);
+                if (!pos_initialized) {
+                    pos_initialized = HPDF_TRUE;
+                } else {
+                    y = 0;
+                }
+                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+                    return ret;
+                break;
+
+            case HPDF_TALIGN_CENTER | HPDF_TALIGN_MIDDLE:
+                TextPos_AbsToRel (attr->text_matrix, left + (right - left - rw) / 2, bottom + (top - bottom + attr->gstate->font_size) / 2, &x, &y);
+                if (!pos_initialized) {
+                    pos_initialized = HPDF_TRUE;
+                } else {
+                    y = 0;
+                }
+                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+                    return ret;
+                break;
+
+            case HPDF_TALIGN_RIGHT | HPDF_TALIGN_BOTTOM:
+                TextPos_AbsToRel (attr->text_matrix, right - rw, bottom + attr->gstate->font_size, &x, &y);
+                if (!pos_initialized) {
+                    pos_initialized = HPDF_TRUE;
+                } else {
+                    y = 0;
+                }
+                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+                    return ret;
+                break;
+
+            case HPDF_TALIGN_RIGHT | HPDF_TALIGN_MIDDLE:
+                TextPos_AbsToRel (attr->text_matrix, right - rw, bottom + (top - bottom + attr->gstate->font_size) / 2, &x, &y);
+                if (!pos_initialized) {
+                    pos_initialized = HPDF_TRUE;
+                } else {
+                    y = 0;
+                }
+                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+                    return ret;
                 break;
 
             default:
