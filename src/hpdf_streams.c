@@ -1112,10 +1112,7 @@ HPDF_MemStream_SeekFunc  (HPDF_Stream      stream,
     attr->r_ptr_idx = pos / attr->buf_siz;
     attr->r_pos = pos % attr->buf_siz;
     attr->r_ptr = (HPDF_BYTE*)HPDF_List_ItemAt (attr->buf, attr->r_ptr_idx);
-    if (attr->r_ptr == NULL) {
-        HPDF_SetError (stream->error, HPDF_INVALID_OBJECT, 0);
-        return HPDF_INVALID_OBJECT;
-    } else
+    if (attr->r_ptr != NULL)
         attr->r_ptr += attr->r_pos;
 
     return HPDF_OK;
