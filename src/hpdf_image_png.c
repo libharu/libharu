@@ -109,26 +109,25 @@ ReadPngData_Interlaced  (HPDF_Dict    image,
                          png_structp  png_ptr,
                          png_infop    info_ptr)
 {
-    png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
-    png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
-    size_t pointers_size = height * sizeof (png_bytep);
-    HPDF_BYTE *buffer = HPDF_GetMem (image->mmgr,
-                                   pointers_size + height * len);
-    if (buffer) {
-        png_bytep* row_pointers = (png_bytep*) buffer;
-        HPDF_BYTE *data = buffer + pointers_size;
-        
-        HPDF_UINT i;
-        for (i = 0; i < (HPDF_UINT)height; i++) {
-            row_pointers[i] = (png_bytep) (data + len * i);
-        }
-        
-        png_read_image(png_ptr, row_pointers);
-        HPDF_Stream_Write (image->stream, data, height * len);
-        HPDF_FreeMem (image->mmgr, buffer);
-    }
+	png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+	png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
+	size_t pointers_size = height * sizeof (png_bytep);
+	HPDF_BYTE *buffer = HPDF_GetMem (image->mmgr, pointers_size + height * len);
+	if (buffer) {
+		png_bytep* row_pointers = (png_bytep*) buffer;
+		HPDF_BYTE *data = buffer + pointers_size;
 
-    return image->error->error_no;
+		HPDF_UINT i;
+		for (i = 0; i < (HPDF_UINT)height; i++) {
+			row_pointers[i] = (png_bytep) (data + len * i);
+		}
+
+		png_read_image(png_ptr, row_pointers);
+		HPDF_Stream_Write (image->stream, data, height * len);
+		HPDF_FreeMem (image->mmgr, buffer);
+	}
+
+	return image->error->error_no;
 }
 
 static HPDF_STATUS
@@ -236,20 +235,20 @@ ReadTransparentPngData  (HPDF_Dict    image,
 		return HPDF_INVALID_PNG_IMAGE;
 	}
 
-    png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
-    size_t pointers_size = height * sizeof (png_bytep);
-    HPDF_BYTE *buffer = HPDF_GetMem (image->mmgr,
-                                   pointers_size + height * len);
-    if (!buffer) {
-        return HPDF_FAILD_TO_ALLOC_MEM;
-    }
-    
-    row_ptr = (png_bytep*) buffer;
-    HPDF_BYTE *data = buffer + pointers_size;
-    
-    for (i = 0; i < (HPDF_UINT)height; i++) {
-        row_ptr[i] = (png_bytep) (data + len * i);
-    }
+	png_uint_32 len = png_get_rowbytes(png_ptr, info_ptr);
+	size_t pointers_size = height * sizeof (png_bytep);
+	HPDF_BYTE *buffer = HPDF_GetMem (image->mmgr,
+				   pointers_size + height * len);
+	if (!buffer) {
+	return HPDF_FAILD_TO_ALLOC_MEM;
+	}
+
+	row_ptr = (png_bytep*) buffer;
+	HPDF_BYTE *data = buffer + pointers_size;
+
+	for (i = 0; i < (HPDF_UINT)height; i++) {
+	row_ptr[i] = (png_bytep) (data + len * i);
+	}
 
 	png_read_image(png_ptr, row_ptr);
 	if (image->error->error_no != HPDF_OK) {
@@ -441,8 +440,8 @@ LoadPngData  (HPDF_Dict     image,
 		bit_depth = 8;
 	}
 
-    png_byte interlace_type = png_get_interlace_type(png_ptr, info_ptr);
-    int number_of_passes = png_set_interlace_handling(png_ptr);
+	png_byte interlace_type = png_get_interlace_type(png_ptr, info_ptr);
+	int number_of_passes = png_set_interlace_handling(png_ptr);
 
 	png_read_update_info(png_ptr, info_ptr);
 	if (image->error->error_no != HPDF_OK) {
