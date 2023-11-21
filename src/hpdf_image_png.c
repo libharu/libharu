@@ -463,6 +463,9 @@ LoadPngData  (HPDF_Dict     image,
 		bit_depth = 8;
 	}
 
+    png_byte interlace_type = png_get_interlace_type(png_ptr, info_ptr);
+    int number_of_passes = png_set_interlace_handling(png_ptr);
+
 	png_read_update_info(png_ptr, info_ptr);
 	if (image->error->error_no != HPDF_OK) {
 		goto Exit;
