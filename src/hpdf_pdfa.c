@@ -134,7 +134,7 @@ HPDF_STATUS ConvertDateToXMDate(HPDF_Stream stream, const char *pDate)
 
 /* Write XMP Metadata for PDF/A */
 
-HPDF_STATUS
+HPDF_EXPORT(HPDF_STATUS)
 HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,HPDF_PDFAType pdfatype)
 {
     HPDF_OutputIntent xmp;
