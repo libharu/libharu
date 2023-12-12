@@ -30,10 +30,10 @@ extern "C" {
 HPDF_STATUS
 HPDF_PDFA_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdict);
 
-HPDF_STATUS
+HPDF_EXPORT(HPDF_STATUS)
 HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,
-			      HPDF_PDFAType pdfatype);
-			      
+                              HPDF_PDFAType pdfatype);
+
 HPDF_STATUS
 HPDF_PDFA_GenerateID(HPDF_Doc);
 #ifdef __cplusplus
