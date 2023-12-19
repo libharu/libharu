@@ -166,10 +166,13 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_BeginIncrementalWriteToFile(HPDF_Doc pdf, const char* file_name);
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_IncrementalWriteToFile(HPDF_Doc pdf);
+HPDF_BeginIncrementalWriteToSink(HPDF_Doc pdf, HPDF_Stream_Write_Func write_fn, HPDF_Stream_Free_Func free_fn, void* data);
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_EndIncrementalWriteToFile(HPDF_Doc pdf);
+HPDF_IncrementalWrite(HPDF_Doc pdf);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EndIncrementalWrite(HPDF_Doc pdf);
 
 
 HPDF_EXPORT(HPDF_STATUS)
