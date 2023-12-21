@@ -18,8 +18,10 @@
 
 #include "hpdf_conf.h"
 #include "hpdf_config.h"
+#include "hpdf_error.h"
 #include "hpdf_objects.h"
 #include "hpdf_streams.h"
+#include "hpdf_types.h"
 #include "hpdf_utils.h"
 #include "hpdf_encryptdict.h"
 #include "hpdf_namedict.h"
@@ -754,14 +756,8 @@ HPDF_ResetStream  (HPDF_Doc     pdf)
 }
 
 
-HPDF_EXPORT(HPDF_STATUS)
-HPDF_BeginIncrementalWriteToFile(HPDF_Doc pdf, const char* file_name) {
-    HPDF_STATUS ret;
-
-    pdf->stream = HPDF_FileWriter_New (pdf->mmgr, file_name);
-    if (!pdf->stream) {
-        return HPDF_FILE_OPEN_ERROR;
-    }
+HPDF_STATUS PrepareIncrementalWriting(HPDF_Doc pdf) {
+    HPDF_STATUS ret = HPDF_OK;
 
     if ((ret = WriteHeader (pdf, pdf->stream)) != HPDF_OK)
         return ret;
@@ -777,7 +773,37 @@ HPDF_BeginIncrementalWriteToFile(HPDF_Doc pdf, const char* file_name) {
 }
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_IncrementalWriteToFile(HPDF_Doc pdf) {
+HPDF_BeginIncrementalWriteToFile(HPDF_Doc pdf, const char* file_name) {
+    if (pdf->stream) {
+        return HPDF_INVALID_DOCUMENT_STATE;
+    }
+
+    pdf->stream = HPDF_FileWriter_New(pdf->mmgr, file_name);
+    if (!pdf->stream) {
+        return HPDF_FILE_OPEN_ERROR;
+    }
+
+    return PrepareIncrementalWriting(pdf);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_BeginIncrementalWriteToSink(HPDF_Doc pdf, HPDF_Stream_Write_Func write_fn, HPDF_Stream_Free_Func free_fn, void* data) {
+    if (pdf->stream) {
+        return HPDF_INVALID_DOCUMENT_STATE;
+    }
+
+    pdf->stream = HPDF_CallbackWriter_New(pdf->mmgr, write_fn, data);
+    if (!pdf->stream) {
+        return HPDF_FILE_OPEN_ERROR;
+    }
+
+    pdf->stream->free_fn = free_fn;
+
+    return PrepareIncrementalWriting(pdf);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_IncrementalWrite(HPDF_Doc pdf) {
     HPDF_STATUS ret = HPDF_OK;
 
     // TODO: PDF password protection (encryption)
@@ -811,13 +837,13 @@ HPDF_IncrementalWriteToFile(HPDF_Doc pdf) {
 }
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_EndIncrementalWriteToFile(HPDF_Doc pdf) {
+HPDF_EndIncrementalWrite(HPDF_Doc pdf) {
     HPDF_STATUS ret = HPDF_OK;
 
     /* re-enable writing of the page list */
     HPDF_Xref_GetEntryByObjectId(pdf->xref, pdf->root_pages->header.obj_id)->written = HPDF_FALSE;
 
-    ret = HPDF_IncrementalWriteToFile(pdf);
+    ret = HPDF_IncrementalWrite(pdf);
     if (ret != HPDF_OK) {
         return ret;
     }
