@@ -70,6 +70,10 @@ set(
     hpdf_encoder_utf.c
 )
 
+# hpdf_shading.c:32:20: error: redefinition of ‘COL_CMYK
+set_property(SOURCE hpdf_fontdef_tt.c hpdf_font_tt.c hpdf_fontdef_type1.c hpdf_shading.c
+             PROPERTY SKIP_UNITY_BUILD_INCLUSION ON)
+
 # =======================================================================
 # create hpdf library
 # =======================================================================
