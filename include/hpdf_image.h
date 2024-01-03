@@ -32,7 +32,7 @@ typedef struct {
   HPDF_UINT          height;
   HPDF_UINT          bits_per_sample;
   HPDF_ColorSpace    color_space;
-  HPDF_ColorSpaceObj icc_space;
+  HPDF_ColorSpaceArray icc_space;
   HPDF_CALLBACK_READLINE read_line;
   HPDF_CALLBACK_SEEKLINE seek_line;
 } HPDF_ImageCallback;

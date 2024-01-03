@@ -591,7 +591,7 @@ typedef HPDF_Dict  HPDF_3DMeasure;
 typedef HPDF_Dict  HPDF_ExData;
 typedef HPDF_Dict  HPDF_XObject;
 typedef HPDF_Array HPDF_LabSpace;
-typedef HPDF_Array HPDF_ColorSpaceObj;
+typedef HPDF_Array HPDF_ColorSpaceArray;
 typedef HPDF_Dict  HPDF_Image;
 typedef HPDF_Dict  HPDF_Outline;
 typedef HPDF_Dict  HPDF_EncryptDict;

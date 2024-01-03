@@ -1620,7 +1620,7 @@ HPDF_Page_ShowTextNextLineEx  (HPDF_Page    page,
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetSepFill  (HPDF_Page            page,
-                       HPDF_ColorSpaceObj   sep_space,
+                       HPDF_ColorSpaceArray   sep_csa,
                        HPDF_REAL            tint)
 {
   HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION |
@@ -1645,7 +1645,7 @@ HPDF_Page_SetSepFill  (HPDF_Page            page,
   if ((ret = HPDF_Stream_WriteStr(attr->stream, " scn\012")) != HPDF_OK)
     return HPDF_CheckError(page->error);
   attr->gstate->sep_fill = tint;
-  attr->gstate->sep_fill_cs_obj = sep_space;
+  attr->gstate->csa_fill = sep_csa;
   attr->gstate->cs_fill = HPDF_CS_SEPARATION;
   return ret;
 }
@@ -1655,7 +1655,7 @@ HPDF_Page_SetSepFill  (HPDF_Page            page,
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetSepStroke  (HPDF_Page           page,
-                         HPDF_ColorSpaceObj  sep_space,
+                         HPDF_ColorSpaceArray  sep_csa,
                          HPDF_REAL           tint)
 {
   HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_PAGE_DESCRIPTION |
@@ -1680,7 +1680,7 @@ HPDF_Page_SetSepStroke  (HPDF_Page           page,
   if ((ret = HPDF_Stream_WriteStr(attr->stream, " SCN\012")) != HPDF_OK)
     return HPDF_CheckError(page->error);
   attr->gstate->sep_stroke = tint;
-  attr->gstate->sep_stroke_cs_obj = sep_space;
+  attr->gstate->csa_stroke = sep_csa;
   attr->gstate->cs_stroke = HPDF_CS_SEPARATION;
   return ret;
 }

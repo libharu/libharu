@@ -875,7 +875,7 @@ HPDF_Page_GetXObjectName  (HPDF_Page     page,
 
 const char*
 HPDF_Page_GetColorSpaceName  (HPDF_Page           page,
-                              HPDF_ColorSpaceObj  space)
+                              HPDF_ColorSpaceArray  space)
 {
   HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
   const char* key;
@@ -1468,28 +1468,34 @@ HPDF_Page_GetSepStroke(HPDF_Page   page)
 }
 
 
-HPDF_EXPORT(HPDF_ColorSpaceObj)
-HPDF_Page_GetSepFillSpaceObj(HPDF_Page   page)
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_Page_GetSepFillSpaceArray(HPDF_Page   page)
 {
-  HPDF_PTRACE((" HPDF_Page_GetSepFillSpaceObj\n"));
+  HPDF_PTRACE((" HPDF_Page_GetSepFillSpaceArray\n"));
+
   if (HPDF_Page_Validate(page)) {
     HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+
     if (attr->gstate->cs_fill == HPDF_CS_SEPARATION)
-      return attr->gstate->sep_fill_cs_obj;
+      return attr->gstate->csa_fill;
   }
+
   return NULL;
 }
 
 
-HPDF_EXPORT(HPDF_ColorSpaceObj)
-HPDF_Page_GetSepStrokeSpaceObj(HPDF_Page   page)
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_Page_GetSepStrokeSpaceArray(HPDF_Page   page)
 {
-  HPDF_PTRACE((" HPDF_Page_GetSepStrokeSpaceObj\n"));
+  HPDF_PTRACE((" HPDF_Page_GetSepStrokeSpaceArray\n"));
+
   if (HPDF_Page_Validate(page)) {
     HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+
     if (attr->gstate->cs_stroke == HPDF_CS_SEPARATION)
-      return attr->gstate->sep_stroke_cs_obj;
+      return attr->gstate->csa_stroke;
   }
+
   return NULL;
 }
 

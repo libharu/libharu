@@ -1649,15 +1649,15 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
 }
 
 
-HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_EXPORT(HPDF_ColorSpaceArray)
 HPDF_NewIccBasedSpace  (HPDF_Doc             pdf,
                         HPDF_UINT            profile_size,
                         const unsigned char* profile_buf,
                         HPDF_ColorSpace*     color_space,
                         HPDF_UINT*           num_samples)
 {
-  HPDF_ColorSpaceObj icc_space;
-  HPDF_PTRACE((" HPDF_LoadIccSpace\n"));
+  HPDF_ColorSpaceArray icc_space;
+  HPDF_PTRACE((" HPDF_NewIccBasedSpace\n"));
   if (!HPDF_HasDoc(pdf))
     return NULL;
   icc_space = HPDF_New_IccBasedSpace(pdf->mmgr, profile_size, profile_buf, color_space, num_samples, pdf->xref);
@@ -1680,7 +1680,7 @@ HPDF_NewLabSpace  (HPDF_Doc    pdf,
 }
 
 
-HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_EXPORT(HPDF_ColorSpaceArray)
 HPDF_NewSepLabSpace  (HPDF_Doc        pdf,
                       const char *    sep_name,
                       HPDF_LabSpace   lab_space,
@@ -1688,7 +1688,7 @@ HPDF_NewSepLabSpace  (HPDF_Doc        pdf,
                       HPDF_REAL       sep_a,
                       HPDF_REAL       sep_b)
 {
-  HPDF_ColorSpaceObj sep_space;
+  HPDF_ColorSpaceArray sep_space;
   HPDF_PTRACE((" HPDF_NewSepLabSpace\n"));
   if (!HPDF_HasDoc(pdf))
     return NULL;
@@ -1697,7 +1697,7 @@ HPDF_NewSepLabSpace  (HPDF_Doc        pdf,
 }
 
 
-HPDF_EXPORT(HPDF_ColorSpaceObj)
+HPDF_EXPORT(HPDF_ColorSpaceArray)
 HPDF_NewSepCmykSpace  (HPDF_Doc     pdf,
                        const char*  sep_name,
                        HPDF_REAL    sep_C,
@@ -1705,11 +1705,27 @@ HPDF_NewSepCmykSpace  (HPDF_Doc     pdf,
                        HPDF_REAL    sep_Y,
                        HPDF_REAL    sep_K)
 {
-  HPDF_ColorSpaceObj sep_space;
+  HPDF_ColorSpaceArray sep_space;
   HPDF_PTRACE((" HPDF_NewSepCmykSpace\n"));
   if (!HPDF_HasDoc(pdf))
     return NULL;
   sep_space = HPDF_New_SepCmykSpace(pdf->mmgr, sep_name, sep_C, sep_M, sep_Y, sep_K, pdf->xref);
+  return sep_space;
+}
+
+
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_NewSepRgbSpace  (HPDF_Doc     pdf,
+                      const char*  sep_name,
+                      HPDF_REAL    sep_R,
+                      HPDF_REAL    sep_G,
+                      HPDF_REAL    sep_B)
+{
+  HPDF_ColorSpaceArray sep_space;
+  HPDF_PTRACE((" HPDF_NewSepRgbSpace\n"));
+  if (!HPDF_HasDoc(pdf))
+    return NULL;
+  sep_space = HPDF_New_SepRgbSpace(pdf->mmgr, sep_name, sep_R, sep_G, sep_B, pdf->xref);
   return sep_space;
 }
 

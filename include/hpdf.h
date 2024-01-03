@@ -59,6 +59,7 @@ typedef HPDF_HANDLE   HPDF_Doc;
 typedef HPDF_HANDLE   HPDF_Page;
 typedef HPDF_HANDLE   HPDF_Pages;
 typedef HPDF_HANDLE   HPDF_Stream;
+typedef HPDF_HANDLE   HPDF_ColorSpaceArray;
 typedef HPDF_HANDLE   HPDF_Image;
 typedef HPDF_HANDLE   HPDF_Font;
 typedef HPDF_HANDLE   HPDF_Outline;
@@ -69,6 +70,7 @@ typedef HPDF_HANDLE   HPDF_Destination;
 typedef HPDF_HANDLE   HPDF_XObject;
 typedef HPDF_HANDLE   HPDF_Annotation;
 typedef HPDF_HANDLE   HPDF_ExtGState;
+typedef HPDF_HANDLE   HPDF_ImageCallback;
 typedef HPDF_HANDLE   HPDF_FontDef;
 typedef HPDF_HANDLE   HPDF_U3D;
 typedef HPDF_HANDLE   HPDF_JavaScript;
@@ -772,6 +774,49 @@ HPDF_3DView_Add3DC3DMeasure(HPDF_Dict       view,
 							HPDF_3DMeasure measure);
 
 /*--------------------------------------------------------------------------*/
+/*----- color spaces--------------------------------------------------------*/
+
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_NewIccBasedSpace  (HPDF_Doc             pdf,
+                        HPDF_UINT            pdf_size,
+                        const unsigned char* pdf_buf,
+                        HPDF_ColorSpace*     color_space,
+                        HPDF_UINT*           num_samples);
+
+
+HPDF_EXPORT(HPDF_LabSpace)
+HPDF_NewLabSpace  (HPDF_Doc          pdf,
+                   HPDF_REAL         white_x,
+                   HPDF_REAL         white_y,
+                   HPDF_REAL         white_z);
+
+
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_NewSepLabSpace  (HPDF_Doc             pdf,
+                      const char*          sep_name,
+                      HPDF_LabSpace        lab_space,
+                      HPDF_REAL            sep_L,
+                      HPDF_REAL            sep_a,
+                      HPDF_REAL            sep_b);
+
+
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_NewSepCmykSpace  (HPDF_Doc             pdf,
+                       const char*          sep_name,
+                       HPDF_REAL            sep_C,
+                       HPDF_REAL            sep_M,
+                       HPDF_REAL            sep_Y,
+                       HPDF_REAL            sep_K);
+
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_NewSepRgbSpace  (HPDF_Doc             pdf,
+                      const char*          sep_name,
+                      HPDF_REAL            sep_R,
+                      HPDF_REAL            sep_G,
+                      HPDF_REAL            sep_B);
+
+
+/*--------------------------------------------------------------------------*/
 /*----- image data ---------------------------------------------------------*/
 
 HPDF_EXPORT(HPDF_Image)
@@ -832,6 +877,11 @@ HPDF_LoadRawImageFromMem  (HPDF_Doc           pdf,
                            HPDF_UINT          height,
                            HPDF_ColorSpace    color_space,
                            HPDF_UINT          bits_per_component);
+
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadImageFromCallback(HPDF_Doc             pdf,
+                           HPDF_ImageCallback  *pCallback); 
+
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Image_AddSMask  (HPDF_Image    image,
@@ -1144,6 +1194,22 @@ HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_GetGrayStroke  (HPDF_Page   page);
 
 
+HPDF_EXPORT(HPDF_REAL)
+HPDF_Page_GetSepFill  (HPDF_Page   page);
+
+
+HPDF_EXPORT(HPDF_REAL)
+HPDF_Page_GetSepStroke  (HPDF_Page   page);
+
+
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_Page_GetSepFillSpaceArray  (HPDF_Page   page);
+
+
+HPDF_EXPORT(HPDF_ColorSpaceArray)
+HPDF_Page_GetSepStrokeSpaceArray (HPDF_Page   page);
+
+
 HPDF_EXPORT(HPDF_ColorSpace)
 HPDF_Page_GetStrokingColorSpace (HPDF_Page   page);
 
@@ -1446,9 +1512,21 @@ HPDF_Page_ShowTextNextLineEx  (HPDF_Page    page,
 /* cs --not implemented yet */
 /* CS --not implemented yet */
 /* sc --not implemented yet */
-/* scn --not implemented yet */
+/* scn --not fully implemented yet */
 /* SC --not implemented yet */
-/* SCN --not implemented yet */
+/* SCN --not fully implemented yet */
+
+/* scn for separation space*/
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetSepFill (HPDF_Page           page,
+                      HPDF_ColorSpaceArray  sep_space,
+                      HPDF_REAL           tint);
+
+/* SCN for separation spaceG */
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetSepStroke (HPDF_Page           page,
+                        HPDF_ColorSpaceArray  sep_space,
+                        HPDF_REAL           tint);
 
 /* g */
 HPDF_EXPORT(HPDF_STATUS)

@@ -24,12 +24,12 @@
 extern "C" {
 #endif
 
-HPDF_ColorSpaceObj
+HPDF_ColorSpaceArray
 HPDF_New_IccBasedSpace (HPDF_MMgr        mmgr,
 				                HPDF_UINT        profile_size,
 	                      unsigned char   *profile_buf,
-                        HPDF_UINT *      num_sample,
                         HPDF_ColorSpace* color_space,
+                        HPDF_UINT *      num_sample,
                         HPDF_Xref        xref);
 
 HPDF_LabSpace
@@ -40,7 +40,7 @@ HPDF_New_LabSpace  (HPDF_MMgr        mmgr,
                     HPDF_Xref        xref);
 
 
-HPDF_ColorSpaceObj
+HPDF_ColorSpaceArray
 HPDF_New_SepLabSpace (HPDF_MMgr        mmgr,
                       const char      *sep_name,
                       HPDF_LabSpace    lab_space,
@@ -49,7 +49,7 @@ HPDF_New_SepLabSpace (HPDF_MMgr        mmgr,
                       HPDF_REAL        sep_b,
                       HPDF_Xref        xref);
 
-HPDF_ColorSpaceObj
+HPDF_ColorSpaceArray
 HPDF_New_SepCmykSpace (HPDF_MMgr        mmgr,
                        const char      *sep_name,
                        HPDF_REAL        sep_C,
@@ -58,6 +58,13 @@ HPDF_New_SepCmykSpace (HPDF_MMgr        mmgr,
                        HPDF_REAL        sep_K,
                        HPDF_Xref        xref);
 
+HPDF_ColorSpaceArray
+HPDF_New_SepRgbSpace (HPDF_MMgr        mmgr,
+                      const char      *sep_name,
+                      HPDF_REAL        sep_R,
+                      HPDF_REAL        sep_G,
+                      HPDF_REAL        sep_B,
+                      HPDF_Xref        xref);
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

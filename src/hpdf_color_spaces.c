@@ -25,12 +25,12 @@ static const char *COL_GRAY = "DeviceGray";
 
 #define ICC_CS_OFFSET 16
 
-HPDF_ColorSpaceObj
+HPDF_ColorSpaceArray
 HPDF_New_IccBasedSpace (HPDF_MMgr        mmgr,
                         HPDF_UINT        profile_size,
-                        unsigned char *  profile_buf,
-                        HPDF_UINT *      num_samples,
+                        const unsigned char *  profile_buf,
                         HPDF_ColorSpace *color_space,
+                        HPDF_UINT *      num_samples,
                         HPDF_Xref        xref)
 {
   HPDF_STATUS ret = HPDF_OK;
@@ -172,7 +172,7 @@ HPDF_New_LabSpace (HPDF_MMgr        mmgr,
 }
 
 
-HPDF_ColorSpaceObj
+HPDF_ColorSpaceArray
 HPDF_New_SepLabSpace (HPDF_MMgr        mmgr,
                       const char      *sep_name,
                       HPDF_LabSpace    lab_space,
@@ -248,7 +248,7 @@ HPDF_New_SepLabSpace (HPDF_MMgr        mmgr,
 }
 
 
-HPDF_ColorSpaceObj
+HPDF_ColorSpaceArray
 HPDF_New_SepCmykSpace (HPDF_MMgr        mmgr,
                        const char* sep_name,
                        HPDF_REAL        sep_C,
@@ -328,3 +328,78 @@ HPDF_New_SepCmykSpace (HPDF_MMgr        mmgr,
   return sep_space;
 }
 
+
+HPDF_ColorSpaceArray
+HPDF_New_SepRgbSpace (HPDF_MMgr        mmgr,
+                      const char* sep_name,
+                      HPDF_REAL        sep_R,
+                      HPDF_REAL        sep_G,
+                      HPDF_REAL        sep_B,
+                      HPDF_Xref        xref)
+{
+  HPDF_STATUS ret = HPDF_OK;
+  HPDF_UINT nSamples = 0;
+  HPDF_Dict sep_dict;
+  HPDF_Array sep_space;
+  HPDF_Array tmp_array;
+
+  HPDF_PTRACE((" HPDF_SepRgbSpace_Define\n"));
+
+  sep_dict = HPDF_Dict_New(mmgr);
+  if (!sep_dict)
+    return NULL;
+
+  tmp_array = HPDF_Array_New(mmgr);
+  if (!tmp_array)
+    return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 1.0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 1.0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 1.0) != HPDF_OK) return NULL;
+
+  if (HPDF_Dict_Add(sep_dict, "C0", tmp_array) != HPDF_OK) return NULL;
+
+  tmp_array = HPDF_Array_New(mmgr);
+  if (!tmp_array)
+    return NULL;
+  if (HPDF_Array_AddReal(tmp_array, sep_R) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, sep_G) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, sep_B) != HPDF_OK) return NULL;
+
+  if (HPDF_Dict_Add(sep_dict, "C1", tmp_array) != HPDF_OK) return NULL;
+
+  tmp_array = HPDF_Array_New(mmgr);
+  if (!tmp_array)
+    return NULL;
+  if (HPDF_Array_AddNumber(tmp_array, 0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddNumber(tmp_array, 1) != HPDF_OK) return NULL;
+
+  if (HPDF_Dict_Add(sep_dict, "Domain", tmp_array) != HPDF_OK) return NULL;
+
+  if (HPDF_Dict_AddNumber(sep_dict, "FunctionType", 2) != HPDF_OK) return NULL;
+
+  if (HPDF_Dict_AddReal(sep_dict, "N", 1.0) != HPDF_OK) return NULL;
+
+  tmp_array = HPDF_Array_New(mmgr);
+  if (!tmp_array)
+    return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 0.0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 1.0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 0.0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 1.0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 0.0) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddReal(tmp_array, 1.0) != HPDF_OK) return NULL;
+
+  if (HPDF_Dict_Add(sep_dict, "Range", tmp_array) != HPDF_OK) return NULL;
+  sep_space = HPDF_Array_New(mmgr);
+  if (!sep_space)
+    return NULL;
+
+  if (HPDF_Array_AddName(sep_space, "Separation") != HPDF_OK) return NULL;
+  if (HPDF_Array_AddName(sep_space, sep_name) != HPDF_OK) return NULL;
+  if (HPDF_Array_AddName(sep_space, COL_RGB) != HPDF_OK) return NULL;
+  if (HPDF_Array_Add(sep_space, sep_dict) != HPDF_OK) return NULL;
+
+  HPDF_Xref_Add(xref, sep_space);
+
+  return sep_space;
+}
