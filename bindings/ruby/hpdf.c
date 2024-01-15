@@ -3510,7 +3510,7 @@ Init_hpdf()
     rb_define_method(rb_cHPDFDoc, "get_current_encoder", hpdf_get_current_encoder, 0);
     rb_define_method(rb_cHPDFDoc, "set_current_encoder", hpdf_set_current_encoder, 1);
     rb_define_method(rb_cHPDFEncoder, "get_type", hpdf_encoder_get_type, 0);
-    rb_define_method(rb_cHPDFEncoder, "get_byte_type", hpdf_encoder_get_byte_type, 1);
+    rb_define_method(rb_cHPDFEncoder, "get_byte_type", hpdf_encoder_get_byte_type, 2);
     rb_define_method(rb_cHPDFEncoder, "get_unicode", hpdf_encoder_get_unicode, 1);
     rb_define_method(rb_cHPDFEncoder, "get_writing_mode", hpdf_encoder_get_writing_mode, 0);
     rb_define_method(rb_cHPDFDoc, "use_jp_encodings", hpdf_use_jp_encodings, 0);
