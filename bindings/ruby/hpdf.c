@@ -3437,14 +3437,23 @@ void
 Init_hpdf()
 {
     rb_cHPDFDoc = rb_define_class("HPDFDoc", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFDoc);
     rb_cHPDFPage = rb_define_class("HPDFPage", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFPage);
     rb_cHPDFImage = rb_define_class("HPDFImage", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFImage);
     rb_cHPDFFont = rb_define_class("HPDFFont", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFFont);
     rb_cHPDFOutline = rb_define_class("HPDFOutline", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFOutline);
     rb_cHPDFEncoder = rb_define_class("HPDFEncoder", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFEncoder);
     rb_cHPDFDestination = rb_define_class("HPDFDestination", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFDestination);
     rb_cHPDFAnnotation = rb_define_class("HPDFAnnotation", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFAnnotation);
     rb_cHPDFExtGState = rb_define_class("HPDFExtGState", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFExtGState);
 
 
     rb_define_singleton_method(rb_cHPDFDoc, "new", hpdf_new, 0);
