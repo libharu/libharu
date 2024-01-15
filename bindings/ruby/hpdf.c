@@ -41,6 +41,7 @@ static void
 hpdf_free (HPDF_Doc pdf);
 
 
+_Noreturn
 static void
 hpdf_error_handler  (HPDF_STATUS  error_no,
                      HPDF_STATUS  detail_no,
