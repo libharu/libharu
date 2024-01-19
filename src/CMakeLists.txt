@@ -70,6 +70,10 @@ set(
     hpdf_encoder_utf.c
 )
 
+set_property(SOURCE hpdf_shading.c hpdf_font_tt.c hpdf_fontdef_tt.c
+  PROPERTY
+    SKIP_UNITY_BUILD_INCLUSION ON)
+
 # =======================================================================
 # create hpdf library
 # =======================================================================
