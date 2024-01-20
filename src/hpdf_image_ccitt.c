@@ -701,20 +701,23 @@ HPDF_Stream_CcittToStream( const HPDF_BYTE   *buf,
 }
 
 HPDF_Image
-HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr        mmgr,
+HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr mmgr,
                           const HPDF_BYTE   *buf,
-                          HPDF_Xref        xref,
-                          HPDF_UINT          width,
-                          HPDF_UINT          height,
-						  HPDF_UINT          line_width,
-						  HPDF_BOOL			 top_is_first
+                          HPDF_Xref         xref,
+                          HPDF_UINT         width,
+                          HPDF_UINT         height,
+                          HPDF_UINT         line_width,
+                          HPDF_BOOL         top_is_first
                           )
 {
     HPDF_Dict image;
     HPDF_STATUS ret = HPDF_OK;
-    /* HPDF_UINT size; */
 
     HPDF_PTRACE ((" HPDF_Image_Load1BitImage\n"));
+
+    if (width > line_width*8) {
+        return NULL;
+    }
 
     image = HPDF_DictStream_New (mmgr, xref);
     if (!image)
@@ -726,7 +729,6 @@ HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr        mmgr,
     if (ret != HPDF_OK)
         return NULL;
 
-    /* size = width * height; */
     ret = HPDF_Dict_AddName (image, "ColorSpace", "DeviceGray");
     if (ret != HPDF_OK)
         return NULL;
@@ -740,27 +742,23 @@ HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr        mmgr,
     if (HPDF_Dict_AddNumber (image, "BitsPerComponent", 1) != HPDF_OK)
         return NULL;
 
-    if (HPDF_Stream_CcittToStream (buf, image->stream, NULL, width, height, line_width, top_is_first) != HPDF_OK)
-        return NULL;
-
     return image;
 }
 
 /*
  * Load image from buffer
  * line_width - width of the line in bytes
- * top_is_first - image orientation: 
- *      TRUE if image is oriented TOP-BOTTOM;
- *      FALSE if image is oriented BOTTOM-TOP
+ * top_is_first - image orientation: TRUE if image is oriented TOP-BOTTOM; FALSE if image is oriented BOTTOM-TOP
  */
 HPDF_EXPORT(HPDF_Image)
-HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
-                           const HPDF_BYTE   *buf,
-                          HPDF_UINT          width,
-                          HPDF_UINT          height,
-						  HPDF_UINT          line_width,
-						  HPDF_BOOL          black_is1,
-						  HPDF_BOOL			 top_is_first)
+HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc pdf,
+                          const HPDF_BYTE    *buf,
+                          HPDF_UINT           width,
+                          HPDF_UINT           height,
+                          HPDF_UINT           line_width,
+                          HPDF_BOOL           black_is1,
+                          HPDF_BOOL           top_is_first
+                          )
 {
     HPDF_Image image;
 
@@ -772,25 +770,53 @@ HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
     image = HPDF_Image_Load1BitImageFromMem(pdf->mmgr, buf, pdf->xref, width,
                 height, line_width, top_is_first);
 
+    if (pdf->compression_mode & HPDF_COMP_IMAGE)
+    {
+        if (HPDF_Stream_CcittToStream (buf, image->stream, NULL, width, height, line_width, top_is_first) != HPDF_OK)
+            return NULL;
+
+        image->filter = HPDF_STREAM_FILTER_CCITT_DECODE;
+        image->filterParams = HPDF_Dict_New(pdf->mmgr);
+        if(image->filterParams == NULL) {
+            return NULL;
+        }
+
+        /* pure 2D encoding, default is 0 */
+        HPDF_Dict_AddNumber (image->filterParams, "K", -1);
+        /* default is 1728 */
+        HPDF_Dict_AddNumber (image->filterParams, "Columns", width);
+        /* default is 0 */
+        HPDF_Dict_AddNumber (image->filterParams, "Rows", height);
+        HPDF_Dict_AddBoolean (image->filterParams, "BlackIs1", black_is1);
+    } else {
+        /* write uncompressed image to document */
+        HPDF_UINT img_line_width;
+        HPDF_BYTE *pBufPos;
+        HPDF_INT lineIncrement;
+        HPDF_UINT i, j;
+        img_line_width = (width + 7)/8;
+        HPDF_BYTE img[height*img_line_width];
+        if(top_is_first) {
+            pBufPos = buf;
+            lineIncrement = line_width;
+        } else {
+            pBufPos = buf+(line_width*(height-1));
+            lineIncrement = -((int)line_width);
+        }
+
+        for (i = 0; i < height; i++) {
+            for (j = 0; j < img_line_width; j++) {
+                img[i*img_line_width + j] = black_is1 ? *(pBufPos + j) : ~*(pBufPos +j);
+            }
+            pBufPos += lineIncrement;
+        }
+
+        if (HPDF_Stream_Write(image->stream, img, height*img_line_width) != HPDF_OK)
+            return NULL;
+    }
+
     if (!image)
         HPDF_CheckError (&pdf->error);
-
-    if (pdf->compression_mode & HPDF_COMP_IMAGE)
-	{
-		image->filter = HPDF_STREAM_FILTER_CCITT_DECODE;
-		image->filterParams = HPDF_Dict_New(pdf->mmgr);
-		if(image->filterParams==NULL) {
-			return NULL;
-		}
-		
-		/* pure 2D encoding, default is 0 */
-		HPDF_Dict_AddNumber (image->filterParams, "K", -1);
-		/* default is 1728 */
-		HPDF_Dict_AddNumber (image->filterParams, "Columns", width);
-		/* default is 0 */
-		HPDF_Dict_AddNumber (image->filterParams, "Rows", height);
-		HPDF_Dict_AddBoolean (image->filterParams, "BlackIs1", black_is1);
-	}
 
     return image;
 }
