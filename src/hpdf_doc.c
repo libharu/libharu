@@ -1997,8 +1997,7 @@ HPDF_AttachFile  (HPDF_Doc    pdf,
         return NULL;
 
     af = HPDF_Dict_GetItem(pdf->catalog, "AF", HPDF_OCLASS_ARRAY);
-    if (!af)
-    {
+    if (!af) {
         af = HPDF_Array_New(pdf->mmgr);
         if (!af)
             return NULL;

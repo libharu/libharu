@@ -19,7 +19,7 @@
 #include <setjmp.h>
 #include "hpdf.h"
 
-#ifdef LIBHPDF_HAVE_LIBPNG
+#ifndef HPDF_NOPNGLIB
 
 jmp_buf env;
 
@@ -277,3 +277,4 @@ int main()
 }
 
 #endif /* HPDF_NOPNGLIB */
+

@@ -107,7 +107,7 @@ PngErrorFunc  (png_structp       png_ptr,
 }
 
 static void
-PngWarnFunc  (png_structp       png_ptr,
+PngWarnFunc  (png_structp  png_ptr,
               const char  *msg)
 {
     // Warning does not prevent the job to be done
@@ -557,10 +557,10 @@ no_transparent_color_in_palette:
 			ret = HPDF_FAILED_TO_ALLOC_MEM;
 			goto Exit;
 		}
-		
+
 		smask->filter = image->filter;
 		smask->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
-		
+
 		ret = HPDF_Dict_AddName (smask, "Type", "XObject");
 		ret += HPDF_Dict_AddName (smask, "Subtype", "Image");
 		ret += HPDF_Dict_AddNumber (smask, "Width", (HPDF_UINT)width);

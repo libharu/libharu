@@ -325,8 +325,8 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_EmbeddedFile_SetAFRelationship  (HPDF_EmbeddedFile    emfile,
                                       HPDF_AFRelationship  relationship)
 {
-    static const char *relationships[] =
-      {
+    // This array has to be kept coherent with HPDF_AFRelationship enum.
+    static const char *relationships[] = {
         "Source",
         "Data",
         "Alternative",
@@ -338,8 +338,7 @@ HPDF_EmbeddedFile_SetAFRelationship  (HPDF_EmbeddedFile    emfile,
       };
     const char *str_relationship = NULL;
 
-    if (relationship < 0 || relationship > HPDF_AFRELATIONSHIP_UNSPECIFIED)
-    {
+    if (relationship < 0 || relationship > HPDF_AFRELATIONSHIP_UNSPECIFIED) {
         return HPDF_INVALID_PARAMETER;
     }
     return HPDF_Dict_AddName(emfile, "AFRelationship", relationships[relationship]);
@@ -356,8 +355,7 @@ HPDF_EmbeddedFile_GetParams  (HPDF_EmbeddedFile  emfile)
         return NULL;
 
     params = HPDF_Dict_GetItem(filestream, "Params", HPDF_OCLASS_DICT);
-    if (!params)
-    {
+    if (!params) {
         params = HPDF_Dict_New (emfile->mmgr);
         if (!params || HPDF_Dict_Add (filestream, "Params", params) != HPDF_OK)
             return NULL;
