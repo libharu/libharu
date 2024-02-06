@@ -32,8 +32,18 @@ HPDF_PDFA_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdi
 
 HPDF_STATUS
 HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf,
-			      HPDF_PDFAType pdfatype);
-			      
+                              HPDF_PDFAType pdfatype);
+
+HPDF_STATUS
+HPDF_PDFA_AddXmpMetadata (HPDF_Doc pdf);
+
+HPDF_STATUS
+HPDF_PDFA_AddXmpExtension(HPDF_Doc    pdf,
+                            const char *xmp_description);
+
+void
+HPDF_PDFA_ClearXmpExtensions(HPDF_Doc pdf);
+
 HPDF_STATUS
 HPDF_PDFA_GenerateID(HPDF_Doc);
 #ifdef __cplusplus

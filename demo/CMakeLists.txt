@@ -9,35 +9,36 @@
   # =======================================================================
 set(
   demos_NAMES
-  	attach
-  	character_map
-  	encoding_list
-  	encryption
-  	ext_gstate_demo
-  	font_demo
-  	image_demo
-  	jpeg_demo
-  	jpfont_demo
-  	line_demo
-  	link_annotation
+    attach
+    character_map
+    encoding_list
+    encryption
+    ext_gstate_demo
+    font_demo
+    image_demo
+    jpeg_demo
+    jpfont_demo
+    line_demo
+    link_annotation
     make_rawimage
-  	outline_demo
+    outline_demo
     #outline_demo_jp
-  	permission
-  	png_demo
-  	slide_show_demo
-  	text_annotation
-  	ttfont_demo
-  	ttfont_demo_jp
+    pdf_a_conformance
+    permission
+    png_demo
+    slide_show_demo
+    text_annotation
+    ttfont_demo
+    ttfont_demo_jp
 )
 
 set(
   demos_with_grid_NAMES
-  	arc_demo
+    arc_demo
     chfont_demo
-  	raw_image_demo
-  	text_demo
-  	text_demo2
+    raw_image_demo
+    text_demo
+    text_demo2
 )
 
 # we need to add some definitions for win 32
@@ -54,30 +55,30 @@ foreach(demo ${demos_NAMES})
   target_link_libraries(${demo} PUBLIC hpdf)
   if(UNIX AND NOT APPLE)
     target_link_libraries(${demo} PUBLIC m)
-  endif() 
+  endif()
   if(DEMO_C_FLAGS)
     set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
   endif(DEMO_C_FLAGS)
 endforeach()
-  
+
 # some demos need grid_sheet.c compiled in
 foreach(demo ${demos_with_grid_NAMES})
   add_executable(${demo} ${demo}.c grid_sheet.c)
   target_link_libraries(${demo} PUBLIC hpdf)
   if(UNIX AND NOT APPLE)
     target_link_libraries(${demo} PUBLIC m)
-  endif() 
+  endif()
   if(DEMO_C_FLAGS)
     set_target_properties(${demo} PROPERTIES COMPILE_FLAGS ${DEMO_C_FLAGS})
   endif(DEMO_C_FLAGS)
 endforeach()
-  
+
 # the grid_sheet demo needs extra defines
 add_executable(grid_sheet grid_sheet.c)
 target_link_libraries(grid_sheet PUBLIC hpdf)
   if(UNIX AND NOT APPLE)
     target_link_libraries(grid_sheet PUBLIC m)
-  endif() 
+  endif()
 set_target_properties(grid_sheet PROPERTIES COMPILE_FLAGS "${DEMO_C_FLAGS} -DSTAND_ALONE")
 
 # =======================================================================
@@ -93,6 +94,6 @@ endforeach()
 
 # install demo files
 install(
-  DIRECTORY images mbtext pngsuite rawimage ttfont type1
+  DIRECTORY images mbtext pdf_a pngsuite rawimage ttfont type1
   DESTINATION demo
 )

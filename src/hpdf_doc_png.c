@@ -36,7 +36,7 @@ HPDF_LoadPngImageFromMem  (HPDF_Doc     pdf,
 	HPDF_Stream imagedata;
 	HPDF_Image image;
 
-	HPDF_PTRACE ((" HPDF_LoadPngImageFromFile\n"));
+	HPDF_PTRACE ((" HPDF_LoadPngImageFromMem\n"));
 
 	if (!HPDF_HasDoc (pdf)) {
 		return NULL;
