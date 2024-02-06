@@ -18,8 +18,6 @@
 #include <setjmp.h>
 #include "hpdf.h"
 
-static const char text[] = "This PDF should have an attachment named basn3p08.png";
-
 /* Text */
 static char text1[] = "This PDF should have an attachment named factur-x.xml";
 static char text2[] = "and should be PDF-A/3 compliant.";
@@ -162,8 +160,8 @@ int main (int argc, char **argv)
     tw = HPDF_Page_TextWidth (page, text1);
     HPDF_Page_MoveTextPos (page, (HPDF_Page_GetWidth (page) - tw) / 2, (HPDF_Page_GetHeight (page)) / 2);
     HPDF_Page_ShowText (page, text1);
-    //tw = HPDF_Page_TextWidth (page, text2);
-    HPDF_Page_MoveTextPos (page, (HPDF_Page_GetWidth (page) - tw) / 2, -20);
+    tw -= HPDF_Page_TextWidth (page, text2);
+    HPDF_Page_MoveTextPos (page, tw / 2, -20);
     HPDF_Page_ShowText (page, text2);
     HPDF_Page_EndText (page);
 
