@@ -1010,7 +1010,7 @@ HPDF_MemStream_InWrite  (HPDF_Stream      stream,
 
     HPDF_PTRACE((" HPDF_MemStream_InWrite\n"));
 
-    if (*count <= 0)
+    if (*count == 0)
         return HPDF_OK;
 
     if (rsize >= *count) {
