@@ -40,3 +40,5 @@ CPackConfig.cmake
 CPackSourceConfig.cmake
 cmake_install.cmake
 depcomp
+/.vs
+/out/build/x64-Debug
