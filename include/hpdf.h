@@ -1601,7 +1601,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                      HPDF_REAL            right,
                      HPDF_REAL            bottom,
                      const char          *text,
-                     HPDF_TextAlignment   align,
+					 HPDF_UINT   		  align,
                      HPDF_UINT           *len);
 
 

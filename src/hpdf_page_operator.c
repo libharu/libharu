@@ -20,6 +20,8 @@
 #include "hpdf_pages.h"
 #include "hpdf.h"
 
+#include "hpdf_textlinelist.h"
+
 static const HPDF_Point INIT_POS = {0, 0};
 static const HPDF_DashMode INIT_MODE = {{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, 0.0f, 0.0f};
 
@@ -2457,19 +2459,19 @@ HPDF_Page_TextOut  (HPDF_Page    page,
 
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_Page_TextRect  (HPDF_Page            page,
-                     HPDF_REAL            left,
-                     HPDF_REAL            top,
-                     HPDF_REAL            right,
-                     HPDF_REAL            bottom,
-                     const char          *text,
-                     HPDF_TextAlignment   align,
-                     HPDF_UINT           *len
-                     )
+HPDF_Page_TextRect(HPDF_Page            page,
+    HPDF_REAL            left,
+    HPDF_REAL            top,
+    HPDF_REAL            right,
+    HPDF_REAL            bottom,
+    const char* text,
+    HPDF_UINT   align,
+    HPDF_UINT* len
+)
 {
-    HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_TEXT_OBJECT);
+    HPDF_STATUS ret = HPDF_Page_CheckState(page, HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
-    const char *ptr = text;
+    const char* ptr = text;
     HPDF_BOOL pos_initialized = HPDF_FALSE;
     HPDF_REAL save_char_space = 0;
     HPDF_BOOL is_insufficient_space = HPDF_FALSE;
@@ -2477,50 +2479,49 @@ HPDF_Page_TextRect  (HPDF_Page            page,
     HPDF_Box bbox;
     HPDF_BOOL char_space_changed = HPDF_FALSE;
 
-    HPDF_PTRACE ((" HPDF_Page_TextRect\n"));
+    HPDF_PTRACE((" HPDF_Page_TextRect\n"));
 
     if (ret != HPDF_OK)
         return ret;
 
-    attr = (HPDF_PageAttr )page->attr;
+    attr = (HPDF_PageAttr)page->attr;
 
     /* no font exists */
     if (!attr->gstate->font) {
-        return HPDF_RaiseError (page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
+        return HPDF_RaiseError(page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
     }
 
-    bbox = HPDF_Font_GetBBox (attr->gstate->font);
+    bbox = HPDF_Font_GetBBox(attr->gstate->font);
 
     if (len)
         *len = 0;
-    num_rest = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN + 1);
+    num_rest = HPDF_StrLen(text, HPDF_LIMIT_MAX_STRING_LEN + 1);
 
     if (num_rest > HPDF_LIMIT_MAX_STRING_LEN) {
-        return HPDF_RaiseError (page->error, HPDF_STRING_OUT_OF_RANGE, 0);
-    } else if (!num_rest)
+        return HPDF_RaiseError(page->error, HPDF_STRING_OUT_OF_RANGE, 0);
+    }
+    else if (!num_rest)
         return HPDF_OK;
 
     if (attr->gstate->text_leading == 0)
-        HPDF_Page_SetTextLeading (page, (bbox.top - bbox.bottom) / 1000 *
-                attr->gstate->font_size);
-
-    top = top - bbox.top / 1000 * attr->gstate->font_size +
-                attr->gstate->text_leading;
-    bottom = bottom - bbox.bottom / 1000 * attr->gstate->font_size;
+        HPDF_Page_SetTextLeading(page, (bbox.top - bbox.bottom) / 1000 *
+            attr->gstate->font_size);
 
     if (align == HPDF_TALIGN_JUSTIFY) {
         save_char_space = attr->gstate->char_space;
         attr->gstate->char_space = 0;
     }
 
+    /* Create LinkedList of Text lines */
+    LinkedList list = createLinkedList();
+
     for (;;) {
-        HPDF_REAL x, y;
         HPDF_UINT line_len, tmp_len;
         HPDF_REAL rw;
         HPDF_BOOL LineBreak;
 
         attr->gstate->char_space = 0;
-        line_len = tmp_len = HPDF_Page_MeasureText (page, ptr, right - left, HPDF_TRUE, &rw);
+        line_len = tmp_len = HPDF_Page_MeasureText(page, ptr, right - left, HPDF_TRUE, &rw);
         if (line_len == 0) {
             is_insufficient_space = HPDF_TRUE;
             break;
@@ -2538,95 +2539,142 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                 LineBreak = HPDF_TRUE;
             }
         }
+        list.Append(&list, ptr, tmp_len, num_rest, rw, LineBreak);
+        ptr += line_len;
+    }
+
+    HPDF_REAL total_height = list.size * attr->gstate->text_leading;
+
+    HPDF_REAL correction = bbox.bottom / 1000 * attr->gstate->font_size;
+
+    if ((align & HPDF_TALIGN_MIDDLE) == HPDF_TALIGN_MIDDLE)
+    {
+        HPDF_REAL adjustment = 0.5 * (top - bottom - total_height);
+        top = top - adjustment - correction;
+        bottom = bottom + adjustment - correction;
+    }
+    else if ((align & HPDF_TALIGN_BOTTOM) == HPDF_TALIGN_BOTTOM)
+    {
+        bottom = bottom - correction;
+        top = bottom + total_height;
+    }
+    else // HPDF_TALIGN_TOP or default
+    {
+        top = top - correction;
+        bottom = top - total_height;
+    }
+    // remove vertical alignment flags
+    align &= ~(HPDF_TALIGN_TOP | HPDF_TALIGN_MIDDLE | HPDF_TALIGN_BOTTOM);
+
+
+    TextLine* textline = list.getFirst(&list);
+
+    while (textline != NULL)
+    {
+        HPDF_REAL x, y;
+        HPDF_UINT tmp_len;
+        HPDF_REAL rw;
+        HPDF_BOOL LineBreak;
+
+        const char* _ptr = textline->item;
+        tmp_len = textline->len;
+        num_rest = textline->num_rest;
+        rw = textline->rw;
+        LineBreak = textline->LineBreak;
 
         switch (align) {
 
-            case HPDF_TALIGN_RIGHT:
-                TextPos_AbsToRel (attr->text_matrix, right - rw, top, &x, &y);
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
-                } else {
-                    y = 0;
-                }
-                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+        case HPDF_TALIGN_RIGHT:
+            TextPos_AbsToRel(attr->text_matrix, right - rw, top, &x, &y);
+            if (!pos_initialized) {
+                pos_initialized = HPDF_TRUE;
+            }
+            else {
+                y = 0;
+            }
+            if ((ret = HPDF_Page_MoveTextPos(page, x, y)) != HPDF_OK)
+                return ret;
+            break;
+
+        case HPDF_TALIGN_CENTER:
+            TextPos_AbsToRel(attr->text_matrix, left + (right - left - rw) / 2, top, &x, &y);
+            if (!pos_initialized) {
+                pos_initialized = HPDF_TRUE;
+            }
+            else {
+                y = 0;
+            }
+            if ((ret = HPDF_Page_MoveTextPos(page, x, y)) != HPDF_OK)
+                return ret;
+            break;
+
+        case HPDF_TALIGN_JUSTIFY:
+            if (!pos_initialized) {
+                pos_initialized = HPDF_TRUE;
+                TextPos_AbsToRel(attr->text_matrix, left, top, &x, &y);
+                if ((ret = HPDF_Page_MoveTextPos(page, x, y)) != HPDF_OK)
                     return ret;
-                break;
+            }
 
-            case HPDF_TALIGN_CENTER:
-                TextPos_AbsToRel (attr->text_matrix, left + (right - left - rw) / 2, top, &x, &y);
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
-                } else {
-                    y = 0;
-                }
-                if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
+            /* Do not justify last line of paragraph or text. */
+            if (LineBreak || num_rest <= 0) {
+                if ((ret = HPDF_Page_SetCharSpace(page, save_char_space))
+                    != HPDF_OK)
                     return ret;
-                break;
-
-            case HPDF_TALIGN_JUSTIFY:
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
-                    TextPos_AbsToRel (attr->text_matrix, left, top, &x, &y);
-                    if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
-                        return ret;
+                char_space_changed = HPDF_FALSE;
+            }
+            else {
+                HPDF_REAL x_adjust;
+                HPDF_ParseText_Rec state;
+                HPDF_UINT i = 0;
+                HPDF_UINT num_char = 0;
+                HPDF_Encoder encoder = ((HPDF_FontAttr)attr->gstate->font->attr)->encoder;
+                const char* tmp_ptr = _ptr;
+                HPDF_Encoder_SetParseText(encoder, &state, (HPDF_BYTE*)tmp_ptr, tmp_len);
+                while (*tmp_ptr) {
+                    HPDF_ByteType btype = HPDF_Encoder_ByteType(encoder, &state);
+                    if (btype != HPDF_BYTE_TYPE_TRAIL)
+                        num_char++;
+                    i++;
+                    if (i >= tmp_len)
+                        break;
+                    tmp_ptr++;
                 }
 
-                /* Do not justify last line of paragraph or text. */
-                if (LineBreak || num_rest <= 0) {
-                    if ((ret = HPDF_Page_SetCharSpace (page, save_char_space))
-                                    != HPDF_OK)
-                        return ret;
-                    char_space_changed = HPDF_FALSE;
-                } else {
-                    HPDF_REAL x_adjust;
-                    HPDF_ParseText_Rec state;
-                    HPDF_UINT i = 0;
-                    HPDF_UINT num_char = 0;
-                    HPDF_Encoder encoder = ((HPDF_FontAttr)attr->gstate->font->attr)->encoder;
-                    const char *tmp_ptr = ptr;
-                    HPDF_Encoder_SetParseText (encoder, &state, (HPDF_BYTE *)tmp_ptr, tmp_len);
-                    while (*tmp_ptr) {
-                        HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &state);
-                        if (btype != HPDF_BYTE_TYPE_TRAIL)
-                            num_char++;
-                        i++;
-                        if (i >= tmp_len)
-                            break;
-                        tmp_ptr++;
-                    }
+                x_adjust = num_char == 0 ? 0 : (right - left - rw) / (num_char - 1);
+                if ((ret = HPDF_Page_SetCharSpace(page, x_adjust)) != HPDF_OK)
+                    return ret;
+                char_space_changed = HPDF_TRUE;
+            }
+            break;
 
-                    x_adjust = num_char == 0 ? 0 : (right - left - rw) / (num_char - 1);
-                    if ((ret = HPDF_Page_SetCharSpace (page, x_adjust)) != HPDF_OK)
-                        return ret;
-                    char_space_changed = HPDF_TRUE;
-                }
-                break;
-
-            default:
-                if (!pos_initialized) {
-                    pos_initialized = HPDF_TRUE;
-                    TextPos_AbsToRel (attr->text_matrix, left, top, &x, &y);
-                    if ((ret = HPDF_Page_MoveTextPos (page, x, y)) != HPDF_OK)
-                        return ret;
-                }
+        default:
+            if (!pos_initialized) {
+                pos_initialized = HPDF_TRUE;
+                TextPos_AbsToRel(attr->text_matrix, left, top, &x, &y);
+                if ((ret = HPDF_Page_MoveTextPos(page, x, y)) != HPDF_OK)
+                    return ret;
+            }
         }
 
-        if (InternalShowTextNextLine (page, ptr, tmp_len) != HPDF_OK)
-            return HPDF_CheckError (page->error);
+        if (InternalShowTextNextLine(page, _ptr, tmp_len) != HPDF_OK)
+            return HPDF_CheckError(page->error);
 
         if (num_rest <= 0)
             break;
 
-        if (attr->text_pos.y - attr->gstate->text_leading < bottom) {
+        if (attr->text_pos.y - attr->gstate->text_leading - bottom < -1e-4) {
             is_insufficient_space = HPDF_TRUE;
             break;
         }
 
-        ptr += line_len;
+        textline = textline->next;
     }
 
+    list.Delete(&list);
+
     if (char_space_changed && save_char_space != attr->gstate->char_space) {
-        if ((ret = HPDF_Page_SetCharSpace (page, save_char_space)) != HPDF_OK)
+        if ((ret = HPDF_Page_SetCharSpace(page, save_char_space)) != HPDF_OK)
             return ret;
     }
 
@@ -2635,6 +2683,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
     else
         return HPDF_OK;
 }
+
 
 
 static HPDF_STATUS
