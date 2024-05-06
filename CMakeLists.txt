@@ -15,6 +15,12 @@ project(libharu
 
 include(GNUInstallDirs)
 
+<<<<<<< HEAD
+=======
+set(VCPKG_TARGET_TRIPLET x64-windows)
+include(C:/vcpkg/scripts/buildsystems/vcpkg.cmake)
+
+>>>>>>> 147b8e0 (Added vertical align to HPDF_Page_TextRect)
 # Location where the haru cmake build system first looks for cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
@@ -146,11 +152,6 @@ install(EXPORT ${PROJECT_NAME}Targets
     FILE ${PROJECT_NAME}Targets.cmake
     NAMESPACE ${PROJECT_NAME}::
     DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/${PROJECT_NAME}
-)
-
-install(DIRECTORY ${SPARSEHASH_INCLUDE_DIR}/
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include
-    FILES_MATCHING PATTERN "*.h"
 )
 
 include(CMakePackageConfigHelpers)
