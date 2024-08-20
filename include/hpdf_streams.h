@@ -148,6 +148,14 @@ HPDF_Stream_WriteToStream  (HPDF_Stream   src,
                             HPDF_UINT     filter,
                             HPDF_Encrypt  e);
 
+HPDF_STATUS
+HPDF_Stream_WriteToStream2 (HPDF_Stream   src,
+                            HPDF_Stream   dst,
+                            HPDF_UINT     filter,
+                            HPDF_Encrypt  e,
+                            HPDF_UINT     offset,
+                            HPDF_UINT     length);
+
 
 HPDF_Stream
 HPDF_FileReader_New  (HPDF_MMgr   mmgr,

@@ -72,7 +72,9 @@ HPDF_MemStream_InWrite  (HPDF_Stream      stream,
 HPDF_STATUS
 HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
                                        HPDF_Stream  dst,
-                                       HPDF_Encrypt  e);
+                                       HPDF_Encrypt e,
+                                       HPDF_UINT    offset,
+                                       HPDF_UINT    length);
 
 
 HPDF_STATUS
@@ -560,7 +562,9 @@ HPDF_Stream_WriteBinary  (HPDF_Stream      stream,
 HPDF_STATUS
 HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
                                        HPDF_Stream  dst,
-                                       HPDF_Encrypt  e)
+                                       HPDF_Encrypt  e,
+                                       HPDF_UINT    offset,
+                                       HPDF_UINT    length)
 {
 #ifdef LIBHPDF_HAVE_ZLIB
 
@@ -568,6 +572,7 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
 
     HPDF_STATUS ret;
     HPDF_BOOL flg;
+    HPDF_UINT sizeleft = length;
 
     z_stream strm;
     Bytef inbuf[HPDF_STREAM_BUF_SIZ];
@@ -577,7 +582,7 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
     HPDF_PTRACE((" HPDF_Stream_WriteToStreamWithDeflate\n"));
 
     /* initialize input stream */
-    ret = HPDF_Stream_Seek (src, 0, HPDF_SEEK_SET);
+    ret = HPDF_Stream_Seek (src, offset, HPDF_SEEK_SET);
     if (ret != HPDF_OK)
         return ret;
 
@@ -595,10 +600,18 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
     strm.avail_in = 0;
 
     flg = HPDF_FALSE;
-    for (;;) {
+    for (;sizeleft > 0;) {
         HPDF_UINT size = HPDF_STREAM_BUF_SIZ;
 
         ret = HPDF_Stream_Read (src, inbuf, &size);
+
+        if (sizeleft >= size) {
+            sizeleft -= size;
+        } else {
+            size = sizeleft;
+            sizeleft = 0;
+            flg = HPDF_TRUE;
+        }
 
         strm.next_in = inbuf;
         strm.avail_in = size;
@@ -688,12 +701,24 @@ HPDF_STATUS
 HPDF_Stream_WriteToStream  (HPDF_Stream  src,
                             HPDF_Stream  dst,
                             HPDF_UINT    filter,
-                            HPDF_Encrypt  e)
+                            HPDF_Encrypt e)
+{
+    return HPDF_Stream_WriteToStream2(src, dst, filter, e, 0, -1);
+}
+
+HPDF_STATUS
+HPDF_Stream_WriteToStream2 (HPDF_Stream  src,
+                            HPDF_Stream  dst,
+                            HPDF_UINT    filter,
+                            HPDF_Encrypt e,
+                            HPDF_UINT    offset,
+                            HPDF_UINT    length)
 {
     HPDF_STATUS ret;
     HPDF_BYTE buf[HPDF_STREAM_BUF_SIZ];
     HPDF_BYTE ebuf[HPDF_STREAM_BUF_SIZ];
     HPDF_BOOL flg;
+    HPDF_UINT sizeleft = length;
 
     HPDF_PTRACE((" HPDF_Stream_WriteToStream\n"));
     HPDF_UNUSED (filter);
@@ -713,15 +738,15 @@ HPDF_Stream_WriteToStream  (HPDF_Stream  src,
 
 #ifdef LIBHPDF_HAVE_ZLIB
     if (filter & HPDF_STREAM_FILTER_FLATE_DECODE)
-        return HPDF_Stream_WriteToStreamWithDeflate (src, dst, e);
+        return HPDF_Stream_WriteToStreamWithDeflate (src, dst, e, offset, length);
 #endif /* LIBHPDF_HAVE_ZLIB */
 
-    ret = HPDF_Stream_Seek (src, 0, HPDF_SEEK_SET);
+    ret = HPDF_Stream_Seek (src, offset, HPDF_SEEK_SET);
     if (ret != HPDF_OK)
         return ret;
 
     flg = HPDF_FALSE;
-    for (;;) {
+    for (; sizeleft > 0;) {
         HPDF_UINT size = HPDF_STREAM_BUF_SIZ;
 
         ret = HPDF_Stream_Read (src, buf, &size);
@@ -734,6 +759,13 @@ HPDF_Stream_WriteToStream  (HPDF_Stream  src,
             } else {
                 return ret;
             }
+        }
+
+        if (sizeleft >= size) {
+            sizeleft -= size;
+        } else {
+            size = sizeleft;
+            sizeleft = 0;
         }
 
         if (e) {

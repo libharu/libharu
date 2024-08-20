@@ -18,6 +18,7 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf_font.h"
+#include "hpdf_doc.h"
 
 static HPDF_STATUS
 OnWrite  (HPDF_Dict    obj,
@@ -96,6 +97,7 @@ HPDF_TTFont_New  (HPDF_MMgr        mmgr,
 
     HPDF_MemSet (attr, 0, sizeof(HPDF_FontAttr_Rec));
 
+    font->mmgr = mmgr;
     font->header.obj_class |= HPDF_OSUBCLASS_FONT;
     font->write_fn = OnWrite;
     font->before_write_fn = BeforeWrite;
@@ -137,7 +139,7 @@ HPDF_TTFont_New  (HPDF_MMgr        mmgr,
 
     ret += HPDF_Dict_AddName (font, "Type", "Font");
     ret += HPDF_Dict_AddName (font, "BaseFont", fontdef_attr->base_font);
-    ret += HPDF_Dict_AddName (font, "Subtype", "TrueType");
+    ret += HPDF_Dict_AddName (font, "Subtype", (fontdef_attr->cff_length > 0)? "Type1" : "TrueType");
 
     encoder_attr = (HPDF_BasicEncoderAttr)encoder->attr;
 
@@ -165,6 +167,7 @@ CreateDescriptor  (HPDF_Font  font)
     HPDF_FontAttr font_attr = (HPDF_FontAttr)font->attr;
     HPDF_FontDef def = font_attr->fontdef;
     HPDF_TTFontDefAttr def_attr = (HPDF_TTFontDefAttr)def->attr;
+    HPDF_Doc pdf = (HPDF_Doc)font->mmgr->pdf;
 
     HPDF_PTRACE ((" HPDF_TTFont_CreateDescriptor\n"));
 
@@ -206,15 +209,26 @@ CreateDescriptor  (HPDF_Font  font)
             if (!font_data)
                 return HPDF_Error_GetCode (font->error);
 
-            if (HPDF_TTFontDef_SaveFontData (font_attr->fontdef,
-                font_data->stream) != HPDF_OK)
-                return HPDF_Error_GetCode (font->error);
+            if (def_attr->cff_length > 0) {
+                if (pdf->pdf_version >= HPDF_VER_16) {
+                    ret += HPDF_Dict_AddName (font_data, "Subtype", "OpenType");  // PDF 1.6
+                    ret += HPDF_Stream_WriteToStream (def_attr->stream, font_data->stream, font_data->filter, 0);
+                    ret += HPDF_Dict_AddNumber (font_data, "Length", HPDF_Stream_Size(font_data->stream));
+                } else if (pdf->pdf_version >= HPDF_VER_12) {
+                    ret += HPDF_Dict_AddName (font_data, "Subtype", "Type1C");  // PDF 1.2                  
+                    ret += HPDF_Stream_WriteToStream2 (def_attr->stream, font_data->stream, font_data->filter, 0, def_attr->cff_offset, def_attr->cff_length);
+                    ret += HPDF_Dict_Add (descriptor, "FontFile3", font_data);
+                }
+            } else {
+                if (HPDF_TTFontDef_SaveFontData (font_attr->fontdef,
+                    font_data->stream) != HPDF_OK)
+                    return HPDF_Error_GetCode (font->error);
 
-            ret += HPDF_Dict_Add (descriptor, "FontFile2", font_data);
-            ret += HPDF_Dict_AddNumber (font_data, "Length1",
-                    def_attr->length1);
-            ret += HPDF_Dict_AddNumber (font_data, "Length2", 0);
-            ret += HPDF_Dict_AddNumber (font_data, "Length3", 0);
+                ret += HPDF_Dict_Add (descriptor, "FontFile2", font_data);
+            }
+
+            if (def_attr->length1 > 0)
+                ret += HPDF_Dict_AddNumber (font_data, "Length1", def_attr->length1);
 
             font_data->filter = font->filter;
         }
@@ -248,7 +262,7 @@ CharWidth (HPDF_Font  font,
 }
 
 
-static HPDF_TextWidth
+HPDF_TextWidth
 TextWidth  (HPDF_Font         font,
             const HPDF_BYTE  *text,
             HPDF_UINT         len)

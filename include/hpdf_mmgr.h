@@ -38,6 +38,7 @@ typedef struct  _HPDF_MPool_Node_Rec {
 typedef struct  _HPDF_MMgr_Rec  *HPDF_MMgr;
 
 typedef struct  _HPDF_MMgr_Rec {
+    void*             pdf;
     HPDF_Error        error;
     HPDF_Alloc_Func   alloc_fn;
     HPDF_Free_Func    free_fn;
