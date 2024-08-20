@@ -179,6 +179,8 @@ HPDF_NewEx  (HPDF_Error_Handler    user_error_fn,
     pdf->pdf_version = HPDF_VER_13;
     pdf->compression_mode = HPDF_COMP_NONE;
 
+    mmgr->pdf = pdf;
+
     /* copy the data of temporary-error object to the one which is
        included in pdf_doc object */
     pdf->error = tmp_error;
