@@ -25,16 +25,18 @@
 #include "hpdf_info.h"
 #include "hpdf_page_label.h"
 #include "hpdf_version.h"
+#include "hpdf_pdfa.h"
 #include "hpdf.h"
 
 
-static const char * const HPDF_VERSION_STR[6] = {
+static const char * const HPDF_VERSION_STR[] = {
                 "%PDF-1.2\012%\267\276\255\252\012",
                 "%PDF-1.3\012%\267\276\255\252\012",
                 "%PDF-1.4\012%\267\276\255\252\012",
                 "%PDF-1.5\012%\267\276\255\252\012",
                 "%PDF-1.6\012%\267\276\255\252\012",
-                "%PDF-1.7\012%\267\276\255\252\012"
+                "%PDF-1.7\012%\267\276\255\252\012",
+                "%PDF-2.0\012%\267\276\255\252\012"
 };
 
 
@@ -276,6 +278,9 @@ HPDF_NewDoc  (HPDF_Doc  pdf)
     if (HPDF_SetInfoAttr (pdf, HPDF_INFO_PRODUCER, buf) != HPDF_OK)
         return HPDF_CheckError (&pdf->error);
 
+    pdf->pdfa_type = HPDF_PDFA_NON_PDFA;
+    pdf->xmp_extensions = HPDF_List_New (pdf->mmgr, HPDF_DEF_ITEMS_PER_BLOCK);
+
     return HPDF_OK;
 }
 
@@ -326,6 +331,13 @@ HPDF_FreeDoc  (HPDF_Doc  pdf)
         if (pdf->stream) {
             HPDF_Stream_Free (pdf->stream);
             pdf->stream = NULL;
+        }
+
+        pdf->pdfa_type = HPDF_PDFA_NON_PDFA;
+        if (pdf->xmp_extensions) {
+            HPDF_PDFA_ClearXmpExtensions(pdf);
+            HPDF_List_Free (pdf->xmp_extensions);
+            pdf->xmp_extensions = NULL;
         }
     }
 }
@@ -507,7 +519,7 @@ HPDF_SetEncryptionMode  (HPDF_Doc           pdf,
              * pdf file is set to 1.4
              */
             if (pdf->pdf_version < HPDF_VER_14)
-            pdf->pdf_version = HPDF_VER_14;
+                pdf->pdf_version = HPDF_VER_14;
 
             if (key_len >= 5 && key_len <= 16)
                 e->key_len = key_len;
@@ -532,7 +544,7 @@ HPDF_Doc_SetEncryptOff  (HPDF_Doc   pdf)
     if (!pdf->encrypt_on)
         return HPDF_OK;
 
-    /* if encrypy-dict object is registered to cross-reference-table,
+    /* if encrypt-dict object is registered to cross-reference-table,
      * replace it to null-object.
      * additionally remove encrypt-dict object from trailer-object.
      */
@@ -613,6 +625,10 @@ InternalSaveToStream  (HPDF_Doc      pdf,
                        HPDF_Stream   stream)
 {
     HPDF_STATUS ret;
+
+    /* Add metadata in case of PDF/A document */
+    if (pdf->pdfa_type != HPDF_PDFA_NON_PDFA && (ret = HPDF_PDFA_AddXmpMetadata(pdf)) != HPDF_OK)
+        return ret;
 
     if ((ret = WriteHeader (pdf, stream)) != HPDF_OK)
         return ret;
@@ -1799,7 +1815,7 @@ HPDF_SetPageLayout  (HPDF_Doc          pdf,
                 (HPDF_STATUS)layout);
 
     if ((layout == HPDF_PAGE_LAYOUT_TWO_PAGE_LEFT || layout == HPDF_PAGE_LAYOUT_TWO_PAGE_RIGHT) && pdf->pdf_version < HPDF_VER_15)
-        pdf->pdf_version = HPDF_VER_15 ;
+        pdf->pdf_version = HPDF_VER_15;
 
     ret = HPDF_Catalog_SetPageLayout (pdf->catalog, layout);
     if (ret != HPDF_OK)
@@ -1892,7 +1908,7 @@ HPDF_SetViewerPreference  (HPDF_Doc     pdf,
     if (ret != HPDF_OK)
         return HPDF_CheckError (&pdf->error);
 
-    pdf->pdf_version = HPDF_VER_16;
+    pdf->pdf_version = (pdf->pdf_version > HPDF_VER_16 ? pdf->pdf_version : HPDF_VER_16);
 
     return HPDF_OK;
 }
@@ -1938,6 +1954,7 @@ HPDF_AttachFile  (HPDF_Doc    pdf,
     HPDF_NameTree ntree;
     HPDF_EmbeddedFile efile;
     HPDF_String name;
+    HPDF_Array af;
     HPDF_STATUS ret = HPDF_OK;
 
     HPDF_PTRACE ((" HPDF_AttachFile\n"));
@@ -1975,10 +1992,20 @@ HPDF_AttachFile  (HPDF_Doc    pdf,
     if (!name)
         return NULL;
 
-    ret += HPDF_NameTree_Add (ntree, name, efile);
+    ret = HPDF_NameTree_Add (ntree, name, efile);
     if (ret != HPDF_OK)
         return NULL;
 
+    af = HPDF_Dict_GetItem(pdf->catalog, "AF", HPDF_OCLASS_ARRAY);
+    if (!af) {
+        af = HPDF_Array_New(pdf->mmgr);
+        if (!af)
+            return NULL;
+        HPDF_Dict_Add(pdf->catalog, "AF", af);
+    }
+    HPDF_Array_Add(af, efile);
+
+    pdf->pdf_version = (pdf->pdf_version > HPDF_VER_17 ? pdf->pdf_version : HPDF_VER_17);
     return efile;
 }
 
@@ -2116,7 +2143,7 @@ HPDF_CreateExtGState  (HPDF_Doc  pdf)
     if (!HPDF_HasDoc (pdf))
         return NULL;
 
-    pdf->pdf_version = HPDF_VER_14;
+    pdf->pdf_version = (pdf->pdf_version > HPDF_VER_14 ? pdf->pdf_version : HPDF_VER_14);
 
     ext_gstate = HPDF_ExtGState_New (pdf->mmgr, pdf->xref);
     if (!ext_gstate)
@@ -2376,3 +2403,28 @@ HPDF_LoadIccProfileFromFile  (HPDF_Doc pdf,
     return iccentry;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_SetPDFAConformance  (HPDF_Doc      pdf,
+                          HPDF_PDFAType pdfa_type)
+{
+    if (pdf == NULL)
+        return HPDF_DOC_INVALID_OBJECT;
+
+    return HPDF_PDFA_SetPDFAConformance(pdf, pdfa_type);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_AddPDFAXmpExtension  (HPDF_Doc    pdf,
+                           const char *xmp_extension)
+{
+    if (pdf == NULL)
+        return HPDF_DOC_INVALID_OBJECT;
+
+    return HPDF_PDFA_AddXmpExtension(pdf, xmp_extension);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdict)
+{
+    return HPDF_PDFA_AppendOutputIntents(pdf, iccname, iccdict);
+}

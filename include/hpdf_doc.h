@@ -73,6 +73,10 @@ typedef struct _HPDF_Doc_Rec {
 
     /* buffer for saving into memory stream */
     HPDF_Stream       stream;
+
+    /* PDF/A conformance */
+    HPDF_PDFAType     pdfa_type;
+    HPDF_List         xmp_extensions;
 } HPDF_Doc_Rec;
 
 typedef struct _HPDF_Doc_Rec  *HPDF_Doc;
@@ -159,4 +163,3 @@ HPDF_Doc_PrepareEncryption (HPDF_Doc  pdf);
 #endif /* __cplusplus */
 
 #endif /* _HPDF_DOC_H */
-
