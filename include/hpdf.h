@@ -89,7 +89,6 @@ typedef HPDF_HANDLE   HPDF_Shading;
 #include "hpdf_consts.h"
 #include "hpdf_doc.h"
 #include "hpdf_error.h"
-#include "hpdf_pdfa.h"
 
 #endif /* HPDF_SHARED */
 
@@ -191,6 +190,17 @@ HPDF_EXPORT(HPDF_Page)
 HPDF_GetPageByIndex  (HPDF_Doc    pdf,
                       HPDF_UINT   index);
 
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_SetPDFAConformance  (HPDF_Doc      pdf,
+                          HPDF_PDFAType pdfa_type);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_AddPDFAXmpExtension  (HPDF_Doc      pdf,
+                             const char   *xmp_description);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_AppendOutputIntents(HPDF_Doc pdf, const char *iccname, HPDF_Dict iccdict);
 
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
@@ -484,7 +494,7 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_Create3DAnnot    (HPDF_Page       page,
-							HPDF_Rect       rect,
+                            HPDF_Rect       rect,
                             HPDF_BOOL       tb,
                             HPDF_BOOL       np,
                             HPDF_U3D        u3d,
@@ -498,14 +508,14 @@ HPDF_Page_CreateTextAnnot  (HPDF_Page       page,
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateFreeTextAnnot  (HPDF_Page       page,
-								HPDF_Rect       rect,
-								const char     *text,
-								HPDF_Encoder    encoder);
+                                HPDF_Rect       rect,
+                                const char     *text,
+                                HPDF_Encoder    encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateLineAnnot  (HPDF_Page       page,
-							const char     *text,
-							HPDF_Encoder    encoder);
+                            const char     *text,
+                            HPDF_Encoder    encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint (HPDF_Doc   pdf,
@@ -529,65 +539,65 @@ HPDF_Page_CreateURILinkAnnot  (HPDF_Page     page,
 
 
 HPDF_Annotation
-HPDF_Page_CreateTextMarkupAnnot (HPDF_Page     page,
-								HPDF_Rect      rect,
-								const char     *text,
-								HPDF_Encoder   encoder,
-								HPDF_AnnotType subType);
+HPDF_Page_CreateTextMarkupAnnot (HPDF_Page      page,
+                                 HPDF_Rect      rect,
+                                 const char    *text,
+                                 HPDF_Encoder   encoder,
+                                 HPDF_AnnotType subType);
 
 HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateHighlightAnnot  (HPDF_Page   page,
-								HPDF_Rect    rect,
-								const char   *text,
-								HPDF_Encoder encoder);
+HPDF_Page_CreateHighlightAnnot  (HPDF_Page    page,
+                                 HPDF_Rect    rect,
+                                 const char  *text,
+                                 HPDF_Encoder encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateUnderlineAnnot (HPDF_Page    page,
-								HPDF_Rect    rect,
-								const char   *text,
-								HPDF_Encoder encoder);
+                                HPDF_Rect    rect,
+                                const char  *text,
+                                HPDF_Encoder encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateSquigglyAnnot  (HPDF_Page    page,
-								HPDF_Rect    rect,
-								const char   *text,
-								HPDF_Encoder encoder);
+                                HPDF_Rect    rect,
+                                const char  *text,
+                                HPDF_Encoder encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateStrikeOutAnnot  (HPDF_Page   page,
-								HPDF_Rect    rect,
-								const char   *text,
-								HPDF_Encoder encoder);
+                                 HPDF_Rect    rect,
+                                 const char  *text,
+                                 HPDF_Encoder encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreatePopupAnnot  (	HPDF_Page          page,
-								HPDF_Rect          rect,
-								HPDF_Annotation	   parent);
+HPDF_Page_CreatePopupAnnot  (HPDF_Page          page,
+                             HPDF_Rect          rect,
+                             HPDF_Annotation    parent);
 
 HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateStampAnnot  (	HPDF_Page           page,
-								HPDF_Rect           rect,
-								HPDF_StampAnnotName name,
-								const char*			text,
-								HPDF_Encoder		encoder);
+HPDF_Page_CreateStampAnnot  (HPDF_Page           page,
+                             HPDF_Rect           rect,
+                             HPDF_StampAnnotName name,
+                             const char*         text,
+                             HPDF_Encoder        encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateProjectionAnnot(HPDF_Page page,
-								HPDF_Rect rect,
-								const char* text,
-								HPDF_Encoder encoder);
+HPDF_Page_CreateProjectionAnnot(HPDF_Page    page,
+                                HPDF_Rect    rect,
+                                const char  *text,
+                                HPDF_Encoder encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateSquareAnnot (HPDF_Page          page,
-							 HPDF_Rect          rect,
-							 const char			*text,
-							 HPDF_Encoder       encoder);
+                             HPDF_Rect          rect,
+                             const char        *text,
+                             HPDF_Encoder       encoder);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateCircleAnnot (HPDF_Page          page,
-							 HPDF_Rect          rect,
-							 const char			*text,
-							 HPDF_Encoder       encoder);
+                             HPDF_Rect          rect,
+                             const char        *text,
+                             HPDF_Encoder       encoder);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_LinkAnnot_SetHighlightMode  (HPDF_Annotation           annot,
@@ -665,10 +675,10 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_TextMarkupAnnot_SetQuadPoints ( HPDF_Annotation annot, HPDF_Point lb, HPDF_Point rb, HPDF_Point rt, HPDF_Point lt); /* l-left, r-right, b-bottom, t-top positions */
 
 HPDF_EXPORT(HPDF_STATUS)
-HPDF_Annot_Set3DView  ( HPDF_MMgr mmgr,
-					 	HPDF_Annotation	annot,
-					 	HPDF_Annotation	annot3d,
-					 	HPDF_Dict			view);
+HPDF_Annot_Set3DView  (HPDF_MMgr          mmgr,
+                       HPDF_Annotation    annot,
+                       HPDF_Annotation    annot3d,
+                       HPDF_Dict          view);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_PopupAnnot_SetOpened  (HPDF_Annotation   annot,
@@ -688,8 +698,8 @@ HPDF_FreeTextAnnot_SetDefaultStyle (HPDF_Annotation  annot, const char* style);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_LineAnnot_SetPosition (HPDF_Annotation annot,
-							HPDF_Point startPoint, HPDF_LineAnnotEndingStyle startStyle,
-							HPDF_Point endPoint, HPDF_LineAnnotEndingStyle endStyle);
+                            HPDF_Point startPoint, HPDF_LineAnnotEndingStyle startStyle,
+                            HPDF_Point endPoint, HPDF_LineAnnotEndingStyle endStyle);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_LineAnnot_SetLeader (HPDF_Annotation annot, HPDF_INT leaderLen, HPDF_INT leaderExtLen, HPDF_INT leaderOffsetLen);
@@ -713,47 +723,47 @@ HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata);
 /*----- 3D Measure ---------------------------------------------------------*/
 HPDF_EXPORT(HPDF_3DMeasure)
 HPDF_Page_Create3DC3DMeasure(HPDF_Page       page,
-					         HPDF_Point3D    firstanchorpoint,
-					         HPDF_Point3D    textanchorpoint
-					         );
+                             HPDF_Point3D    firstanchorpoint,
+                             HPDF_Point3D    textanchorpoint
+                             );
 
 HPDF_EXPORT(HPDF_3DMeasure)
 HPDF_Page_CreatePD33DMeasure(HPDF_Page       page,
-					         HPDF_Point3D    annotationPlaneNormal,
-					         HPDF_Point3D    firstAnchorPoint,
-   					         HPDF_Point3D    secondAnchorPoint,
-	        				 HPDF_Point3D    leaderLinesDirection,
-   					         HPDF_Point3D    measurementValuePoint,
-					         HPDF_Point3D    textYDirection,
-					         HPDF_REAL       value,
-							 const char*     unitsString
-  					        );
+                             HPDF_Point3D    annotationPlaneNormal,
+                             HPDF_Point3D    firstAnchorPoint,
+                             HPDF_Point3D    secondAnchorPoint,
+                             HPDF_Point3D    leaderLinesDirection,
+                             HPDF_Point3D    measurementValuePoint,
+                             HPDF_Point3D    textYDirection,
+                             HPDF_REAL       value,
+                             const char*     unitsString
+                             );
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_3DMeasure_SetName(HPDF_3DMeasure measure,
-					   const char* name);
+                       const char*    name);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_3DMeasure_SetColor(HPDF_3DMeasure measure,
-						   HPDF_RGBColor color);
+                        HPDF_RGBColor color);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_3DMeasure_SetTextSize(HPDF_3DMeasure measure,
-							  HPDF_REAL textsize);
+                           HPDF_REAL      textsize);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_3DC3DMeasure_SetTextBoxSize(HPDF_3DMeasure measure,
-							 HPDF_INT32 x,
-							 HPDF_INT32 y);
+                                 HPDF_INT32 x,
+                                 HPDF_INT32 y);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_3DC3DMeasure_SetText(HPDF_3DMeasure measure,
-						  const char* text,
-						  HPDF_Encoder encoder);
+                          const char*    text,
+                          HPDF_Encoder   encoder);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_3DC3DMeasure_SetProjectionAnotation(HPDF_3DMeasure measure,
-										 HPDF_Annotation projectionanotation);
+                                         HPDF_Annotation projectionanotation);
 
 /*--------------------------------------------------------------------------*/
 /*----- External Data ---------------------------------------------------------*/
@@ -770,13 +780,13 @@ HPDF_3DAnnotExData_Set3DMeasurement(HPDF_ExData exdata, HPDF_3DMeasure measure);
 
 HPDF_EXPORT(HPDF_Dict)
 HPDF_Page_Create3DView    (HPDF_Page       page,
-						   HPDF_U3D        u3d,
-						   HPDF_Annotation	annot3d,
-						   const char *name);
+                           HPDF_U3D        u3d,
+                           HPDF_Annotation annot3d,
+                           const char     *name);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_3DView_Add3DC3DMeasure(HPDF_Dict       view,
-							HPDF_3DMeasure measure);
+                            HPDF_3DMeasure  measure);
 
 /*--------------------------------------------------------------------------*/
 /*----- image data ---------------------------------------------------------*/
@@ -788,17 +798,17 @@ HPDF_LoadPngImageFromMem  (HPDF_Doc     pdf,
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadPngImageFromFile (HPDF_Doc      pdf,
-                           const char    *filename);
+                           const char   *filename);
 
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadPngImageFromFile2 (HPDF_Doc      pdf,
-                            const char    *filename);
+                            const char   *filename);
 
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadJpegImageFromFile (HPDF_Doc      pdf,
-                            const char    *filename);
+                            const char   *filename);
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadJpegImageFromMem   (HPDF_Doc      pdf,
@@ -807,7 +817,7 @@ HPDF_LoadJpegImageFromMem   (HPDF_Doc      pdf,
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadU3DFromFile (HPDF_Doc      pdf,
-                            const char    *filename);
+                      const char   *filename);
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadU3DFromMem  (HPDF_Doc      pdf,
@@ -826,7 +836,7 @@ HPDF_Image_LoadRaw1BitImageFromMem  (HPDF_Doc           pdf,
 
 HPDF_EXPORT(HPDF_Image)
 HPDF_LoadRawImageFromFile  (HPDF_Doc           pdf,
-                            const char         *filename,
+                            const char        *filename,
                             HPDF_UINT          width,
                             HPDF_UINT          height,
                             HPDF_ColorSpace    color_space);
@@ -991,6 +1001,34 @@ HPDF_Font_MeasureText (HPDF_Font          font,
 HPDF_EXPORT(HPDF_EmbeddedFile)
 HPDF_AttachFile  (HPDF_Doc    pdf,
                   const char *file);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile_SetName  (HPDF_EmbeddedFile  emfile,
+                            const char        *name);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile_SetDescription (HPDF_EmbeddedFile  emfile,
+                                  const char        *new_description);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile_SetSubtype  (HPDF_EmbeddedFile  emfile,
+                               const char        *subtype);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile_SetAFRelationship  (HPDF_EmbeddedFile    emfile,
+                                      HPDF_AFRelationship  relationship);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile_SetSize  (HPDF_EmbeddedFile  emfile,
+                            HPDF_UINT64        size);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile_SetCreationDate  (HPDF_EmbeddedFile  emfile,
+                                    HPDF_Date          creationDate);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_EmbeddedFile_SetLastModificationDate  (HPDF_EmbeddedFile  emfile,
+                                            HPDF_Date          lastModificationDate);
 
 
 /*--------------------------------------------------------------------------*/
@@ -1620,13 +1658,12 @@ HPDF_ICC_LoadIccFromMem (HPDF_Doc   pdf,
                         int         numcomponent);
 
 HPDF_EXPORT(HPDF_OutputIntent)
-HPDF_LoadIccProfileFromFile  (HPDF_Doc  pdf,
-                            const char* icc_file_name,
-                                   int  numcomponent);
+HPDF_LoadIccProfileFromFile  (HPDF_Doc    pdf,
+                              const char* icc_file_name,
+                              int         numcomponent);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
 #endif /* _HPDF_H */
-
