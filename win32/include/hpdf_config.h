@@ -68,8 +68,5 @@
 /* Define to the version of this package. */
 #define LIBHPDF_PACKAGE_VERSION "2.2.0"
 
-/* Define to 1 if you have the ANSI C header files. */
-#define LIBHPDF_STDC_HEADERS 1
-
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

@@ -55,8 +55,5 @@
 /* Define to the version of this package. */
 #cmakedefine LIBHPDF_PACKAGE_VERSION "@LIBHPDF_PACKAGE_VERSION@"
 
-/* Define to 1 if you have the ANSI C header files. */
-#cmakedefine LIBHPDF_STDC_HEADERS
-
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #cmakedefine LIBHPDF_size_t @LIBHPDF_size_t@

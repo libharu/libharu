@@ -15,9 +15,9 @@ set(
     encryption
     ext_gstate_demo
     font_demo
-    image_demo
     jpeg_demo
     jpfont_demo
+    image_demo
     line_demo
     link_annotation
     make_rawimage

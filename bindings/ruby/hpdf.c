@@ -41,6 +41,7 @@ static void
 hpdf_free (HPDF_Doc pdf);
 
 
+_Noreturn
 static void
 hpdf_error_handler  (HPDF_STATUS  error_no,
                      HPDF_STATUS  detail_no,
@@ -87,7 +88,7 @@ hpdf_new_doc (VALUE obj)
 
     ret = HPDF_NewDoc(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -116,7 +117,7 @@ hpdf_has_doc (VALUE obj)
 
     ret = HPDF_HasDoc(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -146,7 +147,7 @@ hpdf_save_to_file (VALUE obj, VALUE file_name)
 
     ret = HPDF_SaveToFile(pdf, StringValuePtr(file_name));
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -161,7 +162,7 @@ hpdf_get_error (VALUE obj)
 
     ret = HPDF_GetError(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -192,7 +193,7 @@ hpdf_set_page_configuration (VALUE obj, VALUE page_per_pages)
 
     ret = HPDF_SetPagesConfiguration(pdf, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -241,7 +242,7 @@ hpdf_set_page_layout (VALUE obj, VALUE layout)
 
     ret = HPDF_SetPageLayout(pdf, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -273,7 +274,7 @@ hpdf_set_page_mode (VALUE obj, VALUE mode)
 
     ret = HPDF_SetPageMode(pdf, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -293,7 +294,7 @@ hpdf_set_open_action (VALUE obj, VALUE action)
 
     ret = HPDF_SetOpenAction(pdf, dst);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -325,7 +326,7 @@ hpdf_set_viewer_preference (VALUE obj, VALUE value)
 
     ret = HPDF_SetViewerPreference(pdf, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -392,7 +393,7 @@ hpdf_page_set_width (VALUE obj, VALUE width)
 
     ret = HPDF_Page_SetWidth(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -409,7 +410,7 @@ hpdf_page_set_height (VALUE obj, VALUE height)
 
     ret = HPDF_Page_SetHeight(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -428,7 +429,7 @@ hpdf_page_set_size (VALUE obj, VALUE size, VALUE direction)
 
     ret = HPDF_Page_SetSize(page, i1, i2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -445,7 +446,7 @@ hpdf_page_set_rotate (VALUE obj, VALUE angle)
 
     ret = HPDF_Page_SetRotate(page, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -562,7 +563,7 @@ hpdf_add_page_label (VALUE obj, VALUE page_num, VALUE style, VALUE first_page, V
 
     ret = HPDF_AddPageLabel(pdf, i1, i2, i3, s);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -577,7 +578,7 @@ hpdf_use_jp_fonts (VALUE obj)
 
     ret = HPDF_UseJPFonts(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -592,7 +593,7 @@ hpdf_use_kr_fonts (VALUE obj)
 
     ret = HPDF_UseKRFonts(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -607,7 +608,7 @@ hpdf_use_cns_fonts (VALUE obj)
 
     ret = HPDF_UseCNSFonts(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -622,7 +623,7 @@ hpdf_use_cnt_fonts (VALUE obj)
 
     ret = HPDF_UseCNSFonts(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -667,7 +668,7 @@ hpdf_outline_set_opend (VALUE obj, VALUE opend)
 
     ret = HPDF_Outline_SetOpened(outline, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -687,7 +688,7 @@ hpdf_outline_set_destination (VALUE obj, VALUE dest)
 
     ret = HPDF_Outline_SetDestination(outline, d);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -724,7 +725,7 @@ hpdf_destination_set_xyz (VALUE obj, VALUE left, VALUE top, VALUE zoom)
 
     ret = HPDF_Destination_SetXYZ(d, i1, i2, i3);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -739,7 +740,7 @@ hpdf_destination_set_fit (VALUE obj)
 
     ret = HPDF_Destination_SetFit(d);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -756,7 +757,7 @@ hpdf_destination_set_fit_h (VALUE obj, VALUE top)
 
     ret = HPDF_Destination_SetFitH(d, i1);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -773,7 +774,7 @@ hpdf_destination_set_fit_v (VALUE obj, VALUE left)
 
     ret = HPDF_Destination_SetFitV(d, i1);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -788,7 +789,7 @@ hpdf_destination_set_fit_b (VALUE obj)
 
     ret = HPDF_Destination_SetFitB(d);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -805,7 +806,7 @@ hpdf_destination_set_fit_bh (VALUE obj, VALUE top)
 
     ret = HPDF_Destination_SetFitBH(d, i1);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -822,7 +823,7 @@ hpdf_destination_set_fit_bv (VALUE obj, VALUE left)
 
     ret = HPDF_Destination_SetFitBV(d, i1);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -846,7 +847,7 @@ hpdf_destination_set_fit_r (VALUE obj, VALUE left, VALUE bottom, VALUE right, VA
 
     ret = HPDF_Destination_SetFitR(d, i1, i2, i3, i4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -895,7 +896,7 @@ hpdf_set_current_encoder (VALUE obj, VALUE encoding_name)
 
     ret = HPDF_SetCurrentEncoder(pdf, s1);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -910,7 +911,7 @@ hpdf_encoder_get_type (VALUE obj)
 
     ret = HPDF_Encoder_GetType(encoder);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -930,7 +931,7 @@ hpdf_encoder_get_byte_type (VALUE obj, VALUE text, VALUE index)
 
     ret = HPDF_Encoder_GetByteType(encoder, s, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -948,7 +949,7 @@ hpdf_encoder_get_unicode (VALUE obj, VALUE code)
 
     ret = HPDF_Encoder_GetUnicode(encoder, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -963,7 +964,7 @@ hpdf_encoder_get_writing_mode (VALUE obj)
 
     ret = HPDF_Encoder_GetWritingMode(encoder);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -978,7 +979,7 @@ hpdf_use_jp_encodings (VALUE obj)
 
     ret = HPDF_UseJPEncodings(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -993,7 +994,7 @@ hpdf_use_kr_encodings (VALUE obj)
 
     ret = HPDF_UseKREncodings(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1008,7 +1009,7 @@ hpdf_use_cns_encodings (VALUE obj)
 
     ret = HPDF_UseCNSEncodings(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1023,7 +1024,7 @@ hpdf_use_cnt_encodings (VALUE obj)
 
     ret = HPDF_UseCNTEncodings(pdf);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1113,7 +1114,7 @@ hpdf_linkannot_set_highlight_mode (VALUE obj, VALUE mode)
 
     ret = HPDF_LinkAnnot_SetHighlightMode(annot, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1134,7 +1135,7 @@ hpdf_linkannot_set_border_style (VALUE obj, VALUE width, VALUE dash_on, VALUE da
 
     ret = HPDF_LinkAnnot_SetBorderStyle(annot, i1, i2, i3);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1151,7 +1152,7 @@ hpdf_textannot_set_icon (VALUE obj, VALUE icon)
 
     ret = HPDF_TextAnnot_SetIcon(annot, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1168,7 +1169,7 @@ hpdf_textannot_set_opened (VALUE obj, VALUE opened)
 
     ret = HPDF_TextAnnot_SetOpened(annot, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1317,7 +1318,7 @@ hpdf_image_set_color_mask (VALUE obj, VALUE rmin, VALUE rmax, VALUE gmin, VALUE 
 
     ret = HPDF_Image_SetColorMask(image, i1, i2, i3, i4, i5, i6);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1337,7 +1338,7 @@ hpdf_image_set_mask_image (VALUE obj, VALUE mask_image)
 
     ret = HPDF_Image_SetMaskImage(image1, image2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1356,7 +1357,7 @@ hpdf_set_info_attr (VALUE obj, VALUE type, VALUE value)
 
     ret = HPDF_SetInfoAttr(pdf, i, s);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1406,7 +1407,7 @@ hpdf_set_info_date_attr (VALUE obj, VALUE type, VALUE year, VALUE month, VALUE d
 
     ret = HPDF_SetInfoDateAttr(pdf, tp, dt);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1425,7 +1426,7 @@ hpdf_set_password (VALUE obj, VALUE owner_passwd, VALUE user_passwd)
 
     ret = HPDF_SetPassword(pdf, s1, s2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1442,7 +1443,7 @@ hpdf_set_permission (VALUE obj, VALUE permission)
 
     ret = HPDF_SetPermission(pdf, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1461,7 +1462,7 @@ hpdf_set_encryption_mode (VALUE obj, VALUE mode, VALUE key_len)
 
     ret = HPDF_SetEncryptionMode(pdf, i1, i2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1478,7 +1479,7 @@ hpdf_set_compression_mode (VALUE obj, VALUE mode)
 
     ret = HPDF_SetCompressionMode(pdf, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -1517,7 +1518,7 @@ hpdf_page_measure_text (VALUE obj, VALUE text, VALUE width, VALUE wordwrap)
 
     ret = HPDF_Page_MeasureText(page, s, i1, i2, NULL);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -1551,7 +1552,7 @@ hpdf_ext_gstate_set_alpha_stroke (VALUE obj, VALUE value)
 
     ret = HPDF_ExtGState_SetAlphaStroke(gstate, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -1569,7 +1570,7 @@ hpdf_ext_gstate_set_alpha_fill (VALUE obj, VALUE value)
 
     ret = HPDF_ExtGState_SetAlphaFill(gstate, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -1587,7 +1588,7 @@ hpdf_ext_gstate_set_blend_mode (VALUE obj, VALUE mode)
 
     ret = HPDF_ExtGState_SetBlendMode(gstate, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -1605,7 +1606,7 @@ hpdf_page_set_ext_gstate (VALUE obj, VALUE gstate)
 
     ret = HPDF_Page_SetExtGState(page, gs);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -1651,7 +1652,7 @@ hpdf_page_get_gmode (VALUE obj)
 
     ret = HPDF_Page_GetGMode(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -1761,7 +1762,7 @@ hpdf_font_get_unicode_width (VALUE obj, VALUE code)
 
     ret = HPDF_Font_GetUnicodeWidth(font, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2328,7 +2329,7 @@ hpdf_page_set_line_width (VALUE obj, VALUE line_width)
 
     ret = HPDF_Page_SetLineWidth(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2345,7 +2346,7 @@ hpdf_page_set_line_cap (VALUE obj, VALUE line_cap)
 
     ret = HPDF_Page_SetLineCap(page, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2362,7 +2363,7 @@ hpdf_page_set_line_join (VALUE obj, VALUE line_join)
 
     ret = HPDF_Page_SetLineCap(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2379,7 +2380,7 @@ hpdf_page_set_miter_limit (VALUE obj, VALUE miter_limit)
 
     ret = HPDF_Page_SetMiterLimit(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2387,10 +2388,10 @@ hpdf_page_set_dash (VALUE obj, VALUE ptn, VALUE phase)
 {
     HPDF_Page page;
     HPDF_STATUS ret;
-    HPDF_UINT16 dash_ptn[8];
+    HPDF_REAL dash_ptn[8];
     HPDF_UINT num_ptn;
     VALUE *pptn;
-    HPDF_UINT dash_phase;
+    HPDF_REAL dash_phase;
     HPDF_UINT i;
 
     if (TYPE(ptn) != T_ARRAY)
@@ -2400,11 +2401,11 @@ hpdf_page_set_dash (VALUE obj, VALUE ptn, VALUE phase)
 
     HPDF_PTRACE(("hpdf_page_set_dash page=%p\n", page));
 
-    dash_phase = NUM2INT(phase);
+    dash_phase = NUM2DBL(phase);
     num_ptn = RARRAY_LEN(ptn);
     if (!num_ptn) {
         ret = HPDF_Page_SetDash(page, NULL, 0, 0);
-        return INT2NUM(ret);
+        return LONG2NUM(ret);
     }
 
     for (i = 0; i < 8; i++)
@@ -2412,14 +2413,14 @@ hpdf_page_set_dash (VALUE obj, VALUE ptn, VALUE phase)
 
     pptn = RARRAY_PTR(ptn);
     for (i = 0; i < num_ptn; i++) {
-        dash_ptn[i] = NUM2INT(*pptn);
+        dash_ptn[i] = NUM2DBL(*pptn);
 
         pptn++;
     }
 
     ret = HPDF_Page_SetDash(page, dash_ptn, num_ptn, dash_phase);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2436,7 +2437,7 @@ hpdf_page_set_flat (VALUE obj, VALUE flatness)
 
     ret = HPDF_Page_SetFlat(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -2452,7 +2453,7 @@ hpdf_page_gsave (VALUE obj)
 
     ret = HPDF_Page_GSave(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2467,7 +2468,7 @@ hpdf_page_grestore (VALUE obj)
 
     ret = HPDF_Page_GRestore(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2482,7 +2483,7 @@ hpdf_page_get_gstate_depth (VALUE obj)
 
     ret = HPDF_Page_GetGStateDepth(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -2510,7 +2511,7 @@ hpdf_page_concat (VALUE obj, VALUE a, VALUE b, VALUE c, VALUE d, VALUE x, VALUE 
 
     ret = HPDF_Page_Concat(page, f1, f2, f3, f4, f5, f6);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -2530,7 +2531,7 @@ hpdf_page_move_to (VALUE obj, VALUE x, VALUE y)
 
     ret = HPDF_Page_MoveTo(page, f1, f2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2549,7 +2550,7 @@ hpdf_page_line_to (VALUE obj, VALUE x, VALUE y)
 
     ret = HPDF_Page_LineTo(page, f1, f2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2576,7 +2577,7 @@ hpdf_page_curve_to (VALUE obj, VALUE x1, VALUE y1, VALUE x2, VALUE y2, VALUE x3,
 
     ret = HPDF_Page_CurveTo(page, f1, f2, f3, f4, f5, f6);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2599,7 +2600,7 @@ hpdf_page_curve_to2 (VALUE obj, VALUE x2, VALUE y2, VALUE x3, VALUE y3)
 
     ret = HPDF_Page_CurveTo2(page, f1, f2, f3, f4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2622,7 +2623,7 @@ hpdf_page_curve_to3 (VALUE obj, VALUE x1, VALUE y1, VALUE x3, VALUE y3)
 
     ret = HPDF_Page_CurveTo3(page, f1, f2, f3, f4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2637,7 +2638,7 @@ hpdf_page_close_path (VALUE obj)
 
     ret = HPDF_Page_ClosePath(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2660,7 +2661,7 @@ hpdf_page_rectangle (VALUE obj, VALUE x, VALUE y, VALUE width, VALUE height)
 
     ret = HPDF_Page_Rectangle(page, f1, f2, f3, f4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2675,7 +2676,7 @@ hpdf_page_stroke (VALUE obj)
 
     ret = HPDF_Page_Stroke(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2690,7 +2691,7 @@ hpdf_page_close_path_stroke (VALUE obj)
 
     ret = HPDF_Page_ClosePathStroke(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2705,7 +2706,7 @@ hpdf_page_fill (VALUE obj)
 
     ret = HPDF_Page_Fill(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2720,7 +2721,7 @@ hpdf_page_eofill (VALUE obj)
 
     ret = HPDF_Page_Eofill(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2735,7 +2736,7 @@ hpdf_page_fill_stroke (VALUE obj)
 
     ret = HPDF_Page_FillStroke(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2750,7 +2751,7 @@ hpdf_page_eofill_stroke (VALUE obj)
 
     ret = HPDF_Page_EofillStroke(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2765,7 +2766,7 @@ hpdf_page_close_path_fill_stroke (VALUE obj)
 
     ret = HPDF_Page_ClosePathFillStroke(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2780,7 +2781,7 @@ hpdf_page_close_path_eofill_stroke (VALUE obj)
 
     ret = HPDF_Page_ClosePathEofillStroke(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2795,7 +2796,7 @@ hpdf_page_end_path (VALUE obj)
 
     ret = HPDF_Page_EndPath(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2810,7 +2811,7 @@ hpdf_page_clip (VALUE obj)
 
     ret = HPDF_Page_Clip(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2825,7 +2826,7 @@ hpdf_page_eoclip (VALUE obj)
 
     ret = HPDF_Page_Eoclip(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2840,7 +2841,7 @@ hpdf_page_begin_text (VALUE obj)
 
     ret = HPDF_Page_BeginText(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2855,7 +2856,7 @@ hpdf_page_end_text (VALUE obj)
 
     ret = HPDF_Page_EndText(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2872,7 +2873,7 @@ hpdf_page_set_char_space (VALUE obj, VALUE char_space)
 
     ret = HPDF_Page_SetCharSpace(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2889,7 +2890,7 @@ hpdf_page_set_word_space (VALUE obj, VALUE word_space)
 
     ret = HPDF_Page_SetWordSpace(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2906,7 +2907,7 @@ hpdf_page_set_horizontal_scalling (VALUE obj, VALUE scalling)
 
     ret = HPDF_Page_SetHorizontalScalling(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2923,7 +2924,7 @@ hpdf_page_set_text_leading (VALUE obj, VALUE leading)
 
     ret = HPDF_Page_SetTextLeading(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2945,7 +2946,7 @@ hpdf_page_set_font_and_size (VALUE obj, VALUE font, VALUE size)
 
     ret = HPDF_Page_SetFontAndSize(page, fo, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2962,7 +2963,7 @@ hpdf_page_set_text_rendering_mode (VALUE obj, VALUE mode)
 
     ret = HPDF_Page_SetTextRenderingMode(page, i);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2979,7 +2980,7 @@ hpdf_page_set_text_raise (VALUE obj, VALUE raise)
 
     ret = HPDF_Page_SetTextRaise(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -2998,7 +2999,7 @@ hpdf_page_move_text_pos (VALUE obj, VALUE x, VALUE y)
 
     ret = HPDF_Page_MoveTextPos(page, f1, f2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -3018,7 +3019,7 @@ hpdf_page_move_text_pos2 (VALUE obj, VALUE x, VALUE y)
 
     ret = HPDF_Page_MoveTextPos2(page, f1, f2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -3046,7 +3047,7 @@ hpdf_page_set_text_matrix (VALUE obj, VALUE a, VALUE b, VALUE c, VALUE d, VALUE 
 
     ret = HPDF_Page_SetTextMatrix(page, f1, f2, f3, f4, f5, f6);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3061,7 +3062,7 @@ hpdf_page_move_to_next_line (VALUE obj)
 
     ret = HPDF_Page_MoveToNextLine(page);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3078,7 +3079,7 @@ hpdf_page_show_text (VALUE obj, VALUE text)
 
     ret = HPDF_Page_ShowText(page, s);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3095,7 +3096,7 @@ hpdf_page_show_text_next_line (VALUE obj, VALUE text)
 
     ret = HPDF_Page_ShowTextNextLine(page, s);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3116,7 +3117,7 @@ hpdf_page_show_text_next_line_ex (VALUE obj, VALUE char_space, VALUE word_space,
 
     ret = HPDF_Page_ShowTextNextLineEx(page, f1, f2, s);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3133,7 +3134,7 @@ hpdf_page_set_gray_fill (VALUE obj, VALUE gray)
 
     ret = HPDF_Page_SetGrayFill(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3150,7 +3151,7 @@ hpdf_page_set_gray_stroke (VALUE obj, VALUE gray)
 
     ret = HPDF_Page_SetGrayStroke(page, f);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3171,7 +3172,7 @@ hpdf_page_set_rgb_fill (VALUE obj, VALUE r, VALUE g, VALUE b)
 
     ret = HPDF_Page_SetRGBFill(page, f1, f2, f3);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3192,7 +3193,7 @@ hpdf_page_set_rgb_stroke (VALUE obj, VALUE r, VALUE g, VALUE b)
 
     ret = HPDF_Page_SetRGBStroke(page, f1, f2, f3);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3215,7 +3216,7 @@ hpdf_page_set_cmyk_fill (VALUE obj, VALUE c, VALUE m, VALUE y, VALUE k)
 
     ret = HPDF_Page_SetCMYKFill(page, f1, f2, f3, f4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3238,7 +3239,7 @@ hpdf_page_set_cmyk_stroke (VALUE obj, VALUE c, VALUE m, VALUE y, VALUE k)
 
     ret = HPDF_Page_SetCMYKStroke(page, f1, f2, f3, f4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3258,7 +3259,7 @@ hpdf_page_execute_xobject (VALUE obj, VALUE xobj)
 
     ret = HPDF_Page_ExecuteXObject(page, img);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3286,7 +3287,7 @@ hpdf_page_draw_image (VALUE obj, VALUE image, VALUE x, VALUE y, VALUE width, VAL
 
     ret = HPDF_Page_DrawImage(page, img, f1, f2, f3, f4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -3308,7 +3309,7 @@ hpdf_page_circle (VALUE obj, VALUE x, VALUE y, VALUE ray)
 
     ret = HPDF_Page_Circle(page, f1, f2, f3);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3333,7 +3334,7 @@ hpdf_page_arc (VALUE obj, VALUE x, VALUE y, VALUE ray, VALUE ang1, VALUE ang2)
 
     ret = HPDF_Page_Arc(page, f1, f2, f3, f4, f5);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3356,7 +3357,7 @@ hpdf_page_ellipse (VALUE obj, VALUE x, VALUE y, VALUE xray, VALUE yray)
 
     ret = HPDF_Page_Ellipse(page, f1, f2, f3, f4);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3377,7 +3378,7 @@ hpdf_page_text_out (VALUE obj, VALUE xpos, VALUE ypos, VALUE text)
 
     ret = HPDF_Page_TextOut(page, x, y, s);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3405,7 +3406,7 @@ hpdf_page_text_rect (VALUE obj, VALUE left, VALUE top, VALUE right, VALUE bottom
 
     ret = HPDF_Page_TextRect(page, f1, f2, f3, f4, s, i1, NULL);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 static VALUE
@@ -3427,7 +3428,7 @@ hpdf_page_set_slide_show (VALUE obj, VALUE type, VALUE disp_time, VALUE trans_ti
 
     ret = HPDF_Page_SetSlideShow(page, i1, f1, f2);
 
-    return INT2NUM(ret);
+    return LONG2NUM(ret);
 }
 
 
@@ -3436,14 +3437,23 @@ void
 Init_hpdf()
 {
     rb_cHPDFDoc = rb_define_class("HPDFDoc", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFDoc);
     rb_cHPDFPage = rb_define_class("HPDFPage", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFPage);
     rb_cHPDFImage = rb_define_class("HPDFImage", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFImage);
     rb_cHPDFFont = rb_define_class("HPDFFont", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFFont);
     rb_cHPDFOutline = rb_define_class("HPDFOutline", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFOutline);
     rb_cHPDFEncoder = rb_define_class("HPDFEncoder", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFEncoder);
     rb_cHPDFDestination = rb_define_class("HPDFDestination", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFDestination);
     rb_cHPDFAnnotation = rb_define_class("HPDFAnnotation", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFAnnotation);
     rb_cHPDFExtGState = rb_define_class("HPDFExtGState", rb_cObject);
+    rb_undef_alloc_func(rb_cHPDFExtGState);
 
 
     rb_define_singleton_method(rb_cHPDFDoc, "new", hpdf_new, 0);
@@ -3500,7 +3510,7 @@ Init_hpdf()
     rb_define_method(rb_cHPDFDoc, "get_current_encoder", hpdf_get_current_encoder, 0);
     rb_define_method(rb_cHPDFDoc, "set_current_encoder", hpdf_set_current_encoder, 1);
     rb_define_method(rb_cHPDFEncoder, "get_type", hpdf_encoder_get_type, 0);
-    rb_define_method(rb_cHPDFEncoder, "get_byte_type", hpdf_encoder_get_byte_type, 1);
+    rb_define_method(rb_cHPDFEncoder, "get_byte_type", hpdf_encoder_get_byte_type, 2);
     rb_define_method(rb_cHPDFEncoder, "get_unicode", hpdf_encoder_get_unicode, 1);
     rb_define_method(rb_cHPDFEncoder, "get_writing_mode", hpdf_encoder_get_writing_mode, 0);
     rb_define_method(rb_cHPDFDoc, "use_jp_encodings", hpdf_use_jp_encodings, 0);
