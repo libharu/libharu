@@ -7,22 +7,6 @@
 include(CheckIncludeFiles)
 
 # =======================================================================
-# check header availability
-# =======================================================================
-# check if header file exists
-check_include_files(dlfcn.h LIBHPDF_HAVE_DLFCN_H)
-check_include_files(inttypes.h LIBHPDF_HAVE_INTTYPES_H)
-check_include_files(memory.h LIBHPDF_HAVE_MEMORY_H)
-check_include_files(stdint.h LIBHPDF_HAVE_STDINT_H)
-check_include_files(stdlib.h LIBHPDF_HAVE_STDLIB_H)
-check_include_files(strings.h LIBHPDF_HAVE_STRINGS_H)
-check_include_files(string.h LIBHPDF_HAVE_STRING_H)
-check_include_files(sys/stat.h LIBHPDF_HAVE_SYS_STAT_H)
-check_include_files(sys/types.h LIBHPDF_HAVE_SYS_TYPES_H)
-check_include_files(unistd.h LIBHPDF_HAVE_UNISTD_H)
-
-
-# =======================================================================
 # additional library support
 # =======================================================================
 # On windows systems the math library is not separated so do not specify
