@@ -3,6 +3,8 @@ Makefile.in
 acconfig.h
 aclocal.m4
 autom4te.cache
+build 
+_build
 buildmk.stamp
 config.h.in
 config.cache
@@ -16,6 +18,7 @@ install-sh
 *.lo
 *.la
 .deps
+.DS_Store
 *.plg
 *.opt
 *.ncb

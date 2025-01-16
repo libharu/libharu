@@ -18,7 +18,7 @@ PATH environment variable. Check in the CLI with
 cmake --version
 
 that CMake can be found. There is also a graphical interface
-to CMake available which can be run with ccmake (Linux, Mac OS X)
+to CMake available which can be run with ccmake (Linux, Mac OS X, iOS Platfroms)
 or cmake-gui (Windows, Linux, Mac OS X). In the next section
 the command line tool cmake is used, but the graphical interface
 works similar. Note, that CMake should always operate in a 
@@ -87,6 +87,7 @@ cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..\libharu
   BUILD_SHARED_LIBS=ON|OFF - shared or static build
   CMAKE_COLOR_MAKEFILE=ON|OFF - color output
   CMAKE_VERBOSE_MAKEFILE=ON|OFF - verbose makefile output
+  BUILD_FRAMEWORK=ON|OFF - build as Apple Frameworks
   
 More options can be found here: http://www.cmake.org/Wiki/CMake_Useful_Variables
 
