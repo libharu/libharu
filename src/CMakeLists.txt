@@ -114,11 +114,8 @@ set(
 add_library(hpdf 
     ${LIBHPDF_SRCS} 
     ${haru_HDRS})
-# target_include_directories(hpdf PUBLIC
-#                         "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>"
-#                         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/hpdf>")
 target_include_directories(hpdf PUBLIC ${PROJECT_SOURCE_DIR}/include)
-# target_include_directories(hpdf PUBLIC ${haru_HDRS})
+
 set_target_properties(hpdf PROPERTIES
     SOVERSION ${hpdf_short_version}
     VERSION ${hpdf_full_version}
@@ -152,8 +149,6 @@ endif()
 if(UNIX AND NOT APPLE)
     target_link_libraries (hpdf ${M_LIB})
 endif()
-
-# install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 install(TARGETS hpdf
     EXPORT hpdf
