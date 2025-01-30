@@ -171,14 +171,15 @@ HPDF_NameTree_Validate  (HPDF_NameTree  nametree)
 HPDF_EmbeddedFile
 HPDF_EmbeddedFile_New  (HPDF_MMgr  mmgr,
                         HPDF_Xref  xref,
-                        const char *file)
+                        const char *filename,
+                        HPDF_Stream  stream)
 {
     HPDF_STATUS ret = HPDF_OK;
     HPDF_Dict ef;               /* the dictionary for the embedded file: /Type /EF */
     HPDF_String name;           /* the name of the file: /F (name) */
+    HPDF_String uname;          /* the name of the file: /UF (name) */
     HPDF_Dict eff;              /* ef has an /EF <<blah>> key - this is it */
     HPDF_Dict filestream;       /* the stream that /EF <</F _ _ R>> refers to */
-    HPDF_Stream stream;
 
     ef = HPDF_Dict_New (mmgr);
     if (!ef)
@@ -189,7 +190,6 @@ HPDF_EmbeddedFile_New  (HPDF_MMgr  mmgr,
     filestream = HPDF_DictStream_New (mmgr, xref);
     if (!filestream)
         return NULL;
-    stream = HPDF_FileReader_New (mmgr, file);
     if (!stream)
         return NULL;
     HPDF_Stream_Free(filestream->stream);
@@ -200,13 +200,18 @@ HPDF_EmbeddedFile_New  (HPDF_MMgr  mmgr,
     if (!eff)
         return NULL;
 
-    name = HPDF_String_New (mmgr, file, NULL);
+    name = HPDF_String_New (mmgr, filename, NULL);
     if (!name)
         return NULL;
 
-    ret += HPDF_Dict_AddName (ef, "Type", "F");
+    uname = HPDF_String_New (mmgr, filename, NULL);
+    if (!uname)
+        return NULL;
+
+    ret += HPDF_Dict_AddName (ef, "Type", "Filespec");
     ret += HPDF_Dict_Add (ef, "F", name);
     ret += HPDF_Dict_Add (ef, "EF", eff);
+    ret += HPDF_Dict_Add (ef, "UF", uname);
     ret += HPDF_Dict_Add (eff, "F", filestream);
 
     if (ret != HPDF_OK)
