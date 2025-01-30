@@ -1,7 +1,6 @@
 LIBRARY     LIBHPDF.DLL
 
 EXPORTS
-    HPDF_3DAnnot_Set3DView
     HPDF_3DView_AddNode
     HPDF_3DView_SetBackgroundColor
     HPDF_3DView_SetCamera
