@@ -1980,6 +1980,38 @@ HPDF_Page_CreateLinkAnnot  (HPDF_Page          page,
     return annot;
 }
 
+HPDF_EXPORT(HPDF_Annotation)
+HPDF_Page_CreateFileAttachmentLinkAnnot(HPDF_Page   page,
+                                        HPDF_Rect   rect,
+                                        const char  *file)
+{
+    HPDF_PageAttr attr;
+    HPDF_Annotation annot;
+
+    HPDF_PTRACE((" HPDF_Page_CreateFileAttachmentLinkAnnot\n"));
+
+    if (!HPDF_Page_Validate(page))
+        return NULL;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    if (!file) {
+        HPDF_RaiseError(page->error, HPDF_INVALID_ANNOTATION, 0);
+        return NULL;
+    }
+
+    annot = HPDF_FileAttachmentAnnot_New(page->mmgr, attr->xref, rect, file);
+    if (annot) {
+        if (AddAnnotation(page, annot) != HPDF_OK) {
+            HPDF_CheckError(page->error);
+            annot = NULL;
+        }
+    }
+    else
+        HPDF_CheckError(page->error);
+
+    return annot;
+}
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CreateURILinkAnnot  (HPDF_Page          page,
