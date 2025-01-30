@@ -1929,6 +1929,10 @@ HPDF_AddPageLabel  (HPDF_Doc             pdf,
     return HPDF_OK;
 }
 
+static HPDF_EmbeddedFile
+AttachFileFromStream (HPDF_Doc      pdf,
+                      const char    *filename,
+                      HPDF_Stream   stream);
 
 HPDF_EXPORT(HPDF_EmbeddedFile)
 HPDF_AttachFile  (HPDF_Doc    pdf,
@@ -1939,6 +1943,7 @@ HPDF_AttachFile  (HPDF_Doc    pdf,
     HPDF_EmbeddedFile efile;
     HPDF_String name;
     HPDF_STATUS ret = HPDF_OK;
+    HPDF_Stream stream;
 
     HPDF_PTRACE ((" HPDF_AttachFile\n"));
 
@@ -1967,11 +1972,136 @@ HPDF_AttachFile  (HPDF_Doc    pdf,
             return NULL;
     }
 
-    efile = HPDF_EmbeddedFile_New (pdf->mmgr, pdf->xref, file);
+    stream = HPDF_FileReader_New (pdf->mmgr, file);
+    if (!stream)
+        return NULL;
+
+    efile = HPDF_EmbeddedFile_New (pdf->mmgr, pdf->xref, file, stream);
     if (!efile)
         return NULL;
 
     name = HPDF_String_New (pdf->mmgr, file, NULL);
+    if (!name)
+        return NULL;
+
+    ret += HPDF_NameTree_Add (ntree, name, efile);
+    if (ret != HPDF_OK)
+        return NULL;
+
+    return efile;
+}
+
+HPDF_EXPORT(HPDF_EmbeddedFile)
+HPDF_AttachFileFromMem  (HPDF_Doc    pdf,
+                         const char       *filename,
+                         const HPDF_BYTE  *buffer,
+                         HPDF_UINT        size)
+{
+    HPDF_NameDict names;
+    HPDF_NameTree ntree;
+    HPDF_EmbeddedFile efile;
+    HPDF_String name;
+    HPDF_STATUS ret = HPDF_OK;
+    HPDF_Stream filedata;
+
+    HPDF_PTRACE ((" HPDF_AttachFile\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    names = HPDF_Catalog_GetNames (pdf->catalog);
+    if (!names) {
+        names = HPDF_NameDict_New (pdf->mmgr, pdf->xref);
+        if (!names)
+            return NULL;
+
+        ret = HPDF_Catalog_SetNames (pdf->catalog, names);
+        if (ret != HPDF_OK)
+            return NULL;
+    }
+
+    ntree = HPDF_NameDict_GetNameTree (names, HPDF_NAME_EMBEDDED_FILES);
+    if (!ntree) {
+        ntree = HPDF_NameTree_New (pdf->mmgr, pdf->xref);
+        if (!ntree)
+            return NULL;
+
+        ret = HPDF_NameDict_SetNameTree (names, HPDF_NAME_EMBEDDED_FILES, ntree);
+        if (ret != HPDF_OK)
+            return NULL;
+    }
+
+    /* create file stream */
+    filedata = HPDF_MemStream_New (pdf->mmgr, size);
+
+    if (!HPDF_Stream_Validate (filedata)) {
+        HPDF_RaiseError (&pdf->error, HPDF_INVALID_STREAM, 0);
+        return NULL;
+    }
+
+    if (HPDF_Stream_Write (filedata, buffer, size) != HPDF_OK) {
+        HPDF_Stream_Free (filedata);
+        return NULL;
+    }
+
+    efile = HPDF_EmbeddedFile_New (pdf->mmgr, pdf->xref, filename, filedata);
+    if (!efile)
+        return NULL;
+
+    name = HPDF_String_New (pdf->mmgr, filename, NULL);
+    if (!name)
+        return NULL;
+
+    ret += HPDF_NameTree_Add (ntree, name, efile);
+    if (ret != HPDF_OK)
+        return NULL;
+
+    return efile;
+}
+
+HPDF_EmbeddedFile
+AttachFileFromStream (HPDF_Doc      pdf,
+                      const char    *filename,
+                      HPDF_Stream   stream)
+{
+    HPDF_NameDict names;
+    HPDF_NameTree ntree;
+    HPDF_EmbeddedFile efile;
+    HPDF_String name;
+    HPDF_STATUS ret = HPDF_OK;
+
+    HPDF_PTRACE ((" HPDF_AttachFileFromStream\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    names = HPDF_Catalog_GetNames (pdf->catalog);
+    if (!names) {
+        names = HPDF_NameDict_New (pdf->mmgr, pdf->xref);
+        if (!names)
+            return NULL;
+
+        ret = HPDF_Catalog_SetNames (pdf->catalog, names);
+        if (ret != HPDF_OK)
+            return NULL;
+    }
+
+    ntree = HPDF_NameDict_GetNameTree (names, HPDF_NAME_EMBEDDED_FILES);
+    if (!ntree) {
+        ntree = HPDF_NameTree_New (pdf->mmgr, pdf->xref);
+        if (!ntree)
+            return NULL;
+
+        ret = HPDF_NameDict_SetNameTree (names, HPDF_NAME_EMBEDDED_FILES, ntree);
+        if (ret != HPDF_OK)
+            return NULL;
+    }
+
+    efile = HPDF_EmbeddedFile_New (pdf->mmgr, pdf->xref, filename, stream);
+    if (!efile)
+        return NULL;
+
+    name = HPDF_String_New (pdf->mmgr, filename, NULL);
     if (!name)
         return NULL;
 

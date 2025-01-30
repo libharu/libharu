@@ -992,6 +992,11 @@ HPDF_EXPORT(HPDF_EmbeddedFile)
 HPDF_AttachFile  (HPDF_Doc    pdf,
                   const char *file);
 
+HPDF_EXPORT(HPDF_Image)
+HPDF_AttachFileFromMem  (HPDF_Doc         pdf,
+                         const char       *filename,
+                         const HPDF_BYTE  *buffer,
+                         HPDF_UINT        size);
 
 /*--------------------------------------------------------------------------*/
 /*----- extended graphics state --------------------------------------------*/
