@@ -145,7 +145,7 @@ HPDF_Doc_RegisterEncoder  (HPDF_Doc       pdf,
 
 
 
-/*----- encryptio------------------------------------------------------------*/
+/*----- encryption ----------------------------------------------------------*/
 
 HPDF_STATUS
 HPDF_Doc_SetEncryptOn (HPDF_Doc  pdf);
