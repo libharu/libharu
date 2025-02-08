@@ -320,6 +320,11 @@ HPDF_LoadTTFontFromFile2 (HPDF_Doc     pdf,
                           HPDF_UINT    index,
                           HPDF_BOOL    embedding);
 
+HPDF_EXPORT(const char*)
+HPDF_LoadTTFontFromMemory (HPDF_Doc         pdf,
+                           const HPDF_BYTE *buffer,
+                           HPDF_UINT        size,
+                           HPDF_BOOL        embedding);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_AddPageLabel  (HPDF_Doc            pdf,
