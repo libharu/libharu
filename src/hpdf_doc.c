@@ -16,17 +16,17 @@
  */
 
 
+#include "hpdf.h"
 #include "hpdf_conf.h"
 #include "hpdf_config.h"
-#include "hpdf_utils.h"
-#include "hpdf_encryptdict.h"
-#include "hpdf_namedict.h"
 #include "hpdf_destination.h"
+#include "hpdf_encryptdict.h"
 #include "hpdf_info.h"
+#include "hpdf_namedict.h"
 #include "hpdf_page_label.h"
-#include "hpdf_version.h"
 #include "hpdf_pdfa.h"
-#include "hpdf.h"
+#include "hpdf_utils.h"
+#include "hpdf_version.h"
 
 
 static const char * const HPDF_VERSION_STR[] = {
@@ -78,7 +78,7 @@ static const char*
 LoadTTFontFromStream (HPDF_Doc         pdf,
                       HPDF_Stream      font_data,
                       HPDF_BOOL        embedding,
-                       const char      *file_name);
+                      const char      *file_name);
 
 
 static const char*
@@ -87,7 +87,6 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
                        HPDF_UINT        index,
                        HPDF_BOOL        embedding,
                        const char      *file_name);
-
 
 /*---------------------------------------------------------------------------*/
 
@@ -1492,22 +1491,22 @@ HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
                            const char   *file_name,
                            HPDF_BOOL     embedding)
 {
-	HPDF_Stream font_data;
-	HPDF_FontDef def;
+    HPDF_Stream font_data;
+    HPDF_FontDef def;
 
-	HPDF_PTRACE ((" HPDF_GetTTFontDefFromFile\n"));
+    HPDF_PTRACE ((" HPDF_GetTTFontDefFromFile\n"));
 
-	/* create file stream */
-	font_data = HPDF_FileReader_New (pdf->mmgr, file_name);
+    /* create file stream */
+    font_data = HPDF_FileReader_New (pdf->mmgr, file_name);
 
-	if (HPDF_Stream_Validate (font_data)) {
-		def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, embedding);
-	} else {
-		HPDF_CheckError (&pdf->error);
-		return NULL;
-	}
+    if (HPDF_Stream_Validate (font_data)) {
+        def = HPDF_TTFontDef_Load (pdf->mmgr, font_data, embedding);
+    } else {
+        HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
 
-	return def;
+    return def;
 }
 
 HPDF_EXPORT(const char*)
@@ -1586,6 +1585,13 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
 }
 
 
+/**
+* @brief Load the specified font from a font collection file.
+* @param[in] file_name Filename of the TrueType Font collection file.
+* @param[in] index Index of the font to load from the font collection.
+* @param[in] embedding Whether to embed the font in the document.
+* @ret The font definition.
+*/
 HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile2 (HPDF_Doc         pdf,
                           const char      *file_name,
@@ -1661,6 +1667,39 @@ LoadTTFontFromStream2 (HPDF_Doc         pdf,
     }
 
     return def->base_font;
+}
+
+HPDF_EXPORT(const char*)
+HPDF_LoadTTFontFromMemory (HPDF_Doc         pdf,
+                           const HPDF_BYTE *buffer,
+                           HPDF_UINT        size,
+                           HPDF_BOOL        embedding)
+{
+    HPDF_Stream font_data;
+    const char *ret;
+
+    HPDF_PTRACE ((" HPDF_LoadTTFontFromMemory\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    /* create memory stream */
+    font_data = HPDF_MemStream_New (pdf->mmgr, size);
+    if (!HPDF_Stream_Validate (font_data)) {
+        HPDF_RaiseError (&pdf->error, HPDF_INVALID_STREAM, 0);
+        return NULL;
+    }
+
+    if (HPDF_Stream_Write (font_data, buffer, size) != HPDF_OK) {
+        HPDF_Stream_Free (font_data);
+        return NULL;
+    }
+
+    ret = LoadTTFontFromStream (pdf, font_data, embedding, "");
+    if (!ret) {
+        HPDF_CheckError (&pdf->error);
+    }
+    return ret;
 }
 
 
@@ -2373,9 +2412,9 @@ HPDF_AddColorspaceFromProfile  (HPDF_Doc pdf,
 }
 
 HPDF_EXPORT(HPDF_OutputIntent)
-HPDF_LoadIccProfileFromFile  (HPDF_Doc pdf,
-                           const char* icc_file_name,
-						           int numcomponent)
+HPDF_LoadIccProfileFromFile (HPDF_Doc pdf,
+                             const char* icc_file_name,
+                             int numcomponent)
 {
     HPDF_Stream iccdata;
     HPDF_OutputIntent iccentry;
