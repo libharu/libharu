@@ -17,6 +17,7 @@
  */
 
 #include "hpdf.h"
+#include "hpdf_conf.h"
 #include "hpdf_utils.h"
 
 #include "assert.h"
