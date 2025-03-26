@@ -29,6 +29,7 @@ error_handler  (HPDF_STATUS   error_no,
                 HPDF_STATUS   detail_no,
                 void         *user_data)
 {
+    (void) user_data; /* Not used */
     printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
                 (HPDF_UINT)detail_no);
     longjmp(env, 1);
@@ -39,9 +40,9 @@ void
 print_page  (HPDF_Page  page, const char *caption, HPDF_Font font, 
     HPDF_TransitionStyle style, HPDF_Page prev, HPDF_Page next)
 {
-    float r = (float)rand() / RAND_MAX;
-    float g = (float)rand() / RAND_MAX;
-    float b = (float)rand() / RAND_MAX;
+    float r = rand() / (RAND_MAX + 1.0);
+    float g = rand() / (RAND_MAX + 1.0);
+    float b = rand() / (RAND_MAX + 1.0);
     HPDF_Rect rect;
     HPDF_Destination dst;
     HPDF_Annotation annot;
@@ -109,6 +110,7 @@ print_page  (HPDF_Page  page, const char *caption, HPDF_Font font,
 
 int main(int argc, char **argv)
 {
+    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     HPDF_Font font;
     HPDF_Page page[17];

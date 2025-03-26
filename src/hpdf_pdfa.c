@@ -173,8 +173,6 @@ HPDF_PDFA_AddXmpMetadata(HPDF_Doc pdf)
     const char *pdf_Keywords    = NULL;
     const char *pdf_Producer    = NULL;
 
-    const char *info = NULL;
-
     if (!HPDF_HasDoc(pdf)) {
       return HPDF_INVALID_DOCUMENT;
     }
@@ -297,7 +295,7 @@ HPDF_PDFA_AddXmpMetadata(HPDF_Doc pdf)
         }
 
         /* Add the pdfaid block */
-        conformanceVersion = -1;
+        conformanceVersion = HPDF_PDFA_NON_PDFA;
         switch(pdf->pdfa_type) {
           case HPDF_PDFA_1A:
             ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA1A);
@@ -342,6 +340,8 @@ HPDF_PDFA_AddXmpMetadata(HPDF_Doc pdf)
           case HPDF_PDFA_4F:
             ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA4F);
             conformanceVersion = HPDF_VER_20;
+            break;
+          default:
             break;
         }
 
