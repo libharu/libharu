@@ -29,6 +29,7 @@ error_handler  (HPDF_STATUS   error_no,
                 HPDF_STATUS   detail_no,
                 void         *user_data)
 {
+    (void) user_data; /* Not used */
     printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
                 (HPDF_UINT)detail_no);
     longjmp(env, 1);
@@ -37,6 +38,7 @@ error_handler  (HPDF_STATUS   error_no,
 
 int main(int argc, char **argv)
 {
+    (void) argc; /* Not used */
     HPDF_Rect rect1 = {50, 350, 150, 400};
     HPDF_Rect rect2 = {210, 350, 350, 400};
     HPDF_Rect rect3 = {50, 250, 150, 300};

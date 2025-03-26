@@ -33,6 +33,7 @@ error_handler  (HPDF_STATUS   error_no,
                 HPDF_STATUS   detail_no,
                 void         *user_data)
 {
+    (void) user_data; /* Not used */
     printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
                 (HPDF_UINT)detail_no);
     longjmp(env, 1);
@@ -40,8 +41,7 @@ error_handler  (HPDF_STATUS   error_no,
 
 
 void
-draw_page  (HPDF_Doc       pdf,
-            HPDF_Page      page,
+draw_page  (HPDF_Page      page,
             HPDF_Font      title_font,
             HPDF_Font      font,
             HPDF_BYTE      h_byte,
@@ -281,7 +281,7 @@ main  (int      argc,
             dst = HPDF_Page_CreateDestination (page);
             HPDF_Outline_SetDestination(outline, dst);
 
-            draw_page (pdf, page, title_font, font, (HPDF_BYTE)i, (HPDF_BYTE)min_l);
+            draw_page (page, title_font, font, (HPDF_BYTE)i, (HPDF_BYTE)min_l);
 
 #ifdef __WIN32__
             _snprintf (buf, 256, "%s (%s) 0x%04X-0x%04X", argv[1], argv[2],

@@ -31,6 +31,7 @@ error_handler  (HPDF_STATUS   error_no,
                 HPDF_STATUS   detail_no,
                 void         *user_data)
 {
+    (void) user_data; /* Not used */
     printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
                 (HPDF_UINT)detail_no);
     longjmp(env, 1);
@@ -57,6 +58,7 @@ PrintText(HPDF_Page page)
 int
 main (int argc, char **argv)
 {
+    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     HPDF_Page page;
     char fname[256];
@@ -65,9 +67,7 @@ main (int argc, char **argv)
     float angle2;
     float rad1;
     float rad2;
-    HPDF_REAL page_height;
     HPDF_Rect rect;
-    int i;
 
     const char* SAMP_TXT = "The quick brown fox jumps over the lazy dog. ";
 
@@ -90,8 +90,6 @@ main (int argc, char **argv)
     HPDF_Page_SetSize (page, HPDF_PAGE_SIZE_A5, HPDF_PAGE_PORTRAIT);
 
     print_grid  (pdf, page);
-
-    page_height = HPDF_Page_GetHeight (page);
 
     font = HPDF_GetFont (pdf, "Helvetica", NULL);
     HPDF_Page_SetTextLeading (page, 20);
@@ -255,7 +253,7 @@ main (int argc, char **argv)
     font = HPDF_GetFont (pdf, "Courier-Bold", NULL);
     HPDF_Page_SetFontAndSize (page, font, 30);
 
-    for (i = 0; i < strlen (SAMP_TXT); i++) {
+    for (unsigned int i = 0; i < strlen (SAMP_TXT); i++) {
         char buf[2];
         float x;
         float y;

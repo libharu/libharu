@@ -29,6 +29,7 @@ error_handler  (HPDF_STATUS   error_no,
                 HPDF_STATUS   detail_no,
                 void         *user_data)
 {
+    (void) user_data; /* Not used */
     printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
                 (HPDF_UINT)detail_no);
     longjmp(env, 1);
@@ -38,7 +39,6 @@ static const int PAGE_WIDTH = 420;
 static const int PAGE_HEIGHT = 400;
 static const int CELL_WIDTH = 20;
 static const int CELL_HEIGHT = 20;
-static const int CELL_HEADER = 10;
 
 void
 draw_graph (HPDF_Page   page);
@@ -136,6 +136,7 @@ draw_fonts (HPDF_Page   page)
 
 int main (int argc, char **argv)
 {
+    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     char fname[256];
     HPDF_Font font;
