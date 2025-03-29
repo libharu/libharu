@@ -155,7 +155,7 @@ HPDF_CIDFontDef_AddWidth  (HPDF_FontDef            fontdef,
             return fontdef->error->error_no;
 
         w->cid = widths->cid;
-        w->width = widths->width;
+        w->width = (widths->width)*2;
 
         if ((ret = HPDF_List_Add (attr->widths, w)) != HPDF_OK) {
             HPDF_FreeMem (fontdef->mmgr, w);
