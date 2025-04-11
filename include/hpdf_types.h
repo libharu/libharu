@@ -1,8 +1,6 @@
-/*
- * << Haru Free PDF Library >> -- hpdf_types.h
+/** @file
  *
- * URL: http://libharu.org
- *
+ * @copyright
  * Copyright (c) 1999-2006 Takeshi Kanno <takeshi_kanno@est.hi-ho.ne.jp>
  * Copyright (c) 2007-2009 Antony Dovgal <tony@daylessday.org>
  *
@@ -139,19 +137,24 @@ typedef  struct  _HPDF_Date {
 } HPDF_Date;
 
 
+/** Types which can be set in the document information dictionary.
+ */
 typedef enum _HPDF_InfoType {
     /* date-time type parameters */
-    HPDF_INFO_CREATION_DATE = 0,
-    HPDF_INFO_MOD_DATE,
+    HPDF_INFO_CREATION_DATE = 0, /**< Creation date */
+    HPDF_INFO_MOD_DATE, /**< Modification date */
 
     /* string type parameters */
-    HPDF_INFO_AUTHOR,
+    HPDF_INFO_AUTHOR, /**< Author */
     HPDF_INFO_CREATOR,
     HPDF_INFO_PRODUCER,
     HPDF_INFO_TITLE,
     HPDF_INFO_SUBJECT,
     HPDF_INFO_KEYWORDS,
-    HPDF_INFO_TRAPPED,
+    /** String indicating if the document has trapping.
+     * Permited values are: "True", "False", "Unknown"
+     */
+    HPDF_INFO_TRAPPED, 
     HPDF_INFO_GTS_PDFX,
     HPDF_INFO_EOF
 } HPDF_InfoType;

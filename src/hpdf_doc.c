@@ -1,8 +1,6 @@
-/*
- * << Haru Free PDF Library >> -- hpdf_doc.c
+/** @file
  *
- * URL: http://libharu.org
- *
+ * @copyright
  * Copyright (c) 1999-2006 Takeshi Kanno <takeshi_kanno@est.hi-ho.ne.jp>
  * Copyright (c) 2007-2009 Antony Dovgal <tony@daylessday.org>
  *
@@ -1585,13 +1583,14 @@ LoadTTFontFromStream (HPDF_Doc         pdf,
 }
 
 
-/**
-* @brief Load the specified font from a font collection file.
-* @param[in] file_name Filename of the TrueType Font collection file.
-* @param[in] index Index of the font to load from the font collection.
-* @param[in] embedding Whether to embed the font in the document.
-* @ret The font definition.
-*/
+/** Load the specified font from a TrueType font collection file.
+ *
+ * @param[in] pdf Document object handle
+ * @param[in] file_name Filename of the TrueType Font collection file.
+ * @param[in] index Index of the font to load from the font collection.
+ * @param[in] embedding Whether to embed the font in the document.
+ * @return The font definition.
+ */
 HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile2 (HPDF_Doc         pdf,
                           const char      *file_name,
@@ -2067,6 +2066,17 @@ GetInfo  (HPDF_Doc  pdf)
 }
 
 
+/** Sets entry in the document information dictionary.
+ *
+ * @param pdf Document object handle
+ * @param type Dictionary key
+ * @param value Value for the key
+
+ * @warning HPDF_SetInfoAttr() uses the current encoding of the document. If it
+ * is not set, the default PDFDocEncoding is used.
+ *
+ * @see HPDF_SetCurrentEncoder()
+ */
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_SetInfoAttr  (HPDF_Doc          pdf,
                    HPDF_InfoType     type,
