@@ -125,6 +125,13 @@ ParseHhea (HPDF_FontDef  fontdef);
 static HPDF_STATUS
 ParseCMap (HPDF_FontDef  fontdef);
 
+static HPDF_STATUS
+ParseGSUB (HPDF_FontDef  fontdef);
+
+static void
+AddLangTable (HPDF_FontDef fontdef,
+              HPDF_TTF_LangTable  tbl);
+
 
 static HPDF_STATUS
 ParseCMAP_format0  (HPDF_FontDef  fontdef,
@@ -454,11 +461,15 @@ LoadFontData (HPDF_FontDef  fontdef,
     if ((ret = ParseOS2 (fontdef)) != HPDF_OK)
         return ret;
 
+    if ((ret = ParseGSUB (fontdef)) != HPDF_OK)
+        return ret;
+
     tbl = FindTable (fontdef, "glyf");
     if (!tbl)
         return HPDF_SetError (fontdef->error, HPDF_TTF_MISSING_TABLE, 4);
 
     attr->glyph_tbl.base_offset = tbl->offset;
+    attr->lang_tbl = NULL;
     fontdef->cap_height =
                 (HPDF_UINT16)HPDF_TTFontDef_GetCharBBox (fontdef, (HPDF_UINT16)'H').top;
     fontdef->x_height =
@@ -965,6 +976,113 @@ ParseCMap (HPDF_FontDef  fontdef)
     return ret;
 }
 
+static HPDF_STATUS
+ParseGSUB (HPDF_FontDef  fontdef)
+{
+    HPDF_STATUS ret = HPDF_OK;
+    HPDF_UINT16 majorVersion;
+    HPDF_UINT16 minorVersion;
+    HPDF_UINT16 offsetScriptList;
+    HPDF_UINT16 offsetFeatureList;
+    HPDF_UINT16 offsetLookupList;
+    HPDF_UINT32 offsetFeatureVariations; /* Only for version 1.1*/
+    HPDF_UINT16 scriptCount;
+    HPDF_UINT16 scriptTableOffset;
+    HPDF_BYTE scriptTag[5];
+
+    HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr)fontdef->attr;
+    HPDF_TTFTable *tbl = FindTable (fontdef, "GSUB");
+
+    HPDF_PTRACE ((" HPDF_TTFontDef_ParseGsub\n"));
+
+    if (!tbl)
+        return HPDF_SetError (fontdef->error, HPDF_TTF_MISSING_TABLE, 1);
+
+    ret = HPDF_Stream_Seek (attr->stream, tbl->offset, HPDF_SEEK_SET);
+    if (ret != HPDF_OK)
+        return ret;
+    ret += GetUINT16 (attr->stream, &minorVersion);
+    ret += GetUINT16 (attr->stream, &majorVersion);
+    ret += GetUINT16 (attr->stream, &offsetScriptList);
+    ret += GetUINT16 (attr->stream, &offsetFeatureList);
+    ret += GetUINT16 (attr->stream, &offsetLookupList);
+
+    if (minorVersion == 1)
+        ret += GetUINT32 (attr->stream, &offsetFeatureVariations);
+
+    if (ret != HPDF_OK)
+        return HPDF_Error_GetCode (fontdef->error);
+
+    ret = HPDF_Stream_Seek (attr->stream, tbl->offset + offsetScriptList, HPDF_SEEK_SET);
+    if (ret != HPDF_OK)
+        return ret;
+
+    ret = GetUINT16(attr->stream, &scriptCount);
+    if (ret != HPDF_OK)
+        return HPDF_Error_GetCode (fontdef->error);
+    printf("Found %d script tags\n", scriptCount);
+    attr->script_tbl = malloc(scriptCount*sizeof(HPDF_TTF_ScriptTable));
+
+    /* Parse Script List Table */
+    HPDF_UINT size;
+    HPDF_UINT16 offset;
+    for (int i = 0; i < scriptCount; i++) {
+        size = 4;
+        HPDF_Stream_Read (attr->stream, attr->script_tbl[i].tag, &size);
+        attr->script_tbl[i].tag[4] = '\0';
+        printf("Script tag: %s\n", attr->script_tbl[i].tag);
+        GetUINT16 (attr->stream, &attr->script_tbl[i].offset);
+    }
+
+    /* Parse Script Table */
+    HPDF_UINT16 offsetDefaultLangSys;
+    HPDF_UINT16 countLangSys;
+    HPDF_BYTE langSysTag[5];
+    HPDF_TTF_LangTable lang_tbl;
+    for (int i = 0; i < scriptCount; i++) {
+        offset = tbl->offset + offsetScriptList + attr->script_tbl[i].offset;
+        ret = HPDF_Stream_Seek (attr->stream, offset, HPDF_SEEK_SET);
+        if (ret != HPDF_OK)
+            return ret;
+        ret += GetUINT16 (attr->stream, &lang_tbl.offset);
+        printf("\tdeflangsys offset: %04x\n", lang_tbl.offset);
+        lang_tbl.tag[0] = '\0';
+        AddLangTable(fontdef, lang_tbl);
+        ret += GetUINT16 (attr->stream, &countLangSys);
+        printf("\tLang count: %d\n", countLangSys);
+        for (int j = 0; j < countLangSys; j++) {
+            size = 4;
+            HPDF_Stream_Read (attr->stream, lang_tbl.tag, &size);
+            lang_tbl.tag[4] = '\0';
+            printf("\tLang sys: %s\n", lang_tbl.tag);
+            GetUINT16 (attr->stream, &lang_tbl.offset);
+            AddLangTable(fontdef, lang_tbl);
+        }
+    }
+
+    /* Parse LangSys Table */
+
+}
+
+static void
+AddLangTable (HPDF_FontDef fontdef,
+              HPDF_TTF_LangTable  tbl)
+{
+    HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr)fontdef->attr;
+    HPDF_TTF_LangTable *head = attr->lang_tbl;
+
+    while (head != NULL || head->next != NULL) {
+        if (head->offset == tbl.offset) {
+            return;
+        }
+        head = head->next;
+    }
+
+    head = malloc(sizeof(HPDF_TTF_LangTable));
+    *head = tbl;
+    head->next = NULL;
+    return;
+}
 
 static HPDF_STATUS
 ParseCMAP_format0  (HPDF_FontDef  fontdef,

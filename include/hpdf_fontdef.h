@@ -239,6 +239,20 @@ typedef struct _HPDF_TTF_GryphOffsets {
         HPDF_BYTE    *flgs;   /* 0: unused, 1: used */
 } HPDF_TTF_GryphOffsets;
 
+typedef struct _HPDF_TTF_LangTable {
+    HPDF_BYTE tag[5];
+    HPDF_UINT16 offset;
+    struct _HPDF_TTF_LangTable *next;
+} HPDF_TTF_LangTable;
+
+typedef struct _HPDF_TTF_ScriptTable {
+    HPDF_BYTE tag[5];
+    HPDF_UINT16 offset;
+    HPDF_TTF_LangTable *dflt;
+    HPDF_TTF_LangTable **lang_tbl;
+} HPDF_TTF_ScriptTable;
+
+
 
 typedef struct _HPDF_TTF_LongHorMetric {
         HPDF_UINT16  advance_width;
@@ -298,6 +312,8 @@ typedef struct _HPDF_TTFontDefAttr_Rec {
     HPDF_TTF_GryphOffsets    glyph_tbl;
     HPDF_UINT16              num_glyphs;
     HPDF_TTF_NamingTable     name_tbl;
+    HPDF_TTF_ScriptTable    *script_tbl;
+    HPDF_TTF_LangTable      *lang_tbl;
     HPDF_TTF_LongHorMetric  *h_metric;
     HPDF_UINT16              num_h_metric;
     HPDF_TTF_OffsetTbl       offset_tbl;
