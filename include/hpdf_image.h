@@ -34,6 +34,15 @@ HPDF_Image_Load1BitImageFromMem  (HPDF_MMgr  mmgr,
                           HPDF_BOOL          top_is_first
                           );
 
+HPDF_Image
+HPDF_Image_LoadCcittImageFromMemory  (HPDF_MMgr mmgr,
+                          HPDF_Xref xref,
+                          const HPDF_BYTE* buffer,
+                          const HPDF_UINT buffer_size,
+                          const HPDF_INT32 width,
+                          const HPDF_INT32 height,
+                          HPDF_BOOL black_is1
+                          );
 
 #ifdef LIBHPDF_HAVE_LIBPNG
 
