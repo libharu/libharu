@@ -15,9 +15,6 @@ project(libharu
 
 include(GNUInstallDirs)
 
-set(VCPKG_TARGET_TRIPLET x64-windows)
-include(C:/vcpkg/scripts/buildsystems/vcpkg.cmake)
-
 # Location where the haru cmake build system first looks for cmake modules
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 
