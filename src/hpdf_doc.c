@@ -1789,7 +1789,7 @@ HPDF_LoadJpegImageFromFile  (HPDF_Doc     pdf,
     imagedata = HPDF_FileReader_New (pdf->mmgr, filename);
 
     if (HPDF_Stream_Validate (imagedata))
-        image = HPDF_Image_LoadJpegImage (pdf->mmgr, imagedata, pdf->xref);
+        image = HPDF_Image_LoadJpegImage (pdf->mmgr, imagedata, pdf->xref, HPDF_FALSE);
     else
         image = NULL;
 
@@ -1798,6 +1798,54 @@ HPDF_LoadJpegImageFromFile  (HPDF_Doc     pdf,
 
     if (!image)
         HPDF_CheckError (&pdf->error);
+
+    return image;
+}
+
+HPDF_EXPORT(HPDF_Image)
+HPDF_LoadJpegImageFromFile2  (HPDF_Doc     pdf,
+                             const char  *filename)
+{
+    HPDF_Stream imagedata;
+    HPDF_Image image;
+    HPDF_String fname;
+
+    HPDF_PTRACE ((" HPDF_LoadJpegImageFromFile2\n"));
+
+    if (!HPDF_HasDoc (pdf))
+        return NULL;
+
+    /* create file stream */
+    imagedata = HPDF_FileReader_New (pdf->mmgr, filename);
+
+    if (HPDF_Stream_Validate (imagedata))
+        image = HPDF_Image_LoadJpegImage (pdf->mmgr, imagedata, pdf->xref, HPDF_TRUE);
+    else
+        image = NULL;
+
+    /* destroy file stream */
+    HPDF_Stream_Free (imagedata);
+
+    if (!image) {
+        HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
+
+    /* Add filename to image dictionary as a hidden entry.
+     * it is used when the image data is needed.
+     */
+    fname = HPDF_String_New (pdf->mmgr, filename, NULL);
+    if (!fname) {
+        HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
+
+    fname->header.obj_id |= HPDF_OTYPE_HIDDEN;
+
+    if ((HPDF_Dict_Add (image, "_FILE_NAME", fname)) != HPDF_OK) {
+        HPDF_CheckError (&pdf->error);
+        return NULL;
+    }
 
     return image;
 }

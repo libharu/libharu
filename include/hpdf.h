@@ -816,6 +816,10 @@ HPDF_LoadJpegImageFromFile (HPDF_Doc      pdf,
                             const char   *filename);
 
 HPDF_EXPORT(HPDF_Image)
+HPDF_LoadJpegImageFromFile2 (HPDF_Doc      pdf,
+                            const char    *filename);
+
+HPDF_EXPORT(HPDF_Image)
 HPDF_LoadJpegImageFromMem   (HPDF_Doc      pdf,
                       const HPDF_BYTE     *buffer,
                             HPDF_UINT      size);
