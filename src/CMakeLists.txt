@@ -92,7 +92,7 @@ if (ZLIB_FOUND)
 endif()
 
 # Math library
-if(UNIX AND NOT APPLE)
+if(UNIX AND NOT APPLE AND NOT EMSCRIPTEN)
     target_link_libraries (hpdf ${M_LIB})
 endif()
 
