@@ -48,7 +48,8 @@ HPDF_Image_LoadPngImage  (HPDF_MMgr        mmgr,
 HPDF_Image
 HPDF_Image_LoadJpegImage  (HPDF_MMgr        mmgr,
                            HPDF_Stream      jpeg_data,
-                           HPDF_Xref        xref);
+                           HPDF_Xref        xref,
+                           HPDF_BOOL        delayed_loading);
 
 HPDF_Image
 HPDF_Image_LoadJpegImageFromMem  (HPDF_MMgr        mmgr,
