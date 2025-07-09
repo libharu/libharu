@@ -44,7 +44,6 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 # =======================================================================
 # look for headers and libraries
 # =======================================================================
-include(haru)
 include(summary)
 
 # check zlib availability
