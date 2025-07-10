@@ -240,6 +240,76 @@ HPDF_WidgetAnnot_New (HPDF_MMgr         mmgr,
 }
 
 HPDF_Annotation
+HPDF_FileAttachmentAnnot_New(HPDF_MMgr   mmgr,
+                             HPDF_Xref   xref,
+                             HPDF_Rect   rect,
+                             const char  *filename)
+{
+    HPDF_Annotation annot;
+    HPDF_Dict action;
+    HPDF_STATUS ret;
+
+    HPDF_PTRACE((" HPDF_FileAttachmentAnnot_New\n"));
+
+    annot = HPDF_Annotation_New(mmgr, xref, HPDF_ANNOT_LINK, rect);
+    if (!annot)
+        return NULL;
+
+    // Set alternate text
+    ret = HPDF_Dict_Add (annot, "Contents", HPDF_String_New (mmgr, "Embedded File Link", NULL));
+    if (ret != HPDF_OK)
+        return NULL;
+
+    /* create action dictionary */
+    action = HPDF_Dict_New (mmgr);
+    if (!action)
+        return NULL;
+
+    ret = HPDF_Dict_Add (annot, "A", action);
+    if (ret != HPDF_OK)
+        return NULL;
+
+    // Check filename ends with .pdf
+    HPDF_BOOL isLocalPdfFile = HPDF_StrCmp(filename + HPDF_StrLen(filename, -1) - 4, ".pdf") == 0;
+
+    if (isLocalPdfFile) {
+        // For embedded pdf files: use pdf GoToE action to open the attachment
+        ret += HPDF_Dict_AddName (action, "Type", "Action");
+        ret += HPDF_Dict_AddName (action, "S", "GoToE");
+        ret += HPDF_Dict_Add (action, "D", HPDF_String_New (mmgr, "Page 0", NULL));
+        ret += HPDF_Dict_AddBoolean (action, "NewWindow", HPDF_TRUE);
+
+        HPDF_Dict target = HPDF_Dict_New (action->mmgr);
+        if (!target)
+            return NULL;
+
+        ret += HPDF_Dict_Add (action, "T", target);
+        ret += HPDF_Dict_AddName (target, "R", "C");
+        ret += HPDF_Dict_Add (target, "N", HPDF_String_New (mmgr, filename, NULL));
+
+    } else {
+        // For other files: use pdf javascript action to open the attachment
+        char buf[HPDF_TMP_BUF_SIZ];
+        char *ptr = buf;
+        char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
+
+        ptr = (char*)HPDF_StrCpy(ptr, "this.exportDataObject({cName:\"", eptr);
+        ptr = (char*)HPDF_StrCpy(ptr, filename, eptr);
+        HPDF_StrCpy(ptr, "\", nLaunch:2});", eptr);
+
+        ret += HPDF_Dict_AddName (action, "Type", "Action");
+        ret += HPDF_Dict_AddName (action, "S", "JavaScript");
+        ret += HPDF_Dict_Add (action, "JS", HPDF_String_New (mmgr, buf, NULL));
+
+    }
+
+    if (ret != HPDF_OK)
+        return NULL;
+
+    return annot;
+}
+
+HPDF_Annotation
 HPDF_LinkAnnot_New  (HPDF_MMgr         mmgr,
                      HPDF_Xref         xref,
                      HPDF_Rect         rect,
@@ -279,6 +349,11 @@ HPDF_URILinkAnnot_New  (HPDF_MMgr          mmgr,
     if (!annot)
         return NULL;
 
+    // Set alternate text
+    ret = HPDF_Dict_Add (annot, "Contents", HPDF_String_New (mmgr, "URI Link", NULL));
+    if (ret != HPDF_OK)
+        return NULL;
+
     /* create action dictionary */
     action = HPDF_Dict_New (mmgr);
     if (!action)
@@ -288,9 +363,34 @@ HPDF_URILinkAnnot_New  (HPDF_MMgr          mmgr,
     if (ret != HPDF_OK)
         return NULL;
 
-    ret += HPDF_Dict_AddName (action, "Type", "Action");
-    ret += HPDF_Dict_AddName (action, "S", "URI");
-    ret += HPDF_Dict_Add (action, "URI", HPDF_String_New (mmgr, uri, NULL));
+    // Check filename ends with .pdf and is a local file
+    char buf[HPDF_TMP_BUF_SIZ];
+    char *eptr = buf + 7;
+    HPDF_StrCpy(buf, uri, eptr);
+    HPDF_BOOL isLocalPdfFile = (HPDF_StrCmp(uri + HPDF_StrLen(uri, -1) - 4, ".pdf") == 0) &&
+            (HPDF_StrCmp(buf, "http://") != 0) && (HPDF_StrCmp(buf, "https:/") != 0);
+
+    if (isLocalPdfFile) {
+        // For local pdf files: use pdf GoToR action to open the attachment
+        ret += HPDF_Dict_AddName (action, "Type", "Action");
+        ret += HPDF_Dict_AddName (action, "S", "GoToR");
+        ret += HPDF_Dict_Add (action, "D", HPDF_String_New (mmgr, "Page 0", NULL));
+        ret += HPDF_Dict_AddBoolean (action, "NewWindow", HPDF_TRUE);
+
+        HPDF_Dict target = HPDF_Dict_New (action->mmgr);
+        if (!target)
+            return NULL;
+
+        ret += HPDF_Dict_Add (action, "F", target);
+        ret += HPDF_Dict_Add (target, "F", HPDF_String_New (mmgr, uri, NULL));
+
+    } else {
+        // For other files: use pdf URI action to open the attachment
+        ret += HPDF_Dict_AddName (action, "Type", "Action");
+        ret += HPDF_Dict_AddName (action, "S", "URI");
+        ret += HPDF_Dict_Add (action, "URI", HPDF_String_New (mmgr, uri, NULL));
+
+    }
 
     if (ret != HPDF_OK)
         return NULL;
