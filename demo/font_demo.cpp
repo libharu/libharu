@@ -98,7 +98,7 @@ int main (int argc, char **argv)
         HPDF_Page_BeginText (page);
         HPDF_Page_MoveTextPos (page, 60, height - 80);
         HPDF_Page_SetFontAndSize (page, def_font, 16);
-        HPDF_Page_ShowText (page, "<Standerd Type1 fonts samples>");
+        HPDF_Page_ShowText (page, "<Standard Type1 fonts samples>");
         HPDF_Page_EndText (page);
 
         HPDF_Page_BeginText (page);
