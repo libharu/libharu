@@ -348,7 +348,7 @@ HPDF_PDFA_AddXmpMetadata(HPDF_Doc pdf)
         /* Update the PDF number version */
         pdf->pdf_version = (pdf->pdf_version > conformanceVersion ? pdf->pdf_version : conformanceVersion);
 
-        /* Append additionnal specific XMP extensions */
+        /* Append additional specific XMP extensions */
         {
             HPDF_UINT i;
             HPDF_List list;

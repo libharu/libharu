@@ -6,7 +6,7 @@ Cyrillized free URW fonts.
 These fonts were made from the free URW fonts distributed with ghostscript.
 There are NO changes in the latin part of them (I hope).
 Cyrillic glyphs were added by copying suitable latin ones
-and painting oulines of unique cyrillic glyphs in same style as the others.
+and painting outlines of unique cyrillic glyphs in same style as the others.
 For all modification pfaedit was used.
 The license for result is (of course) same as for original fonts,
 i.e. GPL with an exception that you can put these fonts in your own non-GPLed

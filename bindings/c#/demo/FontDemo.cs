@@ -65,7 +65,7 @@ public class FontDemo {
             /* output subtitle. */
             page.BeginText();
             page.SetFontAndSize(def_font, 16);
-            page.TextOut(60, height - 80, "<Standerd Type1 fonts samples>");
+            page.TextOut(60, height - 80, "<Standard Type1 fonts samples>");
             page.EndText();
 
             page.BeginText();
