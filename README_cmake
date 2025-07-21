@@ -62,8 +62,8 @@ You get a complete list of all available generators for your platform
 with "cmake --help". I'll go into details for one specific compiler toolset.
 The other generators work similar.
 
-Using CMake to produce Visual C++ 2008 Makfiles
------------------------------------------------
+Using CMake to produce Visual C++ 2008 Makefiles
+------------------------------------------------
 First you need to have the command line interface setup correctly. Start
 cmd.exe and run "%VS90COMNTOOLS%vsvars32.bat". This will set up the
 command line tools of Visual C++ 2008. Cd into the created build

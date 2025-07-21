@@ -33,7 +33,7 @@ tw = page.text_width(title)
 page.begin_text
 page.text_out((width - tw) / 2, height - 50.0, title)
 page.set_font_and_size(font1, 16.0)
-page.text_out(60.0, height - 80.0, "<Standerd Type1 fonts samples>")
+page.text_out(60.0, height - 80.0, "<Standard Type1 fonts samples>")
 page.end_text
 
 samp_text = "abcdefgABCDEFG12345!#$\%&+-@?"
