@@ -96,6 +96,7 @@ EXPORTS
     HPDF_Page_Concat
     HPDF_Page_Create3DAnnot
     HPDF_Page_CreateDestination
+    HPDF_Page_CreateFileAttachmentLinkAnnot
     HPDF_Page_CreateLinkAnnot
     HPDF_Page_CreateTextAnnot
     HPDF_Page_CreateURILinkAnnot
