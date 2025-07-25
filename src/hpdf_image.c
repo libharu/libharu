@@ -27,6 +27,16 @@ static HPDF_STATUS
 LoadJpegHeader (HPDF_Image   image,
                 HPDF_Stream  stream);
 
+static HPDF_STATUS
+ReadJpegData (HPDF_Dict image,
+              HPDF_Stream jpeg_data);
+
+static HPDF_STATUS
+JpegBeforeWrite  (HPDF_Dict obj);
+
+
+static HPDF_STATUS
+JpegAfterWrite  (HPDF_Dict obj);
 
 /*---------------------------------------------------------------------------*/
 
@@ -170,7 +180,8 @@ LoadJpegHeader (HPDF_Image   image,
 HPDF_Image
 HPDF_Image_LoadJpegImage  (HPDF_MMgr        mmgr,
                            HPDF_Stream      jpeg_data,
-                           HPDF_Xref        xref)
+                           HPDF_Xref        xref,
+                           HPDF_BOOL        delayed_loading)
 {
     HPDF_Dict image;
     HPDF_STATUS ret = HPDF_OK;
@@ -193,29 +204,16 @@ HPDF_Image_LoadJpegImage  (HPDF_MMgr        mmgr,
     if (LoadJpegHeader (image, jpeg_data) != HPDF_OK)
         return NULL;
 
-    if (HPDF_Stream_Seek (jpeg_data, 0, HPDF_SEEK_SET) != HPDF_OK)
-        return NULL;
-
-    for (;;) {
-        HPDF_BYTE buf[HPDF_STREAM_BUF_SIZ];
-        HPDF_UINT len = HPDF_STREAM_BUF_SIZ;
-        HPDF_STATUS ret = HPDF_Stream_Read (jpeg_data, buf,
-                &len);
-
-        if (ret != HPDF_OK) {
-            if (ret == HPDF_STREAM_EOF) {
-                if (len > 0) {
-                    ret = HPDF_Stream_Write (image->stream, buf, len);
-                    if (ret != HPDF_OK)
-                        return NULL;
-                }
-                break;
-            } else
-                return NULL;
-        }
-
-        if (HPDF_Stream_Write (image->stream, buf, len) != HPDF_OK)
+    /* read image-data
+	 * if delayed_loading is HPDF_TRUE, the data does not load this phase.
+	 */
+    if (delayed_loading) {
+        image->before_write_fn = JpegBeforeWrite;
+        image->after_write_fn = JpegAfterWrite;
+    } else {
+        if (ReadJpegData(image, jpeg_data) != HPDF_OK) {
             return NULL;
+        }
     }
 
     return image;
@@ -243,7 +241,7 @@ HPDF_Image_LoadJpegImageFromMem  (HPDF_MMgr    mmgr,
 		return NULL;
 	}
 
-	image = HPDF_Image_LoadJpegImage(mmgr,jpeg_data,xref);
+	image = HPDF_Image_LoadJpegImage(mmgr,jpeg_data,xref,HPDF_FALSE);
 
 	/* destroy file stream */
 	HPDF_Stream_Free (jpeg_data);
@@ -662,3 +660,74 @@ HPDF_Image_SetRenderingIntent  (HPDF_Image   image,
     return HPDF_Dict_AddName (image, "Intent", intent);
 }
 
+// Copy over jpegData stream into image->stream
+static HPDF_STATUS
+ReadJpegData (HPDF_Dict image,
+              HPDF_Stream jpeg_data) {
+
+    HPDF_STATUS ret = HPDF_Stream_Seek (jpeg_data, 0, HPDF_SEEK_SET);
+
+    if (ret != HPDF_OK)
+        return ret;
+
+    for (;;) {
+        HPDF_BYTE buf[HPDF_STREAM_BUF_SIZ];
+        HPDF_UINT len = HPDF_STREAM_BUF_SIZ;
+        ret = HPDF_Stream_Read (jpeg_data, buf,
+                                            &len);
+
+        if (ret != HPDF_OK) {
+            if (ret == HPDF_STREAM_EOF) {
+                if (len > 0) {
+                    ret = HPDF_Stream_Write (image->stream, buf, len);
+                    if (ret != HPDF_OK)
+                        return ret;
+                }
+                break;
+            } else
+                return ret;
+        }
+
+        ret = HPDF_Stream_Write (image->stream, buf, len);
+        if (ret != HPDF_OK)
+            return ret;
+    }
+
+    return HPDF_OK;
+}
+
+static HPDF_STATUS
+JpegBeforeWrite  (HPDF_Dict obj)
+{
+    HPDF_PTRACE ((" JpegBeforeWrite\n"));
+
+    HPDF_MemStream_FreeData(obj->stream);
+
+    HPDF_String filename = HPDF_Dict_GetItem (obj, "_FILE_NAME", HPDF_OCLASS_STRING);
+    if (!filename)
+        return HPDF_SetError (obj->error, HPDF_MISSING_FILE_NAME_ENTRY, 0);
+
+    HPDF_Stream jpeg_data = HPDF_FileReader_New (obj->mmgr, (const char *)filename->value);
+    if (!HPDF_Stream_Validate (jpeg_data))
+        return obj->error->error_no;
+
+    HPDF_STATUS ret = ReadJpegData (obj, jpeg_data);
+    if (!ret) {
+        HPDF_Stream_Free(jpeg_data);
+        return ret;
+    }
+
+    HPDF_Stream_Free(jpeg_data);
+
+    return HPDF_OK;
+}
+
+static HPDF_STATUS
+JpegAfterWrite  (HPDF_Dict obj)
+{
+    HPDF_PTRACE ((" JpegAfterWrite\n"));
+
+    HPDF_MemStream_FreeData(obj->stream);
+
+    return HPDF_OK;
+}
