@@ -144,7 +144,7 @@ HPDF_STATUS ConvertDateToXMDate(HPDF_Stream stream, const char *pDate)
 }
 
 /* Set PDF/A conformance */
-HPDF_STATUS
+HPDF_EXPORT(HPDF_STATUS)
 HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf, HPDF_PDFAType pdfatype)
 {
     pdf->pdfa_type = pdfatype;
