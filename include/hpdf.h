@@ -735,6 +735,11 @@ HPDF_Annotation_SetContents  (HPDF_Annotation  annot,
                               HPDF_Encoder     encoder);
 
 HPDF_EXPORT(HPDF_STATUS)
+HPDF_FieldAnnot_SetAlternateFieldName (HPDF_Annotation  annot,
+                                       const char*      name,
+                                       HPDF_Encoder     encoder);
+
+HPDF_EXPORT(HPDF_STATUS)
 HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata);
 
 
@@ -1810,7 +1815,7 @@ HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_WriteComment (HPDF_Page    page,
                         const char  *text);
 
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_TextField  (HPDF_Page            page,
                       HPDF_Doc             pdf,
                       HPDF_REAL            left,
@@ -1830,7 +1835,7 @@ HPDF_Page_TextField  (HPDF_Page            page,
                       HPDF_REAL            font_size,
                       HPDF_Color           color);
 
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_SignatureField (HPDF_Page      page,
                           HPDF_Doc       pdf,
                           HPDF_REAL      left,
@@ -1841,7 +1846,7 @@ HPDF_Page_SignatureField (HPDF_Page      page,
                           HPDF_BOOL      print,
                           HPDF_INT       rotation);
 
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CheckboxField  (HPDF_Page      page,
                           HPDF_Doc       pdf,
                           HPDF_REAL      left,
@@ -1854,7 +1859,7 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
                           HPDF_Color     color,
                           HPDF_BOOL      checked);
 
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_RadioButtonField  (HPDF_Page              page,
                              HPDF_Doc               pdf,
                              HPDF_RadioButtonField  radio_field,

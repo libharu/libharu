@@ -1261,3 +1261,13 @@ HPDF_ProjectionAnnot_SetExData(HPDF_Annotation annot, HPDF_ExData exdata)
 
 	return ret;
 }
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_FieldAnnot_SetAlternateFieldName (HPDF_Annotation  annot,
+                                       const char*      name,
+                                       HPDF_Encoder     encoder)
+{
+    HPDF_PTRACE((" HPDF_FieldAnnot_SetAlternateFieldName\n"));
+
+    return HPDF_Dict_Add (annot, "TU", HPDF_String_New (annot->mmgr, name, encoder));
+}

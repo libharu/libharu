@@ -3178,7 +3178,7 @@ HPDF_Page_WriteComment  (HPDF_Page    page,
  * font_size - The font_size
  * color - The text color
  */
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_TextField  (HPDF_Page      page,
                       HPDF_Doc       pdf,
                       HPDF_REAL      left,
@@ -3205,11 +3205,13 @@ HPDF_Page_TextField  (HPDF_Page      page,
     HPDF_PTRACE((" HPDF_Page_TextField\n"));
 
     textField = HPDF_Dict_New (page->mmgr);
-    if (!textField)
-        return HPDF_CheckError (page->error);
+    if (!textField) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     if ((ret = HPDF_Xref_Add (pdf->xref, textField)) != HPDF_OK)
-        return ret;
+        return NULL;
 
     ret += HPDF_Dict_AddName (textField, "Type", "Annot");
     ret += HPDF_Dict_AddName (textField, "Subtype", "Widget");
@@ -3222,8 +3224,10 @@ HPDF_Page_TextField  (HPDF_Page      page,
 
     /* Rect */
     HPDF_Array rectArray = HPDF_Array_New (page->mmgr);
-    if (!rectArray)
-        return HPDF_CheckError (page->error);
+    if (!rectArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (rectArray, left);
     ret += HPDF_Array_AddReal (rectArray, bottom);
     ret += HPDF_Array_AddReal (rectArray, right);
@@ -3236,27 +3240,37 @@ HPDF_Page_TextField  (HPDF_Page      page,
 
     /* T */
     HPDF_String textFieldName = HPDF_String_New (page->mmgr, name, NULL);
-    if (!textFieldName)
-        return HPDF_CheckError (page->error);
+    if (!textFieldName) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (textField, "T", textFieldName);
 
     /* V */
     HPDF_String textFieldValue = HPDF_String_New (page->mmgr, value, encoder);
-    if (!textFieldValue)
-        return HPDF_CheckError (page->error);
+    if (!textFieldValue) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (textField, "V", textFieldValue);
 
     /* DR */
     HPDF_Dict resource = HPDF_Dict_New (page->mmgr);
-    if (!resource)
-        return HPDF_CheckError (page->error);
+    if (!resource) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     HPDF_Dict f = HPDF_Dict_New (page->mmgr);
-    if (!f)
-        return HPDF_CheckError (page->error);
+    if (!f) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     local_name = HPDF_Catalog_GetLocalFontName (pdf->catalog, font);
-    if (!local_name)
-        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
+    if (!local_name) {
+        HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
+        return NULL;
+    }
 
     ret += HPDF_Dict_Add (f, local_name, font);
     ret += HPDF_Dict_Add (resource, "Font", f);
@@ -3277,16 +3291,20 @@ HPDF_Page_TextField  (HPDF_Page      page,
     pbuf = (char *)HPDF_StrCpy (pbuf, " Tf", eptr);
 
     HPDF_String daValue = HPDF_String_New(page->mmgr, buf, NULL);
-    if (!daValue)
-        return HPDF_CheckError (page->error);
+    if (!daValue) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (textField, "DA", daValue);
 
     /* MK */
     if (rotation && rotation != 0 && (rotation % 90) == 0)
     {
         HPDF_Dict mk = HPDF_Dict_New (page->mmgr);
-        if (!mk)
-            return HPDF_CheckError (page->error);
+        if (!mk) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
         ret += HPDF_Dict_AddNumber (mk, "R", rotation);
         ret += HPDF_Dict_Add (textField, "MK", mk);
     }
@@ -3307,11 +3325,15 @@ HPDF_Page_TextField  (HPDF_Page      page,
 
     /* AP - APPEARANCE DICTIONARY */
     HPDF_Dict ap = HPDF_Dict_New (page->mmgr);
-    if (!ap)
-        return HPDF_CheckError (page->error);
+    if (!ap) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     HPDF_Dict ap_stream = HPDF_DictStream_New (page->mmgr, pdf->xref);
-    if (!ap_stream)
-        return HPDF_CheckError (page->error);
+    if (!ap_stream) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (ap, "N", ap_stream);
     ret += HPDF_Dict_Add (textField, "AP", ap);
 
@@ -3331,16 +3353,20 @@ HPDF_Page_TextField  (HPDF_Page      page,
     /* Matrix */
     if (rotation != 0) {
         HPDF_Array matrix = InternalAnnotationMatrix (page->mmgr, field_width, field_height, rotation);
-        if (!matrix)
-            return HPDF_CheckError (page->error);
+        if (!matrix) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
 
         ret += HPDF_Dict_Add (ap_stream, "Matrix", matrix);
     }
 
     /* BBOX */
     HPDF_Array bbox = HPDF_Array_New (page->mmgr);
-    if (!bbox)
-        return HPDF_CheckError (page->error);
+    if (!bbox) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (bbox, 0);
     ret += HPDF_Array_AddReal (bbox, 0);
     ret += HPDF_Array_AddReal (bbox, field_width);
@@ -3349,11 +3375,15 @@ HPDF_Page_TextField  (HPDF_Page      page,
 
     /* RESOURCES */
     HPDF_Dict resource2 = HPDF_Dict_New (page->mmgr);
-    if (!resource2)
-        return HPDF_CheckError (page->error);
+    if (!resource2) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     HPDF_Dict font2 = HPDF_Dict_New (page->mmgr);
-    if (!font2)
-        return HPDF_CheckError (page->error);
+    if (!font2) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     ret += HPDF_Dict_Add (font2, local_name, font);
     ret += HPDF_Dict_Add (resource2, "Font", font2);
@@ -3431,7 +3461,11 @@ HPDF_Page_TextField  (HPDF_Page      page,
 
     HPDF_Dict_Free (fake_page);
 
-    return ret;
+    if (ret != HPDF_OK) {
+        return NULL;
+    }
+
+    return textField;
 }
 
 
@@ -3445,7 +3479,7 @@ HPDF_Page_TextField  (HPDF_Page      page,
  * print - If set, the text field will be printed when the page gets printed
  * rotation - The rotation
  */
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_SignatureField (HPDF_Page      page,
                           HPDF_Doc       pdf,
                           HPDF_REAL      left,
@@ -3462,11 +3496,13 @@ HPDF_Page_SignatureField (HPDF_Page      page,
     HPDF_PTRACE((" HPDF_Page_SignatureField\n"));
 
     signatureField = HPDF_Dict_New (page->mmgr);
-    if (!signatureField)
-        return HPDF_CheckError (page->error);
+    if (!signatureField) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     if ((ret = HPDF_Xref_Add (pdf->xref, signatureField)) != HPDF_OK)
-        return ret;
+        return NULL;
 
     ret += HPDF_Dict_AddName (signatureField, "Type", "Annot");
     ret += HPDF_Dict_AddName (signatureField, "Subtype", "Widget");
@@ -3479,8 +3515,10 @@ HPDF_Page_SignatureField (HPDF_Page      page,
 
     /* Rect */
     HPDF_Array rectArray = HPDF_Array_New (page->mmgr);
-    if (!rectArray)
-        return HPDF_CheckError (page->error);
+    if (!rectArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (rectArray, left);
     ret += HPDF_Array_AddReal (rectArray, bottom);
     ret += HPDF_Array_AddReal (rectArray, right);
@@ -3493,16 +3531,20 @@ HPDF_Page_SignatureField (HPDF_Page      page,
 
     /* T */
     HPDF_String signatureFieldName = HPDF_String_New (page->mmgr, name, NULL);
-    if (!signatureFieldName)
-        return HPDF_CheckError (page->error);
+    if (!signatureFieldName) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (signatureField, "T", signatureFieldName);
 
     /* MK */
     if (rotation && rotation != 0 && (rotation % 90) == 0)
     {
         HPDF_Dict mk = HPDF_Dict_New (page->mmgr);
-        if (!mk)
-            return HPDF_CheckError (page->error);
+        if (!mk) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
         ret += HPDF_Dict_AddNumber (mk, "R", rotation);
         ret += HPDF_Dict_Add (signatureField, "MK", mk);
     }
@@ -3521,17 +3563,23 @@ HPDF_Page_SignatureField (HPDF_Page      page,
     pbuf = (char *)HPDF_StrCpy (pbuf, " Tf", eptr);
 
     HPDF_String daValue = HPDF_String_New(page->mmgr, buf, NULL);
-    if (!daValue)
-        return HPDF_CheckError (page->error);
+    if (!daValue) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (signatureField, "DA", daValue);
 
     /* AP - APPEARANCE DICTIONARY */
     HPDF_Dict ap = HPDF_Dict_New (page->mmgr);
-    if (!ap)
-        return HPDF_CheckError (page->error);
+    if (!ap) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     HPDF_Dict ap_stream = HPDF_DictStream_New (page->mmgr, pdf->xref);
-    if (!ap_stream)
-        return HPDF_CheckError (page->error);
+    if (!ap_stream) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (ap, "N", ap_stream);
 
     ret += HPDF_Dict_Add (signatureField, "AP", ap);
@@ -3541,8 +3589,10 @@ HPDF_Page_SignatureField (HPDF_Page      page,
 
     /* BBOX */
     HPDF_Array bbox = HPDF_Array_New (page->mmgr);
-    if (!bbox)
-        return HPDF_CheckError (page->error);
+    if (!bbox) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (bbox, 0);
     ret += HPDF_Array_AddReal (bbox, 0);
     ret += HPDF_Array_AddReal (bbox, right - left);
@@ -3553,7 +3603,11 @@ HPDF_Page_SignatureField (HPDF_Page      page,
 
     ret += HPDF_Catalog_AddInteractiveField (pdf->catalog, signatureField);
 
-    return ret;
+    if (ret != HPDF_OK) {
+        return NULL;
+    }
+
+    return signatureField;
 }
 
 
@@ -3569,7 +3623,7 @@ HPDF_Page_SignatureField (HPDF_Page      page,
  * color - The checkbox color
  * checked - States if the checkbox should be checked
  */
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CheckboxField  (HPDF_Page      page,
                           HPDF_Doc       pdf,
                           HPDF_REAL      left,
@@ -3588,11 +3642,13 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     HPDF_PTRACE((" HPDF_Page_CheckboxField\n"));
 
     checkboxField = HPDF_Dict_New (page->mmgr);
-    if (!checkboxField)
-        return HPDF_CheckError (page->error);
+    if (!checkboxField) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     if ((ret = HPDF_Xref_Add (pdf->xref, checkboxField)) != HPDF_OK)
-        return ret;
+        return NULL;
 
     ret += HPDF_Dict_AddName (checkboxField, "Type", "Annot");
     ret += HPDF_Dict_AddName (checkboxField, "Subtype", "Widget");
@@ -3605,8 +3661,10 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
 
     /* Rect */
     HPDF_Array rectArray = HPDF_Array_New (page->mmgr);
-    if (!rectArray)
-        return HPDF_CheckError (page->error);
+    if (!rectArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (rectArray, left);
     ret += HPDF_Array_AddReal (rectArray, bottom);
     ret += HPDF_Array_AddReal (rectArray, right);
@@ -3619,8 +3677,10 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
 
     /* T */
     HPDF_String checkboxFieldName = HPDF_String_New (page->mmgr, name, NULL);
-    if (!checkboxFieldName)
-        return HPDF_CheckError (page->error);
+    if (!checkboxFieldName) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (checkboxField, "T", checkboxFieldName);
 
     /* V and AS */
@@ -3634,20 +3694,28 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
 
     /* DR */
     HPDF_Dict resource = HPDF_Dict_New (page->mmgr);
-    if (!resource)
-        return HPDF_CheckError (page->error);
+    if (!resource) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     HPDF_Dict f = HPDF_Dict_New (page->mmgr);
-    if (!f)
-        return HPDF_CheckError (page->error);
+    if (!f) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (checkboxField, "DR", resource);
 
     HPDF_Font font = HPDF_GetFont (pdf, "ZapfDingbats", NULL);
-    if (!font)
-        return HPDF_CheckError (page->error);
+    if (!font) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     const char *local_name = HPDF_Catalog_GetLocalFontName (pdf->catalog, font);
-    if (!local_name)
-        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
+    if (!local_name) {
+        HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
+        return NULL;
+    }
 
     /* DA */
     char buf[HPDF_TMP_BUF_SIZ];
@@ -3661,34 +3729,44 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     pbuf = (char *)HPDF_StrCpy (pbuf, " 0 Tf", eptr);
 
     HPDF_String daValue = HPDF_String_New(page->mmgr, buf, NULL);
-    if (!daValue)
-        return HPDF_CheckError (page->error);
+    if (!daValue) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (checkboxField, "DA", daValue);
 
 
     /* MK */
     HPDF_Dict mk = HPDF_Dict_New (page->mmgr);
-    if (!mk)
-        return HPDF_CheckError (page->error);
+    if (!mk) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     // /BG
     HPDF_Array bgArray = HPDF_Array_New (page->mmgr);
-    if (!bgArray)
-        return HPDF_CheckError (page->error);
+    if (!bgArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddNumber (bgArray, 1);
     ret += HPDF_Dict_Add (mk, "BG", bgArray);
 
     // /BC
     HPDF_Array bcArray = HPDF_Array_New (page->mmgr);
-    if (!bcArray)
-        return HPDF_CheckError (page->error);
+    if (!bcArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddNumber (bcArray, 0);
     ret += HPDF_Dict_Add (mk, "BC", bcArray);
 
     // /CA
     HPDF_String textFieldValue = HPDF_String_New (page->mmgr, "8", NULL);
-    if (!textFieldValue)
-        return HPDF_CheckError (page->error);
+    if (!textFieldValue) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (mk, "CA", textFieldValue);
 
     if (rotation && rotation != 0 && (rotation % 90) == 0)
@@ -3699,17 +3777,23 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
 
     /* AP - APPEARANCE DICTIONARY */
     HPDF_Dict ap = HPDF_Dict_New (page->mmgr);
-    if (!ap)
-        return HPDF_CheckError (page->error);
+    if (!ap) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     HPDF_Dict n_ap = HPDF_Dict_New (page->mmgr);
-    if (!n_ap)
-        return HPDF_CheckError (page->error);
+    if (!n_ap) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     // /Yes
     HPDF_Dict yes_stream = HPDF_DictStream_New (page->mmgr, pdf->xref);
-    if (!yes_stream)
-        return HPDF_CheckError (page->error);
+    if (!yes_stream) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     char yes_buf[HPDF_TMP_BUF_SIZ];
     pbuf = yes_buf;
@@ -3778,8 +3862,10 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     ret += HPDF_Stream_WriteStr (yes_stream->stream, yes_buf);
 
     HPDF_Array yes_bbox = HPDF_Array_New (page->mmgr);
-    if (!yes_bbox)
-        return HPDF_CheckError (page->error);
+    if (!yes_bbox) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (yes_bbox, 0);
     ret += HPDF_Array_AddReal (yes_bbox, 0);
     ret += HPDF_Array_AddReal (yes_bbox, field_width);
@@ -3791,16 +3877,20 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     // Matrix
     if (rotation != 0) {
         HPDF_Array matrix = InternalAnnotationMatrix (page->mmgr, field_width, field_height, rotation);
-        if (!matrix)
-            return HPDF_CheckError (page->error);
+        if (!matrix) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
 
         ret += HPDF_Dict_Add (yes_stream, "Matrix", matrix);
     }
 
     // /Off
     HPDF_Dict off_stream = HPDF_DictStream_New (page->mmgr, pdf->xref);
-    if (!off_stream)
-        return HPDF_CheckError (page->error);
+    if (!off_stream) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     char off_buf[HPDF_TMP_BUF_SIZ];
     pbuf = off_buf;
@@ -3823,8 +3913,10 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     ret += HPDF_Stream_WriteStr (off_stream->stream, off_buf);
 
     HPDF_Array off_bbox = HPDF_Array_New (page->mmgr);
-    if (!off_bbox)
-        return HPDF_CheckError (page->error);
+    if (!off_bbox) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (off_bbox, 0);
     ret += HPDF_Array_AddReal (off_bbox, 0);
     ret += HPDF_Array_AddReal (off_bbox, field_width);
@@ -3836,8 +3928,10 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     // Matrix
     if (rotation != 0) {
         HPDF_Array matrix = InternalAnnotationMatrix (page->mmgr, field_width, field_height, rotation);
-        if (!matrix)
-            return HPDF_CheckError (page->error);
+        if (!matrix) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
 
         ret += HPDF_Dict_Add (off_stream, "Matrix", matrix);
     }
@@ -3853,7 +3947,11 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
 
     ret += HPDF_Catalog_AddInteractiveField (pdf->catalog, checkboxField);
 
-    return ret;
+    if (ret != HPDF_OK) {
+        return NULL;
+    }
+
+    return checkboxField;
 }
 
 static char*
@@ -3944,7 +4042,7 @@ InternalAnnotationMatrix  (HPDF_MMgr mmgr,
  * color - The radio button color
  * selected - States if the radio button should be selected
  */
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_RadioButtonField  (HPDF_Page              page,
                              HPDF_Doc               pdf,
                              HPDF_RadioButtonField  radio_field,
@@ -3960,23 +4058,29 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
                              HPDF_BOOL              selected)
 {
     HPDF_Dict annot;
-    HPDF_STATUS ret;
+    HPDF_STATUS ret = HPDF_OK;
 
     HPDF_PTRACE((" HPDF_Page_RadioButtonField\n"));
 
     annot = HPDF_Dict_New (page->mmgr);
-    if (!annot)
-        return HPDF_CheckError (page->error);
+    if (!annot) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
-    if ((ret = HPDF_Xref_Add (pdf->xref, annot)) != HPDF_OK)
-        return ret;
+    if (HPDF_Xref_Add (pdf->xref, annot) != HPDF_OK)
+        return NULL;
 
-    if ((ret = HPDF_RadioButtonField_AddChild (radio_field, annot) != HPDF_OK))
-        return HPDF_CheckError (radio_field->error);
+    if (HPDF_RadioButtonField_AddChild (radio_field, annot) != HPDF_OK) {
+        HPDF_CheckError (radio_field->error);
+        return NULL;
+    }
 
     HPDF_INT opt_idx = HPDF_RadioButtonField_AddOpt (radio_field, value, encoder);
-    if (opt_idx == -1)
-        return HPDF_CheckError (radio_field->error);
+    if (opt_idx == -1) {
+        HPDF_CheckError (radio_field->error);
+        return NULL;
+    }
 
     char opt_idx_buf[HPDF_INT_LEN + 1];
     HPDF_IToA (opt_idx_buf, opt_idx, opt_idx_buf + HPDF_INT_LEN);
@@ -3996,16 +4100,20 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
 
     // BS
     HPDF_Dict bs = HPDF_Dict_New (page->mmgr);
-    if (!bs)
-        return HPDF_CheckError (page->error);
+    if (!bs) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_AddName (bs, "S", "S");
     ret += HPDF_Dict_AddNumber (bs, "W", 1);
     ret += HPDF_Dict_Add (annot, "BS", bs);
 
     // Rect
     HPDF_Array rectArray = HPDF_Array_New (page->mmgr);
-    if (!rectArray)
-        return HPDF_CheckError (page->error);
+    if (!rectArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (rectArray, left);
     ret += HPDF_Array_AddReal (rectArray, bottom);
     ret += HPDF_Array_AddReal (rectArray, right);
@@ -4020,12 +4128,16 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     }
 
     HPDF_Font font = HPDF_GetFont (pdf, "ZapfDingbats", NULL);
-    if (!font)
-        return HPDF_CheckError (page->error);
+    if (!font) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     const char *local_name = HPDF_Catalog_GetLocalFontName (pdf->catalog, font);
-    if (!local_name)
-        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
+    if (!local_name) {
+        HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_FONT, 0);
+        return NULL;
+    }
 
     // DA
     char buf[HPDF_TMP_BUF_SIZ];
@@ -4039,26 +4151,34 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     pbuf = (char *)HPDF_StrCpy (pbuf, " 0 Tf", eptr);
 
     HPDF_String daValue = HPDF_String_New(page->mmgr, buf, NULL);
-    if (!daValue)
-        return HPDF_CheckError (page->error);
+    if (!daValue) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Dict_Add (annot, "DA", daValue);
 
     // MK
     HPDF_Dict mk = HPDF_Dict_New (page->mmgr);
-    if (!mk)
-        return HPDF_CheckError (page->error);
+    if (!mk) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     // /BG
     HPDF_Array bgArray = HPDF_Array_New (page->mmgr);
-    if (!bgArray)
-        return HPDF_CheckError (page->error);
+    if (!bgArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddNumber (bgArray, 1);
     ret += HPDF_Dict_Add (mk, "BG", bgArray);
 
     // /BC
     HPDF_Array bcArray = HPDF_Array_New (page->mmgr);
-    if (!bcArray)
-        return HPDF_CheckError (page->error);
+    if (!bcArray) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddNumber (bcArray, 0);
     ret += HPDF_Dict_Add (mk, "BC", bcArray);
 
@@ -4070,17 +4190,23 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
 
     // AP - APPEARANCE DICTIONARY
     HPDF_Dict ap = HPDF_Dict_New (page->mmgr);
-    if (!ap)
-        return HPDF_CheckError (page->error);
+    if (!ap) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     HPDF_Dict n_ap = HPDF_Dict_New (page->mmgr);
-    if (!n_ap)
-        return HPDF_CheckError (page->error);
+    if (!n_ap) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     // /<- value -> appearance stream
     HPDF_Dict selected_stream = HPDF_DictStream_New (page->mmgr, pdf->xref);
-    if (!selected_stream)
-        return HPDF_CheckError (page->error);
+    if (!selected_stream) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     char selected_buf[HPDF_TMP_BUF_SIZ];
     pbuf = selected_buf;
@@ -4137,8 +4263,10 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     ret += HPDF_Stream_WriteStr (selected_stream->stream, selected_buf);
 
     HPDF_Array selected_bbox = HPDF_Array_New (page->mmgr);
-    if (!selected_bbox)
-        return HPDF_CheckError (page->error);
+    if (!selected_bbox) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (selected_bbox, 0);
     ret += HPDF_Array_AddReal (selected_bbox, 0);
     ret += HPDF_Array_AddReal (selected_bbox, field_width);
@@ -4150,16 +4278,20 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     // Matrix
     if (rotation != 0) {
         HPDF_Array matrix = InternalAnnotationMatrix (page->mmgr, field_width, field_height, rotation);
-        if (!matrix)
-            return HPDF_CheckError (page->error);
+        if (!matrix) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
 
         ret += HPDF_Dict_Add (selected_stream, "Matrix", matrix);
     }
 
     // /Off appearance stream
     HPDF_Dict off_stream = HPDF_DictStream_New (page->mmgr, pdf->xref);
-    if (!off_stream)
-        return HPDF_CheckError (page->error);
+    if (!off_stream) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
 
     char off_buf[HPDF_TMP_BUF_SIZ];
     pbuf = off_buf;
@@ -4184,8 +4316,10 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     ret += HPDF_Stream_WriteStr (off_stream->stream, off_buf);
 
     HPDF_Array off_bbox = HPDF_Array_New (page->mmgr);
-    if (!off_bbox)
-        return HPDF_CheckError (page->error);
+    if (!off_bbox) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
     ret += HPDF_Array_AddReal (off_bbox, 0);
     ret += HPDF_Array_AddReal (off_bbox, 0);
     ret += HPDF_Array_AddReal (off_bbox, field_width);
@@ -4197,8 +4331,10 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     // Matrix
     if (rotation != 0) {
         HPDF_Array matrix = InternalAnnotationMatrix (page->mmgr, field_width, field_height, rotation);
-        if (!matrix)
-            return HPDF_CheckError (page->error);
+        if (!matrix) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
 
         ret += HPDF_Dict_Add (off_stream, "Matrix", matrix);
     }
@@ -4210,8 +4346,11 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     ret += HPDF_Dict_Add (annot, "AP", ap);
 
     ret += HPDF_Page_CreateFieldAnnotation (page, annot);
-    if (ret != HPDF_OK)
-        return HPDF_CheckError (page->error);
 
-    return ret;
+    if (ret != HPDF_OK) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
+
+    return annot;
 }
