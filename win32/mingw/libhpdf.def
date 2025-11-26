@@ -20,6 +20,7 @@ EXPORTS
  HPDF_ExtGState_SetAlphaFill@8       = HPDF_ExtGState_SetAlphaFill
  HPDF_ExtGState_SetAlphaStroke@8     = HPDF_ExtGState_SetAlphaStroke
  HPDF_ExtGState_SetBlendMode@8       = HPDF_ExtGState_SetBlendMode
+ HPDF_FieldAnnot_SetAlternateFieldName@24 = HPDF_FieldAnnot_SetAlternateFieldName
  HPDF_Font_GetAscent@4               = HPDF_Font_GetAscent
  HPDF_Font_GetBBox@4                 = HPDF_Font_GetBBox
  HPDF_Font_GetCapHeight@4            = HPDF_Font_GetCapHeight

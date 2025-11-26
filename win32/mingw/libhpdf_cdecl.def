@@ -21,6 +21,7 @@ EXPORTS
     HPDF_ExtGState_SetAlphaFill
     HPDF_ExtGState_SetAlphaStroke
     HPDF_ExtGState_SetBlendMode
+    HPDF_FieldAnnot_SetAlternateFieldName
     HPDF_Font_GetAscent
     HPDF_Font_GetBBox
     HPDF_Font_GetCapHeight
