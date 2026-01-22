@@ -215,6 +215,27 @@ HPDF_Font_GetCapHeight  (HPDF_Font  font)
     return 0;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Font_EmbedAllGlyphs  (HPDF_Font  font)
+{
+    HPDF_FontAttr attr;
+    HPDF_FontDef fontdef;
+
+    HPDF_PTRACE((" HPDF_Font_EmbedAllGlyphs\n"));
+
+    if (!HPDF_Font_Validate(font)) {
+        return HPDF_INVALID_FONT;
+    }
+
+    attr = (HPDF_FontAttr)font->attr;
+    fontdef = attr->fontdef;
+
+    if (fontdef->type == HPDF_FONTDEF_TYPE_TRUETYPE) {
+        HPDF_TTFontDef_EmbedAllGlyphs (fontdef);
+    }
+
+    return HPDF_OK;
+}
 
 HPDF_BOOL
 HPDF_Font_Validate  (HPDF_Font font)

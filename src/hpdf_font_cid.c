@@ -554,6 +554,7 @@ CIDFontType2_BeforeWrite_Func  (HPDF_Dict obj)
         ret += HPDF_Dict_AddName (descriptor, "Type", "FontDescriptor");
         ret += HPDF_Dict_AddNumber (descriptor, "Ascent", def->ascent);
         ret += HPDF_Dict_AddNumber (descriptor, "Descent", def->descent);
+        ret += HPDF_Dict_AddNumber (descriptor, "CapHeight", def->cap_height);
         ret += HPDF_Dict_AddNumber (descriptor, "Flags", def->flags);
 
         array = HPDF_Box_Array_New (obj->mmgr, def->font_bbox);
@@ -1030,48 +1031,6 @@ CreateCMap  (HPDF_Encoder   encoder,
     if (ret != HPDF_OK)
         return NULL;
 
-    /* add cid-range */
-    phase = attr->cmap_range->count / 100;
-    odd = attr->cmap_range->count % 100;
-    if (phase > 0)
-        pbuf = HPDF_IToA (buf, 100, eptr);
-    else
-        pbuf = HPDF_IToA (buf, odd, eptr);
-    HPDF_StrCpy (pbuf, " begincidrange\r\n", eptr);
-    ret += HPDF_Stream_WriteStr (cmap->stream, buf);
-
-    for (i = 0; i < attr->cmap_range->count; i++) {
-        HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
-
-        pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
-        *pbuf++ = ' ';
-        pbuf = HPDF_IToA (pbuf, range->cid, eptr);
-        HPDF_StrCpy (pbuf, "\r\n", eptr);
-
-        ret += HPDF_Stream_WriteStr (cmap->stream, buf);
-
-        if ((i + 1) %100 == 0) {
-            phase--;
-            pbuf = (char *)HPDF_StrCpy (buf, "endcidrange\r\n\r\n", eptr);
-
-            if (phase > 0)
-                pbuf = HPDF_IToA (pbuf, 100, eptr);
-            else
-                pbuf = HPDF_IToA (pbuf, odd, eptr);
-
-            HPDF_StrCpy (pbuf, " begincidrange\r\n", eptr);
-
-            ret += HPDF_Stream_WriteStr (cmap->stream, buf);
-        }
-
-        if (ret != HPDF_OK)
-            return NULL;
-    }
-
-    pbuf = buf;
-    if (odd > 0)
-        pbuf = (char *)HPDF_StrCpy (pbuf, "endcidrange\r\n", eptr);
-
     if (utf_entity_h_to_unicode) {
         // A CMap used in the /ToUnicode entry of a font must use the beginbfchar, endbfchar,
         // beginbfrange, and endbfrange operators to define the mapping from character codes
@@ -1079,9 +1038,53 @@ CreateCMap  (HPDF_Encoder   encoder,
         // Since we currently only use the /ToUnicode entry for Type0 fonts with
         // "Identity-H" encoding created with the UTF-8 encoder, the character codes
         // are already UTF-16BE encoded and we can just the following static mapping.
+        // Additionally, a /ToUnicode CMap may not contain a cid-range.
+        pbuf = buf;
         pbuf = (char *)HPDF_StrCpy (pbuf, "1 beginbfrange\r\n", eptr);
         pbuf = (char *)HPDF_StrCpy (pbuf, "<0000> <FFFF> <0000>\r\n", eptr);
         pbuf = (char *)HPDF_StrCpy (pbuf, "endbfrange\r\n", eptr);
+    } else {
+        /* add cid-range */
+        phase = attr->cmap_range->count / 100;
+        odd = attr->cmap_range->count % 100;
+        if (phase > 0)
+            pbuf = HPDF_IToA (buf, 100, eptr);
+        else
+            pbuf = HPDF_IToA (buf, odd, eptr);
+        HPDF_StrCpy (pbuf, " begincidrange\r\n", eptr);
+        ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+
+        for (i = 0; i < attr->cmap_range->count; i++) {
+            HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
+
+            pbuf = CidRangeToHex(buf, range->from, range->to, eptr);
+            *pbuf++ = ' ';
+            pbuf = HPDF_IToA (pbuf, range->cid, eptr);
+            HPDF_StrCpy (pbuf, "\r\n", eptr);
+
+            ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+
+            if ((i + 1) %100 == 0) {
+                phase--;
+                pbuf = (char *)HPDF_StrCpy (buf, "endcidrange\r\n\r\n", eptr);
+
+                if (phase > 0)
+                    pbuf = HPDF_IToA (pbuf, 100, eptr);
+                else
+                    pbuf = HPDF_IToA (pbuf, odd, eptr);
+
+                HPDF_StrCpy (pbuf, " begincidrange\r\n", eptr);
+
+                ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+            }
+
+            if (ret != HPDF_OK)
+                return NULL;
+        }
+
+        pbuf = buf;
+        if (odd > 0)
+            pbuf = (char *)HPDF_StrCpy (pbuf, "endcidrange\r\n", eptr);
     }
 
     pbuf = (char *)HPDF_StrCpy (pbuf, "endcmap\r\n", eptr);

@@ -368,6 +368,10 @@ HPDF_TTFontDef_SetTagName  (HPDF_FontDef   fontdef,
                             char     *tag);
 
 
+void
+HPDF_TTFontDef_EmbedAllGlyphs  (HPDF_FontDef  fontdef);
+
+
 /*----------------------------------------------------------------------------*/
 /*----- HPDF_CIDFontDef  -----------------------------------------------------*/
 

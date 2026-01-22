@@ -1185,6 +1185,12 @@ HPDF_TTFontDef_GetGlyphid  (HPDF_FontDef   fontdef,
     }
 }
 
+void
+HPDF_TTFontDef_EmbedAllGlyphs  (HPDF_FontDef  fontdef)
+{
+    HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr)fontdef->attr;
+    HPDF_MemSet (attr->glyph_tbl.flgs, 1, sizeof (HPDF_BYTE) * attr->num_glyphs);
+}
 
 HPDF_INT16
 HPDF_TTFontDef_GetCharWidth  (HPDF_FontDef   fontdef,

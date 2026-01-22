@@ -1021,6 +1021,10 @@ HPDF_Font_MeasureText (HPDF_Font          font,
                        HPDF_REAL         *real_width);
 
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Font_EmbedAllGlyphs  (HPDF_Font  font);
+
+
 /*--------------------------------------------------------------------------*/
 /*----- attachements -------------------------------------------------------*/
 
