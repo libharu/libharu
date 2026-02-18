@@ -39,7 +39,8 @@ InternalTextRect  (HPDF_Page            page,
                    const char          *text,
                    HPDF_TextAlignment   align,
                    HPDF_UINT           *len,
-                   HPDF_BOOL            force);
+                   HPDF_BOOL            force,
+                   HPDF_BOOL            use_bbox);
 
 static HPDF_STATUS
 InternalArc  (HPDF_Page    page,
@@ -63,6 +64,37 @@ InternalBeginMarkedContentSequence  (HPDF_Page   page,
 
 static HPDF_UINT
 InternalOperatorStackSize  (HPDF_Page page);
+
+static char*
+InternalDrawCheckmark  (char       *pbuf,
+                        char       *eptr,
+                        HPDF_REAL  field_width,
+                        HPDF_REAL  field_height,
+                        HPDF_REAL  border_width,
+                        HPDF_Color color);
+
+static char*
+InternalDrawCross  (char       *pbuf,
+                    char       *eptr,
+                    HPDF_REAL  field_width,
+                    HPDF_REAL  field_height,
+                    HPDF_REAL  border_width,
+                    HPDF_Color color);
+
+static char*
+InternalDrawCircle  (char       *pbuf,
+                     char       *eptr,
+                     HPDF_REAL  field_width,
+                     HPDF_REAL  field_height,
+                     HPDF_REAL  border_width,
+                     HPDF_Color color);
+
+static char*
+InternalDrawBorder  (char      *pbuf,
+                     char      *eptr,
+                     HPDF_REAL field_width,
+                     HPDF_REAL field_height,
+                     HPDF_REAL border_width);
 
 static char*
 InternalWriteColorToBuf  (char       *pbuf,
@@ -2342,7 +2374,6 @@ HPDF_Page_Ellipse  (HPDF_Page   page,
     return ret;
 }
 
-
 /*
  * this function is based on the code which is contributed by Riccardo Cohen.
  *
@@ -2665,7 +2696,7 @@ HPDF_Page_TextRect  (HPDF_Page            page,
                      HPDF_UINT           *len
                      )
 {
-    return InternalTextRect(page, left, top, right, bottom, text, align, len, HPDF_FALSE);
+    return InternalTextRect(page, left, top, right, bottom, text, align, len, HPDF_FALSE, HPDF_TRUE);
 }
 
 static HPDF_STATUS
@@ -2677,7 +2708,8 @@ InternalTextRect  (HPDF_Page            page,
                    const char          *text,
                    HPDF_TextAlignment   align,
                    HPDF_UINT           *len,
-                   HPDF_BOOL            force)
+                   HPDF_BOOL            force,
+                   HPDF_BOOL            use_bbox)
 {
     HPDF_STATUS ret = HPDF_Page_CheckState (page, HPDF_GMODE_TEXT_OBJECT);
     HPDF_PageAttr attr;
@@ -2701,8 +2733,6 @@ InternalTextRect  (HPDF_Page            page,
         return HPDF_RaiseError (page->error, HPDF_PAGE_FONT_NOT_FOUND, 0);
     }
 
-    bbox = HPDF_Font_GetBBox (attr->gstate->font);
-
     if (len)
         *len = 0;
     num_rest = HPDF_StrLen (text, HPDF_LIMIT_MAX_STRING_LEN + 1);
@@ -2712,13 +2742,26 @@ InternalTextRect  (HPDF_Page            page,
     } else if (!num_rest)
         return HPDF_OK;
 
-    if (attr->gstate->text_leading == 0)
-        HPDF_Page_SetTextLeading (page, (bbox.top - bbox.bottom) / 1000 *
-                attr->gstate->font_size);
+    if (use_bbox) {
+        bbox = HPDF_Font_GetBBox (attr->gstate->font);
 
-    top = top - bbox.top / 1000 * attr->gstate->font_size +
-                attr->gstate->text_leading;
-    bottom = bottom - bbox.bottom / 1000 * attr->gstate->font_size;
+        if (attr->gstate->text_leading == 0)
+            HPDF_Page_SetTextLeading (page, (bbox.top - bbox.bottom) / 1000 *
+                    attr->gstate->font_size);
+
+        top = top - bbox.top / 1000 * attr->gstate->font_size +
+                    attr->gstate->text_leading;
+        bottom = bottom - bbox.bottom / 1000 * attr->gstate->font_size;
+    } else {
+        HPDF_REAL ascent = (HPDF_REAL)HPDF_Font_GetAscent (attr->gstate->font) / 1000.0 * attr->gstate->font_size;
+        HPDF_REAL descent = (HPDF_REAL)HPDF_Font_GetDescent (attr->gstate->font) / 1000.0 * attr->gstate->font_size;
+
+        if (attr->gstate->text_leading == 0)
+            HPDF_Page_SetTextLeading (page, ascent - descent);
+
+        top = top - ascent + attr->gstate->text_leading;
+        bottom = bottom - descent;
+    }
 
     if (align == HPDF_TALIGN_JUSTIFY) {
         save_char_space = attr->gstate->char_space;
@@ -3177,6 +3220,7 @@ HPDF_Page_WriteComment  (HPDF_Page    page,
  * font - The text fields font
  * font_size - The font_size
  * color - The text color
+ * border_width - The border width
  */
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_TextField  (HPDF_Page      page,
@@ -3196,7 +3240,8 @@ HPDF_Page_TextField  (HPDF_Page      page,
                       HPDF_INT       rotation,
                       HPDF_Font      font,
                       HPDF_REAL      font_size,
-                      HPDF_Color     color)
+                      HPDF_Color     color,
+                      HPDF_REAL      border_width)
 {
     HPDF_Dict textField;
     HPDF_STATUS ret;
@@ -3254,6 +3299,19 @@ HPDF_Page_TextField  (HPDF_Page      page,
     }
     ret += HPDF_Dict_Add (textField, "V", textFieldValue);
 
+    /* BS */
+    if (border_width > 0) {
+        HPDF_Dict bs = HPDF_Dict_New (page->mmgr);
+        if (!bs) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
+        ret += HPDF_Dict_AddName (bs, "Type", "Border");
+        ret += HPDF_Dict_AddReal (bs, "W", border_width);
+        ret += HPDF_Dict_AddName (bs, "S", "S");
+        ret += HPDF_Dict_Add (textField, "BS", bs);
+    }
+
     /* DR */
     HPDF_Dict resource = HPDF_Dict_New (page->mmgr);
     if (!resource) {
@@ -3298,14 +3356,29 @@ HPDF_Page_TextField  (HPDF_Page      page,
     ret += HPDF_Dict_Add (textField, "DA", daValue);
 
     /* MK */
-    if (rotation && rotation != 0 && (rotation % 90) == 0)
-    {
+    if (border_width > 0 || (rotation && rotation != 0 && (rotation % 90) == 0)) {
         HPDF_Dict mk = HPDF_Dict_New (page->mmgr);
         if (!mk) {
             HPDF_CheckError (page->error);
             return NULL;
         }
-        ret += HPDF_Dict_AddNumber (mk, "R", rotation);
+
+        /* BC */
+        if (border_width > 0) {
+            HPDF_Array bcArray = HPDF_Array_New (page->mmgr);
+            if (!bcArray) {
+                HPDF_CheckError (page->error);
+                return NULL;
+            }
+            ret += HPDF_Array_AddNumber (bcArray, 0);
+            ret += HPDF_Dict_Add (mk, "BC", bcArray);
+        }
+
+        /* R */
+        if (rotation && rotation != 0 && (rotation % 90) == 0) {
+            ret += HPDF_Dict_AddNumber (mk, "R", rotation);
+        }
+
         ret += HPDF_Dict_Add (textField, "MK", mk);
     }
 
@@ -3396,9 +3469,37 @@ HPDF_Page_TextField  (HPDF_Page      page,
     attr->fonts = font2;
     attr->text_placement_accuracy = pdf->text_placement_accuracy;
 
+    /* Border Width */
+    if (border_width > 0) {
+        ret += HPDF_Page_GSave (fake_page);
+        ret += HPDF_Page_SetGrayStroke (fake_page, 0);
+        ret += HPDF_Page_SetLineWidth (fake_page, border_width);
+        ret += HPDF_Page_Rectangle (fake_page, border_width / 2.0, border_width / 2.0, field_width - border_width, field_height - border_width);
+        ret += HPDF_Page_Stroke (fake_page);
+
+        if (flag & HPDF_FIELD_COMB && max_len > 1) {
+            HPDF_REAL usable_width = field_width - 2.0 * border_width;
+            HPDF_REAL cell_width = usable_width / (HPDF_REAL)max_len;
+            for (HPDF_UINT i = 1; i < max_len; i++) {
+                ret += HPDF_Page_MoveTo (fake_page, cell_width * (HPDF_REAL)i + border_width, border_width / 2.0);
+                ret += HPDF_Page_LineTo (fake_page, cell_width * (HPDF_REAL)i + border_width, field_height - border_width / 2.0);
+            }
+
+            ret += HPDF_Page_Stroke (fake_page);
+        }
+
+        ret += HPDF_Page_GRestore (fake_page);
+    }
 
     ret += HPDF_Stream_WriteStr (ap_stream->stream, "/Tx BMC\n");
-    ret += HPDF_Page_BeginText(fake_page);
+
+    /* Clip */
+    ret += HPDF_Page_GSave (fake_page);
+    ret += HPDF_Page_Rectangle (fake_page, border_width, border_width, field_width - 2.0 * border_width, field_height - 2.0 * border_width);
+    ret += HPDF_Page_Clip (fake_page);
+    ret += HPDF_Page_EndPath (fake_page);
+
+    ret += HPDF_Page_BeginText (fake_page);
 
     HPDF_MemSet (buf, 0, HPDF_TMP_BUF_SIZ);
     pbuf = InternalWriteColorToBuf (buf, eptr, color, HPDF_TRUE);
@@ -3407,7 +3508,13 @@ HPDF_Page_TextField  (HPDF_Page      page,
 
     ret += HPDF_Page_SetFontAndSize(fake_page, font, font_size);
 
-    HPDF_REAL padding = 2.0;
+    HPDF_REAL padding;
+    if (border_width > 0) {
+        padding = border_width * 2.0;
+    } else {
+        padding = 2.0;
+    }
+
     if (flag & HPDF_FIELD_MULTILINE) {
         HPDF_TextAlignment talign = HPDF_TALIGN_LEFT;
         switch (alignment) {
@@ -3422,37 +3529,100 @@ HPDF_Page_TextField  (HPDF_Page      page,
                 break;
         }
 
-        HPDF_Box bbox = HPDF_Font_GetBBox (font);
-        HPDF_REAL text_lead = font_size + ((HPDF_REAL)HPDF_Font_GetDescent(font) / -1000.0 * font_size);
-        HPDF_REAL y_offset;
-        if (field_height < text_lead) {
-            y_offset = (bbox.top - bbox.bottom) / 1000.0*font_size + 1.0;
-        } else {
-            y_offset = field_height - (HPDF_REAL)HPDF_Font_GetDescent(font) / -1000.0 * font_size - padding;
-        }
-        ret += InternalTextRect(fake_page, padding, y_offset, field_width - padding, 0, encoded_text, talign, NULL, HPDF_TRUE);
+        HPDF_REAL y_offset = field_height - padding / 2.0;
+        ret += InternalTextRect (fake_page, padding, y_offset, field_width - padding, 0, encoded_text, talign, NULL, HPDF_TRUE, HPDF_FALSE);
     } else {
-        HPDF_REAL x_offset = padding;
-        if (alignment != 0) {
-            HPDF_REAL text_width = HPDF_Page_TextWidth(fake_page, encoded_text);
-            if (text_width < field_width - padding*2.0) {
+        HPDF_REAL ascent = (HPDF_REAL)HPDF_Font_GetAscent (font) / 1000.0 * font_size;
+        HPDF_REAL descent = (HPDF_REAL)HPDF_Font_GetDescent (font) / 1000.0 * font_size;
+        HPDF_REAL text_h = ascent - descent;
+
+        HPDF_REAL y_offset = (field_height - text_h) / 2.0 - descent;
+
+        if (flag & HPDF_FIELD_COMB && max_len > 0) {
+            /* comb text field */
+            if (border_width > 0) {
+                padding = border_width;
+            } else {
+                padding = 1.0;
+            }
+
+            HPDF_REAL cell_width = (field_width - 2.0 * padding) / (HPDF_REAL)max_len;
+
+            HPDF_UINT text_len = HPDF_StrLen (encoded_text, HPDF_LIMIT_MAX_STRING_LEN + 1);
+            if (text_len > HPDF_LIMIT_MAX_STRING_LEN) {
+                HPDF_RaiseError (page->error, HPDF_STRING_OUT_OF_RANGE, 0);
+                return NULL;
+            }
+
+            /* evaluate glyph count */
+            HPDF_Encoder encoder = ((HPDF_FontAttr)font->attr)->encoder;
+            HPDF_ParseText_Rec state;
+            HPDF_Encoder_SetParseText (encoder, &state, (HPDF_BYTE *)encoded_text, text_len);
+            HPDF_UINT glyph_cnt = 0;
+            for (HPDF_UINT i = 0; i < text_len; i++) {
+                HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &state);
+                if (btype != HPDF_BYTE_TYPE_TRIAL)
+                    glyph_cnt++;
+            }
+
+            HPDF_UINT start_cell = 0;
+            if (glyph_cnt < max_len) {
                 if (alignment == 1) {
-                    x_offset = (field_width - text_width) / 2.0;
+                    start_cell = (max_len - glyph_cnt) / 2;
                 } else if (alignment == 2) {
-                    x_offset = field_width - text_width - padding;
+                    start_cell = max_len - glyph_cnt;
                 }
             }
-        }
 
-        HPDF_REAL y_offset;
-        if (field_height < font_size) {
-            y_offset = (HPDF_REAL)HPDF_Font_GetDescent(font) / -1000.0 * font_size + 1.0;
+            /* output glyphs */
+            const char *tmp_ptr = encoded_text;
+            HPDF_Encoder_SetParseText (encoder, &state, (HPDF_BYTE *)encoded_text, text_len);
+            HPDF_UINT glyph_index = 0;
+            HPDF_UINT glyph_len = 0;
+            for (HPDF_UINT i = 0; i < text_len; i++) {
+                glyph_len++;
+                HPDF_ByteType btype = HPDF_Encoder_ByteType (encoder, &state);
+                if (btype != HPDF_BYTE_TYPE_TRIAL) {
+                    if (glyph_len > 8) {
+                        HPDF_RaiseError (page->error, HPDF_INVALID_PARAMETER, 0);
+                        return NULL;
+                    }
+                    char glyph_buf[8];
+                    HPDF_MemCpy (glyph_buf, tmp_ptr, glyph_len);
+                    glyph_buf[glyph_len] = '\0';
+                    tmp_ptr += glyph_len;
+                    glyph_len = 0;
+
+                    HPDF_REAL text_width = HPDF_Page_TextWidth (fake_page, glyph_buf);
+
+                    HPDF_UINT cell_index = start_cell + glyph_index;
+                    HPDF_REAL start_x = cell_width * (HPDF_REAL)cell_index + padding;
+                    HPDF_REAL x_offset = start_x + (cell_width - text_width) / 2.0;
+                    ret += HPDF_Page_TextOut (fake_page, x_offset, y_offset, glyph_buf);
+
+                    glyph_index++;
+                }
+            }
         } else {
-            y_offset = field_height/2.0 - font_size/2.0 + 0.129*font_size;
+            /* normal text field */
+            HPDF_REAL usable_width = field_width - 2.0 * padding;
+            HPDF_REAL x_offset = padding;
+            if (alignment != 0) {
+                HPDF_REAL text_width = HPDF_Page_TextWidth (fake_page, encoded_text);
+                if (text_width < usable_width) {
+                    if (alignment == 1) {
+                        x_offset = (field_width - text_width) / 2.0;
+                    } else if (alignment == 2) {
+                        x_offset = field_width - text_width - padding;
+                    }
+                }
+            }
+
+            ret += HPDF_Page_TextOut (fake_page, x_offset, y_offset, encoded_text);
         }
-        ret += HPDF_Page_TextOut(fake_page, x_offset, y_offset, encoded_text);
     }
-    ret += HPDF_Page_EndText(fake_page);
+    ret += HPDF_Page_EndText (fake_page);
+    ret += HPDF_Page_GRestore (fake_page);
     ret += HPDF_Stream_WriteStr (ap_stream->stream, "EMC\012");
 
     ret += HPDF_Page_CreateFieldAnnotation (page, textField);
@@ -3622,19 +3792,25 @@ HPDF_Page_SignatureField (HPDF_Page      page,
  * rotation - The rotation
  * color - The checkbox color
  * checked - States if the checkbox should be checked
+ * flag - A flag specifying characteristics of the field ( read only, required, etc. )
+ * styling - The style of the checkbox ( cross, checkmark, circle )
+ * border_width - The border width
  */
 HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CheckboxField  (HPDF_Page      page,
-                          HPDF_Doc       pdf,
-                          HPDF_REAL      left,
-                          HPDF_REAL      top,
-                          HPDF_REAL      right,
-                          HPDF_REAL      bottom,
-                          const char     *name,
-                          HPDF_BOOL      print,
-                          HPDF_INT       rotation,
-                          HPDF_Color     color,
-                          HPDF_BOOL      checked)
+HPDF_Page_CheckboxField  (HPDF_Page         page,
+                          HPDF_Doc          pdf,
+                          HPDF_REAL         left,
+                          HPDF_REAL         top,
+                          HPDF_REAL         right,
+                          HPDF_REAL         bottom,
+                          const char        *name,
+                          HPDF_BOOL         print,
+                          HPDF_INT          rotation,
+                          HPDF_Color        color,
+                          HPDF_BOOL         checked,
+                          HPDF_UINT         flag,
+                          HPDF_FieldStyle   styling,
+                          HPDF_REAL         border_width)
 {
     HPDF_Dict checkboxField;
     HPDF_STATUS ret;
@@ -3692,19 +3868,6 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
         ret += HPDF_Dict_AddName (checkboxField, "AS", "Off");
     }
 
-    /* DR */
-    HPDF_Dict resource = HPDF_Dict_New (page->mmgr);
-    if (!resource) {
-        HPDF_CheckError (page->error);
-        return NULL;
-    }
-    HPDF_Dict f = HPDF_Dict_New (page->mmgr);
-    if (!f) {
-        HPDF_CheckError (page->error);
-        return NULL;
-    }
-    ret += HPDF_Dict_Add (checkboxField, "DR", resource);
-
     HPDF_Font font = HPDF_GetFont (pdf, "ZapfDingbats", NULL);
     if (!font) {
         HPDF_CheckError (page->error);
@@ -3735,6 +3898,23 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     }
     ret += HPDF_Dict_Add (checkboxField, "DA", daValue);
 
+    /* FF */
+    if (flag > 0) {
+        ret += HPDF_Dict_AddNumber (checkboxField, "Ff", flag);
+    }
+
+    /* BS */
+    if (border_width > 0) {
+        HPDF_Dict bs = HPDF_Dict_New (page->mmgr);
+        if (!bs) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
+        ret += HPDF_Dict_AddName (bs, "Type", "Border");
+        ret += HPDF_Dict_AddReal (bs, "W", border_width);
+        ret += HPDF_Dict_AddName (bs, "S", "S");
+        ret += HPDF_Dict_Add (checkboxField, "BS", bs);
+    }
 
     /* MK */
     HPDF_Dict mk = HPDF_Dict_New (page->mmgr);
@@ -3743,34 +3923,34 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
         return NULL;
     }
 
-    // /BG
-    HPDF_Array bgArray = HPDF_Array_New (page->mmgr);
-    if (!bgArray) {
-        HPDF_CheckError (page->error);
-        return NULL;
-    }
-    ret += HPDF_Array_AddNumber (bgArray, 1);
-    ret += HPDF_Dict_Add (mk, "BG", bgArray);
-
     // /BC
-    HPDF_Array bcArray = HPDF_Array_New (page->mmgr);
-    if (!bcArray) {
-        HPDF_CheckError (page->error);
-        return NULL;
+    if (border_width > 0) {
+        HPDF_Array bcArray = HPDF_Array_New (page->mmgr);
+        if (!bcArray) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
+        ret += HPDF_Array_AddNumber (bcArray, 0);
+        ret += HPDF_Dict_Add (mk, "BC", bcArray);
     }
-    ret += HPDF_Array_AddNumber (bcArray, 0);
-    ret += HPDF_Dict_Add (mk, "BC", bcArray);
 
     // /CA
-    HPDF_String textFieldValue = HPDF_String_New (page->mmgr, "8", NULL);
+    const char *ca_value;
+    if (styling == HPDF_FIELD_STYLE_CHECKMARK) {
+        ca_value = "4";
+    } else if (styling == HPDF_FIELD_STYLE_CIRCLE) {
+        ca_value = "l";
+    } else {
+        ca_value = "8";
+    }
+    HPDF_String textFieldValue = HPDF_String_New (page->mmgr, ca_value, NULL);
     if (!textFieldValue) {
         HPDF_CheckError (page->error);
         return NULL;
     }
     ret += HPDF_Dict_Add (mk, "CA", textFieldValue);
 
-    if (rotation && rotation != 0 && (rotation % 90) == 0)
-    {
+    if (rotation && rotation != 0 && (rotation % 90) == 0) {
         ret += HPDF_Dict_AddNumber (mk, "R", rotation);
     }
     ret += HPDF_Dict_Add (checkboxField, "MK", mk);
@@ -3800,9 +3980,6 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     eptr = yes_buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_MemSet (yes_buf, 0, HPDF_TMP_BUF_SIZ);
 
-    pbuf = InternalWriteColorToBuf (pbuf, eptr, color, HPDF_FALSE);
-
-    // Print X
     HPDF_REAL field_width;
     HPDF_REAL field_height;
     if (rotation == 90 || rotation == 270) {
@@ -3812,52 +3989,22 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
         field_width = fabs(right - left);
         field_height = fabs(top - bottom);
     }
-    HPDF_REAL cross_width = field_width;
-    HPDF_REAL cross_height = field_height;
-    HPDF_REAL cross_x_offset = 0;
-    HPDF_REAL cross_y_offset = 0;
-    if ( cross_width < cross_height )
-    {
-        cross_y_offset = ( cross_height - cross_width ) / 2;
-        cross_height = cross_width + cross_y_offset;
-    }
-    else
-    {
-        cross_x_offset = ( cross_width - cross_height ) / 2;
-        cross_width = cross_height + cross_x_offset;
-    }
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, cross_x_offset, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, cross_y_offset, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " m ", eptr);
-    pbuf = HPDF_FToA (pbuf, cross_width, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, cross_height, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " l S ", eptr);
 
-    pbuf = HPDF_FToA (pbuf, cross_x_offset, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, cross_height, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " m ", eptr);
-    pbuf = HPDF_FToA (pbuf, cross_width, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, cross_y_offset, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " l S ", eptr);
+    if (styling == HPDF_FIELD_STYLE_CHECKMARK) {
+        // Checkmark
+        pbuf = InternalDrawCheckmark(pbuf, eptr, field_width, field_height, border_width, color);
+    } else if (styling == HPDF_FIELD_STYLE_CIRCLE) {
+        // Circle
+        pbuf = InternalDrawCircle(pbuf, eptr, field_width, field_height, border_width, color);
+    } else {
+        // Cross
+        pbuf = InternalDrawCross(pbuf, eptr, field_width, field_height, border_width, color);
+    }
 
     // Print Box []
-    pbuf = HPDF_FToA (pbuf, 0, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " G", eptr);
-
-    pbuf = (char *)HPDF_StrCpy (pbuf, " 2 w 0 0 m ", eptr);
-    pbuf = HPDF_FToA (pbuf, field_width, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " 0 l ", eptr);
-    pbuf = HPDF_FToA (pbuf, field_width, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, field_height, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " l 0 ", eptr);
-    pbuf = HPDF_FToA (pbuf, field_height, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " l 0 0 l S", eptr);
+    if (border_width > 0) {
+        pbuf = InternalDrawBorder (pbuf, eptr, field_width, field_height, border_width);
+    }
 
     ret += HPDF_Stream_WriteStr (yes_stream->stream, yes_buf);
 
@@ -3897,19 +4044,11 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     eptr = off_buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_MemSet (off_buf, 0, HPDF_TMP_BUF_SIZ);
 
-    pbuf = HPDF_FToA (pbuf, 0, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " G", eptr);
+    // Print Box []
+    if (border_width > 0) {
+        pbuf = InternalDrawBorder (pbuf, eptr, field_width, field_height, border_width);
+    }
 
-    pbuf = (char *)HPDF_StrCpy (pbuf, " 2 w 0 0 m ", eptr);
-    pbuf = HPDF_FToA (pbuf, field_width, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " 0 l ", eptr);
-    pbuf = HPDF_FToA (pbuf, field_width, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, field_height, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " l 0 ", eptr);
-    pbuf = HPDF_FToA (pbuf, field_height, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " l 0 0 l S", eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " 0 0 l S", eptr);
     ret += HPDF_Stream_WriteStr (off_stream->stream, off_buf);
 
     HPDF_Array off_bbox = HPDF_Array_New (page->mmgr);
@@ -3952,6 +4091,258 @@ HPDF_Page_CheckboxField  (HPDF_Page      page,
     }
 
     return checkboxField;
+}
+
+static char*
+InternalDrawCheckmark  (char       *pbuf,
+                        char       *eptr,
+                        HPDF_REAL  field_width,
+                        HPDF_REAL  field_height,
+                        HPDF_REAL  border_width,
+                        HPDF_Color color)
+{
+    HPDF_REAL inner_w = field_width  - 2.0f * border_width;
+    HPDF_REAL inner_h = field_height - 2.0f * border_width;
+    if (inner_w < 0.0f) inner_w = 0.0f;
+    if (inner_h < 0.0f) inner_h = 0.0f;
+
+    HPDF_REAL ox = border_width;
+    HPDF_REAL oy = border_width;
+
+    HPDF_REAL s = (inner_w < inner_h) ? inner_w : inner_h;
+    HPDF_REAL sx = ox + (inner_w - s) / 2.0f;
+    HPDF_REAL sy = oy + (inner_h - s) / 2.0f;
+
+    // Small inset so stroke caps don't touch the border
+    HPDF_REAL inset = 0.5f;
+    sx += inset; sy += inset;
+    s  -= 2.0f * inset;
+    if (s < 0.0f) s = 0.0f;
+
+    // Mark parameters
+    HPDF_REAL angle_between_deg = 85.0f;
+    HPDF_REAL long_over_short   = 2.5f;
+    HPDF_REAL tilt_deg          = 50.0f;
+
+    const HPDF_REAL DEG2RAD = (HPDF_REAL)(3.14159265358979323846 / 180.0);
+
+    // Angle definitions:
+    // a2: direction of long stroke from vertex
+    // a1: direction of short stroke from vertex (rotated by angle_between)
+    HPDF_REAL a2 = tilt_deg * DEG2RAD;
+    HPDF_REAL a1 = (tilt_deg + angle_between_deg) * DEG2RAD;
+
+    // Unit direction vectors FROM vertex:
+    // d2 -> toward long stroke end, d1 -> toward short stroke start
+    HPDF_REAL d2x = (HPDF_REAL)HPDF_COS (a2), d2y = (HPDF_REAL)HPDF_SIN (a2);
+    HPDF_REAL d1x = (HPDF_REAL)HPDF_COS (a1), d1y = (HPDF_REAL)HPDF_SIN (a1);
+
+    // Build in local coords with vertex at (0,0), short length = 1, long length = long_over_short
+    HPDF_REAL Ls = 1.0f;
+    HPDF_REAL Ll = long_over_short * Ls;
+
+    // Local points: P1(start) -> V(vertex) -> P3(end)
+    HPDF_REAL lx1 = d1x * Ls,  ly1 = d1y * Ls;   // start point (short stroke endpoint)
+    HPDF_REAL lx2 = 0.0f,      ly2 = 0.0f;       // vertex
+    HPDF_REAL lx3 = d2x * Ll,  ly3 = d2y * Ll;   // end point (long stroke endpoint)
+
+    // Compute local bounding box for auto-fit
+    HPDF_REAL minx = lx1, maxx = lx1;
+    HPDF_REAL miny = ly1, maxy = ly1;
+
+    if (lx2 < minx) minx = lx2; if (lx2 > maxx) maxx = lx2;
+    if (ly2 < miny) miny = ly2; if (ly2 > maxy) maxy = ly2;
+    if (lx3 < minx) minx = lx3; if (lx3 > maxx) maxx = lx3;
+    if (ly3 < miny) miny = ly3; if (ly3 > maxy) maxy = ly3;
+
+    HPDF_REAL bw = maxx - minx;
+    HPDF_REAL bh = maxy - miny;
+    if (bw <= 0.0f) bw = 1.0f;
+    if (bh <= 0.0f) bh = 1.0f;
+
+    // Padding inside the square
+    HPDF_REAL pad = 0.10f * s;
+    HPDF_REAL avail = s - 2.0f * pad;
+    if (avail < 0.0f) avail = 0.0f;
+
+    // Scale so bounding box fits in avail x avail
+    HPDF_REAL scale = (bw > bh) ? (avail / bw) : (avail / bh);
+    if (scale < 0.0f) scale = 0.0f;
+
+    // Center the scaled mark in the square
+    HPDF_REAL cx_local = (minx + maxx) * 0.5f;
+    HPDF_REAL cy_local = (miny + maxy) * 0.5f;
+
+    HPDF_REAL cx_target = sx + s * 0.5f;
+    HPDF_REAL cy_target = sy + s * 0.5f;
+
+    // Transform to final coords
+    HPDF_REAL x1 = cx_target + (lx1 - cx_local) * scale;
+    HPDF_REAL y1 = cy_target + (ly1 - cy_local) * scale;
+
+    HPDF_REAL x2 = cx_target + (lx2 - cx_local) * scale;
+    HPDF_REAL y2 = cy_target + (ly2 - cy_local) * scale;
+
+    HPDF_REAL x3 = cx_target + (lx3 - cx_local) * scale;
+    HPDF_REAL y3 = cy_target + (ly3 - cy_local) * scale;
+
+    pbuf = (char *)HPDF_StrCpy (pbuf, "q\012", eptr);
+    pbuf = InternalWriteColorToBuf (pbuf, eptr, color, HPDF_FALSE);
+    *pbuf++ = '\012';
+
+    // Emit path
+    pbuf = (char *)HPDF_StrCpy (pbuf, "2 w\0121 J\0121 j\012", eptr);
+
+    pbuf = HPDF_FToA (pbuf, x1, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, y1, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+
+    pbuf = HPDF_FToA (pbuf, x2, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, y2, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " l\012", eptr);
+
+    pbuf = HPDF_FToA (pbuf, x3, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, y3, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " l\012S\012Q\012", eptr);
+
+    return pbuf;
+}
+
+static char*
+InternalDrawCross  (char       *pbuf,
+                    char       *eptr,
+                    HPDF_REAL  field_width,
+                    HPDF_REAL  field_height,
+                    HPDF_REAL  border_width,
+                    HPDF_Color color)
+{
+    // Inner drawable area
+    HPDF_REAL inner_w = field_width  - 2.0f * border_width;
+    HPDF_REAL inner_h = field_height - 2.0f * border_width;
+    if (inner_w < 0.0f) inner_w = 0.0f;
+    if (inner_h < 0.0f) inner_h = 0.0f;
+
+    // Origin of inner area
+    HPDF_REAL ox = border_width;
+    HPDF_REAL oy = border_width;
+
+    // Make square
+    HPDF_REAL s = (inner_w < inner_h) ? inner_w : inner_h;
+    HPDF_REAL sx = ox + (inner_w - s) / 2.0f;
+    HPDF_REAL sy = oy + (inner_h - s) / 2.0f;
+
+    // Inset so stroke caps don't touch the border
+    HPDF_REAL inset = 1.0f;
+    sx += inset;
+    sy += inset;
+    s  -= 2.0f * inset;
+    if (s < 0.0f) s = 0.0f;
+
+    HPDF_REAL x1 = sx;
+    HPDF_REAL y1 = sy;
+    HPDF_REAL x2 = sx + s;
+    HPDF_REAL y2 = sy + s;
+
+    pbuf = (char *)HPDF_StrCpy (pbuf, "q\012", eptr);
+
+    pbuf = InternalWriteColorToBuf (pbuf, eptr, color, HPDF_FALSE);
+    *pbuf++ = '\012';
+
+    pbuf = (char *)HPDF_StrCpy (pbuf, "1 w\0120 J\0120 j\012", eptr);
+    pbuf = HPDF_FToA (pbuf, x1, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, y1, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+
+    pbuf = HPDF_FToA (pbuf, x2, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, y2, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " l\012S\012", eptr);
+
+    pbuf = HPDF_FToA (pbuf, x1, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, y2, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+
+    pbuf = HPDF_FToA (pbuf, x2, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, y1, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " l\012S\012Q\012", eptr);
+
+    return pbuf;
+}
+
+static char*
+InternalDrawCircle  (char       *pbuf,
+                     char       *eptr,
+                     HPDF_REAL  field_width,
+                     HPDF_REAL  field_height,
+                     HPDF_REAL  border_width,
+                     HPDF_Color color)
+{
+    // Inner drawable area
+    HPDF_REAL padding = border_width;
+    if (padding < 1.0f) padding = 1.0f;
+    HPDF_REAL circle_dia = field_width < field_height ? field_width : field_height;
+    HPDF_REAL usable_dia = circle_dia - 2.0f * padding;
+    if (usable_dia < 0.0f) usable_dia = 0.0f;
+    HPDF_REAL circle_x_offset = field_width  / 2.0f;
+    HPDF_REAL circle_y_offset = field_height / 2.0f;
+    HPDF_REAL circle_ray = usable_dia / 2.0f;
+
+    // Dot radius
+    HPDF_REAL dot_ray = usable_dia / 4.0f;
+    if (dot_ray < 0.0f) dot_ray = 0.0f;
+
+    pbuf = (char *)HPDF_StrCpy (pbuf, "q\012", eptr);
+
+    // Fill color
+    pbuf = InternalWriteColorToBuf(pbuf, eptr, color, HPDF_TRUE);
+    *pbuf++ = '\012';
+
+    // Draw circle path
+    pbuf = HPDF_FToA (pbuf, circle_x_offset - dot_ray, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, circle_y_offset, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+
+    pbuf = QuarterCircleA (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
+    pbuf = QuarterCircleB (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
+    pbuf = QuarterCircleC (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
+    pbuf = QuarterCircleD (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
+    pbuf = (char *)HPDF_StrCpy (pbuf, "f\012Q\012", eptr);
+
+    return pbuf;
+}
+
+static char*
+InternalDrawBorder  (char      *pbuf,
+                     char      *eptr,
+                     HPDF_REAL field_width,
+                     HPDF_REAL field_height,
+                     HPDF_REAL border_width)
+{
+    pbuf = (char *)HPDF_StrCpy (pbuf, "q\012", eptr);
+    pbuf = HPDF_FToA (pbuf, 0, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " G\012", eptr);
+    pbuf = HPDF_FToA (pbuf, border_width, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " w\012", eptr);
+
+    // rectangle
+    HPDF_REAL box_offset = border_width / 2.0f;
+    pbuf = HPDF_FToA (pbuf, box_offset, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, box_offset, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, field_width - border_width, eptr);
+    *pbuf++ = ' ';
+    pbuf = HPDF_FToA (pbuf, field_height - border_width, eptr);
+    pbuf = (char *)HPDF_StrCpy (pbuf, " re\012S\012Q\012", eptr);
+
+    return pbuf;
 }
 
 static char*
@@ -4041,6 +4432,8 @@ InternalAnnotationMatrix  (HPDF_MMgr mmgr,
  * rotation - The rotation
  * color - The radio button color
  * selected - States if the radio button should be selected
+ * styling - The style of the radio button (checkmark, circle, cross)
+ * border_width - The border width of the radio button
  */
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_RadioButtonField  (HPDF_Page              page,
@@ -4055,7 +4448,9 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
                              HPDF_BOOL              print,
                              HPDF_INT               rotation,
                              HPDF_Color             color,
-                             HPDF_BOOL              selected)
+                             HPDF_BOOL              selected,
+                             HPDF_FieldStyle        styling,
+                             HPDF_REAL              border_width)
 {
     HPDF_Dict annot;
     HPDF_STATUS ret = HPDF_OK;
@@ -4098,15 +4493,18 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
         ret += HPDF_Dict_AddNumber (annot, "F", 0);
     }
 
-    // BS
-    HPDF_Dict bs = HPDF_Dict_New (page->mmgr);
-    if (!bs) {
-        HPDF_CheckError (page->error);
-        return NULL;
+    /* BS */
+    if (border_width > 0) {
+        HPDF_Dict bs = HPDF_Dict_New (page->mmgr);
+        if (!bs) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
+        ret += HPDF_Dict_AddName (bs, "Type", "Border");
+        ret += HPDF_Dict_AddReal (bs, "W", border_width);
+        ret += HPDF_Dict_AddName (bs, "S", "S");
+        ret += HPDF_Dict_Add (annot, "BS", bs);
     }
-    ret += HPDF_Dict_AddName (bs, "S", "S");
-    ret += HPDF_Dict_AddNumber (bs, "W", 1);
-    ret += HPDF_Dict_Add (annot, "BS", bs);
 
     // Rect
     HPDF_Array rectArray = HPDF_Array_New (page->mmgr);
@@ -4164,27 +4562,36 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
         return NULL;
     }
 
-    // /BG
-    HPDF_Array bgArray = HPDF_Array_New (page->mmgr);
-    if (!bgArray) {
-        HPDF_CheckError (page->error);
-        return NULL;
-    }
-    ret += HPDF_Array_AddNumber (bgArray, 1);
-    ret += HPDF_Dict_Add (mk, "BG", bgArray);
-
     // /BC
-    HPDF_Array bcArray = HPDF_Array_New (page->mmgr);
-    if (!bcArray) {
-        HPDF_CheckError (page->error);
-        return NULL;
+    if (border_width > 0) {
+        HPDF_Array bcArray = HPDF_Array_New (page->mmgr);
+        if (!bcArray) {
+            HPDF_CheckError (page->error);
+            return NULL;
+        }
+        ret += HPDF_Array_AddNumber (bcArray, 0);
+        ret += HPDF_Dict_Add (mk, "BC", bcArray);
     }
-    ret += HPDF_Array_AddNumber (bcArray, 0);
-    ret += HPDF_Dict_Add (mk, "BC", bcArray);
 
     if (rotation && rotation != 0 && (rotation % 90) == 0) {
         ret += HPDF_Dict_AddNumber (mk, "R", rotation);
     }
+
+    // /CA
+    const char *ca_value;
+    if (styling == HPDF_FIELD_STYLE_CROSS) {
+        ca_value = "8";
+    } else if (styling == HPDF_FIELD_STYLE_CHECKMARK) {
+        ca_value = "4";
+    } else {
+        ca_value = "l";
+    }
+    HPDF_String textFieldValue = HPDF_String_New (page->mmgr, ca_value, NULL);
+    if (!textFieldValue) {
+        HPDF_CheckError (page->error);
+        return NULL;
+    }
+    ret += HPDF_Dict_Add (mk, "CA", textFieldValue);
 
     ret += HPDF_Dict_Add (annot, "MK", mk);
 
@@ -4224,41 +4631,48 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
         field_height = fabs(top - bottom);
     }
     HPDF_REAL circle_dia = field_width < field_height ? field_width : field_height;
-    HPDF_REAL circle_ray = circle_dia / 2.0;
-    HPDF_REAL circle_x_offset = field_width / 2;
-    HPDF_REAL circle_y_offset = field_height / 2;
-    circle_ray -= 0.5;
+    HPDF_REAL circle_x_offset = field_width  / 2.0f;
+    HPDF_REAL circle_y_offset = field_height / 2.0f;
+    HPDF_REAL circle_ray = (circle_dia * 0.5f) - (border_width * 0.5f);
+    if (circle_ray < 0.0f) circle_ray = 0.0f;
 
-    // draw outer circle
-    pbuf = HPDF_FToA (pbuf, 0, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " G\012", eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, "1 w\012", eptr);
-    pbuf = HPDF_FToA (pbuf, circle_x_offset - circle_ray, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, circle_y_offset, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+    /* outer part */
+    if (border_width > 0) {
+        if (styling == HPDF_FIELD_STYLE_CROSS || styling == HPDF_FIELD_STYLE_CHECKMARK) {
+            // Print Box []
+            pbuf = InternalDrawBorder (pbuf, eptr, field_width, field_height, border_width);
+        } else {
+            /* Print Outer Circle */
+            pbuf = (char *)HPDF_StrCpy (pbuf, "q\012", eptr);
+            pbuf = HPDF_FToA (pbuf, 0, eptr);
+            pbuf = (char *)HPDF_StrCpy (pbuf, " G\012", eptr);
+            pbuf = HPDF_FToA (pbuf, border_width, eptr);
+            pbuf = (char *)HPDF_StrCpy (pbuf, " w\012", eptr);
 
-    pbuf = QuarterCircleA (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = QuarterCircleB (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = QuarterCircleC (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = QuarterCircleD (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = (char *)HPDF_StrCpy (pbuf, "s\012", eptr);
+            pbuf = HPDF_FToA (pbuf, circle_x_offset - circle_ray, eptr);
+            *pbuf++ = ' ';
+            pbuf = HPDF_FToA (pbuf, circle_y_offset, eptr);
+            pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
 
-    // draw inner dot
-    HPDF_REAL dot_ray = (circle_dia / 4.0) - 0.5;
-    pbuf = InternalWriteColorToBuf (pbuf, eptr, color, HPDF_TRUE);
-    *pbuf++ = '\012';
+            pbuf = QuarterCircleA (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = QuarterCircleB (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = QuarterCircleC (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = QuarterCircleD (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = (char *)HPDF_StrCpy (pbuf, "s\012Q\012", eptr);
+        }
+    }
 
-    pbuf = HPDF_FToA (pbuf, circle_x_offset - dot_ray, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, circle_y_offset, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
-
-    pbuf = QuarterCircleA (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
-    pbuf = QuarterCircleB (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
-    pbuf = QuarterCircleC (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
-    pbuf = QuarterCircleD (pbuf, eptr, circle_x_offset, circle_y_offset, dot_ray);
-    pbuf = (char *)HPDF_StrCpy (pbuf, "f\012", eptr);
+    /* inner part */
+    if (styling == HPDF_FIELD_STYLE_CROSS) {
+        // Cross
+        pbuf = InternalDrawCross (pbuf, eptr, field_width, field_height, border_width, color);
+    } else if (styling == HPDF_FIELD_STYLE_CHECKMARK) {
+        // Checkmark
+        pbuf = InternalDrawCheckmark (pbuf, eptr, field_width, field_height, border_width, color);
+    } else {
+        // Circle
+        pbuf = InternalDrawCircle (pbuf, eptr, field_width, field_height, border_width, color);
+    }
 
     ret += HPDF_Stream_WriteStr (selected_stream->stream, selected_buf);
 
@@ -4298,20 +4712,31 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
     eptr = off_buf + HPDF_TMP_BUF_SIZ - 1;
     HPDF_MemSet (off_buf, 0, HPDF_TMP_BUF_SIZ);
 
-    // draw outer circle
-    pbuf = HPDF_FToA (pbuf, 0, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " G\012", eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, "1 w\012", eptr);
-    pbuf = HPDF_FToA (pbuf, circle_x_offset - circle_ray, eptr);
-    *pbuf++ = ' ';
-    pbuf = HPDF_FToA (pbuf, circle_y_offset, eptr);
-    pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+    /* outer part */
+    if (border_width > 0) {
+        if (styling == HPDF_FIELD_STYLE_CROSS || styling == HPDF_FIELD_STYLE_CHECKMARK) {
+            // Print Box []
+            pbuf = InternalDrawBorder (pbuf, eptr, field_width, field_height, border_width);
+        } else {
+            /* Print Outer Circle */
+            pbuf = (char *)HPDF_StrCpy (pbuf, "q\012", eptr);
+            pbuf = HPDF_FToA (pbuf, 0, eptr);
+            pbuf = (char *)HPDF_StrCpy (pbuf, " G\012", eptr);
+            pbuf = HPDF_FToA (pbuf, border_width, eptr);
+            pbuf = (char *)HPDF_StrCpy (pbuf, " w\012", eptr);
 
-    pbuf = QuarterCircleA (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = QuarterCircleB (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = QuarterCircleC (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = QuarterCircleD (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
-    pbuf = (char *)HPDF_StrCpy (pbuf, "s\012", eptr);
+            pbuf = HPDF_FToA (pbuf, circle_x_offset - circle_ray, eptr);
+            *pbuf++ = ' ';
+            pbuf = HPDF_FToA (pbuf, circle_y_offset, eptr);
+            pbuf = (char *)HPDF_StrCpy (pbuf, " m\012", eptr);
+
+            pbuf = QuarterCircleA (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = QuarterCircleB (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = QuarterCircleC (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = QuarterCircleD (pbuf, eptr, circle_x_offset, circle_y_offset, circle_ray);
+            pbuf = (char *)HPDF_StrCpy (pbuf, "s\012Q\012", eptr);
+        }
+    }
 
     ret += HPDF_Stream_WriteStr (off_stream->stream, off_buf);
 

@@ -667,6 +667,15 @@ typedef enum _HPDF_Placement {
     HPDF_PLACEMENT_END
 } HPDF_Placement;
 
+/*----------------------------------------------------------------------------*/
+/*------ field style ---------------------------------------------------------*/
+
+typedef enum _HPDF_FieldStyle {
+    HPDF_FIELD_STYLE_CROSS = 0,
+    HPDF_FIELD_STYLE_CHECKMARK,
+    HPDF_FIELD_STYLE_CIRCLE,
+} HPDF_FieldStyle;
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

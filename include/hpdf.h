@@ -1837,7 +1837,8 @@ HPDF_Page_TextField  (HPDF_Page            page,
                       HPDF_INT             rotation,
                       HPDF_Font            font,
                       HPDF_REAL            font_size,
-                      HPDF_Color           color);
+                      HPDF_Color           color,
+                      HPDF_REAL            border_width);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_SignatureField (HPDF_Page      page,
@@ -1851,17 +1852,20 @@ HPDF_Page_SignatureField (HPDF_Page      page,
                           HPDF_INT       rotation);
 
 HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CheckboxField  (HPDF_Page      page,
-                          HPDF_Doc       pdf,
-                          HPDF_REAL      left,
-                          HPDF_REAL      top,
-                          HPDF_REAL      right,
-                          HPDF_REAL      bottom,
-                          const char     *name,
-                          HPDF_BOOL      print,
-                          HPDF_INT       rotation,
-                          HPDF_Color     color,
-                          HPDF_BOOL      checked);
+HPDF_Page_CheckboxField  (HPDF_Page       page,
+                          HPDF_Doc        pdf,
+                          HPDF_REAL       left,
+                          HPDF_REAL       top,
+                          HPDF_REAL       right,
+                          HPDF_REAL       bottom,
+                          const char      *name,
+                          HPDF_BOOL       print,
+                          HPDF_INT        rotation,
+                          HPDF_Color      color,
+                          HPDF_BOOL       checked,
+                          HPDF_UINT       flag,
+                          HPDF_FieldStyle styling,
+                          HPDF_REAL       border_width);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_RadioButtonField  (HPDF_Page              page,
@@ -1876,7 +1880,9 @@ HPDF_Page_RadioButtonField  (HPDF_Page              page,
                              HPDF_BOOL              print,
                              HPDF_INT               rotation,
                              HPDF_Color             color,
-                             HPDF_BOOL              selected);
+                             HPDF_BOOL              selected,
+                             HPDF_FieldStyle        styling,
+                             HPDF_REAL              border_width);
 
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_SetTextPlacementAccuracy (HPDF_Doc  pdf,
