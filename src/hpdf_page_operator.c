@@ -3658,7 +3658,8 @@ HPDF_Page_SignatureField (HPDF_Page      page,
                           HPDF_REAL      bottom,
                           const char     *name,
                           HPDF_BOOL      print,
-                          HPDF_INT       rotation)
+                          HPDF_INT       rotation,
+                          HPDF_UINT      flag)
 {
     HPDF_Dict signatureField;
     HPDF_STATUS ret;
@@ -3698,6 +3699,11 @@ HPDF_Page_SignatureField (HPDF_Page      page,
 
     /* FT */
     ret += HPDF_Dict_AddName (signatureField, "FT", "Sig");
+
+    /* Ff */
+    if (flag > 0) {
+        ret += HPDF_Dict_AddNumber (signatureField, "Ff", flag);
+    }
 
     /* T */
     HPDF_String signatureFieldName = HPDF_String_New (page->mmgr, name, NULL);

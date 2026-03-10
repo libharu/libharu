@@ -1849,7 +1849,8 @@ HPDF_Page_SignatureField (HPDF_Page      page,
                           HPDF_REAL      bottom,
                           const char     *name,
                           HPDF_BOOL      print,
-                          HPDF_INT       rotation);
+                          HPDF_INT       rotation,
+                          HPDF_UINT      flag);
 
 HPDF_EXPORT(HPDF_Annotation)
 HPDF_Page_CheckboxField  (HPDF_Page       page,
