@@ -161,7 +161,7 @@ begin
     draw_line2 (page, 60, 505, 'PDF_ROUND_END');
 
     HPDF_Page_SetLineCap (page, HPDF_PROJECTING_SQUARE_END);
-    draw_line2 (page, 60, 440, 'PDF_PROJECTING_SCUARE_END');
+    draw_line2 (page, 60, 440, 'PDF_PROJECTING_SQUARE_END');
 
     {* Line Join Style *}
     HPDF_Page_SetLineWidth (page, 30);
