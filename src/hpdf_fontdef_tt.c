@@ -1369,6 +1369,9 @@ ParseHmtx  (HPDF_FontDef  fontdef)
     if (ret != HPDF_OK)
         return ret;
 
+    if (attr->num_h_metric > attr->num_glyphs)
+        HPDF_SetError(fontdef->error, HPDF_TTF_INVALID_FOMAT,0);
+
     /* allocate memory for a table of holizontal matrix.
      * the count of metric records is same as the number of glyphs
      */
