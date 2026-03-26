@@ -149,7 +149,7 @@ BEGIN
     draw_line2 (page, 60, 505, w.GetPSTR('PDF_ROUND_END'));
 
     h.HPDF_Page_SetLineCap (page, h.HPDF_PROJECTING_SQUARE_END);
-    draw_line2 (page, 60, 440, w.GetPSTR('PDF_PROJECTING_SCUARE_END'));
+    draw_line2 (page, 60, 440, w.GetPSTR('PDF_PROJECTING_SQUARE_END'));
 
     (* Line Join Style *)
     h.HPDF_Page_SetLineWidth (page, 30);
