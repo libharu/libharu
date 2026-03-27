@@ -20,6 +20,9 @@
 #include "hpdf_catalog.h"
 #include "hpdf_pages.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_error_internal.h"
+
 static const char * const HPDF_PAGE_LAYOUT_NAMES[] = {
                         "SinglePage",
                         "OneColumn",

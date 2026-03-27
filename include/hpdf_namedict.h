@@ -24,54 +24,70 @@
 extern "C" {
 #endif
 
-
 HPDF_NameDict
-HPDF_NameDict_New  (HPDF_MMgr  mmgr,
-                    HPDF_Xref  xref);
+HPDF_NameDict_New(
+    HPDF_MMgr mmgr,
+    HPDF_Xref xref
+);
 
 HPDF_NameTree
-HPDF_NameDict_GetNameTree  (HPDF_NameDict     namedict,
-                            HPDF_NameDictKey  key);
+HPDF_NameDict_GetNameTree(
+    HPDF_NameDict    namedict,
+    HPDF_NameDictKey key
+);
 
 HPDF_STATUS
-HPDF_NameDict_SetNameTree  (HPDF_NameDict     namedict,
-                            HPDF_NameDictKey  key,
-                            HPDF_NameTree     tree);
+HPDF_NameDict_SetNameTree(
+    HPDF_NameDict    namedict,
+    HPDF_NameDictKey key,
+    HPDF_NameTree    tree
+);
 
 HPDF_BOOL
-HPDF_NameDict_Validate  (HPDF_NameDict  namedict);
-
+HPDF_NameDict_Validate(
+    HPDF_NameDict namedict
+);
 
 /*------- NameTree -------*/
 
 HPDF_NameTree
-HPDF_NameTree_New  (HPDF_MMgr  mmgr,
-                    HPDF_Xref  xref);
+HPDF_NameTree_New(
+    HPDF_MMgr mmgr,
+    HPDF_Xref xref
+);
 
 HPDF_STATUS
-HPDF_NameTree_Add  (HPDF_NameTree  tree,
-                    HPDF_String    name,
-                    void          *obj);
+HPDF_NameTree_Add(
+    HPDF_NameTree tree,
+    HPDF_String   name,
+    void*         obj
+);
 
 HPDF_STATUS
-HPDF_NameTree_Add_String  (HPDF_NameTree  tree,
-                           const char    *name,
-                           const char    *value);
+HPDF_NameTree_Add_String(
+    HPDF_NameTree tree,
+    const char*   name,
+    const char*   value
+);
 
 HPDF_BOOL
-HPDF_NameTree_Validate  (HPDF_NameTree  tree);
-
+HPDF_NameTree_Validate(
+    HPDF_NameTree tree
+);
 
 /*------- EmbeddedFile -------*/
 
 HPDF_EmbeddedFile
-HPDF_EmbeddedFile_New  (HPDF_MMgr  mmgr,
-                        HPDF_Xref  xref,
-                        const char *file);
+HPDF_EmbeddedFile_New(
+    HPDF_MMgr   mmgr,
+    HPDF_Xref   xref,
+    const char* file
+);
 
 HPDF_BOOL
-HPDF_EmbeddedFile_Validate  (HPDF_EmbeddedFile  emfile);
-
+HPDF_EmbeddedFile_Validate(
+    HPDF_EmbeddedFile emfile
+);
 
 #ifdef __cplusplus
 }

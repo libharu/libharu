@@ -15,25 +15,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include "hpdf.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
-
 
 void
 print_page  (HPDF_Page   page,  int page_num)
@@ -45,11 +27,7 @@ print_page  (HPDF_Page   page,  int page_num)
 
     HPDF_Page_BeginText (page);
     HPDF_Page_MoveTextPos (page, 50, 250);
-#ifdef __WIN32__
-    _snprintf(buf, 50, "Page:%d", page_num);
-#else
-    snprintf(buf, 50, "Page:%d", page_num);
-#endif
+    HPDF_snprintf(buf, 50, "Page:%d", page_num);
     HPDF_Page_ShowText (page, buf);
     HPDF_Page_EndText (page);
 }
@@ -82,7 +60,7 @@ int main(int argc, char **argv)
     fgets (SAMP_TXT, 2048, f);
     fclose (f);
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;

@@ -12,35 +12,17 @@
  *
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+
+#ifdef LIBHPDF_ASIAN_SUPPORT
+
+#include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
-
-#ifdef __WIN32__
-const char* FILE_SEPARATOR = "\\";
-#else
-const char* FILE_SEPARATOR = "/";
-#endif
+#include "handler.h"
+#include "utils.h"
 
 int
 main (int argc, char **argv)
@@ -83,7 +65,7 @@ main (int argc, char **argv)
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -146,3 +128,13 @@ main (int argc, char **argv)
     return 0;
 }
 
+#else /* LIBHPDF_ASIAN_SUPPORT */
+
+int main()
+{
+    printf("WARNING: chfont_demo was not built correctly. \n"
+           "Make sure Asian support is enabled, see LIBHPDF_ASIAN_SUPPORT.\n");
+    return 0;
+}
+
+#endif /* LIBHPDF_ASIAN_SUPPORT */

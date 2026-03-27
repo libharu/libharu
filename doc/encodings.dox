@@ -1,0 +1,78 @@
+/**
+  \page encodings Encodings
+
+  \section single-byte-enc Single-Byte Encodings
+
+  The following single-byte character sets are available in `libHaru`. 
+
+  Application can get encoding handle by using HPDF_GetEncoder().
+
+
+#  | Encoding type    | Description
+-- | -------------    | -----------
+1  | StandardEncoding | Default PDF encoding
+2  | MacRomanEncoding | Standard Mac OS encoding
+3  | WinAnsiEncoding  | Standard Windows encoding
+4  | FontSpecific     | Use font built-in encoding
+5  | ISO8859-2        | Latin Alphabet No.2
+6  | ISO8859-3        | Latin Alphabet No.3
+7  | ISO8859-4        | Latin Alphabet No.4
+8  | ISO8859-5        | Latin/Cyrillic Alphabet
+9  | ISO8859-6        | Latin/Arabic Alphabet
+10 | ISO8859-7        | Latin/Greek Alphabet
+11 | ISO8859-8        | Latin/Hebrew Alphabet
+12 | ISO8859-9        | Latin/Alphabet No. 5
+13 | ISO8859-10       | Latin Alphabet No. 6
+14 | ISO8859-11       | Latin/Thai, TIS 620-2533 character set
+15 | ISO8859-13       | Latin Alphabet No. 7
+16 | ISO8859-14       | Latin Alphabet No. 8
+17 | ISO8859-15       | Latin Alphabet No. 9
+18 | ISO8859-16       | Latin Alphabet No. 10
+19 | CP1250           | Windows Codepage 1250 (East European)
+20 | CP1251           | Windows Codepage 1251 (Cyrillic)
+21 | CP1252           | Windows Codepage 1252 (ANSI)
+22 | CP1253           | Windows Codepage 1253 (Greek)
+23 | CP1254           | Windows Codepage 1254 (Turkish)
+24 | CP1255           | Windows Codepage 1255 (Hebrew)
+25 | CP1256           | Windows Codepage 1256 (Arabic)
+26 | CP1257           | Windows Codepage 1257 (Baltic)
+27 | CP1258           | Windows Codepage 1258 (Vietamese)
+28 | KOI8-R           | Russian Net Character Set
+
+  \section multi-byte-enc Multibyte Encodings
+
+The following character sets for multibyte characters are available in `libHaru`.
+
+#  | Encoding type  | Description
+-- | -------------  | -----------
+1  | GB-EUC-H       | EUC-CN encoding
+2  | GB-EUC-V       | Vertical writing version of GB-EUC-H
+3  | GBK-EUC-H      | Microsoft Code Page 936 (lfCharSet 0x86) GBK encoding
+4  | GBK-EUC-V      | Vertical writing version of GBK-EUC-H
+5  | ETen-B5-H      | Microsoft Code Page 950 (lfCharSet 0x88) Big Five character set with ETen extensions
+6  | ETen-B5-V      | Vertical writing version of ETen-B5-H
+7  | 90ms-RKSJ-H    | Microsoft Code Page 932, JIS X 0208 character
+8  | 90ms-RKSJ-V    | Vertical writing version of 90ms-RKSJ-V
+9  | 90msp-RKSJ-H   | Microsoft Code Page 932, JIS X 0208 character (proportional)
+10 | EUC-H          | JIS X 0208 character set, EUC-JP encoding
+11 | EUC-V          | Vertical writing version of EUC-H
+12 | KSC-EUC-H      | KS X 1001:1992 character set, EUC-KR encoding
+13 | KSC-EUC-V      | Vertical writing version of KSC-EUC-V
+14 | KSCms-UHC-H    | Microsoft Code Page 949 (lfCharSet 0x81), KS X 1001:1992 character set plus 8822 additional hangul, Unified Hangul Code (UHC) encoding (proportional)
+15 | KSCms-UHC-HW-H | Microsoft Code Page 949 (lfCharSet 0x81), KS X 1001:1992 character set plus 8822 additional hangul, Unified Hangul Code (UHC) encoding (fixed width)
+16 | KSCms-UHC-HW-V | Vertical writing version of KSCms-UHC-HW-H
+
+Application has to call following functions before using multibyte encodings.
+
+# | Function Name          | Description
+- | -------------          | -----------
+1 | HPDF_UseCNSEncodings() | Enables Chinese encodings `GB-EUC-H`, `GB-EUC-V`, `GBK-EUC-H` and `GBK-EUC-V`
+2 | HPDF_UseCNTEncodings() | Enables traditional Chinese encodings `ETen-B5-H` and `ETen-B5-V`
+3 | HPDF_UseJPEncodings()  | Enables Japanese encodings `(90ms-RKSJ-H`, `90ms-RKSJ-V`, `90msp-RKSJ-H`, `EUC-H` and `EUC-V`
+4 | HPDF_UseKREncodings()  | Enables Korean encodings `KSC-EUC-H`, `KSC-EUC-V`, `KSCms-UHC-H`, `KSCms-UHC-HW-H` and `KSCms-UHC-HW-V`
+
+  \section utf8-encoding UTF-8 Encoding
+
+  \todo Write UTF-8 topic, \ref HPDF_UseUTFEncodings()
+
+*/

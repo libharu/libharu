@@ -16,26 +16,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
+#include "handler.h"
+#include "utils.h"
 
 int no = 0;
 
@@ -46,11 +30,7 @@ PrintText(HPDF_Page page)
     HPDF_Point pos = HPDF_Page_GetCurrentTextPos (page);
 
     no++;
-    #ifdef __WIN32__
-    _snprintf (buf, 512, ".[%d]%0.2f %0.2f", no, pos.x, pos.y);
-    #else
-    snprintf (buf, 512, ".[%d]%0.2f %0.2f", no, pos.x, pos.y);
-    #endif
+    HPDF_snprintf (buf, 512, ".[%d]%0.2f %0.2f", no, pos.x, pos.y);
     HPDF_Page_ShowText(page, buf);
 }
 
@@ -58,7 +38,6 @@ PrintText(HPDF_Page page)
 int
 main (int argc, char **argv)
 {
-    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     HPDF_Page page;
     char fname[256];
@@ -68,13 +47,14 @@ main (int argc, char **argv)
     float rad1;
     float rad2;
     HPDF_Rect rect;
+    int i;
 
     const char* SAMP_TXT = "The quick brown fox jumps over the lazy dog. ";
 
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -183,8 +163,8 @@ main (int argc, char **argv)
 
     angle1 = 5;
     angle2 = 10;
-    rad1 = angle1 / 180 * 3.141592;
-    rad2 = angle2 / 180 * 3.141592;
+    rad1 = angle1 / 180 * HPDF_PI;
+    rad2 = angle2 / 180 * HPDF_PI;
 
     HPDF_Page_Concat (page, 1, tan(rad1), tan(rad2), 1, 25, 350);
     rect.left = 0;
@@ -214,7 +194,7 @@ main (int argc, char **argv)
     HPDF_Page_GSave (page);
 
     angle1 = 5;
-    rad1 = angle1 / 180 * 3.141592;
+    rad1 = angle1 / 180 * HPDF_PI;
 
     HPDF_Page_Concat (page, cos(rad1), sin(rad1), -sin(rad1), cos(rad1), 220, 350);
     rect.left = 0;
@@ -253,13 +233,13 @@ main (int argc, char **argv)
     font = HPDF_GetFont (pdf, "Courier-Bold", NULL);
     HPDF_Page_SetFontAndSize (page, font, 30);
 
-    for (unsigned int i = 0; i < strlen (SAMP_TXT); i++) {
+    for (i = 0; i < strlen (SAMP_TXT); i++) {
         char buf[2];
         float x;
         float y;
 
-        rad1 = (angle2 - 90) / 180 * 3.141592;
-        rad2 = angle2 / 180 * 3.141592;
+        rad1 = (angle2 - 90) / 180 * HPDF_PI;
+        rad2 = angle2 / 180 * HPDF_PI;
 
         x = 210 + cos(rad2) * 122;
         y = 190 + sin(rad2) * 122;

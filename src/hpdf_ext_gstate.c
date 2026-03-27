@@ -20,6 +20,8 @@
 #include "hpdf_ext_gstate.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_objects_internal.h"
+
 static const char * const HPDF_BM_NAMES[] = {
                                       "Normal",
                                       "Multiply",

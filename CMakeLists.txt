@@ -8,10 +8,14 @@ string(REGEX MATCH "[0-9]+" HPDF_MAJOR_VERSION  ${HPDF_MAJOR_VERSION})
 string(REGEX MATCH "[0-9]+" HPDF_MINOR_VERSION  ${HPDF_MINOR_VERSION})
 string(REGEX MATCH "[0-9]+" HPDF_BUGFIX_VERSION ${HPDF_BUGFIX_VERSION})
 
+set(HPDF_VERSION ${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION})
+
 project(libharu
-    VERSION ${HPDF_MAJOR_VERSION}.${HPDF_MINOR_VERSION}.${HPDF_BUGFIX_VERSION}
-    DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
-    LANGUAGES C)
+    VERSION ${HPDF_VERSION}
+        DESCRIPTION "libHaru is a free, cross platform, open source library for generating PDF files."
+    LANGUAGES
+        C
+    )
 
 include(GNUInstallDirs)
 
@@ -22,10 +26,15 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 # =======================================================================
 # command line options
 # =======================================================================
-option(BUILD_SHARED_LIBS "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" ON)
+option(LIBHPDF_SHARED_LIB "Build shared libraries (.dll/.so) instead of static ones (.lib/.a)" ON)
 option(LIBHPDF_EXAMPLES "Build libharu examples" OFF)
 option(LIBHPDF_DEBUG "Enable HPDF Debug")
 option(LIBHPDF_DEBUG_TRACE "Enable HPDF Debug trace")
+
+option(LIBHPDF_ASIAN_SUPPORT "Build libharu with Asian language support" ON)
+option(LIBHPDF_U3D_SUPPORT "Build libharu with U3D feature enabled" ON)
+option(LIBHPDF_ANNOTATIONS_SUPPORT "Build libharu with annotations support" ON)
+
 
 # Enable exceptions on linux if required
 # (eg if you are using libharu in a C++ environment,
@@ -39,11 +48,22 @@ if (CMAKE_COMPILER_IS_GNUCC OR ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang"))
    endif (LIBHPDF_ENABLE_EXCEPTIONS)
 endif ()
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic")
+
+set(HPDF_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include" CACHE INTERNAL "")
 include_directories(${PROJECT_SOURCE_DIR}/include)
+set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
+
+if (${LIBHPDF_SHARED_LIB})
+  set(LIB_TYPE SHARED)
+else()
+  set(LIB_TYPE STATIC)
+endif()
 
 # =======================================================================
 # look for headers and libraries
 # =======================================================================
+include(haru)
 include(summary)
 
 # check zlib availability
@@ -119,6 +139,7 @@ set(
     include/hpdf_objects.h
     include/hpdf_outline.h
     include/hpdf_pages.h
+    include/hpdf_page_sizes.h
     include/hpdf_page_label.h
     include/hpdf_streams.h
     include/hpdf_u3d.h
@@ -131,11 +152,19 @@ set(
 )
 
 # install header files
-install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${haru_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/hpdf-${HPDF_VERSION})
 
 # install various files
 install(FILES README.md CHANGES DESTINATION ${CMAKE_INSTALL_DOCDIR})
 install(DIRECTORY bindings DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
+# pkg-config file
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/hpdf.pc.in
+               ${CMAKE_CURRENT_BINARY_DIR}/hpdf.pc @ONLY IMMEDIATE )
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/hpdf.pc"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+        COMPONENT "libhpdf_dev")
+
 
 # =======================================================================
 # print out some information

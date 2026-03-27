@@ -15,25 +15,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include "hpdf.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
+#include "handler.h"
+#include "utils.h"
 
 void
 draw_image (HPDF_Doc     pdf,
@@ -42,11 +26,6 @@ draw_image (HPDF_Doc     pdf,
             float        y,
             const char  *text)
 {
-#ifdef __WIN32__
-    const char* FILE_SEPARATOR = "\\";
-#else
-    const char* FILE_SEPARATOR = "/";
-#endif
     char filename1[255];
 
     HPDF_Page page = HPDF_GetCurrentPage (pdf);
@@ -74,7 +53,6 @@ draw_image (HPDF_Doc     pdf,
 
 int main (int argc, char **argv)
 {
-    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     HPDF_Font font;
     HPDF_Page page;
@@ -84,7 +62,7 @@ int main (int argc, char **argv)
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;

@@ -1,3 +1,15 @@
+# Disclaimer
+
+This repository https://github.com/dmitrys99/libharu is my personal bugfixes and library development since I use it in several personal pet projects.
+
+Please take a look to library [documentation](https://dmitrys99.github.io/libharu-dox/index.html) which was the start of this repository.
+
+I've created [roadmap](https://dmitrys99.github.io/libharu-dox/roadmap.html) and try to follow it in development.
+
+Fill free to add PRs. Main branch is `development`.
+
+Official library repository is https://github.com/libharu/libharu
+
 # Haru Free PDF Library [![Build Status](https://github.com/libharu/libharu/actions/workflows/cmake.yml/badge.svg)](https://github.com/libharu/libharu/actions/workflows/cmake.yml)
 
   **URL http://libharu.org/**
@@ -17,11 +29,12 @@ PDF. It supports the following features.
    1. Generating PDF files with lines, text, images.
    2. Outline, text annotation, link annotation.
    3. Compressing document with deflate-decode.
-   4. Embedding PNG, Jpeg images.
-   5. Embedding Type1 font and TrueType font.
+   4. Embedding PNG, JPEG images.
+   5. Embedding Type1 font and TrueType fonts.
    6. Creating encrypted PDF files.
    7. Using various character set (ISO8859-1\~16, MSCP1250\~8, KOI8-R).
    8. Supporting CJK fonts and encodings.
+   9. UTF-8 support.
 
 You can add the feature of PDF creation by using Haru without understanding 
 complicated internal structure of PDF.
@@ -132,7 +145,7 @@ to the following restrictions:
    We wish to thank all users of Haru.
    In particular, we thank Thomas Nimstad, LeslieM, Par Hogberg, adenelson, 
    Riccardo Cohen, sea_sbs, Andrew. 
-   They gave me very useful advice.
+   They gave me very useful advices.
 
 3. Adobe Systems Inc.
    We thank Adobe Systems Inc. for publishing PDF specification.

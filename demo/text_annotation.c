@@ -15,30 +15,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include "hpdf.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
-
+#include "handler.h"
+#include "utils.h"
 
 int main(int argc, char **argv)
 {
-    (void) argc; /* Not used */
     HPDF_Rect rect1 = {50, 350, 150, 400};
     HPDF_Rect rect2 = {210, 350, 350, 400};
     HPDF_Rect rect3 = {50, 250, 150, 300};
@@ -58,7 +40,7 @@ int main(int argc, char **argv)
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -117,8 +99,12 @@ int main(int argc, char **argv)
 
     encoding = HPDF_GetEncoder (pdf, "ISO8859-2");
 
+    const char *annotation_text = "Annotation with ISO8859 text %s";
+    char buf[50] = {0};
+    HPDF_snprintf(buf, 50, annotation_text, iso8859_2_text);
+
     HPDF_Page_CreateTextAnnot (page, rect8,
-                "Annotation with ISO8859 text гдежзий", encoding);
+                buf, encoding);
 
     HPDF_Page_SetFontAndSize (page, font, 11);
 

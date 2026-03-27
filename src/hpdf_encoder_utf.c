@@ -22,6 +22,9 @@
 #include "hpdf_encoder.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_encoder_internal.h"
+
 typedef struct _UTF8_EncoderAttr_Rec  *UTF8_EncoderAttr;
 typedef struct  _UTF8_EncoderAttr_Rec {
       HPDF_BYTE           current_byte;
@@ -132,7 +135,6 @@ static HPDF_UNICODE
 UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
                               HPDF_UINT16    code)
 {
-    (void) code; /* Required by signature, but not used here */
     // Supposed to convert CODE to unicode.
     // This function is always called after ByteType_Func.
     // ByteType_Func recognizes the utf-8 bytes belonging to one character.

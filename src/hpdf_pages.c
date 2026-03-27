@@ -18,61 +18,27 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf.h"
-#include "hpdf_annotation.h"
 #include "hpdf_destination.h"
-#include "hpdf_3dmeasure.h"
-#include "hpdf_exdata.h"
-#include "hpdf_u3d.h"
+
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_pages_internal.h"
+#include "internal/hpdf_list_internal.h"
+#include "internal/hpdf_gstate_internal.h"
 
 /*----------------------------------------------------------------------------*/
-
-typedef struct _HPDF_PageSizeValue {
-    HPDF_REAL   x;
-    HPDF_REAL   y;
-} HPDF_PageSizeValue;
-
-static const HPDF_PageSizeValue HPDF_PREDEFINED_PAGE_SIZES[] = {
-    {612, 792},     /* HPDF_PAGE_SIZE_LETTER */
-    {612, 1008},    /* HPDF_PAGE_SIZE_LEGAL */
-    {(HPDF_REAL)841.89, (HPDF_REAL)1190.551},    /* HPDF_PAGE_SIZE_A3 */
-    {(HPDF_REAL)595.276, (HPDF_REAL)841.89},     /* HPDF_PAGE_SIZE_A4 */
-    {(HPDF_REAL)419.528, (HPDF_REAL)595.276},     /* HPDF_PAGE_SIZE_A5 */
-    {(HPDF_REAL)708.661, (HPDF_REAL)1000.63},     /* HPDF_PAGE_SIZE_B4 */
-    {(HPDF_REAL)498.898, (HPDF_REAL)708.661},     /* HPDF_PAGE_SIZE_B5 */
-    {522, 756},     /* HPDF_PAGE_SIZE_EXECUTIVE */
-    {288, 432},     /* HPDF_PAGE_SIZE_US4x6 */
-    {288, 576},     /* HPDF_PAGE_SIZE_US4x8 */
-    {360, 504},     /* HPDF_PAGE_SIZE_US5x7 */
-    {297, 684}      /* HPDF_PAGE_SIZE_COMM10 */
-};
-
-
-static const HPDF_RGBColor DEF_RGB_COLOR = {0, 0, 0};
-
-static const HPDF_CMYKColor DEF_CMYK_COLOR = {0, 0, 0, 0};
-
 
 static HPDF_STATUS
 Pages_BeforeWrite  (HPDF_Dict    obj);
 
-
 static HPDF_STATUS
 Page_BeforeWrite  (HPDF_Dict    obj);
-
 
 static void
 Page_OnFree  (HPDF_Dict  obj);
 
-
 static HPDF_STATUS
 AddResource  (HPDF_Page  page);
-
-
-static HPDF_STATUS
-AddAnnotation  (HPDF_Page        page,
-                HPDF_Annotation  annot);
-
-
 
 static HPDF_UINT
 GetPageCount  (HPDF_Dict    pages);
@@ -459,7 +425,7 @@ AddResource  (HPDF_Page  page)
     if (!resource)
         return HPDF_Error_GetCode (page->error);
 
-    /* Although ProcSet-entry is obsolete, add it to resource for
+    /* althoth ProcSet-entry is obsolete, add it to resource for
      * compatibility
      */
 
@@ -587,6 +553,7 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
     HPDF_Dict resource;
     HPDF_Dict fromxobject;
     HPDF_Dict xobject;
+    HPDF_STATUS ret;
     HPDF_Array procset;
     HPDF_REAL tmp;
     HPDF_Array array1;
@@ -607,19 +574,22 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
    if (!resource)
       return NULL;
 
-   /* Although ProcSet-entry is obsolete, add it to resource for
-    * compatibility
+   /* Although ProcSet entry is obsolete, add it to resource
+    * for compatibility.
     */
 
-   HPDF_Dict_Add (fromxobject, "Resources", resource);
+   ret = HPDF_Dict_Add (fromxobject, "Resources", resource);
 
    procset = HPDF_Array_New (page->mmgr);
    if (!procset)
       return NULL;
 
-   HPDF_Dict_Add (resource, "ProcSet", procset);
-   HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "PDF"));
-   HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageC"));
+   ret += HPDF_Dict_Add (resource, "ProcSet", procset);
+   ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "PDF"));
+   ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageC"));
+
+   if (ret != HPDF_OK)
+       return NULL;
 
     xobject = HPDF_Dict_New (page->mmgr);
     if (!xobject)
@@ -644,10 +614,10 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
       rect.bottom = tmp;
    }
 
-   HPDF_Array_AddReal (array1, rect.left);
-   HPDF_Array_AddReal (array1, rect.bottom);
-   HPDF_Array_AddReal (array1, rect.right);
-   HPDF_Array_AddReal (array1, rect.top);
+   ret += HPDF_Array_AddReal (array1, rect.left);
+   ret += HPDF_Array_AddReal (array1, rect.bottom);
+   ret += HPDF_Array_AddReal (array1, rect.right);
+   ret += HPDF_Array_AddReal (array1, rect.top);
 
     array2 = HPDF_Array_New (page->mmgr);
     if (!array2)
@@ -656,12 +626,12 @@ HPDF_Page_CreateXObjectFromImage(HPDF_Doc       pdf,
    if (HPDF_Dict_Add (fromxobject, "Matrix", array2) != HPDF_OK)
       return NULL;
 
-   HPDF_Array_AddReal (array2, 1.0);
-   HPDF_Array_AddReal (array2, 0.0);
-   HPDF_Array_AddReal (array2, 0.0);
-   HPDF_Array_AddReal (array2, 1.0);
-   HPDF_Array_AddReal (array2, 0.0);
-   HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 1.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 1.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
 
    if (HPDF_Dict_AddNumber (fromxobject, "FormType", 1) != HPDF_OK)
       return NULL;
@@ -716,6 +686,7 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
     HPDF_Dict resource;
     HPDF_Dict fromxobject;
     HPDF_Dict xobject;
+    HPDF_STATUS ret;
     HPDF_Array procset;
     HPDF_REAL tmp;
     HPDF_Array array1;
@@ -736,18 +707,22 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
    if (!resource)
       return NULL;
 
-   /* althoth ProcSet-entry is obsolete, add it to resource for
-    * compatibility*/
+   /* Although ProcSet entry is obsolete, add it to resource
+    * for compatibility
+    */
 
-   HPDF_Dict_Add (fromxobject, "Resources", resource);
+   ret = HPDF_Dict_Add (fromxobject, "Resources", resource);
 
    procset = HPDF_Array_New (page->mmgr);
    if (!procset)
       return NULL;
 
-   HPDF_Dict_Add (resource, "ProcSet", procset);
-   HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "PDF"));
-   HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageC"));
+   ret += HPDF_Dict_Add (resource, "ProcSet", procset);
+   ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "PDF"));
+   ret += HPDF_Array_Add (procset, HPDF_Name_New (page->mmgr, "ImageC"));
+
+   if (ret != HPDF_OK)
+       return NULL;
 
     xobject = HPDF_Dict_New (page->mmgr);
     if (!xobject)
@@ -769,10 +744,10 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
       rect.bottom = tmp;
    }
 
-   HPDF_Array_AddReal (array1, 0.0);
-   HPDF_Array_AddReal (array1, 0.0);
-   HPDF_Array_AddReal (array1, rect.right-rect.left);
-   HPDF_Array_AddReal (array1, rect.top-rect.bottom);
+   ret += HPDF_Array_AddReal (array1, 0.0);
+   ret += HPDF_Array_AddReal (array1, 0.0);
+   ret += HPDF_Array_AddReal (array1, rect.right-rect.left);
+   ret += HPDF_Array_AddReal (array1, rect.top-rect.bottom);
 
     array2 = HPDF_Array_New (page->mmgr);
     if (!array2)
@@ -781,12 +756,12 @@ HPDF_Page_CreateXObjectAsWhiteRect  (HPDF_Doc   pdf,
    if (HPDF_Dict_Add (fromxobject, "Matrix", array2) != HPDF_OK)
       return NULL;
 
-   HPDF_Array_AddReal (array2, 1.0);
-   HPDF_Array_AddReal (array2, 0.0);
-   HPDF_Array_AddReal (array2, 0.0);
-   HPDF_Array_AddReal (array2, 1.0);
-   HPDF_Array_AddReal (array2, 0.0);
-   HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 1.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 1.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
+   ret += HPDF_Array_AddReal (array2, 0.0);
 
    if (HPDF_Dict_AddNumber (fromxobject, "FormType", 1) != HPDF_OK)
       return NULL;
@@ -972,37 +947,6 @@ HPDF_Page_GetShadingName  (HPDF_Page    page,
     return key;
 }
 
-static HPDF_STATUS
-AddAnnotation  (HPDF_Page        page,
-                HPDF_Annotation  annot)
-{
-    HPDF_Array array;
-    HPDF_STATUS ret = HPDF_OK;
-
-    HPDF_PTRACE((" HPDF_Pages\n"));
-
-    /* find "Annots" entry */
-    array = HPDF_Dict_GetItem (page, "Annots", HPDF_OCLASS_ARRAY);
-
-    if (!array) {
-        array = HPDF_Array_New (page->mmgr);
-        if (!array)
-            return HPDF_Error_GetCode (page->error);
-
-        ret = HPDF_Dict_Add (page, "Annots", array);
-        if (ret != HPDF_OK)
-            return ret;
-    }
-
-    if ((ret = HPDF_Array_Add (array, annot)) != HPDF_OK)
-       return ret;
-
-    /* Add Parent to the annotation  */
-    ret = HPDF_Dict_Add( annot, "P", page);
-
-    return ret;
-}
-
 
 HPDF_EXPORT(HPDF_REAL)
 HPDF_Page_TextWidth  (HPDF_Page        page,
@@ -1089,7 +1033,7 @@ HPDF_Page_GetHeight  (HPDF_Page    page)
 HPDF_EXPORT(HPDF_Font)
 HPDF_Page_GetCurrentFont  (HPDF_Page   page)
 {
-    HPDF_PTRACE((" HPDF_Page_GetFontName\n"));
+    HPDF_PTRACE((" HPDF_Page_GetCurrentFont\n"));
 
     if (HPDF_Page_Validate (page)) {
         HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
@@ -1607,7 +1551,7 @@ HPDF_Page_SetZoom  (HPDF_Page   page,
         return HPDF_INVALID_PAGE;
     }
 
-    if (zoom < 0.08 || zoom > 32) {
+    if (zoom < HPDF_MIN_MAGNIFICATION_FACTOR || zoom > HPDF_MAX_MAGNIFICATION_FACTOR) {
         return HPDF_RaiseError (page->error, HPDF_INVALID_PARAMETER, 0);
     }
 
@@ -1621,8 +1565,8 @@ HPDF_Page_SetWidth  (HPDF_Page    page,
 {
     HPDF_PTRACE((" HPDF_Page_SetWidth\n"));
 
-    if (value < 3 || value > 14400)
-        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE, 0);
+    if (value < HPDF_MIN_PAGE_MEASURE || value > HPDF_MAX_PAGE_MEASURE)
+        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE, value);
 
     if (HPDF_Page_SetBoxValue (page, "MediaBox", 2, value) != HPDF_OK)
         return HPDF_CheckError (page->error);
@@ -1637,8 +1581,8 @@ HPDF_Page_SetHeight  (HPDF_Page    page,
 {
     HPDF_PTRACE((" HPDF_Page_SetWidth\n"));
 
-    if (value < 3 || value > 14400)
-        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE, 0);
+    if (value < HPDF_MIN_PAGE_MEASURE || value > HPDF_MAX_PAGE_MEASURE)
+        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE, value);
 
     if (HPDF_Page_SetBoxValue (page, "MediaBox", 3, value) != HPDF_OK)
         return HPDF_CheckError (page->error);
@@ -1660,8 +1604,7 @@ HPDF_Page_SetSize  (HPDF_Page             page,
         return HPDF_INVALID_PAGE;
 
     if (size < 0 || size > HPDF_PAGE_SIZE_EOF)
-        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE,
-                (HPDF_STATUS)direction);
+        return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE, (HPDF_STATUS)size);
 
     if (direction == HPDF_PAGE_LANDSCAPE) {
         ret += HPDF_Page_SetHeight (page,
@@ -1720,634 +1663,6 @@ HPDF_Page_CreateDestination  (HPDF_Page   page)
 
     return dst;
 }
-
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_Create3DAnnot    (HPDF_Page       page,
-                            HPDF_Rect       rect,
-                            HPDF_BOOL       tb,
-                            HPDF_BOOL       np,
-                            HPDF_U3D        u3d,
-                            HPDF_Image      ap)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_Create3DAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    annot = HPDF_3DAnnot_New (page->mmgr, attr->xref, rect, tb, np, u3d, ap);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateTextAnnot  (HPDF_Page          page,
-                            HPDF_Rect          rect,
-                            const char   *text,
-                            HPDF_Encoder       encoder)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateTextAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (encoder && !HPDF_Encoder_Validate (encoder)) {
-        HPDF_RaiseError (page->error, HPDF_INVALID_ENCODER, 0);
-        return NULL;
-    }
-
-    annot = HPDF_MarkupAnnot_New (page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_TEXT_NOTES);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateFreeTextAnnot  (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char   *text,
-                                HPDF_Encoder       encoder)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateFreeTextAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (encoder && !HPDF_Encoder_Validate (encoder)) {
-        HPDF_RaiseError (page->error, HPDF_INVALID_ENCODER, 0);
-        return NULL;
-    }
-
-    annot = HPDF_MarkupAnnot_New (page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_FREE_TEXT);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateLineAnnot  (HPDF_Page          page,
-                            const char           *text,
-                            HPDF_Encoder       encoder)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-    HPDF_Rect rect = {0,0,0,0};
-
-    HPDF_PTRACE((" HPDF_Page_CreateLineAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (encoder && !HPDF_Encoder_Validate (encoder)) {
-        HPDF_RaiseError (page->error, HPDF_INVALID_ENCODER, 0);
-        return NULL;
-    }
-
-    annot = HPDF_MarkupAnnot_New (page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_LINE);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateWidgetAnnot (HPDF_Page  page,
-                             HPDF_Rect  rect)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateWidgetAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    annot = HPDF_WidgetAnnot_New(page->mmgr, attr->xref, rect);
-
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint (HPDF_Doc   pdf,
-                                                 HPDF_Page  page,
-                                                 HPDF_Rect  rect)
-{
-   HPDF_XObject  fxobj;
-   HPDF_Annotation annot;
-   HPDF_Dict appearence;
-   HPDF_Dict mk;
-   HPDF_STATUS ret = HPDF_OK;
-   HPDF_Array array_bg;
-
-   HPDF_PTRACE((" HPDF_Page_CreateWidgetAnnot_WhiteOnlyWhilePrint\n"));
-
-   annot = HPDF_Page_CreateWidgetAnnot(page, rect);
-
-   fxobj = HPDF_Page_CreateXObjectAsWhiteRect(pdf, page, rect);
-   if (!fxobj)
-        return NULL;
-
-   appearence = HPDF_Dict_New (annot->mmgr);
-   if (!appearence)
-      return NULL;
-
-   ret = HPDF_Dict_Add (annot, "AP", appearence);
-   if (ret != HPDF_OK)
-      return NULL;
-
-   ret = HPDF_Dict_Add (appearence, "N", fxobj);
-   if (ret != HPDF_OK)
-      return NULL;
-
-   mk = HPDF_Dict_New (annot->mmgr);
-   if (!mk)
-      return NULL;
-
-   ret = HPDF_Dict_Add (annot, "MK", mk);
-   if (ret != HPDF_OK)
-      return NULL;
-
-   array_bg = HPDF_Array_New (annot->mmgr);
-   if (!array_bg)
-       return NULL;
-
-   if (HPDF_Dict_Add (mk, "BG", array_bg) != HPDF_OK)
-       return NULL;
-
-   ret = HPDF_Array_AddReal (array_bg, 1.0);
-   ret += HPDF_Array_AddReal (array_bg, 1.0);
-   ret += HPDF_Array_AddReal (array_bg, 1.0);
-
-   ret += HPDF_Dict_AddName (annot, "FT", "Btn");
-   if (ret != HPDF_OK)
-      return NULL;
-
-   ret = HPDF_Dict_AddNumber (annot, "F", 36);
-   if (ret != HPDF_OK)
-      return NULL;
-
-   ret = HPDF_Dict_Add (annot, "T", HPDF_String_New (annot->mmgr, "Blind", NULL));
-   if (ret != HPDF_OK)
-      return NULL;
-
-    return annot;
-}
-
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateLinkAnnot  (HPDF_Page          page,
-                            HPDF_Rect          rect,
-                            HPDF_Destination   dst)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateLinkAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (dst) {
-        if (!HPDF_Destination_Validate (dst)) {
-            HPDF_RaiseError (page->error, HPDF_INVALID_DESTINATION, 0);
-            return NULL;
-        }
-    }
-
-    annot = HPDF_LinkAnnot_New (page->mmgr, attr->xref, rect, dst);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateURILinkAnnot  (HPDF_Page          page,
-                               HPDF_Rect          rect,
-                               const char        *uri)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateURILinkAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (HPDF_StrLen (uri, HPDF_LIMIT_MAX_STRING_LEN) <= 0) {
-        HPDF_RaiseError (page->error, HPDF_INVALID_URI, 0);
-        return NULL;
-    }
-
-    annot = HPDF_URILinkAnnot_New (page->mmgr, attr->xref, rect, uri);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateCircleAnnot (HPDF_Page          page,
-                             HPDF_Rect          rect,
-                             const char        *text,
-                             HPDF_Encoder       encoder)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateCircleAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (encoder && !HPDF_Encoder_Validate (encoder)) {
-        HPDF_RaiseError (page->error, HPDF_INVALID_ENCODER, 0);
-        return NULL;
-    }
-
-    annot = HPDF_MarkupAnnot_New (page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_CIRCLE);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateSquareAnnot (HPDF_Page          page,
-                             HPDF_Rect          rect,
-                             const char        *text,
-                             HPDF_Encoder       encoder)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateCircleAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (encoder && !HPDF_Encoder_Validate (encoder)) {
-        HPDF_RaiseError (page->error, HPDF_INVALID_ENCODER, 0);
-        return NULL;
-    }
-
-    annot = HPDF_MarkupAnnot_New (page->mmgr, attr->xref, rect, text, encoder, HPDF_ANNOT_SQUARE);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Dict)
-HPDF_Page_Create3DView    (HPDF_Page        page,
-                           HPDF_U3D         u3d,
-                           HPDF_Annotation  annot3d,
-                           const char      *name)
-{
-    HPDF_PageAttr attr;
-    HPDF_Dict view;
-
-    HPDF_PTRACE((" HPDF_Page_Create3DView\n"));
-    HPDF_UNUSED(annot3d);
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    view = HPDF_3DView_New( page->mmgr, attr->xref, u3d, name);
-    if (!view) {
-        HPDF_CheckError (page->error);
-    }
-    return view;
-}
-
-HPDF_Annotation
-HPDF_Page_CreateTextMarkupAnnot (HPDF_Page       page,
-                                 HPDF_Rect       rect,
-                                 const char     *text,
-                                 HPDF_Encoder    encoder,
-                                 HPDF_AnnotType  subType)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateTextMarkupAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    if (encoder && !HPDF_Encoder_Validate (encoder)) {
-        HPDF_RaiseError (page->error, HPDF_INVALID_ENCODER, 0);
-        return NULL;
-    }
-
-    annot = HPDF_MarkupAnnot_New ( page->mmgr, attr->xref, rect, text, encoder, subType);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateHighlightAnnot (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char        *text,
-                                HPDF_Encoder       encoder)
-{
-    HPDF_PTRACE((" HPDF_Page_CreateHighlightAnnot\n"));
-
-    return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_HIGHTLIGHT);
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateSquigglyAnnot  (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char        *text,
-                                HPDF_Encoder       encoder)
-{
-    HPDF_PTRACE((" HPDF_Page_CreateSquigglyAnnot\n"));
-
-    return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_SQUIGGLY);
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateUnderlineAnnot  (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char   *text,
-                                HPDF_Encoder       encoder)
-{
-    HPDF_PTRACE((" HPDF_Page_CreateUnderlineAnnot\n"));
-
-    return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_UNDERLINE);
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateStrikeOutAnnot  (HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                const char   *text,
-                                HPDF_Encoder       encoder)
-{
-    HPDF_PTRACE((" HPDF_Page_CreateStrikeOutAnnot\n"));
-
-    return HPDF_Page_CreateTextMarkupAnnot( page, rect, text, encoder, HPDF_ANNOT_STRIKE_OUT);
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreatePopupAnnot  (    HPDF_Page          page,
-                                HPDF_Rect          rect,
-                                HPDF_Annotation       parent)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreatePopupAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    annot = HPDF_PopupAnnot_New ( page->mmgr, attr->xref, rect, parent);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateStampAnnot  (    HPDF_Page          page,
-                                HPDF_Rect           rect,
-                                HPDF_StampAnnotName name,
-                                const char*         text,
-                                HPDF_Encoder        encoder)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateStampAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    annot = HPDF_StampAnnot_New ( page->mmgr, attr->xref, rect, name, text, encoder);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-HPDF_EXPORT(HPDF_Annotation)
-HPDF_Page_CreateProjectionAnnot(HPDF_Page    page,
-                                HPDF_Rect    rect,
-                                const char*  text,
-                                HPDF_Encoder encoder)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation annot;
-
-    HPDF_PTRACE((" HPDF_Page_CreateProjectionAnnot\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    annot = HPDF_ProjectionAnnot_New (page->mmgr, attr->xref, rect, text, encoder);
-    if (annot) {
-        if (AddAnnotation (page, annot) != HPDF_OK) {
-            HPDF_CheckError (page->error);
-            annot = NULL;
-        }
-    } else
-        HPDF_CheckError (page->error);
-
-    return annot;
-}
-
-
-HPDF_EXPORT(HPDF_3DMeasure)
-HPDF_Page_Create3DC3DMeasure(HPDF_Page       page,
-                             HPDF_Point3D    firstanchorpoint,
-                             HPDF_Point3D    textanchorpoint)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation measure;
-
-    HPDF_PTRACE((" HPDF_Page_Create3DC3DMeasure\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    measure = HPDF_3DC3DMeasure_New(page->mmgr, attr->xref, firstanchorpoint, textanchorpoint);
-    if ( !measure)
-        HPDF_CheckError (page->error);
-
-    return measure;
-}
-
-HPDF_EXPORT(HPDF_3DMeasure)
-HPDF_Page_CreatePD33DMeasure(HPDF_Page       page,
-                             HPDF_Point3D    annotationPlaneNormal,
-                             HPDF_Point3D    firstAnchorPoint,
-                             HPDF_Point3D    secondAnchorPoint,
-                             HPDF_Point3D    leaderLinesDirection,
-                             HPDF_Point3D    measurementValuePoint,
-                             HPDF_Point3D    textYDirection,
-                             HPDF_REAL       value,
-                             const char*     unitsString
-                             )
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation measure;
-
-    HPDF_PTRACE((" HPDF_Page_CreatePD33DMeasure\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    measure = HPDF_PD33DMeasure_New(page->mmgr,
-        attr->xref,
-        annotationPlaneNormal,
-        firstAnchorPoint,
-        secondAnchorPoint,
-        leaderLinesDirection,
-        measurementValuePoint,
-        textYDirection,
-        value,
-        unitsString
-        );
-    if (!measure)
-        HPDF_CheckError (page->error);
-
-    return measure;
-}
-
-
-HPDF_EXPORT(HPDF_ExData)
-HPDF_Page_Create3DAnnotExData(HPDF_Page page)
-{
-    HPDF_PageAttr attr;
-    HPDF_Annotation exData;
-
-    HPDF_PTRACE((" HPDF_Page_Create3DAnnotExData\n"));
-
-    if (!HPDF_Page_Validate (page))
-        return NULL;
-
-    attr = (HPDF_PageAttr)page->attr;
-
-    exData = HPDF_3DAnnotExData_New(page->mmgr, attr->xref);
-    if ( !exData)
-        HPDF_CheckError (page->error);
-
-    return exData;
-}
-
 
 
 void

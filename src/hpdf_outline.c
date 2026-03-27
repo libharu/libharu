@@ -20,6 +20,8 @@
 #include "hpdf_destination.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_objects_internal.h"
+
 #define HPDF_OUTLINE_CLOSED     0
 #define HPDF_OUTLINE_OPENED     1
 

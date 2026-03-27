@@ -1,0 +1,36 @@
+/**
+  \mainpage
+
+  This page is a Haru library documentation homepage.
+
+  \par Modules
+
+  List of functions divided by topics
+
+  - \ref doc
+  - \ref page
+  - \ref graphics
+  - \ref image
+  - \ref link
+  - \ref font
+  - \ref encode
+  - \ref outline
+  - \ref prop
+  - \ref security
+  - \ref error
+
+  \par Roadmap
+
+  List of things to be created or modified in library for its development.
+
+  - \ref roadmap
+
+  \par Concepts
+
+  General description of library parts
+
+  - \ref fonts
+  - \ref encodings
+  - \ref colorspaces
+
+*/

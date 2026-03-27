@@ -41,101 +41,93 @@ extern "C" {
 
 
 /*  native OS integer types */
-typedef  signed int          HPDF_INT;
-typedef  unsigned int        HPDF_UINT;
+typedef signed int         HPDF_INT;
+typedef unsigned int       HPDF_UINT;
 
+/*  64bit integer types */
+typedef signed long long   HPDF_INT64;
+typedef unsigned long long HPDF_UINT64;
 
-/*  64bit integer types
- */
-typedef  signed long long    HPDF_INT64;
-typedef  unsigned long long  HPDF_UINT64;
+/*  32bit integer types */
+typedef signed int         HPDF_INT32;
+typedef unsigned int       HPDF_UINT32;
 
+/*  16bit integer types */
+typedef signed short       HPDF_INT16;
+typedef unsigned short     HPDF_UINT16;
 
-/*  32bit integer types
- */
-typedef  signed int          HPDF_INT32;
-typedef  unsigned int        HPDF_UINT32;
+/*  8bit integer types */
+typedef signed char        HPDF_INT8;
+typedef unsigned char      HPDF_UINT8;
 
+/*  8bit binary types */
+typedef unsigned char      HPDF_BYTE;
 
-/*  16bit integer types
- */
-typedef  signed short        HPDF_INT16;
-typedef  unsigned short      HPDF_UINT16;
+/*  float type (32bit IEEE754) */
+typedef float              HPDF_REAL;
 
+/*  double type (64bit IEEE754) */
+typedef double             HPDF_DOUBLE;
 
-/*  8bit integer types
- */
-typedef  signed char         HPDF_INT8;
-typedef  unsigned char       HPDF_UINT8;
+/*  boolean type (0: False, !0: True) */
+typedef signed int         HPDF_BOOL;
 
+/*  error-no type (32bit unsigned integer) */
+typedef unsigned long      HPDF_STATUS;
 
-/*  8bit binary types
- */
-typedef  unsigned char       HPDF_BYTE;
+/*  character-code type (16bit) */
+typedef HPDF_UINT16        HPDF_CID;
+typedef HPDF_UINT16        HPDF_UNICODE;
 
-
-/*  float type (32bit IEEE754)
- */
-typedef  float               HPDF_REAL;
-
-
-/*  double type (64bit IEEE754)
- */
-typedef  double              HPDF_DOUBLE;
-
-
-/*  boolean type (0: False, !0: True)
- */
-typedef  signed int          HPDF_BOOL;
-
-
-/*  error-no type (32bit unsigned integer)
- */
-typedef  unsigned long       HPDF_STATUS;
-
-
-/*  character-code type (16bit)
- */
-typedef  HPDF_UINT16         HPDF_CID;
-typedef  HPDF_UINT16         HPDF_UNICODE;
-
-
-/*  HPDF_Point struct
- */
-typedef  struct  _HPDF_Point {
-    HPDF_REAL  x;
-    HPDF_REAL  y;
+/*  HPDF_Point struct */
+typedef struct _HPDF_Point {
+    HPDF_REAL x;
+    HPDF_REAL y;
 } HPDF_Point;
 
-typedef  struct _HPDF_Rect {
-    HPDF_REAL  left;
-    HPDF_REAL  bottom;
-    HPDF_REAL  right;
-    HPDF_REAL  top;
+typedef struct _HPDF_Rect {
+    HPDF_REAL left;
+    HPDF_REAL bottom;
+    HPDF_REAL right;
+    HPDF_REAL top;
 } HPDF_Rect;
 
-/*  HPDF_Point3D struct
-*/
-typedef  struct  _HPDF_Point3D {
-	HPDF_REAL  x;
-	HPDF_REAL  y;
-	HPDF_REAL  z;
+/*  HPDF_Point3D struct */
+typedef struct _HPDF_Point3D {
+    HPDF_REAL x;
+    HPDF_REAL y;
+    HPDF_REAL z;
 } HPDF_Point3D;
 
 typedef struct _HPDF_Rect HPDF_Box;
 
-/* HPDF_Date struct
+/**
+  \brief Date structure
+
+  Represents date values in \c info dictionary of PDF file.
+
+  \see \ref _HPDF_Date
+
  */
-typedef  struct  _HPDF_Date {
-    HPDF_INT    year;
-    HPDF_INT    month;
-    HPDF_INT    day;
-    HPDF_INT    hour;
-    HPDF_INT    minutes;
-    HPDF_INT    seconds;
-    char        ind;
-    HPDF_INT    off_hour;
-    HPDF_INT    off_minutes;
+typedef struct _HPDF_Date {
+    /// Year of the date. Does not imply restrictions.
+    HPDF_INT year;
+    /// Month of the date. Value from range 1 to 12 is accepted.
+    HPDF_INT month;
+    /// Day of the date. Values from range 1 to 28, 29, 30, or 31 is accepted (depends on the month)
+    HPDF_INT day;
+    /// Hour of date. Value from range 0 to 23 is accepted.
+    HPDF_INT hour;
+    /// Minutes of date. Value from range 0 to 59 is accepted.
+    HPDF_INT minutes;
+    /// Seconds of date. Value from range 0 to 59 is accepted.
+    HPDF_INT seconds;
+    /// Relationship between local time and Universal time (' ', '+', '−', or 'Z')
+    char     ind;
+    /// If \c ind is not ' ' (space), value from range 0 to 23 is accepted, otherwise ignored.
+    HPDF_INT off_hour;
+    /// If \c ind is not ' ' (space), value from range 0 to 59 is accepted, otherwise ignored.
+    HPDF_INT off_minutes;
 } HPDF_Date;
 
 
@@ -187,24 +179,28 @@ typedef enum _HPDF_PdfVer {
     HPDF_VER_EOF
 } HPDF_PDFVer;
 
-typedef enum  _HPDF_EncryptMode {
+typedef enum _HPDF_EncryptMode {
     HPDF_ENCRYPT_R2    = 2,
     HPDF_ENCRYPT_R3    = 3
 } HPDF_EncryptMode;
 
 
 typedef void
-(HPDF_STDCALL *HPDF_Error_Handler)  (HPDF_STATUS   error_no,
-                                     HPDF_STATUS   detail_no,
-                                     void         *user_data);
+(HPDF_STDCALL *HPDF_Error_Handler) (
+    HPDF_STATUS error_no,
+    HPDF_STATUS detail_no,
+    void*       user_data
+);
 
 typedef void*
-(HPDF_STDCALL *HPDF_Alloc_Func)  (HPDF_UINT  size);
-
+(HPDF_STDCALL *HPDF_Alloc_Func) (
+    HPDF_UINT size
+);
 
 typedef void
-(HPDF_STDCALL *HPDF_Free_Func)  (void  *aptr);
-
+(HPDF_STDCALL *HPDF_Free_Func) (
+    void* ptr
+);
 
 /*---------------------------------------------------------------------------*/
 /*------ text width struct --------------------------------------------------*/
@@ -220,14 +216,13 @@ typedef struct _HPDF_TextWidth {
     HPDF_UINT numspace;
 } HPDF_TextWidth;
 
-
 /*---------------------------------------------------------------------------*/
 /*------ dash mode ----------------------------------------------------------*/
 
 typedef struct _HPDF_DashMode {
-    HPDF_REAL  ptn[8];
-    HPDF_UINT  num_ptn;
-    HPDF_REAL  phase;
+    HPDF_REAL ptn[8];
+    HPDF_UINT num_ptn;
+    HPDF_REAL phase;
 } HPDF_DashMode;
 
 
@@ -235,30 +230,30 @@ typedef struct _HPDF_DashMode {
 /*----- HPDF_TransMatrix struct ---------------------------------------------*/
 
 typedef struct _HPDF_TransMatrix {
-    HPDF_REAL   a;
-    HPDF_REAL   b;
-    HPDF_REAL   c;
-    HPDF_REAL   d;
-    HPDF_REAL   x;
-    HPDF_REAL   y;
+    HPDF_REAL a;
+    HPDF_REAL b;
+    HPDF_REAL c;
+    HPDF_REAL d;
+    HPDF_REAL x;
+    HPDF_REAL y;
 } HPDF_TransMatrix;
 
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_3DMatrix struct ------------------------------------------------*/
 
 typedef struct _HPDF_3DMatrix {
-    HPDF_REAL   a;
-    HPDF_REAL   b;
-    HPDF_REAL   c;
-    HPDF_REAL   d;
-    HPDF_REAL   e;
-    HPDF_REAL   f;
-    HPDF_REAL   g;
-    HPDF_REAL   h;
-    HPDF_REAL   i;
-    HPDF_REAL   tx;
-    HPDF_REAL   ty;
-    HPDF_REAL   tz;
+    HPDF_REAL a;
+    HPDF_REAL b;
+    HPDF_REAL c;
+    HPDF_REAL d;
+    HPDF_REAL e;
+    HPDF_REAL f;
+    HPDF_REAL g;
+    HPDF_REAL h;
+    HPDF_REAL i;
+    HPDF_REAL tx;
+    HPDF_REAL ty;
+    HPDF_REAL tz;
 } HPDF_3DMatrix;
 
 /*---------------------------------------------------------------------------*/
@@ -282,19 +277,19 @@ typedef enum _HPDF_ColorSpace {
 /*----- HPDF_RGBColor struct ------------------------------------------------*/
 
 typedef struct _HPDF_RGBColor {
-    HPDF_REAL   r;
-    HPDF_REAL   g;
-    HPDF_REAL   b;
+    HPDF_REAL r;
+    HPDF_REAL g;
+    HPDF_REAL b;
 } HPDF_RGBColor;
 
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_CMYKColor struct -----------------------------------------------*/
 
 typedef struct _HPDF_CMYKColor {
-    HPDF_REAL   c;
-    HPDF_REAL   m;
-    HPDF_REAL   y;
-    HPDF_REAL   k;
+    HPDF_REAL c;
+    HPDF_REAL m;
+    HPDF_REAL y;
+    HPDF_REAL k;
 } HPDF_CMYKColor;
 
 /*---------------------------------------------------------------------------*/
@@ -332,13 +327,14 @@ typedef enum _HPDF_TextRenderingMode {
     HPDF_RENDERING_MODE_EOF
 } HPDF_TextRenderingMode;
 
-
 typedef enum _HPDF_WritingMode {
+    /// Horizontal writing mode
     HPDF_WMODE_HORIZONTAL = 0,
+    /// Vertical writing mode
     HPDF_WMODE_VERTICAL,
+    /// Last writing mode in enumeration
     HPDF_WMODE_EOF
 } HPDF_WritingMode;
-
 
 typedef enum _HPDF_PageLayout {
     HPDF_PAGE_LAYOUT_SINGLE = 0,
@@ -349,7 +345,6 @@ typedef enum _HPDF_PageLayout {
     HPDF_PAGE_LAYOUT_TWO_PAGE_RIGHT,
     HPDF_PAGE_LAYOUT_EOF
 } HPDF_PageLayout;
-
 
 typedef enum _HPDF_PageMode {
     HPDF_PAGE_MODE_USE_NONE = 0,
@@ -362,7 +357,6 @@ typedef enum _HPDF_PageMode {
     HPDF_PAGE_MODE_EOF
 } HPDF_PageMode;
 
-
 typedef enum _HPDF_PageNumStyle {
     HPDF_PAGE_NUM_STYLE_DECIMAL = 0,
     HPDF_PAGE_NUM_STYLE_UPPER_ROMAN,
@@ -371,7 +365,6 @@ typedef enum _HPDF_PageNumStyle {
     HPDF_PAGE_NUM_STYLE_LOWER_LETTERS,
     HPDF_PAGE_NUM_STYLE_EOF
 } HPDF_PageNumStyle;
-
 
 typedef enum _HPDF_DestinationType {
     HPDF_XYZ = 0,
@@ -384,7 +377,6 @@ typedef enum _HPDF_DestinationType {
     HPDF_FIT_BV,
     HPDF_DST_EOF
 } HPDF_DestinationType;
-
 
 typedef enum _HPDF_AnnotType {
     HPDF_ANNOT_TEXT_NOTES,
@@ -402,11 +394,10 @@ typedef enum _HPDF_AnnotType {
     HPDF_ANNOT_POPUP,
     HPDF_ANNOT_3D,
     HPDF_ANNOT_SQUIGGLY,
-	HPDF_ANNOT_LINE,
-	HPDF_ANNOT_PROJECTION,
-	HPDF_ANNOT_WIDGET
+    HPDF_ANNOT_LINE,
+    HPDF_ANNOT_PROJECTION,
+    HPDF_ANNOT_WIDGET
 } HPDF_AnnotType;
-
 
 typedef enum _HPDF_AnnotFlgs {
     HPDF_ANNOT_INVISIBLE,
@@ -418,24 +409,40 @@ typedef enum _HPDF_AnnotFlgs {
     HPDF_ANNOT_READONLY
 } HPDF_AnnotFlgs;
 
-
 typedef enum _HPDF_AnnotHighlightMode {
+    /// No highlighting.
     HPDF_ANNOT_NO_HIGHTLIGHT = 0,
+    /// Invert annotation area contents.
     HPDF_ANNOT_INVERT_BOX,
+    /// Invert annotation border.
     HPDF_ANNOT_INVERT_BORDER,
+    /// Dent annotation.
     HPDF_ANNOT_DOWN_APPEARANCE,
+    /// Last annotation highlight mode at enumeration.
     HPDF_ANNOT_HIGHTLIGHT_MODE_EOF
 } HPDF_AnnotHighlightMode;
 
+/**
+  Default types of annotation icon
 
+  PDF book, table 172
+*/
 typedef enum _HPDF_AnnotIcon {
+    /// "Comment"
     HPDF_ANNOT_ICON_COMMENT = 0,
+    /// "Key"
     HPDF_ANNOT_ICON_KEY,
+    /// "Note"
     HPDF_ANNOT_ICON_NOTE,
+    /// "Help"
     HPDF_ANNOT_ICON_HELP,
+    /// "NewParagraph"
     HPDF_ANNOT_ICON_NEW_PARAGRAPH,
+    /// "Paragraph"
     HPDF_ANNOT_ICON_PARAGRAPH,
+    /// "Insert"
     HPDF_ANNOT_ICON_INSERT,
+    /// Last icon type at enumeration
     HPDF_ANNOT_ICON_EOF
 } HPDF_AnnotIcon;
 
@@ -488,13 +495,17 @@ typedef enum _HPDF_StampAnnotName{
 /*------ border stype --------------------------------------------------------*/
 
 typedef enum _HPDF_BSSubtype {
+    /// Solid rectangle
     HPDF_BS_SOLID,
+    /// Dashed rectangle
     HPDF_BS_DASHED,
+    /// Embossed rectangle
     HPDF_BS_BEVELED,
+    /// Engraved rectangle
     HPDF_BS_INSET,
+    /// Single line under the bottom of the annotation
     HPDF_BS_UNDERLINED
 } HPDF_BSSubtype;
-
 
 /*----- blend modes ----------------------------------------------------------*/
 
@@ -539,44 +550,37 @@ typedef enum _HPDF_TransitionStyle {
 
 /*----------------------------------------------------------------------------*/
 
-typedef enum _HPDF_PageSizes {
-    HPDF_PAGE_SIZE_LETTER = 0,
-    HPDF_PAGE_SIZE_LEGAL,
-    HPDF_PAGE_SIZE_A3,
-    HPDF_PAGE_SIZE_A4,
-    HPDF_PAGE_SIZE_A5,
-    HPDF_PAGE_SIZE_B4,
-    HPDF_PAGE_SIZE_B5,
-    HPDF_PAGE_SIZE_EXECUTIVE,
-    HPDF_PAGE_SIZE_US4x6,
-    HPDF_PAGE_SIZE_US4x8,
-    HPDF_PAGE_SIZE_US5x7,
-    HPDF_PAGE_SIZE_COMM10,
-    HPDF_PAGE_SIZE_EOF
-} HPDF_PageSizes;
-
-
+/**
+  \brief Page orientation
+*/
 typedef enum _HPDF_PageDirection {
+    /// Portrait orientation (longest size vertical)
     HPDF_PAGE_PORTRAIT = 0,
+    /// Landscape orientation (longest size horizontal)
     HPDF_PAGE_LANDSCAPE
 } HPDF_PageDirection;
 
-
 typedef enum  _HPDF_EncoderType {
+    /// Single-byte character encoder
     HPDF_ENCODER_TYPE_SINGLE_BYTE,
+    /// Multi-byte character encoder
     HPDF_ENCODER_TYPE_DOUBLE_BYTE,
+    /// Encoder is not yet initialized
     HPDF_ENCODER_TYPE_UNINITIALIZED,
+    /// Encoder was not properly constructed
     HPDF_ENCODER_UNKNOWN
 } HPDF_EncoderType;
 
-
 typedef enum _HPDF_ByteType {
+    /// Single byte character.
     HPDF_BYTE_TYPE_SINGLE = 0,
+    /// Lead byte of a double-byte character.
     HPDF_BYTE_TYPE_LEAD,
+    /// Trailing byte of a double-byte character.
     HPDF_BYTE_TYPE_TRAIL,
+    /// Invalid encoder or cannot judge the byte type.
     HPDF_BYTE_TYPE_UNKNOWN
 } HPDF_ByteType;
-
 
 typedef enum _HPDF_TextAlignment {
     HPDF_TALIGN_LEFT = 0,

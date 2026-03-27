@@ -17,23 +17,8 @@
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
+#include "handler.h"
+#include "utils.h"
 
 static const int PAGE_WIDTH = 420;
 static const int PAGE_HEIGHT = 400;
@@ -69,11 +54,7 @@ draw_graph (HPDF_Page   page)
         if (i > 0 && i <= 16) {
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, x + 5, PAGE_HEIGHT - 75);
-#ifdef __WIN32__
-            _snprintf(buf, 5, "%X", i - 1);
-#else
-            snprintf(buf, 5, "%X", i - 1);
-#endif
+            HPDF_snprintf(buf, 5, "%X", i - 1);
             HPDF_Page_ShowText (page, buf);
             HPDF_Page_EndText (page);
         }
@@ -90,11 +71,7 @@ draw_graph (HPDF_Page   page)
         if (i < 14) {
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, 45, y + 5);
-#ifdef __WIN32__
-            _snprintf(buf, 5, "%X", 15 - i);
-#else
-            snprintf(buf, 5, "%X", 15 - i);
-#endif
+            HPDF_snprintf(buf, 5, "%X", 15 - i);
             HPDF_Page_ShowText (page, buf);
             HPDF_Page_EndText (page);
         }
@@ -136,7 +113,6 @@ draw_fonts (HPDF_Page   page)
 
 int main (int argc, char **argv)
 {
-    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     char fname[256];
     HPDF_Font font;
@@ -169,7 +145,7 @@ int main (int argc, char **argv)
             NULL
     };
 
-    pdf = HPDF_NewEx (error_handler, NULL, NULL, 0, NULL);
+    pdf = HPDF_NewEx (demo_error_handler, NULL, NULL, 0, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;

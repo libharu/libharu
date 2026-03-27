@@ -18,6 +18,10 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf_fontdef.h"
+#include "internal/hpdf_fontdef_internal.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_error_internal.h"
+#include "internal/hpdf_list_internal.h"
 
 void
 HPDF_CIDFontDef_FreeWidth  (HPDF_FontDef  fontdef);

@@ -18,6 +18,7 @@
 #include "hpdf_utils.h"
 #include "hpdf_objects.h"
 
+#include "internal/hpdf_objects_internal.h"
 
 HPDF_Number
 HPDF_Number_New  (HPDF_MMgr   mmgr,

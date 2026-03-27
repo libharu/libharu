@@ -20,125 +20,199 @@
 
 #include "hpdf_config.h"
 #include "hpdf_types.h"
+#include "hpdf_page_sizes.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
 HPDF_INT
-HPDF_AToI  (const char*  s);
+HPDF_AToI(
+    const char* s
+);
 
 
 HPDF_DOUBLE
-HPDF_AToF  (const char*  s);
+HPDF_AToF(
+    const char* s
+);
 
 
 char*
-HPDF_IToA  (char*  s,
-            HPDF_INT32  val,
-            char*  eptr);
-
-
-char*
-HPDF_IToA2  (char    *s,
-             HPDF_UINT32  val,
-             HPDF_UINT    len);
-
+HPDF_IToA(
+    char*      s,
+    HPDF_INT32 val,
+    char*      eptr
+);
 
 char*
-HPDF_FToA  (char  *s,
-            HPDF_REAL  val,
-            char  *eptr);
+HPDF_IToA2(
+    char*       s,
+    HPDF_UINT32 val,
+    HPDF_UINT   len
+);
 
+char*
+HPDF_FToA(
+    char*     s,
+    HPDF_REAL val,
+    char*     eptr
+);
 
 HPDF_BYTE*
-HPDF_MemCpy  (HPDF_BYTE*        out,
-              const HPDF_BYTE*  in,
-              HPDF_UINT         n);
-
+HPDF_MemCpy(
+    HPDF_BYTE*       out,
+    const HPDF_BYTE* in,
+    HPDF_UINT        n
+);
 
 HPDF_BYTE*
-HPDF_StrCpy  (char*        out,
-              const char*  in,
-              char*        eptr);
-
-
-HPDF_INT
-HPDF_MemCmp  (const HPDF_BYTE*  s1,
-              const HPDF_BYTE*  s2,
-              HPDF_UINT         n);
-
+HPDF_StrCpy(
+    char*       out,
+    const char* in,
+    char*       eptr
+);
 
 HPDF_INT
-HPDF_StrCmp  (const char*  s1,
-              const char*  s2);
+HPDF_MemCmp(
+    const HPDF_BYTE* s1,
+    const HPDF_BYTE* s2,
+    HPDF_UINT        n
+);
 
+HPDF_INT
+HPDF_StrCmp(
+    const char* s1,
+    const char* s2
+);
 
 const char*
-HPDF_StrStr  (const char  *s1,
-              const char  *s2,
-              HPDF_UINT        maxlen);
-
+HPDF_StrStr(
+    const char* s1,
+    const char* s2,
+    HPDF_UINT   maxlen
+);
 
 void*
-HPDF_MemSet  (void*      s,
-              HPDF_BYTE  c,
-              HPDF_UINT  n);
-
+HPDF_MemSet(
+    void*     s,
+    HPDF_BYTE c,
+    HPDF_UINT n
+);
 
 HPDF_UINT
-HPDF_StrLen  (const char*  s,
-              HPDF_INT          maxlen);
-
+HPDF_StrLen(
+    const char* s,
+    HPDF_INT    maxlen
+);
 
 HPDF_Box
-HPDF_ToBox  (HPDF_INT16  left,
-             HPDF_INT16  bottom,
-             HPDF_INT16  right,
-             HPDF_INT16  top);
-
+HPDF_ToBox(
+    HPDF_INT16 left,
+    HPDF_INT16 bottom,
+    HPDF_INT16 right,
+    HPDF_INT16 top
+);
 
 HPDF_Point
-HPDF_ToPoint  (HPDF_INT16  x,
-               HPDF_INT16  y);
-
+HPDF_ToPoint(
+    HPDF_INT16 x,
+    HPDF_INT16 y
+);
 
 HPDF_Rect
-HPDF_ToRect  (HPDF_REAL  left,
-              HPDF_REAL  bottom,
-              HPDF_REAL  right,
-              HPDF_REAL  top);
-
+HPDF_ToRect(
+    HPDF_REAL left,
+    HPDF_REAL bottom,
+    HPDF_REAL right,
+    HPDF_REAL top
+);
 
 void
-HPDF_UInt16Swap  (HPDF_UINT16  *value);
+HPDF_UInt16Swap(
+    HPDF_UINT16* value
+);
 
+/**
+  \ingroup utils
+  \brief Return name of predefined page size
+*/
+const char*
+HPDF_PageSizeName(
+    HPDF_PageSizes size
+);
+
+/**
+  \ingroup utils
+  \brief Multiply transformation matrices.
+
+  \return Transformation matrix as a result of multiplication of matrices \c m and \c n.
+*/
+
+HPDF_TransMatrix
+HPDF_Matrix_Multiply(
+    HPDF_TransMatrix m, 
+    HPDF_TransMatrix n
+);
+
+HPDF_TransMatrix
+HPDF_Matrix_Translate(
+    HPDF_TransMatrix m, 
+    HPDF_REAL        dx,
+    HPDF_REAL        dy
+);
+
+HPDF_TransMatrix
+HPDF_Matrix_Scale(
+    HPDF_TransMatrix m, 
+    HPDF_REAL        sx, 
+    HPDF_REAL        sy
+);
+
+HPDF_TransMatrix
+HPDF_Matrix_Rotate(
+    HPDF_TransMatrix m, 
+    HPDF_REAL        angle
+);
+
+HPDF_TransMatrix
+HPDF_Matrix_RotateDeg(
+    HPDF_TransMatrix m, 
+    HPDF_REAL        degrees
+);
+
+HPDF_TransMatrix
+HPDF_Matrix_Skew(
+    HPDF_TransMatrix m, 
+    HPDF_REAL        a, 
+    HPDF_REAL        b
+);
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#define HPDF_NEEDS_ESCAPE(c)    (c < 0x20 || \
-                                 c > 0x7e || \
+#define HPDF_NEEDS_ESCAPE(c)    (c < 0x20  || \
+                                 c > 0x7e  || \
                                  c == '\\' || \
-                                 c == '%' || \
-                                 c == '#' || \
-                                 c == '/' || \
-                                 c == '(' || \
-                                 c == ')' || \
-                                 c == '<' || \
-                                 c == '>' || \
-                                 c == '[' || \
-                                 c == ']' || \
-                                 c == '{' || \
-                                 c == '}' )  \
+                                 c == '%'  || \
+                                 c == '#'  || \
+                                 c == '/'  || \
+                                 c == '('  || \
+                                 c == ')'  || \
+                                 c == '<'  || \
+                                 c == '>'  || \
+                                 c == '['  || \
+                                 c == ']'  || \
+                                 c == '{'  || \
+                                 c == '}'  )  \
 
 #define HPDF_IS_WHITE_SPACE(c)   (c == 0x00 || \
-                                 c == 0x09 || \
-                                 c == 0x0A || \
-                                 c == 0x0C || \
-                                 c == 0x0D || \
-                                 c == 0x20 ) \
+                                  c == 0x09 || \
+                                  c == 0x0A || \
+                                  c == 0x0C || \
+                                  c == 0x0D || \
+                                  c == 0x20 )  \
 
 /*----------------------------------------------------------------------------*/
 /*----- macros for debug -----------------------------------------------------*/

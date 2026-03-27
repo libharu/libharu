@@ -18,6 +18,7 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf_fontdef.h"
+#include "internal/hpdf_fontdef_internal.h"
 
 void
 HPDF_FontDef_Cleanup (HPDF_FontDef  fontdef)

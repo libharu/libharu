@@ -29,6 +29,9 @@
 #include "hpdf_consts.h"
 #include "hpdf_utils.h"
 #include "hpdf_streams.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_streams_internal.h"
+#include "internal/hpdf_list_internal.h"
 
 #ifdef LIBHPDF_HAVE_ZLIB
 #include <zlib.h>
@@ -110,7 +113,7 @@ HPDF_FileStream_FreeFunc  (HPDF_Stream  stream);
  *
  *  stream : Pointer to a HPDF_Stream object.
  *  ptr : Pointer to a buffer to copy read data.
- *  size : Pointer to a variable which indicates buffer size.
+ *  size : Pointer to a variable which indecates buffer size.
  *
  *  HPDF_Stream_read returns HPDF_OK when success. On failure, it returns
  *  error-code returned by reading function of this stream.

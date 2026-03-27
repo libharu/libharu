@@ -17,13 +17,38 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf.h"
+#include "hpdf_u3d.h"
+
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_streams_internal.h"
+#include "internal/hpdf_pages_internal.h"
 
 #include <string.h>
 
-#ifndef M_PI
-/* Not defined in MSVC6 */
-#define M_PI       3.14159265358979323846
-#endif
+HPDF_EXPORT(HPDF_Dict)
+HPDF_Page_Create3DView    (HPDF_Page        page,
+                           HPDF_U3D         u3d,
+                           HPDF_Annotation  annot3d,
+                           const char      *name)
+{
+    HPDF_PageAttr attr;
+    HPDF_Dict view;
+
+    HPDF_PTRACE((" HPDF_Page_Create3DView\n"));
+    HPDF_UNUSED(annot3d);
+
+    if (!HPDF_Page_Validate (page))
+        return NULL;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    view = HPDF_3DView_New( page->mmgr, attr->xref, u3d, name);
+    if (!view) {
+        HPDF_CheckError (page->error);
+    }
+    return view;
+}
 
 HPDF_U3D
 HPDF_U3D_LoadU3D  (HPDF_MMgr        mmgr,
@@ -714,8 +739,8 @@ HPDF_EXPORT(HPDF_STATUS) HPDF_3DView_SetCamera(HPDF_Dict view, HPDF_REAL coox, H
 		HPDF_REAL upxprime, upyprime, upzprime;
 		HPDF_REAL sinroll, cosroll;
 
-		sinroll =  (HPDF_REAL)sin((roll/180.0f)*M_PI);
-		cosroll =  (HPDF_REAL)cos((roll/180.0f)*M_PI);
+		sinroll =  (HPDF_REAL)sin((roll/180.0f)*HPDF_PI);
+		cosroll =  (HPDF_REAL)cos((roll/180.0f)*HPDF_PI);
 		leftxprime = leftx*cosroll + upx*sinroll;
 		leftyprime = lefty*cosroll + upy*sinroll;
 		leftzprime = leftz*cosroll + upz*sinroll;

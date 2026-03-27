@@ -20,6 +20,9 @@
 #include "hpdf_consts.h"
 #include "hpdf_list.h"
 
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_list_internal.h"
+
 static HPDF_STATUS
 Resize  (HPDF_List  list,
          HPDF_UINT  count);
@@ -333,3 +336,4 @@ HPDF_List_Find  (HPDF_List  list,
 
     return -1;
 }
+

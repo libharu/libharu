@@ -1,0 +1,13 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: hpdf
+Description: Haru Free PDF Library
+Version: @HPDF_VERSION@
+
+Requires:
+Libs: -L${libdir} -lhpdf
+Cflags: -I${includedir}/hpdf-@HPDF_VERSION@
+

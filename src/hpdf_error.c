@@ -21,6 +21,8 @@
 #include "hpdf_consts.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_error_internal.h"
+
 #ifndef HPDF_STDCALL
 #ifdef HPDF_DLL_MAKE
 #define HPDF_STDCALL __stdcall

@@ -16,32 +16,20 @@
  *
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+
+#ifdef LIBHPDF_ASIAN_SUPPORT
+
+#include <stdlib.h>
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
-
+#include "handler.h"
+#include "utils.h"
 
 void
-draw_page  (HPDF_Page      page,
+draw_page  (HPDF_Doc       pdf,
+            HPDF_Page      page,
             HPDF_Font      title_font,
             HPDF_Font      font,
             HPDF_BYTE      h_byte,
@@ -178,7 +166,7 @@ main  (int      argc,
         return 1;
     }
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -232,7 +220,7 @@ main  (int      argc,
             buf[1] = j;
             buf[2] = 0;
 
-            btype = HPDF_Encoder_GetByteType (encoder, buf, 0);
+            btype = HPDF_Encoder_GetByteType (encoder, (char*)buf, 0);
             unicode = HPDF_Encoder_GetUnicode (encoder, code);
 
             if (btype == HPDF_BYTE_TYPE_LEAD &&
@@ -268,30 +256,18 @@ main  (int      argc,
             HPDF_Font title_font = HPDF_GetFont (pdf, "Helvetica", NULL);
             HPDF_Outline outline;
             HPDF_Destination dst;
-#ifdef __WIN32__
-            _snprintf (buf, 256, "0x%04X-0x%04X",
+            HPDF_snprintf (buf, 256, "0x%04X-0x%04X",
                     (unsigned int)(i * 256 + min_l),
                     (unsigned int)(i * 256 + max_l));
-#else
-            snprintf (buf, 256, "0x%04X-0x%04X",
-                    (unsigned int)(i * 256 + min_l),
-                    (unsigned int)(i * 256 + max_l));
-#endif
     outline = HPDF_CreateOutline (pdf, root, buf, NULL);
             dst = HPDF_Page_CreateDestination (page);
             HPDF_Outline_SetDestination(outline, dst);
 
-            draw_page (page, title_font, font, (HPDF_BYTE)i, (HPDF_BYTE)min_l);
+            draw_page (pdf, page, title_font, font, (HPDF_BYTE)i, (HPDF_BYTE)min_l);
 
-#ifdef __WIN32__
-            _snprintf (buf, 256, "%s (%s) 0x%04X-0x%04X", argv[1], argv[2],
-                        (unsigned int)(i * 256 + min_l),
-                        (unsigned int)(i * 256 + max_l));
-#else
-            snprintf (buf, 256, "%s (%s) 0x%04X-0x%04X", argv[1], argv[2],
-                        (unsigned int)(i * 256 + min_l),
-                        (unsigned int)(i * 256 + max_l));
-#endif
+            HPDF_snprintf (buf, 256, "%s (%s) 0x%04X-0x%04X", argv[1], argv[2],
+                    (unsigned int)(i * 256 + min_l),
+                    (unsigned int)(i * 256 + max_l));
             HPDF_Page_SetFontAndSize (page, title_font, 10);
             HPDF_Page_BeginText (page);
             HPDF_Page_MoveTextPos (page, 40, HPDF_Page_GetHeight (page) - 35);
@@ -305,3 +281,14 @@ main  (int      argc,
 
     return 0;
 }
+
+#else /* LIBHPDF_ASIAN_SUPPORT */
+
+int main()
+{
+    printf("WARNING: character_map was not built correctly. \n"
+           "Make sure Asian support is enabled, see LIBHPDF_ASIAN_SUPPORT.\n");
+    return 0;
+}
+
+#endif /* LIBHPDF_ASIAN_SUPPORT */

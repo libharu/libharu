@@ -19,6 +19,8 @@
 #include "hpdf_utils.h"
 #include "hpdf_page_label.h"
 
+#include "internal/hpdf_doc_internal.h"
+
 HPDF_Dict
 HPDF_PageLabel_New  (HPDF_Doc             pdf,
                      HPDF_PageNumStyle    style,

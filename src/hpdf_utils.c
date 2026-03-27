@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include "hpdf_utils.h"
 #include "hpdf_consts.h"
+#include "hpdf_page_sizes.h"
 
 /*---------------------------------------------------------------------------*/
 
@@ -450,4 +451,74 @@ HPDF_UInt16Swap  (HPDF_UINT16  *value)
 
     HPDF_MemCpy (u, (HPDF_BYTE*)value, 2);
     *value = (HPDF_UINT16)((HPDF_UINT16)u[0] << 8 | (HPDF_UINT16)u[1]);
+}
+
+const char*
+HPDF_PageSizeName (HPDF_PageSizes size)
+{
+    return HPDF_PREDEFINED_PAGE_SIZE_NAMES[size];
+}
+
+HPDF_TransMatrix
+HPDF_Matrix_Multiply (HPDF_TransMatrix m, HPDF_TransMatrix n)
+{
+    HPDF_TransMatrix r;
+
+    /*
+
+    | a' b' 0 |   | a" b" 0 |   | a'a" b'c" 0'x"  a'b" b'd" 0'y"  a'0" b'0" 0'1" |
+    | c' d' 0 | x | c" d" 0 | = | c'a" d'c" 0'x"  c'b" d'd" 0'y"  c'0" d'0" 0'1" |
+    | x' y' 1 |   | x" y" 1 |   | x'a" y'c" 1'x"  x'b" y'd" 1'y"  x'0" y'0" 1'1" |
+
+    | m.a m.b 0 |   | n.a n.b 0 |   | m.a*n.a+m.b*n.c      m.a*n.b+m.b*n.d      0 |
+    | m.c m.d 0 | x | n.c n.d 0 | = | m.c*n.a+m.d*n.c      m.c*n.b+m.d*n.d      0 |
+    | m.x m.y 1 |   | n.x n.y 1 |   | m.x*n.a+m.y*n.c+n.x  m.x*n.b+m.y*n.d+*n.y 1 |
+
+    */
+
+    r.a = m.a*n.a + m.b*n.c;
+    r.b = m.a*n.b + m.b*n.d;
+    r.c = m.c*n.a + m.d*n.c;
+    r.d = m.c*n.b + m.d*n.d;
+    r.x = m.x*n.a + m.y*n.c + n.x;
+    r.y = m.x*n.b + m.y*n.d + n.y;
+
+    return r;
+}
+
+HPDF_TransMatrix
+HPDF_Matrix_Translate (HPDF_TransMatrix m, HPDF_REAL dx, HPDF_REAL dy)
+{
+    HPDF_TransMatrix translate = {1, 0, 0, 1, dx, dy};
+    return HPDF_Matrix_Multiply (m, translate);
+}
+
+HPDF_TransMatrix
+HPDF_Matrix_Scale (HPDF_TransMatrix m, HPDF_REAL sx, HPDF_REAL sy)
+{
+    HPDF_TransMatrix scale = {sx, 0, 0, sy, 0, 0};
+    return HPDF_Matrix_Multiply (m, scale);
+}
+
+HPDF_TransMatrix
+HPDF_Matrix_Rotate (HPDF_TransMatrix m, HPDF_REAL angle)
+{
+    HPDF_TransMatrix rotate = {cos(angle), sin(angle), -sin(angle), cos(angle), 0, 0};
+    return HPDF_Matrix_Multiply (rotate, m);
+}
+
+HPDF_TransMatrix
+HPDF_Matrix_RotateDeg (HPDF_TransMatrix m, HPDF_REAL degrees)
+{
+    HPDF_REAL angle = degrees * HPDF_PI / 180.0;
+
+    HPDF_TransMatrix rotate = {cos(angle), sin(angle), -sin(angle), cos(angle), 0, 0};
+    return HPDF_Matrix_Multiply (m, rotate);
+}
+
+HPDF_TransMatrix
+HPDF_Matrix_Skew (HPDF_TransMatrix m, HPDF_REAL a, HPDF_REAL b)
+{
+    HPDF_TransMatrix skew = {1, tan(a), tan(b), 1, 0, 0};
+    return HPDF_Matrix_Multiply (m, skew);
 }

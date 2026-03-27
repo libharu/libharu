@@ -20,6 +20,9 @@
 #include "hpdf_encoder.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_encoder_internal.h"
+
 static const HPDF_UnicodeMap_Rec CP932_UNICODE_ARRAY[] = {
     {0x00, 0x0000},
     {0x01, 0x0001},

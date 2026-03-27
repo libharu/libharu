@@ -16,26 +16,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <setjmp.h>
 #include "hpdf.h"
+#include "handler.h"
 
-#ifdef HPDF_USE_PNGLIB
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
+#ifdef LIBHPDF_HAVE_LIBPNG
 
 int main (int argc, char **argv)
 {
@@ -53,7 +37,7 @@ int main (int argc, char **argv)
         return 1;
     }
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -97,8 +81,8 @@ int main (int argc, char **argv)
 
 int main()
 {
-    printf("WARNING: if you want to run this example, \n"
-           "make libhpdf with HPDF_USE_PNGLIB option.\n");
+    printf("WARNING: make_rawimage app was not built correctly. \n"
+           "Make sure libpng is installed and CMake is able to find it.\n");
     return 0;
 }
 

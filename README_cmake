@@ -62,8 +62,8 @@ You get a complete list of all available generators for your platform
 with "cmake --help". I'll go into details for one specific compiler toolset.
 The other generators work similar.
 
-Using CMake to produce Visual C++ 2008 Makefiles
-------------------------------------------------
+Using CMake to produce Visual C++ 2008 Makfiles
+-----------------------------------------------
 First you need to have the command line interface setup correctly. Start
 cmd.exe and run "%VS90COMNTOOLS%vsvars32.bat". This will set up the
 command line tools of Visual C++ 2008. Cd into the created build
@@ -84,7 +84,7 @@ stage. These options must be given at the command line with the -D flag, e.g.
 cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Debug ..\libharu
 
   CMAKE_BUILD_TYPE=Debug|Release - debug or release build
-  BUILD_SHARED_LIBS=ON|OFF - shared or static build
+  LIBHPDF_SHARED_LIB=ON|OFF - shared or static build
   CMAKE_COLOR_MAKEFILE=ON|OFF - color output
   CMAKE_VERBOSE_MAKEFILE=ON|OFF - verbose makefile output
   

@@ -19,6 +19,7 @@
 #define _HPDF_EXDATA_H
 
 #include "hpdf_objects.h"
+#include "hpdf.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,11 +28,22 @@ extern "C" {
 /*----------------------------------------------------------------------------*/
 /*------ HPDF_ExData -----------------------------------------------------*/
 
-HPDF_ExData
-HPDF_3DAnnotExData_New(HPDF_MMgr mmgr,
-					   HPDF_Xref xref );
+HPDF_EXPORT(HPDF_ExData)
+HPDF_3DAnnotExData_New(
+    HPDF_MMgr mmgr,
+    HPDF_Xref xref
+);
 
-         
+HPDF_EXPORT(HPDF_ExData)
+HPDF_Page_Create3DAnnotExData(
+    HPDF_Page page
+);
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_3DAnnotExData_Set3DMeasurement(
+    HPDF_ExData    exdata,
+    HPDF_3DMeasure measure
+);
 
 #ifdef __cplusplus
 }

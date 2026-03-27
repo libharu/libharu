@@ -40,6 +40,8 @@
 #include "hpdf_consts.h"
 #include "hpdf_utils.h"
 #include "hpdf_encrypt.h"
+#include "internal/hpdf_list_internal.h"
+#include "internal/hpdf_encrypt_internal.h"
 
 static const HPDF_BYTE HPDF_PADDING_STRING[] = {
     0x28, 0xBF, 0x4E, 0x5E, 0x4E, 0x75, 0x8A, 0x41,
@@ -308,12 +310,12 @@ ARC4CryptBuf (HPDF_ARC4_Ctx_Rec   *ctx,
 /*---------------------------------------------------------------------------*/
 
 void
-HPDF_PadOrTruncatePasswd  (const char  *pwd,
+HPDF_PadOrTrancatePasswd  (const char  *pwd,
                            HPDF_BYTE        *new_pwd)
 {
     HPDF_UINT len = HPDF_StrLen (pwd, HPDF_PASSWD_LEN + 1);
 
-    HPDF_PTRACE((" HPDF_PadOrTruncatePasswd\n"));
+    HPDF_PTRACE((" HPDF_PadOrTrancatePasswd\n"));
 
     HPDF_MemSet (new_pwd, 0x00, HPDF_PASSWD_LEN);
 

@@ -45,8 +45,21 @@ extern "C" {
 /*                                                0x1012 */
 #define HPDF_ERR_UNKNOWN_CLASS                    0x1013
 #define HPDF_EXCEED_GSTATE_LIMIT                  0x1014
-#define HPDF_FAILED_TO_ALLOC_MEM                   0x1015
-#define HPDF_FAILD_TO_ALLOC_MEM HPDF_FAILED_TO_ALLOC_MEM /* For compatibility with previous versions */
+
+/**
+
+  \ingroup error
+  \brief Memory allocation failed
+  \todo Deprecate constant
+*/
+#define HPDF_FAILED_TO_ALLOC_MEM                  0x1015
+
+/**
+
+  \ingroup error
+  \brief An error occurred while processing file I/O
+
+*/
 #define HPDF_FILE_IO_ERROR                        0x1016
 #define HPDF_FILE_OPEN_ERROR                      0x1017
 /*                                                0x1018 */
@@ -62,6 +75,13 @@ extern "C" {
 #define HPDF_INVALID_DATE_TIME                    0x1022
 #define HPDF_INVALID_DESTINATION                  0x1023
 /*                                                0x1024 */
+
+/**
+
+  \ingroup error
+  \brief Document object handle is not valid.
+
+*/
 #define HPDF_INVALID_DOCUMENT                     0x1025
 #define HPDF_INVALID_DOCUMENT_STATE               0x1026
 #define HPDF_INVALID_ENCODER                      0x1027
@@ -167,16 +187,8 @@ extern "C" {
 
 /*---------------------------------------------------------------------------*/
 /*----- HPDF_Error ----------------------------------------------------------*/
-
-typedef struct  _HPDF_Error_Rec  *HPDF_Error;
-
-typedef struct  _HPDF_Error_Rec {
-    HPDF_STATUS             error_no;
-    HPDF_STATUS             detail_no;
-    HPDF_Error_Handler      error_fn;
-    void                    *user_data;
-} HPDF_Error_Rec;
-
+struct _HPDF_Error_Rec;
+typedef struct _HPDF_Error_Rec *HPDF_Error;
 
 /*  HPDF_Error_init
  *
@@ -185,32 +197,39 @@ typedef struct  _HPDF_Error_Rec {
  *
  */
 void
-HPDF_Error_Init  (HPDF_Error    error,
-                  void         *user_data);
-
+HPDF_Error_Init(
+    HPDF_Error error,
+    void*      user_data
+);
 
 void
-HPDF_Error_Reset  (HPDF_Error  error);
-
-
-HPDF_STATUS
-HPDF_Error_GetCode  (HPDF_Error  error);
-
+HPDF_Error_Reset(
+    HPDF_Error error
+);
 
 HPDF_STATUS
-HPDF_Error_GetDetailCode  (HPDF_Error  error);
-
-
-HPDF_STATUS
-HPDF_SetError  (HPDF_Error   error,
-                HPDF_STATUS  error_no,
-                HPDF_STATUS  detail_no);
-
+HPDF_Error_GetCode(
+    HPDF_Error error
+);
 
 HPDF_STATUS
-HPDF_RaiseError  (HPDF_Error   error,
-                  HPDF_STATUS  error_no,
-                  HPDF_STATUS  detail_no);
+HPDF_Error_GetDetailCode(
+    HPDF_Error error
+);
+
+HPDF_STATUS
+HPDF_SetError(
+    HPDF_Error  error,
+    HPDF_STATUS error_no,
+    HPDF_STATUS detail_no
+);
+
+HPDF_STATUS
+HPDF_RaiseError(
+    HPDF_Error  error,
+    HPDF_STATUS error_no,
+    HPDF_STATUS detail_no
+);
 
 #ifdef __cplusplus
 }

@@ -17,7 +17,20 @@
 
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
-#include "hpdf_font.h"
+#include "hpdf_error.h"
+#include "hpdf_consts.h"
+#include "hpdf_objects.h"
+#include "hpdf_mmgr.h"
+#include "hpdf_encoder.h"
+#include "hpdf_list.h"
+
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_fontdef_internal.h"
+#include "internal/hpdf_font_internal.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_encoder_internal.h"
+#include "internal/hpdf_list_internal.h"
+
 
 static HPDF_Font
 CIDFontType0_New (HPDF_Font parent,
@@ -677,7 +690,8 @@ MeasureText  (HPDF_Font          font,
     HPDF_UINT tmp_len = 0;
     HPDF_UINT i;
     HPDF_FontAttr attr = (HPDF_FontAttr)font->attr;
-    //HPDF_ByteType last_btype = HPDF_BYTE_TYPE_TRAIL;
+    // Comment to make compiler happy
+    // HPDF_ByteType last_btype = HPDF_BYTE_TYPE_TRAIL;
     HPDF_Encoder encoder = attr->encoder;
     HPDF_ParseText_Rec  parse_state;
     HPDF_INT dw2;
@@ -724,8 +738,9 @@ MeasureText  (HPDF_Font          font,
                 tmp_len = i + 1;
                 if (real_width)
                     *real_width = w;
-            } /* else
-			//Commenting this out fixes problem with HPDF_Text_Rect() splitting the words
+            }
+            /* else
+            // Commenting this out fixes problem with HPDF_Text_Rect() splitting the words
             if (last_btype == HPDF_BYTE_TYPE_TRAIL ||
                     (btype == HPDF_BYTE_TYPE_LEAD &&
                     last_btype == HPDF_BYTE_TYPE_SINGLE)) {
@@ -734,7 +749,8 @@ MeasureText  (HPDF_Font          font,
                     if (real_width)
                         *real_width = w;
                 }
-            }*/
+            }
+            */
         }
 
         if (HPDF_IS_WHITE_SPACE(b)) {
@@ -768,12 +784,12 @@ MeasureText  (HPDF_Font          font,
             return tmp_len;
 
         /*
+        // Commented alongside of previous commented items
         if (HPDF_IS_WHITE_SPACE(b))
             last_btype = HPDF_BYTE_TYPE_TRAIL;
         else
             last_btype = btype;
         */
-
     }
 
     /* all of text can be put in the specified width */

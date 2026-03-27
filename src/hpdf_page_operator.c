@@ -20,6 +20,12 @@
 #include "hpdf_pages.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_font_internal.h"
+#include "internal/hpdf_pages_internal.h"
+#include "internal/hpdf_encoder_internal.h"
+#include "internal/hpdf_gstate_internal.h"
+
 static const HPDF_Point INIT_POS = {0, 0};
 static const HPDF_DashMode INIT_MODE = {{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f}, 0, 0.0f};
 
@@ -300,7 +306,7 @@ HPDF_Page_SetExtGState  (HPDF_Page        page,
     if (HPDF_Stream_WriteStr (attr->stream, " gs\012") != HPDF_OK)
         return HPDF_CheckError (page->error);
 
-    /* change object class to read only. */
+    /* change objct class to read only. */
     ext_gstate->header.obj_class = (HPDF_OSUBCLASS_EXT_GSTATE_R | HPDF_OCLASS_DICT);
 
     return ret;
@@ -452,6 +458,50 @@ HPDF_Page_Concat  (HPDF_Page         page,
     attr->gstate->trans_matrix.y = tm.x * b + tm.y * d + y;
 
     return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_Translate (HPDF_Page   page,
+                     HPDF_REAL   dx,
+                     HPDF_REAL   dy)
+{
+    HPDF_PTRACE ((" HPDF_Page_Translate\n"));
+    return HPDF_Page_Concat (page, 1, 0, 0, 1, dx, dy);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_Scale (HPDF_Page   page,
+                 HPDF_REAL   sx,
+                 HPDF_REAL   sy)
+{
+    HPDF_PTRACE ((" HPDF_Page_Scale\n"));
+    return HPDF_Page_Concat (page, sx, 0, 0, sy, 0, 0);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_Rotate (HPDF_Page   page,
+                  HPDF_REAL   a)
+{
+    HPDF_PTRACE ((" HPDF_Page_Rotate\n"));
+    return HPDF_Page_Concat (page, cos(a), sin(a), -sin(a), cos(a), 0, 0);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_RotateDeg (HPDF_Page   page,
+                     HPDF_REAL   degrees)
+{
+    HPDF_PTRACE ((" HPDF_Page_RotateDeg\n"));
+    HPDF_REAL a = degrees * HPDF_PI / 180.0;
+    return HPDF_Page_Concat (page, cos(a), sin(a), -sin(a), cos(a), 0, 0);
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_Skew (HPDF_Page   page,
+                HPDF_REAL   a,
+                HPDF_REAL   b)
+{
+    HPDF_PTRACE ((" HPDF_Page_Skew\n"));
+    return HPDF_Page_Concat (page, 1, tan(a), tan(b), 1, 0, 0);
 }
 
 /*--- Path construction operator ------------------------------------------*/
@@ -1768,6 +1818,19 @@ HPDF_Page_SetRGBStroke  (HPDF_Page  page,
     return ret;
 }
 
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_SetRGBStrokeHex  (HPDF_Page  page,
+                            HPDF_UINT8  r,
+                            HPDF_UINT8  g,
+                            HPDF_UINT8  b)
+{
+    HPDF_REAL rr = (HPDF_REAL)r / 255.0;
+    HPDF_REAL rg = (HPDF_REAL)g / 255.0;
+    HPDF_REAL rb = (HPDF_REAL)b / 255.0;
+
+    return HPDF_Page_SetRGBStroke(page, rr, rg, rb);
+}
+
 /* k */
 HPDF_EXPORT(HPDF_STATUS)
 HPDF_Page_SetCMYKFill  (HPDF_Page  page,
@@ -2256,8 +2319,6 @@ InternalArc  (HPDF_Page    page,
               HPDF_REAL    ang2,
               HPDF_BOOL    cont_flg)
 {
-    const HPDF_REAL PIE = 3.14159F;
-
     char buf[HPDF_TMP_BUF_SIZ];
     char *pbuf = buf;
     char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
@@ -2275,8 +2336,8 @@ InternalArc  (HPDF_Page    page,
 
     HPDF_MemSet (buf, 0, HPDF_TMP_BUF_SIZ);
 
-    delta_angle = (90 - (HPDF_DOUBLE)(ang1 + ang2) / 2) / 180 * PIE;
-    new_angle = (HPDF_DOUBLE)(ang2 - ang1) / 2 / 180 * PIE;
+    delta_angle = (90 - (HPDF_DOUBLE)(ang1 + ang2) / 2) / 180 * HPDF_PI;
+    new_angle = (HPDF_DOUBLE)(ang2 - ang1) / 2 / 180 * HPDF_PI;
 
     rx0 = ray * HPDF_COS (new_angle);
     ry0 = ray * HPDF_SIN (new_angle);
@@ -2927,4 +2988,19 @@ HPDF_Page_Insert_Shared_Content_Stream  (HPDF_Page page,
     ret += HPDF_Page_New_Content_Stream (page, NULL);
 
     return ret;
+}
+
+HPDF_EXPORT(HPDF_STATUS)
+HPDF_Page_RawWrite (HPDF_Page   page,
+                    char       *data)
+{
+    if (!HPDF_Page_Validate (page))
+        return HPDF_INVALID_PAGE;
+
+    HPDF_PTRACE((" HPDF_Page_RawWrite\n"));
+
+    HPDF_PageAttr attr = (HPDF_PageAttr)page->attr;
+    HPDF_Stream_WriteStr (attr->stream, data);
+
+    return HPDF_OK;
 }

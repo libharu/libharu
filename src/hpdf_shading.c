@@ -17,10 +17,13 @@
  */
 
 #include "hpdf.h"
-#include "hpdf_conf.h"
 #include "hpdf_utils.h"
 
 #include "assert.h"
+
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_mmgr_internal.h"
 
 typedef struct _RGBVertex
 {

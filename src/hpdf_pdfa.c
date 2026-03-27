@@ -26,6 +26,11 @@
 #include "hpdf_pdfa.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_streams_internal.h"
+#include "internal/hpdf_list_internal.h"
+
 
 #define HEADER                   "<?xpacket begin='' id='W5M0MpCehiHzreSzNTczkc9d'?><x:xmpmeta xmlns:x='adobe:ns:meta/' x:xmptk='XMP toolkit 2.9.1-13, framework 1.6'><rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#' xmlns:iX='http://ns.adobe.com/iX/1.0/'>"
 #define DC_HEADER                "<rdf:Description xmlns:dc='http://purl.org/dc/elements/1.1/' rdf:about=''>"
@@ -144,7 +149,7 @@ HPDF_STATUS ConvertDateToXMDate(HPDF_Stream stream, const char *pDate)
 }
 
 /* Set PDF/A conformance */
-HPDF_EXPORT(HPDF_STATUS)
+HPDF_STATUS
 HPDF_PDFA_SetPDFAConformance (HPDF_Doc pdf, HPDF_PDFAType pdfatype)
 {
     pdf->pdfa_type = pdfatype;
@@ -295,8 +300,10 @@ HPDF_PDFA_AddXmpMetadata(HPDF_Doc pdf)
         }
 
         /* Add the pdfaid block */
-        conformanceVersion = HPDF_PDFA_NON_PDFA;
+        conformanceVersion = -1;
         switch(pdf->pdfa_type) {
+          case HPDF_PDFA_NON_PDFA:
+            break;
           case HPDF_PDFA_1A:
             ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA1A);
             conformanceVersion = HPDF_VER_14;
@@ -341,14 +348,12 @@ HPDF_PDFA_AddXmpMetadata(HPDF_Doc pdf)
             ret += HPDF_Stream_WriteStr(xmp->stream, PDFAID_PDFA4F);
             conformanceVersion = HPDF_VER_20;
             break;
-          default:
-            break;
         }
 
         /* Update the PDF number version */
         pdf->pdf_version = (pdf->pdf_version > conformanceVersion ? pdf->pdf_version : conformanceVersion);
 
-        /* Append additional specific XMP extensions */
+        /* Append additionnal specific XMP extensions */
         {
             HPDF_UINT i;
             HPDF_List list;

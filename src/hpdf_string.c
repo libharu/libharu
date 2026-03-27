@@ -20,6 +20,10 @@
 #include "hpdf_utils.h"
 #include "hpdf_objects.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_encoder_internal.h"
+
 static const HPDF_BYTE UNICODE_HEADER[] = {
     0xFE, 0xFF
 };

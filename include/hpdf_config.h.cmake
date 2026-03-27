@@ -9,3 +9,12 @@
 
 /* debug trace enabled */
 #cmakedefine LIBHPDF_DEBUG_TRACE
+
+/* Include Asian encoder */
+#cmakedefine LIBHPDF_ASIAN_SUPPORT
+
+/* Include u3d feature */
+#cmakedefine LIBHPDF_U3D_SUPPORT
+
+/* Include annotations */
+#cmakedefine LIBHPDF_ANNOTATIONS_SUPPORT

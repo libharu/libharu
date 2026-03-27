@@ -21,6 +21,9 @@
 #include "hpdf_3dmeasure.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_pages_internal.h"
+
 /*----------------------------------------------------------------------------*/
 /*------ HPDF_3DMeasure -----------------------------------------------------*/
 
@@ -233,3 +236,63 @@ HPDF_PD33DMeasure_New(HPDF_MMgr mmgr,
 	return measure;
 }
 
+HPDF_EXPORT(HPDF_3DMeasure)
+HPDF_Page_Create3DC3DMeasure(HPDF_Page       page,
+                             HPDF_Point3D    firstanchorpoint,
+                             HPDF_Point3D    textanchorpoint)
+{
+    HPDF_PageAttr attr;
+    HPDF_Annotation measure;
+
+    HPDF_PTRACE((" HPDF_Page_Create3DC3DMeasure\n"));
+
+    if (!HPDF_Page_Validate (page))
+        return NULL;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    measure = HPDF_3DC3DMeasure_New(page->mmgr, attr->xref, firstanchorpoint, textanchorpoint);
+    if ( !measure)
+        HPDF_CheckError (page->error);
+
+    return measure;
+}
+
+HPDF_EXPORT(HPDF_3DMeasure)
+HPDF_Page_CreatePD33DMeasure(HPDF_Page       page,
+                             HPDF_Point3D    annotationPlaneNormal,
+                             HPDF_Point3D    firstAnchorPoint,
+                             HPDF_Point3D    secondAnchorPoint,
+                             HPDF_Point3D    leaderLinesDirection,
+                             HPDF_Point3D    measurementValuePoint,
+                             HPDF_Point3D    textYDirection,
+                             HPDF_REAL       value,
+                             const char*     unitsString
+                             )
+{
+    HPDF_PageAttr attr;
+    HPDF_Annotation measure;
+
+    HPDF_PTRACE((" HPDF_Page_CreatePD33DMeasure\n"));
+
+    if (!HPDF_Page_Validate (page))
+        return NULL;
+
+    attr = (HPDF_PageAttr)page->attr;
+
+    measure = HPDF_PD33DMeasure_New(page->mmgr,
+        attr->xref,
+        annotationPlaneNormal,
+        firstAnchorPoint,
+        secondAnchorPoint,
+        leaderLinesDirection,
+        measurementValuePoint,
+        textYDirection,
+        value,
+        unitsString
+        );
+    if (!measure)
+        HPDF_CheckError (page->error);
+
+    return measure;
+}

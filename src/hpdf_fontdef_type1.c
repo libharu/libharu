@@ -18,6 +18,9 @@
 #include "hpdf_conf.h"
 #include "hpdf_utils.h"
 #include "hpdf_fontdef.h"
+#include "internal/hpdf_fontdef_internal.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_streams_internal.h"
 
 static void
 FreeWidth  (HPDF_FontDef  fontdef);
@@ -287,7 +290,7 @@ LoadAfm (HPDF_FontDef  fontdef,
 
         GetKeyword (s, buf2, HPDF_LIMIT_MAX_NAME_LEN + 1);
 
-        cdata->unicode = HPDF_GlyphNameToUnicode (buf2);
+        cdata->unicode = HPDF_GryphNameToUnicode (buf2);
 
     }
 
@@ -474,9 +477,9 @@ HPDF_Type1FontDef_SetWidths  (HPDF_FontDef          fontdef,
 
 HPDF_INT16
 HPDF_Type1FontDef_GetWidthByName  (HPDF_FontDef      fontdef,
-                                   const char*  glyph_name)
+                                   const char*  gryph_name)
 {
-    HPDF_UNICODE unicode = HPDF_GlyphNameToUnicode (glyph_name);
+    HPDF_UNICODE unicode = HPDF_GryphNameToUnicode (gryph_name);
 
     HPDF_PTRACE ((" HPDF_Type1FontDef_GetWidthByName\n"));
 

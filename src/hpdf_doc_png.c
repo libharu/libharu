@@ -21,6 +21,9 @@
 #include "hpdf.h"
 #include "hpdf_image.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_doc_internal.h"
+
 #ifdef LIBHPDF_HAVE_LIBPNG
 
 static HPDF_Image
@@ -33,10 +36,10 @@ HPDF_LoadPngImageFromMem  (HPDF_Doc          pdf,
                            const HPDF_BYTE  *buffer,
                            HPDF_UINT         size)
 {
-	HPDF_Stream imagedata;
-	HPDF_Image image;
+    HPDF_Stream imagedata;
+    HPDF_Image image;
 
-	HPDF_PTRACE ((" HPDF_LoadPngImageFromMem\n"));
+    HPDF_PTRACE ((" HPDF_LoadPngImageFromMem\n"));
 
     if (!HPDF_HasDoc (pdf)) {
         return NULL;
@@ -205,6 +208,5 @@ HPDF_LoadPngImageFromFile2  (HPDF_Doc     pdf,
 
     return NULL;
 }
-
 
 #endif /* LIBHPDF_HAVE_LIBPNG */

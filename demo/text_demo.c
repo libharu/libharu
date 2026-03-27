@@ -12,30 +12,27 @@
  *
  */
 
+/**
+  \par Text demo
+
+  This demo app shows various ways to create text using \c libHaru:
+  - Font sizes
+  - Text color
+  - Fill mode
+  - Text rotation
+  - Text skewing
+  - Character spacing
+  - Word spacing
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler (HPDF_STATUS   error_no,
-               HPDF_STATUS   detail_no,
-               void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
+#include "handler.h"
+#include "utils.h"
 
 void
 show_stripe_pattern  (HPDF_Page   page,
@@ -82,7 +79,6 @@ show_description  (HPDF_Page          page,
 
 int main (int argc, char **argv)
 {
-    (void) argc; /* Not used */
     const char *page_title = "Text Demo";
 
     HPDF_Doc  pdf;
@@ -107,7 +103,7 @@ int main (int argc, char **argv)
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -175,11 +171,7 @@ int main (int argc, char **argv)
         /* print the description. */
         HPDF_Page_MoveTextPos (page, 0, -10);
         HPDF_Page_SetFontAndSize(page, font, 8);
-        #ifdef __WIN32__
-        _snprintf(buf, 50, "Fontsize=%.0f", fsize);
-        #else
-        snprintf(buf, 50, "Fontsize=%.0f", fsize);
-        #endif
+        HPDF_snprintf(buf, 50, "Fontsize=%.0f", fsize);
         HPDF_Page_ShowText (page, buf);
 
         fsize *= 1.5;
@@ -308,7 +300,7 @@ int main (int argc, char **argv)
      * Rotating text
      */
     angle1 = 30;                   /* A rotation of 30 degrees. */
-    rad1 = angle1 / 180 * 3.141592; /* Calculate the radian value. */
+    rad1 = angle1 / 180 * HPDF_PI; /* Calculate the radian value. */
 
     show_description (page, 320, ypos - 60, "Rotating text");
     HPDF_Page_BeginText (page);
@@ -326,8 +318,8 @@ int main (int argc, char **argv)
 
     angle1 = 10;
     angle2 = 20;
-    rad1 = angle1 / 180 * 3.141592;
-    rad2 = angle2 / 180 * 3.141592;
+    rad1 = angle1 / 180 * HPDF_PI;
+    rad2 = angle2 / 180 * HPDF_PI;
 
     HPDF_Page_SetTextMatrix (page, 1, tan(rad1), tan(rad2), 1, 320, ypos - 120);
     HPDF_Page_ShowText (page, "ABCabc123");

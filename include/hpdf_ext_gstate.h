@@ -25,13 +25,15 @@ extern "C" {
 #endif
 
 HPDF_Dict
-HPDF_ExtGState_New  (HPDF_MMgr   mmgr, 
-                     HPDF_Xref   xref);
+HPDF_ExtGState_New(
+    HPDF_MMgr mmgr, 
+    HPDF_Xref xref);
 
 
 HPDF_BOOL
-HPDF_ExtGState_Validate  (HPDF_ExtGState  ext_gstate);
-
+HPDF_ExtGState_Validate(
+    HPDF_ExtGState ext_gstate
+);
 
 #ifdef __cplusplus
 }

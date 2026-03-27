@@ -19,6 +19,8 @@
 #include "hpdf_utils.h"
 #include "hpdf_info.h"
 
+#include "internal/hpdf_objects_internal.h"
+
 static const char * const HPDF_INFO_ATTR_NAMES[] = {
     "CreationDate",
     "ModDate",

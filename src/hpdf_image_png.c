@@ -19,6 +19,10 @@
 #include "hpdf_utils.h"
 #include "hpdf_image.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_error_internal.h"
+
 #ifdef LIBHPDF_HAVE_LIBPNG
 #include <png.h>
 #include <string.h>
@@ -110,8 +114,6 @@ static void
 PngWarnFunc  (png_structp  png_ptr,
               const char  *msg)
 {
-    (void) png_ptr;
-    (void) msg;
     // Warning does not prevent the job to be done
     // So it can be safely ignored.
     // printf("WARNING: %s\n", msg);
@@ -721,4 +723,4 @@ PngAfterWrite  (HPDF_Dict obj)
 }
 
 
-#endif /* LIBHPDF_HAVE_PNGLIB */
+#endif /* LIBHPDF_HAVE_LIBPNG */

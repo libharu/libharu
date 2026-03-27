@@ -1,2 +1,10 @@
 Please refer to online version of the documentation:
 https://github.com/libharu/libharu/wiki
+
+Building Doxygen documentation:
+
+```
+$ doxygen Doxyfile
+```
+
+Checked with Doxygen 1.9.1

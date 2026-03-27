@@ -18,6 +18,8 @@
 #include "hpdf_utils.h"
 #include "hpdf_objects.h"
 
+#include "internal/hpdf_objects_internal.h"
+
 HPDF_Boolean
 HPDF_Boolean_New  (HPDF_MMgr  mmgr,
                    HPDF_BOOL  value)

@@ -19,6 +19,9 @@
 #include "hpdf_utils.h"
 #include "hpdf.h"
 
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_fontdef_internal.h"
+
 /*----------------------------------------------------------------------------*/
 
 static const HPDF_CID_Width MS_Gothic_W_ARRAY[] = {

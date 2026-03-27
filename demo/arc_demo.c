@@ -12,34 +12,25 @@
  *
  */
 
+/**
+  \par Arc demo
+
+  This demo show HPDF_Page_Arc() and HPDF_Page_Circle() functions usage.
+
+  Pie chart is created using filled circle segments and central circle.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <setjmp.h>
 #include "hpdf.h"
 #include "grid_sheet.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
+#include "handler.h"
 
 int
 main (int argc, char **argv)
 {
-    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     HPDF_Page page;
     char fname[256];
@@ -48,7 +39,7 @@ main (int argc, char **argv)
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;

@@ -55,7 +55,6 @@ extern "C" {
 #define HPDF_PERMISSION_PAD      0xFFFFFFC0
 #define HPDF_ARC4_BUF_SIZE       256
 
-
 typedef struct HPDF_MD5Context
 {
     HPDF_UINT32 buf[4];
@@ -63,40 +62,8 @@ typedef struct HPDF_MD5Context
     HPDF_BYTE in[64];
 } HPDF_MD5_CTX;
 
-
-typedef struct _HPDF_ARC4_Ctx_Rec {
-    HPDF_BYTE    idx1;
-    HPDF_BYTE    idx2;
-    HPDF_BYTE    state[HPDF_ARC4_BUF_SIZE];
-} HPDF_ARC4_Ctx_Rec;
-
-
+struct _HPDF_Encrypt_Rec;
 typedef struct _HPDF_Encrypt_Rec  *HPDF_Encrypt;
-
-typedef struct _HPDF_Encrypt_Rec {
-    HPDF_EncryptMode   mode;
-
-    /* key_len must be a multiple of 8, and between 40 to 128 */
-    HPDF_UINT          key_len;
-
-    /* owner-password (not encrypted) */
-    HPDF_BYTE          owner_passwd[HPDF_PASSWD_LEN];
-
-    /* user-password (not encrypted) */
-    HPDF_BYTE          user_passwd[HPDF_PASSWD_LEN];
-
-    /* owner-password (encrypted) */
-    HPDF_BYTE          owner_key[HPDF_PASSWD_LEN];
-
-    /* user-password (encrypted) */
-    HPDF_BYTE          user_key[HPDF_PASSWD_LEN];
-
-    HPDF_INT           permission;
-    HPDF_BYTE          encrypt_id[HPDF_ID_LEN];
-    HPDF_BYTE          encryption_key[HPDF_MD5_KEY_LEN + 5];
-    HPDF_BYTE          md5_encryption_key[HPDF_MD5_KEY_LEN];
-    HPDF_ARC4_Ctx_Rec  arc4ctx;
-} HPDF_Encrypt_Rec;
 
 
 void
@@ -114,7 +81,7 @@ HPDF_MD5Final  (HPDF_BYTE              digest[16],
                 struct HPDF_MD5Context *ctx);
 
 void
-HPDF_PadOrTruncatePasswd  (const char  *pwd,
+HPDF_PadOrTrancatePasswd  (const char  *pwd,
                            HPDF_BYTE        *new_pwd);
 
 
@@ -154,4 +121,6 @@ HPDF_Encrypt_CryptBuf  (HPDF_Encrypt  attr,
 }
 #endif /* __cplusplus */
 
-#endif /* HPDF_ENCRYPT_H */
+#endif /* _HPDF_ENCRYPT_H */
+
+

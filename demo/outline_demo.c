@@ -15,26 +15,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <setjmp.h>
 #include "hpdf.h"
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
-
+#include "handler.h"
+#include "utils.h"
 
 void
 print_page  (HPDF_Page   page,  int page_num)
@@ -46,18 +29,13 @@ print_page  (HPDF_Page   page,  int page_num)
 
     HPDF_Page_BeginText (page);
     HPDF_Page_MoveTextPos (page, 30, 740);
-#ifdef __WIN32__
-    _snprintf(buf, 50, "Page:%d", page_num);
-#else
-    snprintf(buf, 50, "Page:%d", page_num);
-#endif
+    HPDF_snprintf(buf, 50, "Page:%d", page_num);
     HPDF_Page_ShowText (page, buf);
     HPDF_Page_EndText (page);
 }
 
 int main(int argc, char **argv)
 {
-    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     HPDF_Font font;
     HPDF_Page page[4];
@@ -69,7 +47,7 @@ int main(int argc, char **argv)
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -107,8 +85,13 @@ int main(int argc, char **argv)
     outline[1] = HPDF_CreateOutline (pdf, root, "page2", NULL);
 
     /* create outline with test which is ISO8859-2 encoding */
-    outline[2] = HPDF_CreateOutline (pdf, root, "ISO8859-2 text гдежзий",
-                    HPDF_GetEncoder (pdf, "ISO8859-2"));
+
+    const char *outline_text = "ISO8859-2 text %s";
+    char buf[50] = {0};
+
+    HPDF_snprintf(buf, 50, outline_text, iso8859_2_text);
+
+    outline[2] = HPDF_CreateOutline (pdf, root, buf, HPDF_GetEncoder (pdf, "ISO8859-2"));
 
     /* create destination objects on each pages
      * and link it to outline items.

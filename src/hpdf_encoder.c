@@ -19,16 +19,20 @@
 #include "hpdf_utils.h"
 #include "hpdf_encoder.h"
 #include "hpdf.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_error_internal.h"
+#include "internal/hpdf_encoder_internal.h"
+#include "internal/hpdf_list_internal.h"
 
-typedef struct _HPDF_UnicodeGlyphPair {
+typedef struct _HPDF_UnicodeGryphPair {
     HPDF_UNICODE     unicode;
-    const char  *glyph_name;
-} HPDF_UnicodeGlyphPair;
+    const char  *gryph_name;
+} HPDF_UnicodeGryphPair;
 
 #define HPDF_BASIC_ENCODER_FIRST_CHAR  32
 #define HPDF_BASIC_ENCODER_LAST_CHAR   255
 
-static const HPDF_UnicodeGlyphPair HPDF_UNICODE_GLYPH_NAME_MAP[] = {
+static const HPDF_UnicodeGryphPair HPDF_UNICODE_GRYPH_NAME_MAP[] = {
     {0x0000, char_NOTDEF},
     {0x0020, "space"},
     {0x0021, "exclam"},
@@ -2389,30 +2393,30 @@ HPDF_Encoder_Free  (HPDF_Encoder  encoder)
 
 
 const char*
-HPDF_UnicodeToGlyphName  (HPDF_UNICODE  unicode)
+HPDF_UnicodeToGryphName  (HPDF_UNICODE  unicode)
 {
-    const HPDF_UnicodeGlyphPair* map = HPDF_UNICODE_GLYPH_NAME_MAP;
+    const HPDF_UnicodeGryphPair* map = HPDF_UNICODE_GRYPH_NAME_MAP;
 
-    HPDF_PTRACE ((" HPDF_UnicodeToGlyphName\n"));
+    HPDF_PTRACE ((" HPDF_UnicodeToGryphName\n"));
 
     while (map->unicode <= unicode) {
         if (map->unicode == unicode)
-            return map->glyph_name;
+            return map->gryph_name;
         map++;
     }
 
-    return HPDF_UNICODE_GLYPH_NAME_MAP[0].glyph_name;
+    return HPDF_UNICODE_GRYPH_NAME_MAP[0].gryph_name;
 }
 
 HPDF_UNICODE
-HPDF_GlyphNameToUnicode  (const char  *glyph_name)
+HPDF_GryphNameToUnicode  (const char  *gryph_name)
 {
-    const HPDF_UnicodeGlyphPair* map = HPDF_UNICODE_GLYPH_NAME_MAP;
+    const HPDF_UnicodeGryphPair* map = HPDF_UNICODE_GRYPH_NAME_MAP;
 
-    HPDF_PTRACE ((" HPDF_GlyphNameToUnicode\n"));
+    HPDF_PTRACE ((" HPDF_GryphNameToUnicode\n"));
 
     while (map->unicode != 0xFFFF) {
-        if (HPDF_StrCmp (glyph_name, map->glyph_name) == 0)
+        if (HPDF_StrCmp (gryph_name, map->gryph_name) == 0)
             return map->unicode;
         map++;
     }
@@ -2480,7 +2484,7 @@ HPDF_BasicEncoder_Write  (HPDF_Encoder  encoder,
                 char tmp[HPDF_TEXT_DEFAULT_LEN];
                 char* ptmp = tmp;
                 const char* char_name =
-                    HPDF_UnicodeToGlyphName (attr->unicode_map[i]);
+                    HPDF_UnicodeToGryphName (attr->unicode_map[i]);
 
                 ptmp = HPDF_IToA (ptmp, i, tmp + HPDF_TEXT_DEFAULT_LEN - 1);
                 *ptmp++ = ' ';

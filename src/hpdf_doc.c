@@ -28,6 +28,14 @@
 #include "hpdf_utils.h"
 #include "hpdf_version.h"
 
+#include "internal/hpdf_objects_internal.h"
+#include "internal/hpdf_doc_internal.h"
+#include "internal/hpdf_fontdef_internal.h"
+#include "internal/hpdf_mmgr_internal.h"
+#include "internal/hpdf_font_internal.h"
+#include "internal/hpdf_encoder_internal.h"
+#include "internal/hpdf_list_internal.h"
+#include "internal/hpdf_encrypt_internal.h"
 
 static const char * const HPDF_VERSION_STR[] = {
                 "%PDF-1.2\012%\267\276\255\252\012",
@@ -38,7 +46,6 @@ static const char * const HPDF_VERSION_STR[] = {
                 "%PDF-1.7\012%\267\276\255\252\012",
                 "%PDF-2.0\012%\267\276\255\252\012"
 };
-
 
 static HPDF_STATUS
 WriteHeader  (HPDF_Doc      pdf,
@@ -177,7 +184,7 @@ HPDF_NewEx  (HPDF_Error_Handler    user_error_fn,
     HPDF_MemSet (pdf, 0, sizeof (HPDF_Doc_Rec));
     pdf->sig_bytes = HPDF_SIG_BYTES;
     pdf->mmgr = mmgr;
-    pdf->pdf_version = HPDF_VER_DEFAULT;
+    pdf->pdf_version = HPDF_VER_13;
     pdf->compression_mode = HPDF_COMP_NONE;
 
     /* copy the data of temporary-error object to the one which is
@@ -305,7 +312,7 @@ HPDF_FreeDoc  (HPDF_Doc  pdf)
 
         HPDF_MemSet(pdf->ttfont_tag, 0, 6);
 
-        pdf->pdf_version = HPDF_VER_DEFAULT;
+        pdf->pdf_version = HPDF_VER_13;
         pdf->outlines = NULL;
         pdf->catalog = NULL;
         pdf->root_pages = NULL;

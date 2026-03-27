@@ -1,0 +1,80 @@
+//
+// Next lines between '/** */' are Doxygen setup for this project
+// \class defines template token, substituted by next line
+// This eliminate documentation text duplication and misconsistency.
+//
+// \defgroup defines documentation group and subsequent \ingroup command combines
+// documentation for functions and other entities together.
+//
+// This comment is ignored by Doxygen.
+
+/**
+
+  \class dox_param_pdf
+  \param pdf Document object handle.
+
+  \class dox_param_page
+  \param page Page object handle.
+
+  \class dox_param_font
+  \param font Font object handle.
+
+  \class dox_param_encoder
+  \param encoder Encoder object handle.
+
+  \class dox_param_annot
+  \param annot Annotation object handle.
+
+  \class dox_param_outline
+  \param outline Outline object handle.
+
+  \class dox_param_image
+  \param image Image object handle.
+
+  \class dox_param_dst
+  \param dst Destination object handle.
+
+  \class dox_error_codes
+  \par Error codes
+
+  \class dox_graphics_mode
+  \par Graphics mode
+
+  \class dox_pdf_cmd
+  \par PDF command
+
+  \class dox_return_ok
+  \return \ref HPDF_OK on success, otherwise returns error code and calls error handler.
+
+  \defgroup doc Document routines
+  Document routines are functions for document creation, freeing, substitution and reading/saving.
+
+  \defgroup page Page routines
+  Page routines are functions for page creation, styling, text setup, line setup and so on.
+
+  \defgroup error Error handling
+  Routines for error processing.
+
+  \defgroup font Font processing
+  Routines for font loading and measuring
+
+  \defgroup encode Encoding handling
+  Routines for working with texts and characters in different encodings
+
+  \defgroup outline Outlines
+  \defgroup image Images
+  Routines for image loading and measuring
+
+  \defgroup prop Document properties
+  Routines for document attributes processing
+
+  \defgroup security Security, Encryption, Compression
+  Routines for document security, encription and compression.
+
+  \defgroup graphics Graphics
+  Routines for feeding pages with graphical primitives.
+
+  \defgroup link Links, Annotations and Destinations
+  Routines for processing navigation things
+
+*/

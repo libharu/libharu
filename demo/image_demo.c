@@ -18,25 +18,10 @@
 #include <math.h>
 #include <setjmp.h>
 #include "hpdf.h"
+#include "handler.h"
+#include "utils.h"
 
 #ifdef LIBHPDF_HAVE_LIBPNG
-
-jmp_buf env;
-
-#ifdef HPDF_DLL
-void  __stdcall
-#else
-void
-#endif
-error_handler  (HPDF_STATUS   error_no,
-                HPDF_STATUS   detail_no,
-                void         *user_data)
-{
-    (void) user_data; /* Not used */
-    printf ("ERROR: error_no=%04X, detail_no=%u\n", (HPDF_UINT)error_no,
-                (HPDF_UINT)detail_no);
-    longjmp(env, 1);
-}
 
 void
 show_description (HPDF_Page    page,
@@ -57,11 +42,7 @@ show_description (HPDF_Page    page,
 
     HPDF_Page_BeginText (page);
 
-#ifdef __WIN32__
-    _snprintf(buf, 255, "(x=%d,y=%d)", (int)x, (int)y);
-#else
-    snprintf(buf, 255, "(x=%d,y=%d)", (int)x, (int)y);
-#endif /* __WIN32__ */
+    HPDF_snprintf(buf, 255, "(x=%d,y=%d)", (int)x, (int)y);
     HPDF_Page_MoveTextPos (page, x - HPDF_Page_TextWidth (page, buf) - 5,
             y - 10);
     HPDF_Page_ShowText (page, buf);
@@ -73,10 +54,8 @@ show_description (HPDF_Page    page,
     HPDF_Page_EndText (page);
 }
 
-
 int main (int argc, char **argv)
 {
-    (void) argc; /* Not used */
     HPDF_Doc  pdf;
     HPDF_Font font;
     HPDF_Page page;
@@ -102,7 +81,7 @@ int main (int argc, char **argv)
     strcpy (fname, argv[0]);
     strcat (fname, ".pdf");
 
-    pdf = HPDF_New (error_handler, NULL);
+    pdf = HPDF_New (demo_error_handler, NULL);
     if (!pdf) {
         printf ("error: cannot create PdfDoc object\n");
         return 1;
@@ -197,8 +176,8 @@ int main (int argc, char **argv)
     /* Skewing image. */
     angle1 = 10;
     angle2 = 20;
-    rad1 = angle1 / 180 * 3.141592;
-    rad2 = angle2 / 180 * 3.141592;
+    rad1 = angle1 / 180 * HPDF_PI;
+    rad2 = angle2 / 180 * HPDF_PI;
 
     HPDF_Page_GSave (page);
 
@@ -213,7 +192,7 @@ int main (int argc, char **argv)
 
     /* Rotating image */
     angle = 30;     /* rotation of 30 degrees. */
-    rad = angle / 180 * 3.141592; /* Calculate the radian value. */
+    rad = angle / 180 * HPDF_PI; /* Calculate the radian value. */
 
     HPDF_Page_GSave (page);
 
@@ -279,4 +258,3 @@ int main()
 }
 
 #endif /* LIBHPDF_HAVE_LIBPNG */
-
