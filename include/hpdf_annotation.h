@@ -40,6 +40,12 @@ HPDF_WidgetAnnot_New    (HPDF_MMgr  mmgr,
                          HPDF_Rect  rect);
 
 HPDF_Annotation
+HPDF_FileAttachmentAnnot_New(HPDF_MMgr   mmgr,
+                             HPDF_Xref   xref,
+                             HPDF_Rect   rect,
+                             const char  *filename);
+
+HPDF_Annotation
 HPDF_LinkAnnot_New  (HPDF_MMgr           mmgr,
                      HPDF_Xref         xref,
                      HPDF_Rect         rect,
