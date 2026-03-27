@@ -393,6 +393,58 @@ HPDF_Image_LoadRawImageFromMem  (HPDF_MMgr          mmgr,
     return image;
 }
 
+HPDF_Image
+HPDF_Image_LoadCcittImageFromMemory (HPDF_MMgr mmgr, HPDF_Xref xref, const HPDF_BYTE* buffer, const HPDF_UINT buffer_size, const HPDF_INT32 width, const HPDF_INT32 height, HPDF_BOOL black_is1)
+{
+   HPDF_Dict image;
+   HPDF_STATUS ret = HPDF_OK;
+   /* HPDF_UINT size; */
+
+   HPDF_PTRACE ((" HPDF_Image_LoadCcittImageFromMemory\n"));
+
+   image = HPDF_DictStream_New (mmgr, xref);
+   if (!image)
+       return NULL;
+
+   image->header.obj_class |= HPDF_OSUBCLASS_XOBJECT;
+   ret += HPDF_Dict_AddName (image, "Type", "XObject");
+   ret += HPDF_Dict_AddName (image, "Subtype", "Image");
+   if (ret != HPDF_OK)
+       return NULL;
+
+   /* size = width * height; */
+   ret = HPDF_Dict_AddName (image, "ColorSpace", "DeviceGray");
+   if (ret != HPDF_OK)
+       return NULL;
+
+   if (HPDF_Dict_AddNumber (image, "Width", width) != HPDF_OK)
+       return NULL;
+
+   if (HPDF_Dict_AddNumber (image, "Height", height) != HPDF_OK)
+       return NULL;
+
+   if (HPDF_Dict_AddNumber (image, "BitsPerComponent", 1) != HPDF_OK)
+       return NULL;
+
+   if (HPDF_Stream_Write(image->stream, buffer, buffer_size) != HPDF_OK)
+       return NULL;
+
+   image->filter = HPDF_STREAM_FILTER_CCITT_DECODE;
+   image->filterParams = HPDF_Dict_New(mmgr);
+   if(image->filterParams == NULL)
+       return NULL;
+
+   /* pure 2D encoding, default is 0 */
+   HPDF_Dict_AddNumber (image->filterParams, "K", -1);
+   /* default is 1728 */
+   HPDF_Dict_AddNumber (image->filterParams, "Columns", width);
+   /* default is 0 */
+   HPDF_Dict_AddNumber (image->filterParams, "Rows", height);
+   HPDF_Dict_AddBoolean (image->filterParams, "BlackIs1", black_is1);
+
+   return image;
+}
+
 
 HPDF_BOOL
 HPDF_Image_Validate (HPDF_Image  image)
