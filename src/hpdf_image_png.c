@@ -193,13 +193,15 @@ ReadTransparentPaletteData  (HPDF_Dict    image,
                              png_infop    info_ptr,
                              png_bytep    smask_data,
                              png_bytep    trans,
-                             int          num_trans)
+                             int          num_trans,
+							 png_color_16p trans_clr_ptr)
 {
 	HPDF_STATUS ret = HPDF_OK;
 	HPDF_UINT i, j;
 	png_bytep *row_ptr;
 	png_uint_32 height = png_get_image_height(png_ptr, info_ptr);
 	png_uint_32 width = png_get_image_width(png_ptr, info_ptr);
+	int color_type     = png_get_color_type(png_ptr, info_ptr);
 
 	row_ptr = HPDF_GetMem (image->mmgr, height * sizeof(png_bytep));
 	if (!row_ptr) {
@@ -225,14 +227,72 @@ ReadTransparentPaletteData  (HPDF_Dict    image,
 		goto Error;
 	}
 
-	for (j = 0; j < height; j++) {
-		for (i = 0; i < width; i++) {
-			smask_data[width * j + i] = (row_ptr[j][i] < num_trans) ? trans[row_ptr[j][i]] : 0xFF;
-		}
+	if(trans != NULL)  // has palette 
+	{
+		for (j = 0; j < height; j++) {
+			for (i = 0; i < width; i++) {
+				smask_data[width * j + i] = (row_ptr[j][i] < num_trans) ? trans[row_ptr[j][i]] : 0xFF;
+			}
 
-		if (HPDF_Stream_Write (image->stream, row_ptr[j], width) != HPDF_OK) {
-			ret = HPDF_FILE_IO_ERROR;
-			goto Error;
+			if (HPDF_Stream_Write (image->stream, row_ptr[j], width) != HPDF_OK) {
+				ret = HPDF_FILE_IO_ERROR;
+				goto Error;
+			}
+		}
+	}
+	else if(color_type == PNG_COLOR_TYPE_RGB)
+	{
+		for (j = 0; j < height; j++) {
+			for (i = 0; i < width; i++) {
+				smask_data[width * j + i] = 
+					(row_ptr[j][i * 3] == (png_byte)trans_clr_ptr->red &&
+					row_ptr[j][i * 3 + 1] == (png_byte)trans_clr_ptr->green &&
+					row_ptr[j][i * 3 + 2] == (png_byte)trans_clr_ptr->blue) ? 0x00 : 0xFF;
+			}
+
+			if (HPDF_Stream_Write (image->stream, row_ptr[j], width * 3) != HPDF_OK) {
+				ret = HPDF_FILE_IO_ERROR;
+				goto Error;
+			}
+		}
+	}
+	else if(color_type == PNG_COLOR_TYPE_GRAY)
+	{
+		for (j = 0; j < height; j++) {
+			for (i = 0; i < width; i++) {
+				smask_data[width * j + i] = (row_ptr[j][i] == (png_byte)trans_clr_ptr->gray) ? 0x00 : 0xFF;
+			}
+
+			if (HPDF_Stream_Write (image->stream, row_ptr[j], width) != HPDF_OK) {
+				ret = HPDF_FILE_IO_ERROR;
+				goto Error;
+			}
+		}		
+	}
+	else if(color_type == PNG_COLOR_TYPE_RGBA)
+	{
+		for (j = 0; j < height; j++) {
+			for (i = 0; i < width; i++) {
+				smask_data[width * j + i] = row_ptr[j][i * 4 + 3];
+			}
+
+			if (HPDF_Stream_Write (image->stream, row_ptr[j], width * 4) != HPDF_OK) {
+				ret = HPDF_FILE_IO_ERROR;
+				goto Error;
+			}
+		}
+	}
+	else if(color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+	{
+		for (j = 0; j < height; j++) {
+			for (i = 0; i < width; i++) {
+				smask_data[width * j + i] = row_ptr[j][i * 2 + 1];
+			}
+
+			if (HPDF_Stream_Write (image->stream, row_ptr[j], width * 2) != HPDF_OK) {
+				ret = HPDF_FILE_IO_ERROR;
+				goto Error;
+			}
 		}
 	}
 
@@ -439,7 +499,7 @@ LoadPngData  (HPDF_Dict     image,
 	int bit_depth, color_type;
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
-
+	int has_trns, has_alpha;
 	HPDF_PTRACE ((" HPDF_Image_LoadPngImage\n"));
 
 	/* create read_struct. */
@@ -481,15 +541,23 @@ LoadPngData  (HPDF_Dict     image,
 		goto Exit;
 	}
 
+	// get updated color_type, bit_depth value
+	color_type = png_get_color_type(png_ptr, info_ptr);
+	bit_depth  = png_get_bit_depth(png_ptr, info_ptr);
+
+	has_trns  = png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS) != 0;
+	has_alpha = (color_type & PNG_COLOR_MASK_ALPHA) != 0;
+
 	/* check palette-based images for transparent areas and load them immediately if found */
-	if (xref && PNG_COLOR_TYPE_PALETTE & color_type) {
+	if (xref && (has_trns || has_alpha)) {
 		png_bytep trans;
 		int num_trans;
 		HPDF_Dict smask;
 		png_bytep smask_data;
+		png_color_16p trans_clr_ptr;
 
-		if (!png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS) ||
-			!png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, NULL)) {
+		if (!png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS) || 
+			!png_get_tRNS(png_ptr, info_ptr, &trans, &num_trans, &trans_clr_ptr)) {
 			goto no_transparent_color_in_palette;
 		}
 
@@ -505,7 +573,7 @@ LoadPngData  (HPDF_Dict     image,
 		ret += HPDF_Dict_AddNumber (smask, "Width", (HPDF_UINT)width);
 		ret += HPDF_Dict_AddNumber (smask, "Height", (HPDF_UINT)height);
 		ret += HPDF_Dict_AddName (smask, "ColorSpace", "DeviceGray");
-		ret += HPDF_Dict_AddNumber (smask, "BitsPerComponent", (HPDF_UINT)bit_depth);
+		ret += HPDF_Dict_AddNumber (smask, "BitsPerComponent", 8);
 
 		if (ret != HPDF_OK) {
 			HPDF_Dict_Free(smask);
@@ -520,7 +588,7 @@ LoadPngData  (HPDF_Dict     image,
 			goto Exit;
 		}
 
-		if (ReadTransparentPaletteData(image, png_ptr, info_ptr, smask_data, trans, num_trans) != HPDF_OK) {
+		if (ReadTransparentPaletteData(image, png_ptr, info_ptr, smask_data, trans, num_trans, trans_clr_ptr) != HPDF_OK) {
 			HPDF_FreeMem(image->mmgr, smask_data);
 			HPDF_Dict_Free(smask);
 			ret = HPDF_INVALID_PNG_IMAGE;
@@ -535,8 +603,15 @@ LoadPngData  (HPDF_Dict     image,
 		}
 		HPDF_FreeMem(image->mmgr, smask_data);
 
+		if (color_type == PNG_COLOR_TYPE_PALETTE)
+			ret += CreatePallet(image, png_ptr, info_ptr);
+		else if(color_type == PNG_COLOR_TYPE_RGB || color_type == PNG_COLOR_TYPE_RGB_ALPHA)
+		{
+			HPDF_Dict_AddName(image, "ColorSpace", "DeviceRGB");
+		}
+		else 
+			HPDF_Dict_AddName(image, "ColorSpace", "DeviceGray");
 
-		ret += CreatePallet(image, png_ptr, info_ptr);
 		ret += HPDF_Dict_AddNumber (image, "Width", (HPDF_UINT)width);
 		ret += HPDF_Dict_AddNumber (image, "Height", (HPDF_UINT)height);
 		ret += HPDF_Dict_AddNumber (image, "BitsPerComponent",	(HPDF_UINT)bit_depth);
