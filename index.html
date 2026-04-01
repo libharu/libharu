@@ -1,170 +1,263 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>libHaru</title>
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="description" content="libHaru free PDF library">
-    <meta name="keywords" content="libharu, haru, c, hpdf, libhpdf, pdf, generation, pdf generation, pdf creator, open source, opensource, php extension, delphi, php, ruby, free pascal, free basic, c#, perl, bindings">
-    <!--[if lt IE 9]>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<title>libHaru</title>
+
+	<link rel="stylesheet" href="stylesheets/styles.css">
+	<link rel="stylesheet" href="stylesheets/pygment_trac.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="description" content="libHaru free PDF library">
+	<meta name="keywords"
+		content="libharu, haru, c, hpdf, libhpdf, pdf, generation, pdf generation, pdf creator, open source, opensource, php extension, delphi, php, ruby, free pascal, free basic, c#, perl, bindings">
+	<!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <script type="text/javascript">
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-21141909-2']);
-        _gaq.push(['_trackPageview']);
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-21141909-2']);
+		_gaq.push(['_trackPageview']);
 
-        (function() {
-         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-         })();
-    </script>
-    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-		<center><img src="haru_small.png" width="140" height="66" border="0"></center>
-		<br>
-		<a href="https://github.com/libharu/libharu/wiki">Documentation</a><br>
-		<a href="https://github.com/libharu/libharu/wiki/Support">Support</a><br>
-		<a href="https://github.com/libharu/libharu/issues">Bugtracker</a><br>
-		<a href="https://github.com/libharu/libharu/wiki/FAQ">FAQ</a><br>
-		<a href="https://github.com/libharu/libharu">libHaru on GitHub</small></a><br>
-		<br>
-        <ul>
-          <li><a href="https://github.com/libharu/libharu/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/libharu/libharu/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/libharu/libharu">View On <strong>GitHub</strong></a></li>
-        </ul>
-        <g:plusone></g:plusone>
-      </header>
-	  <section>
-	  <p><strong>libHaru</strong> is a free, cross platform, open source library for generating PDF files.
-	  At this moment libHaru does not support reading and editing existing PDF files and it's unlikely this support will ever appear.</p>
+		(function () {
+			var ga = document.createElement('script');
+			ga.type = 'text/javascript';
+			ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+	<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+</head>
 
-	  <p>It supports the following features:</p>
+<body>
+	<div class="wrapper">
+		<header>
+			<center><img src="haru_small.png" width="140" height="66" border="0"></center>
+			<br>
+			<a href="https://github.com/libharu/libharu/wiki">Documentation</a><br>
+			<a href="https://github.com/libharu/libharu/wiki/Support">Support</a><br>
+			<a href="https://github.com/libharu/libharu/issues">Bugtracker</a><br>
+			<a href="https://github.com/libharu/libharu/wiki/FAQ">FAQ</a><br>
+			<a href="https://github.com/libharu/libharu">libHaru on GitHub</small></a><br>
+			<br>
+			<ul>
+				<li><a href="https://github.com/libharu/libharu/zipball/master">Download <strong>ZIP File</strong></a></li>
+				<li><a href="https://github.com/libharu/libharu/tarball/master">Download <strong>TAR Ball</strong></a></li>
+				<li><a href="https://github.com/libharu/libharu">View On <strong>GitHub</strong></a></li>
+			</ul>
+			<g:plusone></g:plusone>
+		</header>
+		<section>
+			<p><strong>libHaru</strong> is a free, cross platform, open source library for generating PDF files.
+				At this moment libHaru does not support reading and editing existing PDF files and it's unlikely this support
+				will ever appear.</p>
 
-	  <ul>
-		  <li>Generating PDF files with lines, text, images.</li>
-		  <li>Outline, text annotation, link annotation.</li>
-		  <li>Compressing document with deflate-decode.</li>
-		  <li>Embedding PNG, Jpeg images.</li>
-		  <li>Embedding Type1 font and TrueType font.</li>
-		  <li>Creating encrypted PDF files.</li>
-		  <li>Using various character sets (ISO8859-1~16, MSCP1250~8, KOI8-R).</li>
-		  <li>Supporting CJK fonts and encodings.
-		  You can add the feature of PDF creation by using HARU without understanding complicated internal structure of PDF.
-		  libHaru is written in ANSI C, so theoretically it supports most of the modern OSes.</li>
-	  </ul>
+			<p>It supports the following features:</p>
 
-	  <h2>Looking for a new maintainer!</h2>
-	  <p>
-	  <b>The project seems to be in more or less good shape (as in `it still compiles and works`), but it hasn't been actively maintained 
-	  and/or developed for a few years and badly needs a new maintainer.
-	  If you think you can do it and have some spare time to spend on it (not too much), don't hesitate to introduce yourself on the mailing list:
-	  <a href="mailto:libharu@googlegroups.com">libharu@googlegroups.com</a> (you might want to subscribe to it first).</b>
-	  </p>
+			<ul>
+				<li>Generating PDF files with lines, text, images.</li>
+				<li>Outline, text annotation, link annotation.</li>
+				<li>Compressing document with deflate-decode.</li>
+				<li>Embedding PNG, Jpeg images.</li>
+				<li>Embedding Type1 font and TrueType font.</li>
+				<li>Creating encrypted PDF files.</li>
+				<li>Using various character sets (ISO8859-1~16, MSCP1250~8, KOI8-R).</li>
+				<li>Supporting CJK fonts and encodings.
+					You can add the feature of PDF creation by using HARU without understanding complicated internal structure of
+					PDF.
+					libHaru is written in ANSI C, so theoretically it supports most of the modern OSes.</li>
+			</ul>
 
-	  <h2>Downloads</h2>
-	  <p>
-	  Latest stable release: <a href="https://github.com/libharu/libharu/archive/RELEASE_2_3_0.zip">v2.3.0</a><br>
-	  Latest development release: <a href="https://github.com/libharu/libharu/archive/RELEASE_2_3_0RC3.zip">v2.3.0-RC3</a><br>
-	  <!-- Windows binaries: <a href="http://libharu.org/files/libharu-2.1.0-vc8-x86.zip">libharu-2.1.0-vc8-x86.zip</a>, <a href="http://libharu.org/files/libharu-2.1.0-vc6-x86.zip">libharu-2.1.0-vc6-x86.zip</a> -->
-	  </p>
+			<h2>Looking for a new maintainer!</h2>
+			<p>
+				<b>The project seems to be in more or less good shape (as in `it still compiles and works`), but it hasn't been
+					actively maintained
+					and/or developed for a few years and badly needs a new maintainer.
+					If you think you can do it and have some spare time to spend on it (not too much), don't hesitate to introduce
+					yourself on the mailing list:
+					<a href="mailto:libharu@googlegroups.com">libharu@googlegroups.com</a> (you might want to subscribe to it
+					first).</b>
+			</p>
 
-	  <h2>News</h2>
+			<h2>Downloads</h2>
+			<p>
+				Latest stable release: <a href="https://github.com/libharu/libharu/archive/refs/tags/v2.4.6.zip">v2.4.6</a><br>
+			</p>
 
-	  <h3>libHaru 2.3.0RC2</h3>
-	  <ul>
-		  <li>Changed package naming, no other changes was done.</li>
-	  </ul>
+			<h2>News</h2>
 
-	  <h3>libHaru 2.3.0RC1</h3>
+			<h3>libHaru 2.4.6 released</h3>
+			<ul>
+				<li>TTF security fixes (<a href="https://github.com/libharu/libharu/pull/362">#362</a>)</li>
+				<li>Fix HPDF_FAILD_TO_ALLOC_MEM missing (<a href="https://github.com/libharu/libharu/pull/338">#338</a>)</li>
+				<li>Compatibility with higher version of Delphi (<a href="https://github.com/libharu/libharu/pull/280">#280</a>)
+				</li>
+				<li>Remove restriction on user password to be different from owner password (<a
+						href="https://github.com/libharu/libharu/pull/346">#346</a>)</li>
+				<li>Fix various typos (<a href="https://github.com/libharu/libharu/pull/347">#347</a>)</li>
+				<li>Fix build error for Win32 (x86) due to modifier mismatch (<a
+						href="https://github.com/libharu/libharu/pull/351">#351</a>)</li>
+				<li>Install docs and bindings to DOCDIR (<a href="https://github.com/libharu/libharu/pull/359">#359</a>)</li>
+				<li>Adapt CMake scripts for WebAssembly compilation (<a
+						href="https://github.com/libharu/libharu/pull/344">#344</a>)</li>
+			</ul>
 
-	  <ul>
-		  <li>Added support for 3dMeasures of subtype PD3 and 3DC, projection annotations, ExData and javascript attached to a U3D model. (Robert Würfel)</li>
-		  <li>Added support for 1- and 2-byte UTF8 codes. (Clayman)</li>
-		  <li>Added full PDF/A1-b support. (Petr Pytelka)</li>
-		  <li>Added support for CCITT compression for B/W images. (Petr Pytelka)</li>
-		  <li>Add support for TwoPageLeft and TwoPageRight layouts. (Vincent Dupont)</li>
-		  <li>Const-ified arrays used in the sources. (Ilkka Lehtoranta)</li>
-		  <li>Fixed build with libpng 1.5.0</li>
-		  <li>Fixed bug in HPDF_GetContents() - isize variable was not initialized. (Vincent Dupont)</li>
-		  <li>Fixed possible endless loop in PNG handling code. (reported by Mathew Waters)</li>
-		  <li>Fixed several issues based on the warnings generated by clang-analyzer. (Daniel Höpfl)</li>
-		  <li>Fixed quite a number of warnings. (Davide Achilli)</li>
-		  <li>Added 'd' postfix to debug build, fixed wrong filename. (Wim Dumon)</li>
-		  <li>Fixed HPDF_Text_Rect() not to split words in some obscure cases.</li>
-	  </ul><h3>libHaru 2.2.1 released</h3>
+			<h3>libHaru 2.4.5 released</h3>
+			<ul>
+				<li>Various contributions and fixes. See <a
+						href="https://github.com/libharu/libharu/compare/v2.4.4...v2.4.5">Full Changelog</a>.</li>
+			</ul>
 
-	  <ul>
-		  <li>Added missing typedefs into hpdf.h. (Andrea D'Amore)</li>
-		  <li>Added PrintScaling support.</li>
-	  </ul><h3>libHaru 2.2.0 released</h3>
+			<h3>libHaru 2.4.4 released</h3>
+			<ul>
+				<li>Add copy hpdf_namedict.h at install (<a href="https://github.com/libharu/libharu/pull/265">#265</a>)</li>
+				<li>Added page boundary support via HPDF_Page_SetBoundary (<a
+						href="https://github.com/libharu/libharu/pull/274">#274</a>)</li>
+				<li>Fixed glyph index to be 16 bit unsigned instead of signed (<a
+						href="https://github.com/libharu/libharu/pull/277">#277</a>)</li>
+				<li>Bug fixes (<a href="https://github.com/libharu/libharu/pull/255">#255</a>)</li>
+				<li>Shared library has an SOVERSION now</li>
+				<li>Fixed HPDF_FToA for small values</li>
+			</ul>
 
-	  <ul>
-		  <li>Greatly improved U3D support (Nikhil Soman)</li>
-		  <li>Markup Annotations</li>
-		  <li>Free Text Annotations</li>
-		  <li>Line Annotations</li>
-		  <li>Circle and Squre Annotations</li>
-		  <li>Text Markup Annotations</li>
-		  <li>Rubber Stamp Annotations</li>
-		  <li>Popup Annotations</li>
-		  <li>Added VB.Net bindings. (Matt Underwood)</li>
-		  <li>Added CMake build system (experimental). (Werner Smekal)</li>
-		  <li>Added preliminary ICC support. (vbrasseur at gmail dot com)</li>
-		  <li>Added HPDF_Image_AddSMask(). (patch by Adam Blokus)</li>
-		  <li>Added HPDF_LoadPngImageFromMem() and HPDF_LoadJpegImageFromMem(). (patch by Adam Blokus)</li>
-		  <li>Added HPDF_GetContents().</li>
-		  <li>Added HPDF_Page_SetZoom().</li>
-		  <li>Added support for CMYK in HPDF_Image_LoadRawImageFromMem().</li>
-		  <li>Applied a bunch of fixes and improvements from bug report #13.</li>
-		  <li>HPDF_Page_TextRect() corrections and improvements. (Ralf Junker)</li>
-		  <li>Fixed build failure when zlib was not found. (Werner Smekal)</li>
-		  <li>Fixed build with newer libtool versions.</li>
-		  <li>Fixed external build. (thanks to Jeremiah Willcock)</li>
-		  <li>Fixed memleak in HPDF_EmbeddedFile_New(). (Ralf Junker)</li>
-		  <li>Fixed uninitialized fields in HPDF_Type1FontDef_New(). (Ralf Junker)</li>
-		  <li>Fixed issue with grayscale PNG images. (Ralf Junker)</li>
-		  <li>Fixed missing parentheses from empty string object. (Ralf Junker)</li>
-		  <li>Fixed bug #21 (Build fails on Win CE because of errno and errno.h usage).</li>
-		  <li>Fixed bug #18 (Missing compiler flag -fexceptions)</li>
-		  <li>Fixed bug #11 (sqrtf() is missing on Windows).</li>
-		  <li>Fixed bug #10 (missing HPDF_LoadPngImageFromMem from win32/msvc/libhpdf.def).</li>
-		  <li>Fixed bug #7 (HPDF_String_SetValue() is declared twice).</li>
-		  <li>Fixed bug #6 (possible NULL dereference in HPDF_LoadPngImageFromFile2()).</li>
-		  <li>Fixed bug #5 (possible NULL derefernce in HPDF_LoadRawImageFromFile()).</li>
-		  <li>Fixed bug #4 (possible NULL dereference in HPDF_AToI()).</li>
-		  <li>Fixed bug #2 (Ruby binding: hpdf_insert_page has stray printf).</li>
-	  </ul><h3>libHaru 2.1.0 released</h3>
+			<h3>libHaru 2.4.3 released</h3>
+			<ul>
+				<li>Add static hpdf_version.h header (<a href="https://github.com/libharu/libharu/pull/241">#241</a>)</li>
+				<li>File attachment issue resolved (<a href="https://github.com/libharu/libharu/issues/159">#159</a>)</li>
+				<li>Renamed *_LIBZ defines to _*ZLIB, enables compression of PDF files again (<a
+						href="https://github.com/libharu/libharu/issues/249">#249</a>)</li>
+			</ul>
 
-	  <p>This release includes the following changes:</p>
+			<h3>libHaru 2.4.2 released</h3>
+			<ul>
+				<li>Reinstated hpdf_version.h (<a href="https://github.com/libharu/libharu/pull/237">#237</a>, <a
+						href="https://github.com/libharu/libharu/issues/240">#240</a>)</li>
+			</ul>
 
-	  <ul>
-		  <li>Initial support for Alpha channel in RGB and palette-based PNG images.</li>
-		  <li>HPDF_GetTTFontDefFromFile() function.</li>
-		  <li>FreeBasic bindings. (Klaus Siebke)</li>
-		  <li>Python bindings. (Li Jun)</li>
-		  <li>U3D support. (Michail Vidiassov)</li>
-		  <li>New build system based on autotools.</li>
-		  <li>The following bugs have been fixed:</li>
-		  <li>Fixed bug #1682456 (NULL dereference in LoadType1FontFromStream()).</li>
-		  <li>Fixed bug #1628096 (NULL pointer may be dereferenced).</li>
-		  <li>Typo in HPdfExtGState() function in C# bindings.</li>
-	  </ul>
-	  </section>
-	  <footer>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+			<h3>libHaru 2.4.1 released</h3>
+			<ul>
+				<li>Fixed library name (<a href="https://github.com/libharu/libharu/pull/236">#236</a>)</li>
+				<li>Set correct version number (<a href="https://github.com/libharu/libharu/pull/237">#237</a>)</li>
+			</ul>
+
+			<h3>libHaru 2.4.0 released</h3>
+			<ul>
+				<li>Add support for free-form triangle shading objects (<a
+						href="https://github.com/libharu/libharu/pull/157">#157</a>)</li>
+				<li>Fix config constant to match use in hpdf_mmgr.c (<a
+						href="https://github.com/libharu/libharu/pull/167">#167</a>)</li>
+				<li>Improve small number writing in HPDF_FToA (<a href="https://github.com/libharu/libharu/pull/187">#187</a>)
+				</li>
+				<li>Fix missing /CapHeight key in font definition (<a
+						href="https://github.com/libharu/libharu/pull/138">#138</a>)</li>
+				<li>Fix another case of png files with background mask save uncompressed (<a
+						href="https://github.com/libharu/libharu/pull/221">#221</a>)</li>
+				<li>Avoid issue with libtiff duplicate symbols (<a href="https://github.com/libharu/libharu/pull/168">#168</a>)
+				</li>
+				<li>Readjust bit_depth of png image after stripping depth from 16 to 8 (<a
+						href="https://github.com/libharu/libharu/pull/125">#125</a>)</li>
+				<li>Fixed typo in Japanese font name: Mincyo -&gt; Mincho (<a
+						href="https://github.com/libharu/libharu/pull/80">#80</a>)</li>
+				<li>Fix various typos (<a href="https://github.com/libharu/libharu/pull/226">#226</a>, <a
+						href="https://github.com/libharu/libharu/pull/230">#230</a>)</li>
+				<li>Add missing HPDF_Boolean typedef (<a href="https://github.com/libharu/libharu/pull/189">#189</a>)</li>
+				<li>Moved to a CMake only build environment</li>
+			</ul>
+
+			<h3>libHaru 2.3.0RC2</h3>
+			<ul>
+				<li>Changed package naming, no other changes was done.</li>
+			</ul>
+
+			<h3>libHaru 2.3.0RC1</h3>
+
+			<ul>
+				<li>Added support for 3dMeasures of subtype PD3 and 3DC, projection annotations, ExData and javascript attached
+					to a U3D model. (Robert Würfel)</li>
+				<li>Added support for 1- and 2-byte UTF8 codes. (Clayman)</li>
+				<li>Added full PDF/A1-b support. (Petr Pytelka)</li>
+				<li>Added support for CCITT compression for B/W images. (Petr Pytelka)</li>
+				<li>Add support for TwoPageLeft and TwoPageRight layouts. (Vincent Dupont)</li>
+				<li>Const-ified arrays used in the sources. (Ilkka Lehtoranta)</li>
+				<li>Fixed build with libpng 1.5.0</li>
+				<li>Fixed bug in HPDF_GetContents() - isize variable was not initialized. (Vincent Dupont)</li>
+				<li>Fixed possible endless loop in PNG handling code. (reported by Mathew Waters)</li>
+				<li>Fixed several issues based on the warnings generated by clang-analyzer. (Daniel Höpfl)</li>
+				<li>Fixed quite a number of warnings. (Davide Achilli)</li>
+				<li>Added 'd' postfix to debug build, fixed wrong filename. (Wim Dumon)</li>
+				<li>Fixed HPDF_Text_Rect() not to split words in some obscure cases.</li>
+			</ul>
+			<h3>libHaru 2.2.1 released</h3>
+
+			<ul>
+				<li>Added missing typedefs into hpdf.h. (Andrea D'Amore)</li>
+				<li>Added PrintScaling support.</li>
+			</ul>
+			<h3>libHaru 2.2.0 released</h3>
+
+			<ul>
+				<li>Greatly improved U3D support (Nikhil Soman)</li>
+				<li>Markup Annotations</li>
+				<li>Free Text Annotations</li>
+				<li>Line Annotations</li>
+				<li>Circle and Squre Annotations</li>
+				<li>Text Markup Annotations</li>
+				<li>Rubber Stamp Annotations</li>
+				<li>Popup Annotations</li>
+				<li>Added VB.Net bindings. (Matt Underwood)</li>
+				<li>Added CMake build system (experimental). (Werner Smekal)</li>
+				<li>Added preliminary ICC support. (vbrasseur at gmail dot com)</li>
+				<li>Added HPDF_Image_AddSMask(). (patch by Adam Blokus)</li>
+				<li>Added HPDF_LoadPngImageFromMem() and HPDF_LoadJpegImageFromMem(). (patch by Adam Blokus)</li>
+				<li>Added HPDF_GetContents().</li>
+				<li>Added HPDF_Page_SetZoom().</li>
+				<li>Added support for CMYK in HPDF_Image_LoadRawImageFromMem().</li>
+				<li>Applied a bunch of fixes and improvements from bug report #13.</li>
+				<li>HPDF_Page_TextRect() corrections and improvements. (Ralf Junker)</li>
+				<li>Fixed build failure when zlib was not found. (Werner Smekal)</li>
+				<li>Fixed build with newer libtool versions.</li>
+				<li>Fixed external build. (thanks to Jeremiah Willcock)</li>
+				<li>Fixed memleak in HPDF_EmbeddedFile_New(). (Ralf Junker)</li>
+				<li>Fixed uninitialized fields in HPDF_Type1FontDef_New(). (Ralf Junker)</li>
+				<li>Fixed issue with grayscale PNG images. (Ralf Junker)</li>
+				<li>Fixed missing parentheses from empty string object. (Ralf Junker)</li>
+				<li>Fixed bug #21 (Build fails on Win CE because of errno and errno.h usage).</li>
+				<li>Fixed bug #18 (Missing compiler flag -fexceptions)</li>
+				<li>Fixed bug #11 (sqrtf() is missing on Windows).</li>
+				<li>Fixed bug #10 (missing HPDF_LoadPngImageFromMem from win32/msvc/libhpdf.def).</li>
+				<li>Fixed bug #7 (HPDF_String_SetValue() is declared twice).</li>
+				<li>Fixed bug #6 (possible NULL dereference in HPDF_LoadPngImageFromFile2()).</li>
+				<li>Fixed bug #5 (possible NULL derefernce in HPDF_LoadRawImageFromFile()).</li>
+				<li>Fixed bug #4 (possible NULL dereference in HPDF_AToI()).</li>
+				<li>Fixed bug #2 (Ruby binding: hpdf_insert_page has stray printf).</li>
+			</ul>
+			<h3>libHaru 2.1.0 released</h3>
+
+			<p>This release includes the following changes:</p>
+
+			<ul>
+				<li>Initial support for Alpha channel in RGB and palette-based PNG images.</li>
+				<li>HPDF_GetTTFontDefFromFile() function.</li>
+				<li>FreeBasic bindings. (Klaus Siebke)</li>
+				<li>Python bindings. (Li Jun)</li>
+				<li>U3D support. (Michail Vidiassov)</li>
+				<li>New build system based on autotools.</li>
+				<li>The following bugs have been fixed:</li>
+				<li>Fixed bug #1682456 (NULL dereference in LoadType1FontFromStream()).</li>
+				<li>Fixed bug #1628096 (NULL pointer may be dereferenced).</li>
+				<li>Typo in HPdfExtGState() function in C# bindings.</li>
+			</ul>
+		</section>
+		<footer>
+			<p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small>
+			</p>
+		</footer>
+	</div>
+	<script src="javascripts/scale.fix.js"></script>
+
+</body>
+
 </html>
