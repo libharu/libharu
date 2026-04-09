@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 
 ./configure --system-name=GCC
 mv Makefile script/Makefile.gcc
@@ -22,4 +22,3 @@ mv Makefile script/Makefile.mingw
 mv Makefile script/Makefile.mingw_dll
 
 exit 0
-
