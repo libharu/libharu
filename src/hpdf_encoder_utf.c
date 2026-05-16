@@ -146,9 +146,9 @@ UTF8_Encoder_ToUnicode_Func  (HPDF_Encoder   encoder,
 
     switch (utf8_attr->end_byte) {
     case 3:
-	val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0x7) << 18) +
-	    (unsigned int) ((utf8_attr->utf8_bytes[1]) << 12)       +
-	    (unsigned int) ((utf8_attr->utf8_bytes[2] & 0x3f) << 6) +
+	val = (unsigned int) ((utf8_attr->utf8_bytes[0] & 0x7)  << 18) +
+	    (unsigned int) ((utf8_attr->utf8_bytes[1] & 0x3f) << 12) +
+	    (unsigned int) ((utf8_attr->utf8_bytes[2] & 0x3f) <<  6) +
 	    (unsigned int) ((utf8_attr->utf8_bytes[3] & 0x3f));
 	break;
     case 2:
