@@ -171,6 +171,16 @@ static HPDF_STATUS
 CheckCompositGlyph  (HPDF_FontDef   fontdef,
                      HPDF_UINT16    gid);
 
+static HPDF_STATUS
+CheckCompositGlyphDepth (HPDF_FontDef   fontdef,
+                         HPDF_UINT16    gid,
+                         HPDF_UINT      depth);
+
+/* Maximum composite-glyph reference depth. FreeType uses 32; matching that
+ * here caps the recursive walk before it exhausts the C stack on hostile
+ * fonts that chain composite components into deep cycles. */
+#define HPDF_TTF_MAX_COMPOSITE_DEPTH 32
+
 
 /*---------------------------------------------------------------------------*/
 /*---------------------------------------------------------------------------*/
@@ -1249,8 +1259,21 @@ static HPDF_STATUS
 CheckCompositGlyph  (HPDF_FontDef   fontdef,
                      HPDF_UINT16    gid)
 {
+    return CheckCompositGlyphDepth (fontdef, gid, 0);
+}
+
+static HPDF_STATUS
+CheckCompositGlyphDepth  (HPDF_FontDef   fontdef,
+                          HPDF_UINT16    gid,
+                          HPDF_UINT      depth)
+{
     HPDF_TTFontDefAttr attr = (HPDF_TTFontDefAttr)fontdef->attr;
-    HPDF_UINT offset = attr->glyph_tbl.offsets[gid];
+    HPDF_UINT offset;
+
+    if (depth > HPDF_TTF_MAX_COMPOSITE_DEPTH)
+        return HPDF_SetError (fontdef->error, HPDF_INVALID_TTC_FILE, 0);
+
+    offset = attr->glyph_tbl.offsets[gid];
     /* HPDF_UINT len = attr->glyph_tbl.offsets[gid + 1] - offset; */
     HPDF_STATUS ret;
 
@@ -1323,7 +1346,7 @@ CheckCompositGlyph  (HPDF_FontDef   fontdef,
 
                 attr->glyph_tbl.flgs[glyph_index] = 1;
                 next_glyph = HPDF_Stream_Tell (attr->stream);
-                CheckCompositGlyph (fontdef, glyph_index);
+                CheckCompositGlyphDepth (fontdef, glyph_index, depth + 1);
                 HPDF_Stream_Seek (attr->stream, next_glyph, HPDF_SEEK_SET);
             }
 
@@ -1489,6 +1512,17 @@ ParseLoca  (HPDF_FontDef  fontdef)
 
             poffset++;
         }
+    }
+
+    /* The loca table is required to be monotonic non-decreasing
+     * (offsets[i+1] >= offsets[i]) by the TrueType spec. Enforce it
+     * here so RecreateGLYF can compute glyph lengths without an
+     * unsigned underflow that would later drive a multi-gigabyte
+     * stream copy. */
+    poffset = attr->glyph_tbl.offsets;
+    for (i = 0; i < attr->num_glyphs; i++) {
+        if (poffset[i + 1] < poffset[i])
+            return HPDF_SetError (fontdef->error, HPDF_INVALID_TTC_FILE, 0);
     }
 
 
