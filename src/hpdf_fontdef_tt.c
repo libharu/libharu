@@ -1066,9 +1066,14 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
     if (ret != HPDF_OK)
         return HPDF_Error_GetCode (fontdef->error);
 
+    /* seg_count_x2 must be an even count (it's segCount * 2). Odd values
+     * are malformed and cause the per-element loops below to undersize. */
+    if (attr->cmap.seg_count_x2 % 2 != 0)
+        return HPDF_SetError (fontdef->error, HPDF_INVALID_TTC_FILE, 0);
+
     /* end_count */
     attr->cmap.end_count = HPDF_GetMem (fontdef->mmgr,
-            sizeof(HPDF_UINT16) * attr->cmap.seg_count_x2 / 2);
+            sizeof(HPDF_UINT16) * (attr->cmap.seg_count_x2 / 2));
     if (!attr->cmap.end_count)
         return HPDF_Error_GetCode (fontdef->error);
 
@@ -1082,7 +1087,7 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
 
     /* start_count */
     attr->cmap.start_count = HPDF_GetMem (fontdef->mmgr,
-            sizeof(HPDF_UINT16) * attr->cmap.seg_count_x2 / 2);
+            sizeof(HPDF_UINT16) * (attr->cmap.seg_count_x2 / 2));
     if (!attr->cmap.start_count)
         return HPDF_Error_GetCode (fontdef->error);
 
@@ -1093,7 +1098,7 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
 
     /* id_delta */
     attr->cmap.id_delta = HPDF_GetMem (fontdef->mmgr,
-            sizeof(HPDF_UINT16) * attr->cmap.seg_count_x2 / 2);
+            sizeof(HPDF_UINT16) * (attr->cmap.seg_count_x2 / 2));
     if (!attr->cmap.id_delta)
         return HPDF_Error_GetCode (fontdef->error);
 
@@ -1104,7 +1109,7 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
 
     /* id_range_offset */
     attr->cmap.id_range_offset = HPDF_GetMem (fontdef->mmgr,
-            sizeof(HPDF_UINT16) * attr->cmap.seg_count_x2 / 2);
+            sizeof(HPDF_UINT16) * (attr->cmap.seg_count_x2 / 2));
     if (!attr->cmap.id_range_offset)
         return HPDF_Error_GetCode (fontdef->error);
 
@@ -1116,6 +1121,12 @@ ParseCMAP_format4  (HPDF_FontDef  fontdef,
     num_read = HPDF_Stream_Tell (attr->stream) - offset;
     if (num_read < 0)
         return HPDF_Error_GetCode (fontdef->error);
+
+    /* cmap.length is a uint16 from the subtable header; if it claims fewer
+     * bytes than we've already consumed, the subtraction below wraps and
+     * sizes a multi-gigabyte glyph_id_array. */
+    if ((HPDF_INT32)attr->cmap.length < num_read)
+        return HPDF_SetError (fontdef->error, HPDF_INVALID_TTC_FILE, 0);
 
     attr->cmap.glyph_id_array_count = (attr->cmap.length - num_read) / 2;
 
@@ -1197,8 +1208,8 @@ HPDF_TTFontDef_GetGlyphid  (HPDF_FontDef   fontdef,
         HPDF_UINT idx = attr->cmap.id_range_offset[i] / 2 +
             (unicode - attr->cmap.start_count[i]) - (seg_count - i);
 
-        if (idx > attr->cmap.glyph_id_array_count) {
-            HPDF_PTRACE((" HPDF_TTFontDef_GetGlyphid[%u] %u > %u\n",
+        if (idx >= attr->cmap.glyph_id_array_count) {
+            HPDF_PTRACE((" HPDF_TTFontDef_GetGlyphid[%u] %u >= %u\n",
                         i, idx, (HPDF_UINT)attr->cmap.glyph_id_array_count));
             return 0;
         } else {
