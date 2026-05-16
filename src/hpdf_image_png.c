@@ -96,8 +96,10 @@ PngErrorFunc  (png_structp       png_ptr,
     HPDF_MemSet (error_number, 0, 16);
 
      for (i = 0; i < 15; i++) {
-         error_number[i] = *(msg + i);
-         if (*(msg + i + 1) == ' ')
+         if (msg[i] == 0)
+             break;
+         error_number[i] = msg[i];
+         if (msg[i + 1] == 0 || msg[i + 1] == ' ')
              break;
      }
 
