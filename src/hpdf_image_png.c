@@ -22,6 +22,7 @@
 #ifdef LIBHPDF_HAVE_LIBPNG
 #include <png.h>
 #include <string.h>
+#include <limits.h>
 
 static void
 PngErrorFunc  (png_structp       png_ptr,
@@ -478,6 +479,17 @@ LoadPngData  (HPDF_Dict     image,
 
 	png_read_update_info(png_ptr, info_ptr);
 	if (image->error->error_no != HPDF_OK) {
+		goto Exit;
+	}
+
+	/* Reject dimensions whose width*height overflows HPDF_UINT. The
+	 * smask alpha buffer below is sized by that product; without this
+	 * check, a crafted IHDR wraps the multiplication and the decode
+	 * loop writes width*height bytes into an undersized allocation.
+	 * Checked before HPDF_DictStream_New so the early-out doesn't
+	 * leave a half-constructed xref-owned object. */
+	if (width != 0 && height > UINT_MAX / width) {
+		ret = HPDF_INVALID_PNG_IMAGE;
 		goto Exit;
 	}
 
