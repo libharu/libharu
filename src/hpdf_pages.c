@@ -1659,7 +1659,7 @@ HPDF_Page_SetSize  (HPDF_Page             page,
     if (!HPDF_Page_Validate (page))
         return HPDF_INVALID_PAGE;
 
-    if (size < 0 || size > HPDF_PAGE_SIZE_EOF)
+    if (size < 0 || size >= HPDF_PAGE_SIZE_EOF)
         return HPDF_RaiseError (page->error, HPDF_PAGE_INVALID_SIZE,
                 (HPDF_STATUS)direction);
 
