@@ -192,10 +192,14 @@ HPDF_FToA  (char       *s,
     HPDF_INT32 logVal;
     HPDF_UINT32 prec;
 
-    if (val > HPDF_LIMIT_MAX_REAL)
+    /* isnan/isinf check first: both > and < below are false for NaN,
+     * so a NaN input would otherwise pass through to log10/modff and
+     * produce undefined output. */
+    if (isnan(val) || isinf(val))
+        val = 0.0f;
+    else if (val > HPDF_LIMIT_MAX_REAL)
         val = HPDF_LIMIT_MAX_REAL;
-    else
-    if (val < HPDF_LIMIT_MIN_REAL)
+    else if (val < HPDF_LIMIT_MIN_REAL)
         val = HPDF_LIMIT_MIN_REAL;
 
     t = buf;
