@@ -348,7 +348,13 @@ HPDF_Dict_Add  (HPDF_Dict        dict,
         HPDF_Proxy proxy = HPDF_Proxy_New (dict->mmgr, obj);
 
         if (!proxy) {
-            HPDF_Obj_Free(dict->mmgr, obj);
+            /* Don't leave the element with value==NULL: subsequent
+             * HPDF_Dict_GetItem dereferences element->value without
+             * a NULL check. Remove the element so a later lookup
+             * returns "not found" rather than crashing. */
+            HPDF_List_Remove (dict->list, element);
+            HPDF_FreeMem (dict->mmgr, element);
+            HPDF_Obj_Free (dict->mmgr, obj);
             return HPDF_Error_GetCode (dict->error);
         }
 
