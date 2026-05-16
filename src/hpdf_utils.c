@@ -229,11 +229,17 @@ HPDF_FToA  (char       *s,
     while (s <= eptr && *t != 0)
         *s++ = *t--;
 
-    /* process fractional part */
-    *s++ = '.';
+    /* Bound the fractional writes against eptr, matching the integer
+     * copy loop above. Without this, callers that share one stack
+     * buffer across many HPDF_FToA calls (e.g. HPDF_Page_Ellipse)
+     * overflow it. */
+    if (s <= eptr)
+        *s++ = '.';
     if (fpart_val != 0.0) {
         HPDF_UINT32 i;
         for (i = 0; i < prec; i++) {
+            if (s > eptr)
+                break;
             fpart_val = modff(fpart_val*10.0f, &int_val);
             *s++ = (char)(int_val + 0.5) + '0';
         }
