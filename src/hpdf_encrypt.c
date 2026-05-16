@@ -168,7 +168,7 @@ HPDF_MD5Final  (HPDF_BYTE              digest[16],
     MD5Transform (ctx->buf, (HPDF_UINT32 *) ctx->in);
     MD5ByteReverse ((HPDF_BYTE *) ctx->buf, 4);
     HPDF_MemCpy ((HPDF_BYTE *)digest, (HPDF_BYTE *)ctx->buf, 16);
-    HPDF_MemSet ((HPDF_BYTE *)ctx, 0, sizeof (ctx));   /* In case it's sensitive */
+    HPDF_MemSet ((HPDF_BYTE *)ctx, 0, sizeof (*ctx));  /* In case it's sensitive */
 }
 
 /* The four core functions - F1 is optimized somewhat */
