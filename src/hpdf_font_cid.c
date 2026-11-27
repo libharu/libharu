@@ -63,6 +63,18 @@ static HPDF_Dict
 CreateCMap  (HPDF_Encoder   encoder,
              HPDF_Xref      xref);
 
+/* Fix: a real /ToUnicode CMap (bfrange/bfchar), as
+   distinct from CreateCMap()'s /Encoding-style CMap (cidrange/cidchar).
+   The two operator sets are not interchangeable -- a /ToUnicode stream
+   using cidrange is not spec-valid (PDF32000-1:2008 9.10.3) and real
+   consumers (confirmed with veraPDF) correctly refuse to resolve any
+   glyph through it. Only HPDF_Type0Font_New()'s "Identity-H" branch
+   (used solely by hpdf_encoder_utf.c's "UTF-8" encoder -- no other
+   encoder in this codebase uses that ordering) ever needs this. */
+static HPDF_Dict
+CreateToUnicodeCMap  (HPDF_Encoder   encoder,
+                      HPDF_Xref      xref);
+
 
 static void
 OnFree_Func  (HPDF_Dict  obj);
@@ -149,7 +161,7 @@ HPDF_Type0Font_New  (HPDF_MMgr        mmgr,
 	 */
         if (HPDF_StrCmp(encoder_attr->ordering, "Identity-H") == 0) {
 	    ret += HPDF_Dict_AddName (font, "Encoding", "Identity-H");
-	    attr->cmap_stream = CreateCMap (encoder, xref);
+	    attr->cmap_stream = CreateToUnicodeCMap (encoder, xref);
 
 	    if (attr->cmap_stream) {
 	        ret += HPDF_Dict_Add (font, "ToUnicode", attr->cmap_stream);
@@ -1081,6 +1093,171 @@ CreateCMap  (HPDF_Encoder   encoder,
     pbuf = (char *)HPDF_StrCpy (pbuf, "%%EndResource\r\n", eptr);
     HPDF_StrCpy (pbuf, "%%EOF\r\n", eptr);
     ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+
+    if (ret != HPDF_OK)
+        return NULL;
+
+    return cmap;
+}
+
+/* See this file's own forward declaration comment for why this exists
+   separately from CreateCMap(): a /ToUnicode CMap needs bfrange/bfchar
+   (PDF32000-1:2008 9.10.3), not the cidrange/cidchar CreateCMap() emits
+   for a font's /Encoding entry. Reuses the encoder's own cmap_range list
+   (the same ranges CreateCMap() draws from) -- for hpdf_encoder_utf.c's
+   "UTF-8" encoder this is a single identity range covering the whole
+   BMP, so each range here becomes one bfrange line mapping source code
+   X directly to Unicode value X, which is exactly correct: this
+   encoder's CID *is* the Unicode code point by construction. */
+static HPDF_Dict
+CreateToUnicodeCMap  (HPDF_Encoder   encoder,
+                      HPDF_Xref      xref)
+{
+    HPDF_STATUS ret = HPDF_OK;
+    HPDF_Dict cmap = HPDF_DictStream_New (encoder->mmgr, xref);
+    HPDF_CMapEncoderAttr attr = (HPDF_CMapEncoderAttr)encoder->attr;
+    char buf[HPDF_TMP_BUF_SIZ];
+    char *pbuf;
+    char *eptr = buf + HPDF_TMP_BUF_SIZ - 1;
+    HPDF_UINT i;
+
+    if (!cmap)
+        return NULL;
+
+    ret += HPDF_Dict_AddName (cmap, "Type", "CMap");
+
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "%!PS-Adobe-3.0 Resource-CMap\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "%%DocumentNeededResources: ProcSet (CIDInit)\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "%%IncludeResource: ProcSet (CIDInit)\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "%%BeginResource: CMap (Adobe-Identity-UCS)\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "%%Title: (Adobe-Identity-UCS Adobe UCS 0)\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream, "%%Version: 1.0\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream, "%%EndComments\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "/CIDInit /ProcSet findresource begin\r\n\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream, "12 dict begin\r\n\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream, "begincmap\r\n\r\n");
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "/CIDSystemInfo 3 dict dup begin\r\n"
+                "  /Registry (Adobe) def\r\n"
+                "  /Ordering (UCS) def\r\n"
+                "  /Supplement 0 def\r\n"
+                "end def\r\n\r\n"
+                "/CMapName /Adobe-Identity-UCS def\r\n"
+                "/CMapVersion 1.0 def\r\n"
+                "/CMapType 2 def\r\n\r\n");
+
+    if (ret != HPDF_OK)
+        return NULL;
+
+    /* codespacerange: the source codes are 2-byte CIDs (this path is
+       only reached for HPDF_ENCODER_TYPE_DOUBLE_BYTE encoders). */
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "1 begincodespacerange\r\n<0000> <FFFF>\r\n"
+                "endcodespacerange\r\n\r\n");
+    if (ret != HPDF_OK)
+        return NULL;
+
+    /* A bfrange entry's source (and destination) low/high bytes must
+       stay within one 256-code row -- PDF32000-1:2008 9.10.3's
+       increment rule only defines incrementing the low byte, and real
+       readers (confirmed directly: veraPDF/PDFBox) only resolve a
+       bfrange correctly within one row, silently failing any code whose
+       high byte differs from the range's own low end otherwise (caught
+       directly: digits stayed resolvable, but U+0398 THETA -- a
+       different row from the digits' row 0x00 -- did not, with a single
+       <0000> <FFFF> range covering all of them). So each registered
+       range is split into 256-code, single-row chunks here, in
+       <=100-entries-per-block groups (matching CreateCMap()'s own
+       cidrange chunking above, for the same reason: Adobe's CMap
+       spec-recommended limit). */
+    {
+        HPDF_UINT total_chunks = 0;
+
+        for (i = 0; i < attr->cmap_range->count; i++) {
+            HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
+            HPDF_UINT32 pos = range->from;
+
+            while (pos <= (HPDF_UINT32)range->to) {
+                HPDF_UINT32 row_end = (pos | 0xFF);
+                if (row_end > range->to)
+                    row_end = range->to;
+                total_chunks++;
+                if (row_end == 0xFFFF)
+                    break;
+                pos = row_end + 1;
+            }
+        }
+
+        if (total_chunks > 0) {
+            HPDF_UINT emitted = 0;
+            HPDF_UINT in_block = 0;
+            HPDF_UINT block_size = (total_chunks > 100) ? 100 : total_chunks;
+
+            pbuf = HPDF_IToA (buf, block_size, eptr);
+            HPDF_StrCpy (pbuf, " beginbfrange\r\n", eptr);
+            ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+
+            for (i = 0; i < attr->cmap_range->count; i++) {
+                HPDF_CidRange_Rec *range = HPDF_List_ItemAt (attr->cmap_range, i);
+                HPDF_UINT32 pos = range->from;
+
+                while (pos <= (HPDF_UINT32)range->to) {
+                    HPDF_UINT32 row_end = (pos | 0xFF);
+                    HPDF_UINT16 dst = (HPDF_UINT16) (range->cid + (pos - range->from));
+
+                    if (row_end > range->to)
+                        row_end = range->to;
+
+                    pbuf = CidRangeToHex (buf, (HPDF_UINT16) pos,
+                            (HPDF_UINT16) row_end, eptr);
+                    *pbuf++ = ' ';
+                    pbuf = UINT16ToHex (pbuf, dst, eptr, 2);
+                    HPDF_StrCpy (pbuf, "\r\n", eptr);
+                    ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+                    if (ret != HPDF_OK)
+                        return NULL;
+
+                    emitted++;
+                    in_block++;
+                    if (in_block == 100 && emitted < total_chunks) {
+                        HPDF_UINT remaining = total_chunks - emitted;
+                        HPDF_UINT next_block = (remaining > 100) ? 100 : remaining;
+
+                        pbuf = (char *)HPDF_StrCpy (buf, "endbfrange\r\n\r\n", eptr);
+                        pbuf = HPDF_IToA (pbuf, next_block, eptr);
+                        HPDF_StrCpy (pbuf, " beginbfrange\r\n", eptr);
+                        ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+                        if (ret != HPDF_OK)
+                            return NULL;
+                        in_block = 0;
+                    }
+
+                    if (row_end == 0xFFFF)
+                        break;
+                    pos = row_end + 1;
+                }
+            }
+
+            HPDF_StrCpy (buf, "endbfrange\r\n\r\n", eptr);
+            ret += HPDF_Stream_WriteStr (cmap->stream, buf);
+            if (ret != HPDF_OK)
+                return NULL;
+        }
+    }
+
+    ret += HPDF_Stream_WriteStr (cmap->stream,
+                "endcmap\r\n"
+                "CMapName currentdict /CMap defineresource pop\r\n"
+                "end\r\n"
+                "end\r\n\r\n"
+                "%%EndResource\r\n"
+                "%%EOF\r\n");
 
     if (ret != HPDF_OK)
         return NULL;

@@ -2482,11 +2482,14 @@ HPDF_BasicEncoder_Write  (HPDF_Encoder  encoder,
                 const char* char_name =
                     HPDF_UnicodeToGlyphName (attr->unicode_map[i]);
 
-                ptmp = HPDF_IToA (ptmp, i, tmp + HPDF_TEXT_DEFAULT_LEN - 1);
+                /* leave room for " /" after the number and for the ' '
+                   and the terminating 0 after the name (both copies write
+                   their own 0 at the returned position) */
+                ptmp = HPDF_IToA (ptmp, i, tmp + HPDF_TEXT_DEFAULT_LEN - 5);
                 *ptmp++ = ' ';
                 *ptmp++ = '/';
                 ptmp = (char *)HPDF_StrCpy (ptmp, char_name, tmp +
-                        HPDF_TEXT_DEFAULT_LEN - 1);
+                        HPDF_TEXT_DEFAULT_LEN - 2);
                 *ptmp++ = ' ';
                 *ptmp = 0;
 

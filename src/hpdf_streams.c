@@ -564,7 +564,9 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
 {
 #ifdef LIBHPDF_HAVE_ZLIB
 
-#define DEFLATE_BUF_SIZ  ((HPDF_INT)(HPDF_STREAM_BUF_SIZ * 1.1) + 13)
+/* integer form of (int)(HPDF_STREAM_BUF_SIZ * 1.1) + 13, so the buffers below
+   are constant-size arrays, not variable-length ones */
+#define DEFLATE_BUF_SIZ  ((HPDF_INT)(HPDF_STREAM_BUF_SIZ * 11 / 10) + 13)
 
     HPDF_STATUS ret;
     HPDF_BOOL flg;
